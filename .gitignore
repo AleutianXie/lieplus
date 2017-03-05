@@ -1,0 +1,14 @@
+/node_modules
+/public/storage
+/storage/*.key
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env.example
+composer.lock
+.tags
+.tags_sorted_by_file
+_ide_helper.php
+.phpintel
+.DS_Store

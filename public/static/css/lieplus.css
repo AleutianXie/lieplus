@@ -1,0 +1,176 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('./fonts-icomoon/icomoon.eot?bl3wch');
+  src:  url('./fonts-icomoon/icomoon.eot?bl3wch#iefix') format('embedded-opentype'),
+    url('./fonts-icomoon/icomoon.ttf?bl3wch') format('truetype'),
+    url('./fonts-icomoon/icomoon.woff?bl3wch') format('woff'),
+    url('./fonts-icomoon/icomoon.svg?bl3wch#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+i {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.fa-lieplus .path1:before {
+  content: "\e900";
+  color: #0a3584;
+}
+.fa-lieplus .path2:before {
+  content: "\e901";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path3:before {
+  content: "\e902";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path4:before {
+  content: "\e903";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path5:before {
+  content: "\e904";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path6:before {
+  content: "\e905";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path7:before {
+  content: "\e906";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path8:before {
+  content: "\e907";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path9:before {
+  content: "\e908";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path10:before {
+  content: "\e909";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path11:before {
+  content: "\e90a";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path12:before {
+  content: "\e90b";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path13:before {
+  content: "\e90c";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path14:before {
+  content: "\e90d";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path15:before {
+  content: "\e90e";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path16:before {
+  content: "\e90f";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path17:before {
+  content: "\e910";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path18:before {
+  content: "\e911";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path19:before {
+  content: "\e912";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path20:before {
+  content: "\e913";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path21:before {
+  content: "\e914";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path22:before {
+  content: "\e915";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path23:before {
+  content: "\e916";
+  color: #0a3584;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path24:before {
+  content: "\e917";
+  color: #f8b62d;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path25:before {
+  content: "\e918";
+  color: #f8b62d;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path26:before {
+  content: "\e919";
+  color: #103674;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path27:before {
+  content: "\e91a";
+  color: #103674;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path28:before {
+  content: "\e91b";
+  color: #103674;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path29:before {
+  content: "\e91c";
+  color: #103674;
+  margin-left: -1.4140625em;
+}
+.fa-lieplus .path30:before {
+  content: "\e91d";
+  color: #103674;
+  margin-left: -1.4140625em;
+}
