@@ -13,8 +13,10 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
- Vue.component('example', require('./components/Example.vue'));
- Vue.component('usermenu', require('./components/UserMenu.vue'));
+
+Vue.component('example', require('./components/Example.vue'));
+Vue.component('hvue', require('./components/Test.vue'));
+Vue.component('ResumeList', require('./components/ResumeList.vue'));
 
 const app = new Vue({
     el: '#app'

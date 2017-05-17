@@ -1,17 +1,30 @@
 {
   "private": true,
   "scripts": {
-    "dev": "node node_modules/cross-env/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "node node_modules/cross-env/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "hot": "node node_modules/cross-env/bin/cross-env.js NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "production": "node node_modules/cross-env/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "dev": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
-    "axios": "^0.15.2",
+    "axios": "^0.16.1",
+    "bootstrap-datepicker": "^1.6.4",
+    "bootstrap-editable": "^1.0.1",
     "bootstrap-sass": "^3.3.7",
+    "datatables": "^1.10.13",
+    "datatables-bootstrap": "^0.0.1",
+    "datatables-buttons": "^1.0.3",
+    "datatables-select": "^1.1.0",
+    "datatables.net-plugins": "^1.10.15",
+    "font-awesome": "^4.7.0",
     "jquery": "^3.1.0",
-    "laravel-mix": "^0.5.0",
+    "jquery-ui": "^1.12.1",
+    "laravel-mix": "^0.11.4",
     "lodash": "^4.16.2",
-    "vue": "^2.0.1"
+    "select2": "^4.0.3",
+    "vue": "^2.3.2"
+  },
+  "dependencies": {
+    "datatables.net": "^1.10.15"
   }
 }

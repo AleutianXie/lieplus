@@ -1,4 +1,4 @@
-@extends('layouts.lieplus')
+@extends('layouts.cici')
 
 @section('title'){{ $title }}@endsection
 
@@ -47,7 +47,7 @@
                 简历原件
             </h4>
 
-            <h6 class="pull-right">{{ $creater }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
+            <h6 class="pull-right">{{ $resume->publisher->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
 
             <div class="space-8"></div>
 
@@ -221,7 +221,7 @@
             </h4>
 
             <div class="space-8"></div>
-            @include('alert.list', ['alerts' => $alerts ])
+            @include('alert.list', ['alerts' => $resume->alerts ])
         </div>
         {{-- 提醒--结束 --}}
    </div>
@@ -297,7 +297,7 @@ jQuery(function($) {
             if($.trim(value) == '') {
                 return '手机号码不能为空！';
             }
-            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
             if(!myreg.test($.trim(value)))
             {
                 return '请输入有效的手机号码！';
@@ -334,28 +334,25 @@ jQuery(function($) {
 
     //select2 editable
     var provinces = [];
-    /*$.each({ "CA": "Canada", "IN": "India", "NL": "Netherlands", "TR": "Turkey", "US": "United States"}, function(k, v) {
-        countries.push({id: k, text: v});
-    });*/
-    $.each({!! json_encode($provinces) !!}, function(k, v) {
+    $.each({!! json_encode(config('lieplus.provinces')) !!}, function(k, v) {
         provinces.push({id: k, text: v});
     });
 
     var cities = [];
-    @foreach ($cities as $key => $value)
-        cities[{{ $key }}] = [];
-        $.each({!! json_encode($value) !!}, function(k, v){
-            cities[{{ $key }}].push({id: k, text: v});
+    $.each({!! json_encode(config('lieplus.cities')) !!}, function(key, value) {
+        cities[key] = [];
+        $.each(value, function(k, v){
+            cities[key].push({id: k, text: v});
         });
-    @endforeach
+    });
 
     var counties = [];
-    @foreach ($counties as $key => $value)
-        counties[{{ $key }}] = [];
-        $.each({!! json_encode($value) !!}, function(k, v){
-            counties[{{ $key }}].push({id: k, text: v});
+    $.each({!! json_encode(config('lieplus.counties')) !!}, function(key,value) {
+        counties[key] = [];
+        $.each(value, function(k, v) {
+            counties[key].push({id: k, text: v});
         });
-    @endforeach
+    });
 
     var currentProvinceValue = "NL";
     var currentCityValue = "NL";
@@ -364,76 +361,11 @@ jQuery(function($) {
         value : 'NL',
         //onblur:'ignore',
         source: provinces,
-        select2: {
-            'width': 140
-        },
-        success: function(response, newValue) {
-            if(currentProvinceValue == newValue) return;
-            currentProviceValue = newValue;
-
-            var new_source = (!newValue || newValue == "") ? [] : cities[newValue];
-
-            //so we remove it altogether and create a new element
-            $('#county').text('Select County');
-            var city = $('#city').get(0);
-            $(city).clone().attr('id', 'city').text('Select City').editable({
-                type: 'select2',
-                value : 'NL',
-                //onblur:'ignore',
-                source: new_source,
-                select2: {
-                    'width': 140
-                },
-                success: function(response, newValue) {
-                    if(currentCityValue == newValue) return;
-                    currentCityValue = newValue;
-
-                    var new_source = (!newValue || newValue == "") ? [] : counties[newValue];
-
-                    var county = $('#county').get(0);
-                    $(county).clone().attr('id', 'county').text('Select County').editable({
-                        type: 'select2',
-                        value : null,
-                        //onblur:'ignore',
-                        source: new_source,
-                        select2: {
-                            'width': 140
-                        }
-                    }).insertAfter(county);//insert it after previous instance
-                    $(county).remove();//remove previous instance
-                }
-            }).insertAfter(city);//insert it after previous instance
-            $(city).remove();//remove previous instance
-
-     }
-    });
-
-$('#province').select2({
-    theme: "classic"
-});
-   $('#address').editable({
-        url: '/post',
-        value: {
-            city: "Moscow", 
-            street: "Lenina", 
-            building: "12"
-        },
-        validate: function(value) {
-            if(value.city == '') return 'city is required!'; 
-        },
-        display: function(value) {
-            if(!value) {
-                $(this).empty();
-                return; 
-            }
-            var html = '<b>' + $('<div>').text(value.city).html() + '</b>, ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
-            $(this).html(html);
-
-                $('#province').editable({
-        type: 'select2',
-        value : 'NL',
+        name : 'province',
+        url: '/resume/edit',
+        params: {'_token' : '{{ csrf_token() }}'},
+        pk: {{ $resume->id }},
         //onblur:'ignore',
-        source: provinces,
         select2: {
             'width': 140
         },
@@ -477,45 +409,8 @@ $('#province').select2({
 
      }
     });
-        }
-    });
-    // $('#city').editable({
-    //     type: 'select2',
-    //     value : 'Amsterdam',
-    //     //onblur:'ignore',
-    //     source: cities[currentProviceValue],
-    //     select2: {
-    //         'width': 140
-    //     },
-    //     success: function(response, newValue) {
-    //         if(currentCityValue == newValue) return;
-    //         currentCityValue = newValue;
 
-    //         var new_source = (!newValue || newValue == "") ? [] : counties[newValue];
 
-    //         var county = $('#county').removeAttr('id').get(0);
-    //         $(county).clone().attr('id', 'county').text('Select County').editable({
-    //             type: 'select2',
-    //             value : null,
-    //             //onblur:'ignore',
-    //             source: new_source,
-    //             select2: {
-    //                 'width': 140
-    //             }
-    //         }).insertAfter(county);//insert it after previous instance
-    //         $(county).remove();//remove previous instance
-    //     }
-    // });
-
-    // $('#county').editable({
-    //     type: 'select2',
-    //     value: 'Amsterdam',
-    //     //onblur:'ignore',
-    //     source: counties[currentCityValue],
-    //     select2: {
-    //         'width': 140
-    //     }
-    // });
     //custom date editable
     $('#birthdate').editable({
         type: 'adate',

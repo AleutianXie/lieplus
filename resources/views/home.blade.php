@@ -15,5 +15,6 @@
     </div>
 </div>
 <example></example>
-<usermenu></usermenu>
+<hvue msg="xhs" resumes="{{ $resumes }}"></hvue>
+<resume-list resumes="{{ $resumes }}"></resume-list>
 @endsection

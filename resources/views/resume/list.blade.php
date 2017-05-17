@@ -1,6 +1,14 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 
 <!-- page specific plugin scripts -->
+<script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
+<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('static/js/ace.min.js') }}"></script>
+<script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
+        <!-- ace settings handler -->
+        <script src="{{ asset('static/js/ace-extra.min.js') }}"></script>
+
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.buttons.min.js') }}"></script>

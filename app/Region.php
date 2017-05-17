@@ -9,34 +9,48 @@ class Region extends Model
     protected $table = 'regions';
 
     //
-    public static function getProvinces()
+    public static function Address()
     {
-        $provinces = [];
-        foreach (static::where(['type' => 1, 'show' => 1])->get(['code', 'name'])->toArray() as $key => $value) {
-            $provinces[$value['code']] = $value['name'];
-            unset($value);
-        }
-        return $provinces;
+        self::provinces();
+        self::cities();
+        self::counties();
     }
 
-    public static function getCities()
+    private static function provinces()
     {
-        $cities = [];
-        foreach (static::where(['type' => 2, 'show' => 1])->get(['code', 'name', 'parent'])->toArray() as $key => $value) {
-            $cities[$value['parent']][$value['code']] = $value['name'];
-            unset($value);
-         }
-        return $cities;
+        if (empty(config('lieplus.provinces'))) {
+
+            $provinces = static::where(['type' => 1, 'show' => 1])->get(['code', 'name']);
+
+            $provinces = array_pluck($provinces, 'name', 'code');
+
+            config(['lieplus.provinces' => $provinces]);
+        }
     }
 
-    public static function getCounties()
+    private static function cities()
     {
-        $counties = [];
-        foreach (static::where(['type' => 3, 'show' => 1])->get(['code', 'name', 'parent'])->toArray() as $key => $value) {
-            $counties[$value['parent']][$value['code']] = $value['name'];
-            unset($value);
+        if (empty(config('lieplus.cities'))) {
+            $cities = [];
+
+            foreach (static::where(['type' => 2, 'show' => 1])->get(['code', 'name', 'parent'])->toArray() as $key => $value) {
+                $cities[$value['parent']][$value['code']] = $value['name'];
+                unset($value);
+            }
+            config(['lieplus.cities' => $cities]);
         }
-        return $counties;
+    }
+
+    private static function counties()
+    {
+        if (empty(config('lieplus.counties'))) {
+            $counties = [];
+            foreach (static::where(['type' => 3, 'show' => 1])->get(['code', 'name', 'parent'])->toArray() as $key => $value) {
+                $counties[$value['parent']][$value['code']] = $value['name'];
+                unset($value);
+            }
+            config(['lieplus.counties' => $counties]);
+        }
     }
 
     public static function name($code)

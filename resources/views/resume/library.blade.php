@@ -1,6 +1,7 @@
-@extends('layouts.lieplus')
+@extends('layouts.cici')
 @section('title'){{ $title }}@endsection
 
 @section('content')
 @include('resume.list', ['resumes' => $resumes])
+{{-- <resume-list resumes="{{ $resumes }}"></resume-list> --}}
 @endsection

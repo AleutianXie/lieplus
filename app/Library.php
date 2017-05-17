@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Library extends Model
 {
     //
-    protected $table = 'libraries';
+    protected $table = 'mylibraries';
 
     public function getResume()
     {

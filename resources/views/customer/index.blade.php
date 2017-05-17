@@ -1,5 +1,7 @@
 @extends('layouts.lieplus')
 
+@section('title'){{ $title }}@endsection
+
 @section('content')
-<h1>BD 项目启动书，共二步</h1>
+@include('customer.list', ['customers' => $customers])
 @endsection
