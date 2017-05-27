@@ -1,4 +1,6 @@
 {
   "/static/js/cici.js": "/static/js/cici.js",
-  "/static/css/cici.css": "/static/css/cici.css"
+  "/static/css/cici.css": "/static/css/cici.css",
+  "/css/app.css": "/css/app.css",
+  "/js/app.js": "/js/app.js"
 }
