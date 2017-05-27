@@ -18,7 +18,7 @@
 <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 <div class="step-pane" data-step="2">
     <div class="form-group">
-        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">请选择客户:</label>
+        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="cid">请选择客户:</label>
 
         <div class="col-xs-12 col-sm-9">
             <select name="cid" id="cid" class="col-xs-12 col-sm-4">
@@ -26,6 +26,16 @@
                 @foreach($assignedCustomers as $key => $value)
                     <option value="{{ $key }}">{{ $value}}</option>
                 @endforeach
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group hide">
+        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="department">招聘部门:</label>
+
+        <div class="col-xs-12 col-sm-9">
+            <select type="text" id="department" name="department" class="col-xs-12 col-sm-4">
+            <option></option>
             </select>
         </div>
     </div>
@@ -39,6 +49,7 @@
             </div>
         </div>
     </div>
+
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">任职要求(JD):</label>
 
@@ -216,6 +227,29 @@ jQuery(function($) {
     $('#cid').select2({
         placeholder: '请选择客户',
         width: 240
+    });
+
+    $('#department').select2({
+        placeholder: '请选择招聘部门',
+        width: 240
+    });
+
+    var departments = [];
+    $.each({!! json_encode(config('lieplus.departments')) !!}, function(key, value) {
+        departments[key] = [];
+        $.each(value, function(k, v) {
+            departments[key].push({id: k, text: v});
+        });
+    });
+
+    $('#cid').on('select2:select', function(evt) {
+        //alert($('#department').parents('.form-group').html());return;
+        $('#department').parents('.form-group').removeClass('hide').find("option").remove();
+        //$('#department').find("option").remove();
+        $('#department').select2({
+            data: departments[$('#cid').val()],
+            width: 140
+        });
     });
 
     $("#cid").change(function(){

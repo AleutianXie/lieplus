@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Department;
 use App\Job;
 use App\Region;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class JobController extends Controller {
 	public function __construct() {
 		$this->middleware('auth');
 		Region::Address();
+		Department::get();
 	}
 
 	/**
@@ -24,8 +26,6 @@ class JobController extends Controller {
 	public function index() {
 		$title = '职位列表';
 		$jobs = Job::all();
-
-		//dd($jobs);
 
 		return view('job.index', [
 			'title' => $title,
