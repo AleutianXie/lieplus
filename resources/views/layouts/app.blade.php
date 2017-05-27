@@ -11,13 +11,13 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
+    {{-- <link href="/css/app.css" rel="stylesheet"> --}}
 
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+]); ?>
     </script>
 </head>
 <body>
@@ -82,6 +82,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/js/app.js"></script>
+    {{-- <script src="/js/app.js"></script> --}}
 </body>
 </html>

@@ -14,7 +14,4 @@
         </div>
     </div>
 </div>
-<example></example>
-<hvue msg="xhs" resumes="{{ $resumes }}"></hvue>
-<resume-list resumes="{{ $resumes }}"></resume-list>
 @endsection
