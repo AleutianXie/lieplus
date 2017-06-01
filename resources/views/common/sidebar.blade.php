@@ -67,6 +67,14 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="">
+                    <a href="/resume/all">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        猎帮简历库
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
 
