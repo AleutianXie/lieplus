@@ -92,7 +92,7 @@
                                 <span class="lbl"></span>
                             </label>
                         </td>
-                        <td>{{ $resume->sn }}</td>
+                        <td><a href="{{ asset('/resume/'.$resume->id) }}">{{ $resume->sn }}</a></td>
                         <td>{{ $resume->name }}</td>
                         <td>摘要</td>
                         <td>{{ $resume->mobile }}</td>

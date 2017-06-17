@@ -3,10 +3,11 @@
 
 @section('stylesheet')
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
 @endsection
 
 @section('content')
+@include('common.messages')
+
 <div class="widget-box">
     <div class="widget-header widget-header-blue widget-header-flat">
         <h4 class="widget-title lighter">职位信息</h4>
@@ -14,7 +15,7 @@
 
     <div class="widget-body">
         <div class="widget-main">
-            <form class="form-horizontal" id="customer-form" name="customer-form" action="{{ url('/project') }}" method="POST">
+            <form class="form-horizontal" id="customer-form" name="customer-form" action="{{ url('/job/add') }}" method="POST">
 <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 <div class="step-pane" data-step="2">
     <div class="form-group">
@@ -24,19 +25,24 @@
             <select name="cid" id="cid" class="col-xs-12 col-sm-4">
                 <option></option>
                 @foreach($assignedCustomers as $key => $value)
-                    <option value="{{ $key }}">{{ $value}}</option>
+                    <option value="{{ $key }}" @if (old('cid') == $key)
+                        selected="selected"
+                    @endif>{{ $value}}</option>
                 @endforeach
             </select>
+            <div class="red">
+{{ $errors->first('cid') }}</div>
         </div>
     </div>
 
     <div class="form-group hide">
-        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="department">招聘部门:</label>
+        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="did">招聘部门:</label>
 
         <div class="col-xs-12 col-sm-9">
-            <select type="text" id="department" name="department" class="col-xs-12 col-sm-4">
+            <select type="text" id="did" name="did" class="col-xs-12 col-sm-4">
             <option></option>
             </select>
+            {{ $errors->first('did') }}</div>
         </div>
     </div>
 
@@ -45,7 +51,8 @@
 
         <div class="col-xs-12 col-sm-9">
             <div class="clearfix">
-                <input type="text" id="name" name="name" value="{{ old('name') }}" class="col-xs-12 col-sm-5">
+                <input type="text" id="name" name="name" value="{{ old('name') }}" class="col-xs-12 col-sm-5"><div class="red">
+{{ $errors->first('name') }}</div>
             </div>
         </div>
     </div>
@@ -57,6 +64,7 @@
             <div class="clearfix">
                 <textarea name="requirement" id="requirement" value="{{ old('requirement') }}" cols="100" rows="10"></textarea>
             </div>
+            <div class="red">{{ $errors->first('requirement') }}</div>
         </div>
     </div>
     <div class="hr hr-dotted"></div>
@@ -126,6 +134,8 @@
             <div class="clearfix">
                 <textarea name="salary" id="salary" cols="100" rows="10" value="{{ old('salary') }}"></textarea>
             </div>
+                        <div class="red">{{ $errors->first('salary') }}</div>
+
         </div>
     </div>
 
@@ -149,78 +159,28 @@
 @section('scripts')
 <script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
+<script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
-<script src="{{ asset('static/js/wizard.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
+<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
-
-    $('#customer-form').validate({
-        errorElement: 'div',
-        errorClass: 'help-block',
-        focusInvalid: false,
-        ignore: "",
-        rules: {
-            cid: {
-                required: true,
-            },
-            name: {
-                required: true,
-            },
-            requirement: {
-                required: true,
-            },
-            salary: {
-                required: true,
-            }
-        },
-
-        messages: {
-            cid: {
-                required: "请选择客户",
-            },
-            name: {
-                required: "请输入公司全称.",
-            },
-            requirement: {
-                required: "请输入任职要求.",
-            },
-            salary: {
-                required: "请输入薪酬结构.",
-            }
-        },
-
-
-        highlight: function (e) {
-            $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
-        },
-
-        success: function (e) {
-            $(e).closest('.form-group').removeClass('has-error');//.addClass('has-info');
-            $(e).remove();
-        },
-
-        errorPlacement: function (error, element) {
-            if(element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
-                var controls = element.closest('div[class*="col-"]');
-                if(controls.find(':checkbox,:radio').length > 1) controls.append(error);
-                else error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
-            }
-            else if(element.is('.select2')) {
-                error.insertAfter(element.siblings('[class*="select2-container"]:last()'));
-            }
-            else if(element.is('.chosen-select')) {
-                error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
-            }
-            else error.insertAfter(element.parent());
-        },
-
-        submitHandler: function (form) {
-        },
-        invalidHandler: function (form) {
+    var departments = [];
+    $.each({!! json_encode(config('lieplus.departments')) !!}, function(key, value) {
+        departments[key] = [];
+        $.each(value, function(k, v) {
+            departments[key].push({id: k, text: v});
+        });
+    });
+    $(document).ready(function(){
+        if($('#cid').val() != '')
+        {
+            $('#did').parents('.form-group').removeClass('hide').find("option").remove();
+            $('#did').select2({
+                data: departments[$('#cid').val()],
+                width: 140
+            });
+            $('#did').val({{ old('did') }});
         }
     });
 
@@ -234,19 +194,11 @@ jQuery(function($) {
         width: 240
     });
 
-    var departments = [];
-    $.each({!! json_encode(config('lieplus.departments')) !!}, function(key, value) {
-        departments[key] = [];
-        $.each(value, function(k, v) {
-            departments[key].push({id: k, text: v});
-        });
-    });
-
     $('#cid').on('select2:select', function(evt) {
         //alert($('#department').parents('.form-group').html());return;
-        $('#department').parents('.form-group').removeClass('hide').find("option").remove();
+        $('#did').parents('.form-group').removeClass('hide').find("option").remove();
         //$('#department').find("option").remove();
-        $('#department').select2({
+        $('#did').select2({
             data: departments[$('#cid').val()],
             width: 140
         });

@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Line;
 
-class LineController extends Controller
-{
+class LineController extends Controller {
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
     /**
      * Show the line home page.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return view('line.index');
+    public function index() {
+        $line = Line::findOrFail(1);
+
+        return view('line.index', ['line' => $line]);
     }
 }

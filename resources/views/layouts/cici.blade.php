@@ -15,6 +15,7 @@
  <!-- inline scripts related to this page -->
         <!--[if !IE]> -->
         <script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
+        <script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 
         <!-- <![endif]-->
 
@@ -25,7 +26,6 @@
         <script type="text/javascript">
             if('ontouchstart' in document.documentElement) document.write("<script src='{{ asset('static/js/jquery.mobile.custom.min.js') }}'>"+"<"+"/script>");
         </script>
-        <script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 
         <!-- page specific plugin scripts -->
 
@@ -34,6 +34,7 @@
         <![endif]-->
         <!-- ace scripts -->
         <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
+
         <script src="{{ asset('static/js/ace.min.js') }}"></script>
 
         <!-- ace settings handler -->

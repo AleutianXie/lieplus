@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helper;
-use App\Library;
+use App\JobLibrary;
+use App\MyLibrary;
 use App\Region;
 use App\Resume;
 use App\User;
@@ -12,199 +13,199 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
 class ResumeController extends Controller {
-	private static $prefixTitle = '简历';
+    private static $prefixTitle = '简历';
 
-	public function __construct() {
-		//$this->middleware('auth:api', ['except' => 'login']);
-		$this->middleware('auth');
-		Region::Address();
-	}
+    public function __construct() {
+        //$this->middleware('auth:api', ['except' => 'login']);
+        $this->middleware('auth');
+        Region::Address();
+    }
 
-	/**
-	 * Show the resume home page.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index() {
-		//dd(URL::full());
-		//dd(URL::previous());
-		//Region::Address();
-		//dd(config('lieplus'));
-		return view('resume.index', [
-			'title' => self::$prefixTitle,
-			'breadcrumbs' => self::breadcrumbs(),
-		]);
-	}
+    /**
+     * Show the resume home page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index() {
+        //dd(URL::full());
+        //dd(URL::previous());
+        //Region::Address();
+        //dd(config('lieplus'));
+        return view('resume.index', [
+            'title' => self::$prefixTitle,
+            'breadcrumbs' => self::breadcrumbs(),
+        ]);
+    }
 
-	/**
-	 * Show the create resume page.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function add(Request $request) {
-		$title = '新建简历';
+    /**
+     * Show the create resume page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function add(Request $request) {
+        $title = '新建简历';
 
-		if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
 
-			$this->validate($request, [
-				'name' => 'required',
-				'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
-				'email' => 'required|email|unique:resumes',
-				'birthdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()),
-				'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
-			], [
-				'unique' => ':attribute 已经存在.',
-				'before_or_equal' => ':attribute 必须早于或等于',
-				'after_or_equal' => ':attribute 必须晚于或等于',
-			], [
-				'mobile' => '手机',
-				'email' => '邮箱',
-				'birthdate' => '出生日期',
-				'startworkdate' => '开始工作日期',
-			]);
+            $this->validate($request, [
+                'name' => 'required',
+                'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
+                'email' => 'required|email|unique:resumes',
+                'birthdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()),
+                'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
+            ], [
+                'unique' => ':attribute 已经存在.',
+                'before_or_equal' => ':attribute 必须早于或等于',
+                'after_or_equal' => ':attribute 必须晚于或等于',
+            ], [
+                'mobile' => '手机',
+                'email' => '邮箱',
+                'birthdate' => '出生日期',
+                'startworkdate' => '开始工作日期',
+            ]);
 
-			$data = $request->input();
-			$resume = new Resume();
+            $data = $request->input();
+            $resume = new Resume();
 
-			$resume->sn = Helper::generationSN('JL');
-			$resume->name = $data['name'];
-			$resume->gender = $data['gender'];
-			$resume->mobile = $data['mobile'];
-			$resume->email = $data['email'];
-			$resume->degree = $data['degree'];
-			$resume->province = $data['province'];
-			$resume->city = $data['city'];
-			$resume->county = $data['county'];
-			$resume->birthdate = $data['birthdate'];
-			$resume->startworkdate = $data['startworkdate'];
-			$resume->industry = $data['industry'];
-			$resume->position = $data['position'];
-			$resume->salary = $data['salary'];
-			$resume->others = $data['others'];
-			$resume->creater = Auth::id();
-			$resume->modifier = Auth::id();
+            $resume->sn = Helper::generationSN('JL');
+            $resume->name = $data['name'];
+            $resume->gender = $data['gender'];
+            $resume->mobile = $data['mobile'];
+            $resume->email = $data['email'];
+            $resume->degree = $data['degree'];
+            $resume->province = $data['province'];
+            $resume->city = $data['city'];
+            $resume->county = $data['county'];
+            $resume->birthdate = $data['birthdate'];
+            $resume->startworkdate = $data['startworkdate'];
+            $resume->industry = $data['industry'];
+            $resume->position = $data['position'];
+            $resume->salary = $data['salary'];
+            $resume->others = $data['others'];
+            $resume->creater = Auth::id();
+            $resume->modifier = Auth::id();
 
-			if ($resume->save()) {
-				//dd($resume);
-				$library = new Library();
-				$library->uid = Auth::id();
-				$library->rid = $resume->id;
-				$library->type = 1;
-				$library->creater = Auth::id();
+            if ($resume->save()) {
+                //dd($resume);
+                $library = new Library();
+                $library->uid = Auth::id();
+                $library->rid = $resume->id;
+                $library->type = 1;
+                $library->creater = Auth::id();
 
-				$library->save();
+                $library->save();
 
-				return redirect('/resume/' . $resume->id);
-			} else {
-				return redirect()->back();
-			}
-		}
+                return redirect('/resume/' . $resume->id);
+            } else {
+                return redirect()->back();
+            }
+        }
 
-		return view('resume.add', [
-			'title' => $title,
-			'breadcrumbs' => self::breadcrumbs($title),
-		]);
-	}
+        return view('resume.add', [
+            'title' => $title,
+            'breadcrumbs' => self::breadcrumbs($title),
+        ]);
+    }
 
-	public function detail(Request $request, $id) {
-		$title = '简历详情';
-		$resume = Resume::findOrFail($id);
+    public function detail(Request $request, $id) {
+        $title = '简历详情';
+        $resume = Resume::findOrFail($id);
 
-		$feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
-		$feedbacks = array();
+        $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
+        $feedbacks = array();
 
-		foreach ($feedbacks_obj as $fitem) {
-			$keys = explode(' ', $fitem->created_at);
+        foreach ($feedbacks_obj as $fitem) {
+            $keys = explode(' ', $fitem->created_at);
 
-			$date = $keys[0];
-			if ($keys[0] == date("Y-m-d")) {
-				$date = '今天';
-			} else if ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
-				$date = '昨天';
-			}
+            $date = $keys[0];
+            if ($keys[0] == date("Y-m-d")) {
+                $date = '今天';
+            } else if ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
+                $date = '昨天';
+            }
 
-			$feedbacks[$date][] = array(
-				'text' => $fitem->text,
-				'creater' => User::find($resume->creater)->name,
-				'ctime' => $keys[1]);
-		}
+            $feedbacks[$date][] = array(
+                'text' => $fitem->text,
+                'creater' => User::find($resume->creater)->name,
+                'ctime' => $keys[1]);
+        }
 
-		return view('resume.detail', [
-			'title' => $title,
-			'breadcrumbs' => self::breadcrumbs($title),
-			'resume' => $resume,
-			'feedbacks' => $feedbacks,
-		]);
-	}
+        return view('resume.detail', [
+            'title' => $title,
+            'breadcrumbs' => self::breadcrumbs($title),
+            'resume' => $resume,
+            'feedbacks' => $feedbacks,
+        ]);
+    }
 
-	public function edit(Request $request) {
-		$data = $request->input();
-		$id = $data['pk'];
-		$resume = Resume::find($id);
-		$resume->$data['name'] = $data['value'];
-		$resume->modifier = Auth::id();
+    public function edit(Request $request) {
+        $data = $request->input();
+        $id = $data['pk'];
+        $resume = Resume::find($id);
+        $resume->$data['name'] = $data['value'];
+        $resume->modifier = Auth::id();
 
-		if ($resume->save()) {
-			//redirect(url('/resume'));
-		} else {
-			//redirect()->back();
-			return '更新失败';
-		}
-	}
+        if ($resume->save()) {
+            //redirect(url('/resume'));
+        } else {
+            //redirect()->back();
+            return '更新失败';
+        }
+    }
 
-	public function mylibrary() {
+    public function mylibrary() {
 
-		$title = '我的简历库';
+        $title = '我的简历库';
 
-		$rids = Library::where(['uid' => Auth::id(), 'type' => 1])->get(['rid'])->toArray();
+        $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
 
-		$fileds = ['id', 'sn', 'name', 'mobile', 'email', 'feedback'];
+        //$rids = MyLibrary::where(['uid' => Auth::id(), 'type' => 1])->get(['rid'])->toArray();
 
-		$resumes = Resume::whereIn('id', $rids)->get($fileds);
+        //$fileds = ['id', 'sn', 'name', 'mobile', 'email', 'feedback'];
 
-		return view('resume.library', [
-			'title' => $title,
-			'breadcrumbs' => self::breadcrumbs($title),
-			'resumes' => $resumes,
-		]);
-	}
+        //$resumes = Resume::whereIn('id', $rids)->get($fileds);
 
-	public function joblibrary() {
+        return view('resume.library', [
+            'title' => $title,
+            'breadcrumbs' => self::breadcrumbs($title),
+            'resumes' => $resumes,
+        ]);
+    }
 
-		$title = '我的职位简历库';
+    public function joblibrary() {
 
-		$rids = Library::where(['uid' => Auth::id(), 'type' => 1])->get(['rid'])->toArray();
+        $title = '我的职位简历库';
 
-		$resumes = Resume::whereIn('id', $rids)->get();
+        $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
 
-		return view('resume.job', [
-			'title' => $title,
-			'breadcrumbs' => self::breadcrumbs($title),
-			'resumes' => $resumes,
-		]);
-	}
+        return view('resume.job', [
+            'title' => $title,
+            'breadcrumbs' => self::breadcrumbs($title),
+            'resumes' => $resumes,
+        ]);
+    }
 
-	public function all() {
-		$title = '猎加简历';
+    public function all() {
+        $title = '猎加简历';
 
-		$breadcrumbs = self::breadcrumbs($title);
+        $breadcrumbs = self::breadcrumbs($title);
 
-		$resumes = Resume::all();
+        $resumes = Resume::all();
 
-		return view('resume.library', compact('title', 'breadcrumbs', 'resumes'));
-	}
+        return view('resume.library', compact('title', 'breadcrumbs', 'resumes'));
+    }
 
-	private static function breadcrumbs($title = null) {
-		$retValue = array();
-		$url = URL::current();
-		$url = trim($url, '/index');
+    private static function breadcrumbs($title = null) {
+        $retValue = array();
+        $url = URL::current();
+        $url = trim($url, '/index');
 
-		if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url)) {
-			return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
-		}
+        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url)) {
+            return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
+        }
 
-		return [['url' => '/', 'text' => '首页'],
-			['url' => dirname($url), 'text' => self::$prefixTitle],
-			['url' => $url, 'text' => $title]];
-	}
+        return [['url' => '/', 'text' => '首页'],
+            ['url' => dirname($url), 'text' => self::$prefixTitle],
+            ['url' => $url, 'text' => $title]];
+    }
 }

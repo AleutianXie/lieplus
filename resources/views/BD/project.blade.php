@@ -45,7 +45,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="department">招聘部门:</label>
+                                <label class="col-sm-3 control-label no-padding-right" for="department">部门:</label>
 
                                 <div class="col-sm-9">
                                     <!-- #section:plugins/input.tag-input -->
@@ -256,12 +256,24 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">职位名称:</label>
+                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="job_name">职位名称:</label>
 
                                 <div class="col-xs-12 col-sm-9">
                                     <div class="clearfix">
-                                        <input type="text" id="job_name" name="job_name" value="{{ old('job_name') }}" class="col-xs-12 col-sm-5">
+                                        <input type="text" id="job_name" name="job_name" value="{{ old('job_name') }}" class="col-xs-12 col-sm-5" placeholder="请输入职位名称...">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="job_department">招聘部门:</label>
+
+                                <div class="col-xs-12 col-sm-9">
+                                    <!-- #section:plugins/input.tag-input -->
+                                    <div class="clearfix">
+                                        <input type="text" name="job_department" id="job_department" value="{{ old('job_name') }}" class="col-xs-12 col-sm-5" placeholder="请输入部门..." />
+                                    </div>
+
+                                    <!-- /section:plugins/input.tag-input -->
                                 </div>
                             </div>
                             <div class="form-group">
@@ -365,10 +377,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
-<script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/wizard.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.validate.min.js') }}"></script>
@@ -454,6 +463,10 @@ jQuery(function($) {
             job_name: {
                 required: true,
             },
+            job_department: {
+                required: true,
+                inarray: true,
+            },
             requirement: {
                 required: true,
             },
@@ -482,6 +495,10 @@ jQuery(function($) {
             introduce: "请输入公司介绍.",
             job_name: {
                 required: "请输入职位名称.",
+            },
+            job_department: {
+                required: "请输入招聘部门.",
+                inarray: "不存在的部门",
             },
             requirement: {
                 required: "请输入任职要求.",
@@ -694,6 +711,12 @@ jQuery(function($) {
 
     $('#department').on('removed', function (e, value) {
         $(this).valid();
+    });
+
+    $.validator.addMethod('inarray', function (value, element) {
+        var arr = $('#department').val().split(', ');
+        //console.log(arr);
+        return $.inArray($.trim(value), arr) >= 0 ? true : false;
     });
 });
 </script>

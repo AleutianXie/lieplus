@@ -1,8 +1,13 @@
-@extends('layouts.lieplus')
+@extends('layouts.cici')
 
 @section('title'){{ $title }}@endsection
 
 @section('content')
+
+{{ $job->name }}
+
+{{ $job->customer->name }}
+
 <div class="widget-box">
     <div class="widget-header widget-header-blue widget-header-flat">
         <h4 class="widget-title lighter">职位描述</h4>

@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Library extends Model
+class MyLibrary extends Model
 {
     //
     protected $table = 'mylibraries';
 
     public function getResume()
     {
-        return $this->hasOne('App\Resume', 'rid');
+        return $this->hasOne('App\Resume', 'id', 'rid');
     }
 }

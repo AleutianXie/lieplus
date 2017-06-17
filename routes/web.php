@@ -11,10 +11,10 @@
 |
  */
 
-/*Route::get('/', function () {
-return view('welcome');
-});*/
-Route::get('/', 'ResumeController@index');
+Route::get('/', function () {
+    return view('welcome');
+});
+//Route::get('/', 'ResumeController@index');
 
 Auth::routes();
 
@@ -54,6 +54,7 @@ Route::group(['prefix' => 'customer'], function () {
 Route::group(['prefix' => 'job'], function () {
     Route::get('/', 'JobController@index');
     Route::get('/index', 'JobController@index');
+    Route::get('/all', 'JobController@all');
     Route::match(['get', 'post'], '/{id}', 'JobController@detail')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/audit/{id}', 'JobController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'JobController@add');
@@ -71,4 +72,5 @@ Route::group(['prefix' => 'project'], function () {
     Route::match(['get', 'post'], '/', 'ProjectController@index');
     Route::match(['get', 'post'], '/index', 'ProjectController@index');
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit');
+    Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+');
 });

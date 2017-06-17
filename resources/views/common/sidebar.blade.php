@@ -31,7 +31,7 @@
 
     <ul class="nav nav-list">
         <li class="active">
-            <a href="index.html">
+            <a href="/">
                 <i class="menu-icon fa fa-home"></i>
                 <span class="menu-text"> 首页 </span>
             </a>
@@ -68,6 +68,14 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
+                    <a href="/resume/job">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        职位简历库
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
                     <a href="/resume/all">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎帮简历库
@@ -91,82 +99,31 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-caret-right"></i>
-
-                        Layouts
-                        <b class="arrow fa fa-angle-down"></b>
-                    </a>
-
-                    <b class="arrow"></b>
-
-                    <ul class="submenu">
-                        <li class="">
-                            <a href="top-menu.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Top Menu
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="two-menu-1.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Two Menus 1
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="two-menu-2.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Two Menus 2
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="mobile-menu-1.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Default Mobile Menu
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="mobile-menu-2.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Mobile Menu 2
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-
-                        <li class="">
-                            <a href="mobile-menu-3.html">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                Mobile Menu 3
-                            </a>
-
-                            <b class="arrow"></b>
-                        </li>
-                    </ul>
-                </li>
 
                 <li class="">
-                    <a href="typography.html">
+                    <a href="/job/add">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Typography
+                        创建
                     </a>
 
                     <b class="arrow"></b>
                 </li>
+                <li>
+                <a href="/job/">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        我的职位
+                    </a>
 
+                    <b class="arrow"></b>
+                </li>
+                <li>
+                <a href="/job/all">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        猎帮职位
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
                 <li class="">
                     <a href="elements.html">
                         <i class="menu-icon fa fa-caret-right"></i>
