@@ -21,13 +21,7 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
-            language: {
-                url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
-        });
-
-        $('span[id^=feedback').each(function(){
+        $('span[id^=feedback]').each(function(){
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -46,18 +40,13 @@
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
     <div class="col-xs-12">
-{{--         <h3 class="header smaller lighter blue">jQuery dataTables</h3>
-
-        <div class="clearfix">
-            <div class="pull-right tableTools-container"></div>
-        </div> --}}
         <div class="table-header">
             简历列表
         </div>
 
         <!-- 简历列表--开始 -->
         <div>
-            @if(count($lines))
+            @if(count($stations))
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -68,22 +57,23 @@
                             </label>
                         </th>
                         <th>编号</th>
-                        <th>客户顾问</th>
-                        <th>是否专属</th>
+                        <th>姓名</th>
+                        <th>摘要</th>
                         <th>
-                            等级
+                            <i class="ace-icon fa fa-mobile bigger-110 hidden-480"></i>
+                            手机
                         </th>
                         <th>
-                            职位名称
+                            <i class="ace-icon fa fa-envelope bigger-110 hidden-480"></i>
+                            邮箱
                         </th>
-                        <th>客户名称</th>
-                        <th>部门</th>
-                        <th>动态</th>
+                        <th>反馈</th>
+                        <th>职位</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($lines as $line)
+                    @foreach($stations as $station)
                     <tr>
                         <td class="center">
                             <label class="pos-rel">
@@ -91,14 +81,15 @@
                                 <span class="lbl"></span>
                             </label>
                         </td>
-                        <td><a href="{{ asset('/line/'.$line->id) }}">{{ $line->sn }}</a></td>
-                        <td>{{ App\Helper::getUser($line->customer->creater)->name }}</td>
-                        <td>{{ empty($line->exclusive) ? '否' : App\Helper::getUser($line->exclusive)->name}}</td>
-                        <td>{{ $line->priority }}</td>
-                        <td>{{ $line->job->name }}</td>
-                        <td>{{ $line->customer->name }}</td>
-                        <td>{{ App\Department::name($line->job->did) }}</td>
-                        <td>联系中({{ count($line->connection) }}) 意向中({{ count($line->intention) }}) 推荐中({{ count($line->recommendation) }}) 面试中({{ count($line->interview) }}) offer中({{ count($line->offer) }}) 入职中({{ count($line->onboard) }})</td>
+                        <td><a href="{{ asset('/resume/'.$station->resume->id) }}">{{ $station->resume->sn }}</a></td>
+                        <td>{{ $station->resume->name }}</td>
+                        <td>摘要</td>
+                        <td>{{ $station->resume->mobile }}</td>
+                        <td>{{ $station->resume->email }}</td>
+                        <td><span class="editable editable-click" id="feedback[{{ $station->resume->id }}]" data-name="text" data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk="{{ $station->resume->id }}">{{ $station->resume->feedback }}
+                            </span>
+                        </td>
+                        <td>职位简历库</td>
                         <td>
                             <div class="dropdown">
                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
@@ -108,12 +99,12 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
                                     <li>
-                                        <a href="{{ asset('/line/'.$line->id) }}">
+                                        <a href="{{ asset('/resume/'.$station->resume->id) }}">
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
                                     </li>
                                     <li>
-                                        <a href="{{ asset('/line/'.$line->id.'#resume-tab-4') }}">
+                                        <a href="{{ asset('/resume/'.$station->resume->id.'#resume-tab-4') }}">
                                         <i class="blue ace-icon fa fa-bell-o bigger-120"></i>
                                          提醒 </a>
                                     </li>

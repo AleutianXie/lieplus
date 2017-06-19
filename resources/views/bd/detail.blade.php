@@ -6,8 +6,6 @@
 @endsection
 
 @section('content')
-{{ $project->job->name }}
-{{ $project->company->name }}
 <div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
         <li class="active">

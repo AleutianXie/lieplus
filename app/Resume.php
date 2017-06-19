@@ -14,7 +14,7 @@ class Resume extends Model
 
     public function publisher()
     {
-        return $this->belongsTo('App\User', 'creater');
+        return $this->hasOne('App\User', 'id', 'creater');
     }
 
     public function alerts()
