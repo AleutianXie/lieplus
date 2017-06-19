@@ -207,52 +207,7 @@
 
                         <div class="step-pane" data-step="2">
                             <div>
-                                <div class="alert alert-success">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <i class="ace-icon fa fa-times"></i>
-                                    </button>
-
-                                    <strong>
-                                        <i class="ace-icon fa fa-check"></i>
-                                        Well done!
-                                    </strong>
-
-                                    You successfully read this important alert message.
-                                    <br>
-                                </div>
-
-                                <div class="alert alert-danger">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <i class="ace-icon fa fa-times"></i>
-                                    </button>
-
-                                    <strong>
-                                        <i class="ace-icon fa fa-times"></i>
-                                        Oh snap!
-                                    </strong>
-
-                                    Change a few things up and try submitting again.
-                                    <br>
-                                </div>
-
-                                <div class="alert alert-warning">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <i class="ace-icon fa fa-times"></i>
-                                    </button>
-                                    <strong>Warning!</strong>
-
-                                    Best check yo self, you're not looking too good.
-                                    <br>
-                                </div>
-
-                                <div class="alert alert-info">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <i class="ace-icon fa fa-times"></i>
-                                    </button>
-                                    <strong>Heads up!</strong>
-
-                                    This alert needs your attention, but it's not super important.
-                                    <br>
+                                <div class="alert hide">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -408,13 +363,17 @@ jQuery(function($) {
         $('#customer-form').ajaxSubmit({
             success:function(msg) {
 
-                $('.customer-warning').html('该邮箱尚未注册！');
-
-                $('.customer-warning').removeClass('hide').dialog({ modal: true });
-                // if (msg == 1) {
-                //     $('.customer-warning').html('该邮箱尚未注册！');
-                //     $('.customer-warning').show();
-                // }
+                if (msg >= 1) {
+                    $('.alert').removeClass('hide').addClass('alert-success').html(
+                        '<strong>' +
+                        '<i class="ace-icon fa fa-check"></i>创建成功!</strong>'+
+                        '点击 <a class="blue bolder" href="/project/' + msg + '">前往</a>.<br>');
+                } else {
+                    $('.alert').removeClass('hide').addClass('alert-danger').html(
+                        '<strong>' +
+                        '<i class="ace-icon fa fa-times"></i>创建失败!</strong>' +
+                        '请检查信息重新提交，若再有问题请联系管理员。<br></div>');
+                }
             }
         });
 

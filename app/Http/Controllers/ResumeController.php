@@ -12,10 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
-class ResumeController extends Controller {
+class ResumeController extends Controller
+{
     private static $prefixTitle = '简历';
 
-    public function __construct() {
+    public function __construct()
+    {
         //$this->middleware('auth:api', ['except' => 'login']);
         $this->middleware('auth');
         Region::Address();
@@ -26,7 +28,8 @@ class ResumeController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         //dd(URL::full());
         //dd(URL::previous());
         //Region::Address();
@@ -42,22 +45,27 @@ class ResumeController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function add(Request $request) {
+    public function add(Request $request)
+    {
         $title = '新建简历';
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST'))
+        {
 
             $this->validate($request, [
                 'name' => 'required',
+                'gender' => 'required',
                 'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
                 'email' => 'required|email|unique:resumes',
                 'birthdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()),
                 'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
             ], [
+                'gender.required' => '请选择:attribute.',
                 'unique' => ':attribute 已经存在.',
                 'before_or_equal' => ':attribute 必须早于或等于',
                 'after_or_equal' => ':attribute 必须晚于或等于',
             ], [
+                'gender' => '性别',
                 'mobile' => '手机',
                 'email' => '邮箱',
                 'birthdate' => '出生日期',
@@ -85,9 +93,10 @@ class ResumeController extends Controller {
             $resume->creater = Auth::id();
             $resume->modifier = Auth::id();
 
-            if ($resume->save()) {
+            if ($resume->save())
+            {
                 //dd($resume);
-                $library = new Library();
+                $library = new MyLibrary();
                 $library->uid = Auth::id();
                 $library->rid = $resume->id;
                 $library->type = 1;
@@ -96,7 +105,9 @@ class ResumeController extends Controller {
                 $library->save();
 
                 return redirect('/resume/' . $resume->id);
-            } else {
+            }
+            else
+            {
                 return redirect()->back();
             }
         }
@@ -107,20 +118,25 @@ class ResumeController extends Controller {
         ]);
     }
 
-    public function detail(Request $request, $id) {
+    public function detail(Request $request, $id)
+    {
         $title = '简历详情';
         $resume = Resume::findOrFail($id);
 
         $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         $feedbacks = array();
 
-        foreach ($feedbacks_obj as $fitem) {
+        foreach ($feedbacks_obj as $fitem)
+        {
             $keys = explode(' ', $fitem->created_at);
 
             $date = $keys[0];
-            if ($keys[0] == date("Y-m-d")) {
+            if ($keys[0] == date("Y-m-d"))
+            {
                 $date = '今天';
-            } else if ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
+            }
+            else if ($keys[0] == date("Y-m-d", strtotime("-1 day")))
+            {
                 $date = '昨天';
             }
 
@@ -138,22 +154,27 @@ class ResumeController extends Controller {
         ]);
     }
 
-    public function edit(Request $request) {
+    public function edit(Request $request)
+    {
         $data = $request->input();
         $id = $data['pk'];
         $resume = Resume::find($id);
         $resume->$data['name'] = $data['value'];
         $resume->modifier = Auth::id();
 
-        if ($resume->save()) {
+        if ($resume->save())
+        {
             //redirect(url('/resume'));
-        } else {
+        }
+        else
+        {
             //redirect()->back();
             return '更新失败';
         }
     }
 
-    public function mylibrary() {
+    public function mylibrary()
+    {
 
         $title = '我的简历库';
 
@@ -172,7 +193,8 @@ class ResumeController extends Controller {
         ]);
     }
 
-    public function joblibrary() {
+    public function joblibrary()
+    {
 
         $title = '我的职位简历库';
 
@@ -185,7 +207,8 @@ class ResumeController extends Controller {
         ]);
     }
 
-    public function all() {
+    public function all()
+    {
         $title = '猎加简历';
 
         $breadcrumbs = self::breadcrumbs($title);
@@ -195,12 +218,14 @@ class ResumeController extends Controller {
         return view('resume.library', compact('title', 'breadcrumbs', 'resumes'));
     }
 
-    private static function breadcrumbs($title = null) {
+    private static function breadcrumbs($title = null)
+    {
         $retValue = array();
         $url = URL::current();
         $url = trim($url, '/index');
 
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url)) {
+        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url))
+        {
             return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
         }
 

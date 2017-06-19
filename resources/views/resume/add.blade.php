@@ -28,11 +28,14 @@
         <div class="col-xs-6 col-sm-2">
             @foreach (config('lieplus.gender') as $element)
             <label class="control-label line-height-1 blue">
-                <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}"/>
+                <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}" required />
                 <span class="lbl"> {{ $element['text'] }}</span>
                 &nbsp;
             </label>
             @endforeach
+            <span class="red">
+                {{ $errors->first('gender') }}
+            </span>
         </div>
     </div>
 
