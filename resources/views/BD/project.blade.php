@@ -367,7 +367,7 @@ jQuery(function($) {
                     $('.alert').removeClass('hide').addClass('alert-success').html(
                         '<strong>' +
                         '<i class="ace-icon fa fa-check"></i>创建成功!</strong>'+
-                        '点击 <a class="blue bolder" href="/project/' + msg + '">前往</a>.<br>');
+                        '点击 <a class="blue bolder" href="/project/' + msg + '">前往</a> 查看详情.<br>');
                 } else {
                     $('.alert').removeClass('hide').addClass('alert-danger').html(
                         '<strong>' +
