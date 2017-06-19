@@ -99,7 +99,14 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+                <li class="">
+                    <a href="/project">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        项目启动书
+                    </a>
 
+                    <b class="arrow"></b>
+                </li>
                 <li class="">
                     <a href="/job/add">
                         <i class="menu-icon fa fa-caret-right"></i>
