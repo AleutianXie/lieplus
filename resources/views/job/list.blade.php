@@ -81,7 +81,7 @@
                                 <span class="lbl"></span>
                             </label>
                         </td>
-                        <td>{{ $job->sn }}</td>
+                        <td><a href="{{ asset('/job/'.$job->id) }}">{{ $job->sn }}</a></td>
                         <td>{{ $job->customer->name }}</td>
                         <td>{{ $job->name }}</td>
                         <td>{{ $job->workyears != '' ? $job->workyears : '不限' }}</td>
@@ -98,14 +98,9 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
                                     <li>
-                                        <a href="{{ asset('/resume/'.$job->id) }}">
+                                        <a href="{{ asset('/job/'.$job->id) }}">
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ asset('/resume/'.$job->id.'#resume-tab-4') }}">
-                                        <i class="blue ace-icon fa fa-bell-o bigger-120"></i>
-                                         提醒 </a>
                                     </li>
                                     <li>
                                         <a href="#">

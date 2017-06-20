@@ -78,13 +78,12 @@
                                 <span class="lbl"></span>
                             </label>
                         </td>
-                        <td>{{ $customer->sn }}</td>
+                        <td><a href="{{ asset('/customer/'.$customer->id) }}"> {{ $customer->sn }}</a></td>
                         <td>{{ $customer->name }}</td>
                         <td>摘要</td>
                         <td>{{ $customer->mobile }}</td>
                         <td>{{ $customer->email }}</td>
-                        <td><span class="editable editable-click" id="feedback[{{ $customer->id }}]" data-name="text" data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk="{{ $customer->id }}">{{ $customer->feedback }}
-                        </span></td>
+                        <td>{{ $customer->level }}</td>
                         <td>职位简历库</td>
                         <td>
                             <div class="dropdown">
@@ -95,14 +94,9 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
                                     <li>
-                                        <a href="{{ asset('/resume/'.$customer->id) }}">
+                                        <a href="{{ asset('/customer/'.$customer->id) }}">
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ asset('/resume/'.$customer->id.'#resume-tab-4') }}">
-                                        <i class="blue ace-icon fa fa-bell-o bigger-120"></i>
-                                         提醒 </a>
                                     </li>
                                     <li>
                                         <a href="#">

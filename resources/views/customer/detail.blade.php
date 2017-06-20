@@ -1,4 +1,9 @@
-            <div class="space-8"></div>
+@extends('layouts.cici')
+
+@section('title'){{ $title }}@endsection
+
+@section('content')
+
 <div class="profile-user-info profile-user-info-striped">
     <div class="profile-info-row">
         <div class="profile-info-name"> 公司全称 </div>
@@ -79,7 +84,6 @@
         </div>
     </div>
 
-    @if ($audit)
     <div class="hr hr-dotted"></div>
     <div class="profile-info-row">
         <div class="profile-info-name"> 等级 </div>
@@ -93,7 +97,7 @@
             <span class="editable editable-click" id="type" style="display: inline;">{{ $customer->type }}</span>
         </div>
     </div>
-    <div class="form-group">
+{{--     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="state">审核:</label>
         <div class="col-xs-12 col-sm-9">
             <button class="btn btn-lg btn-success">
@@ -105,6 +109,15 @@
                 拒绝
             </button>
         </div>
-    </div>
-    @endif
+    </div> --}}
 </div>
+
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+jQuery(function($) {
+
+});
+</script>
+@endsection

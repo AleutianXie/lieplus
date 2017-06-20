@@ -54,7 +54,7 @@
                 <div class="profile-info-row">
                     <div class="profile-info-name"> 任职要求(JD): </div>
                     <div class="profile-info-value">
-                        <span class="editable editable-click" id="username" style="display: inline;">{{ $project->job->name }}</span>
+                        <span class="editable editable-click" id="username" style="display: inline;">{{ $project->job->requirement }}</span>
                     </div>
                 </div>
                 <div class="profile-info-row">

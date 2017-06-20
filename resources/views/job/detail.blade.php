@@ -3,109 +3,87 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
+    <div class="tab-content no-border padding-24">
+        {{-- 职位信息--开始 --}}
+        <div id="resume-tab-1" class="tab-pane fade active in">
+            <h4 class="blue">
+                <i class="blue ace-icon fa fa-hand-o-down bigger-110"></i>
+                职位信息
+            </h4>
+            <div class="space-8"></div>
 
-{{ $job->name }}
+            <div class="profile-user-info profile-user-info-striped">
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 职位名称： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="username" style="display: inline;">{{ $job->name }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 客户全称： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="username" style="display: inline;">{{ $job->customer->name }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 招聘部门： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="gender" style="display: inline;">{{ App\Department::name($job->did) }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 任职要求(JD): </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="username" style="display: inline;">{{ $job->requirement }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 总工作年限： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="gender" style="display: inline;">{{ empty($job->workyears) ? '不限' : $job->workyears }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 性别要求： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="mobile" style="display: inline;">{{ empty($job->gender) ? '不限' : $job->gender }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 专业要求： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="email" style="display: inline;">{{ empty($job->majors) ? '不限' : $job->majors }}</span>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 学历要求： </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="degree" style="display: inline;">{{ empty($job->degree) ? '不限' : $job->degree }}</span>
+                    </div>
+                </div>
 
-{{ $job->customer->name }}
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 统招全日制： </div>
 
-<div class="widget-box">
-    <div class="widget-header widget-header-blue widget-header-flat">
-        <h4 class="widget-title lighter">职位描述</h4>
-    </div>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="birthdate">{{ $job->unified == '1' ? '是' : '否' }}</span>
+                    </div>
+                </div>
 
-    <div class="widget-body">
-        <div class="widget-main">
-            <div id="fuelux-wizard-container" class="no-steps-container">
-                <div class="step-content pos-rel">
-                    <div class="step-pane active" data-step="1">
-                        <form class="form-horizontal" id="validation-form2" method="get" novalidate="novalidate">
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">任职要求(JD):</label>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 薪酬结构： </div>
 
-                                <div class="col-xs-12 col-sm-9">
-                                    <div class="clearfix">
-                                        <textarea name="comment" id="comment" cols="100" rows="10"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="hr hr-dotted"></div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">总工作年限:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <select name="workyears" id="workyears" class="col-xs-12 col-sm-4">
-                                        @foreach(config('lieplus.workyears') as $value)
-                                            <option value="{{ $value['id'] }}" @if($value['id'] == 0) selected="selected" @endif>{{ $value['text'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">性别要求:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <select name="gender" id="gender" class="col-xs-12 col-sm-4">
-                                        <option value=''>不限</option>
-                                        @foreach(config('lieplus.gender') as $value)
-                                            <option value="{{ $value['id'] }}">{{ $value['text'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">专业要求:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <select name="majors" id="majors" class="col-xs-12 col-sm-4">
-                                        @foreach(config('lieplus.majors') as $value)
-                                            <option value="{{ $value['id'] }}" @if($value['id'] == 0) selected="selected" @endif>{{ $value['text'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">学历要求:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <select name="degree" id="degree" class="col-xs-12 col-sm-4">
-                                        <option value=''>不限</option>
-                                        @foreach(config('lieplus.degree') as $value)
-                                        <option value="{{ $value['id'] }}">{{ $value['text'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">是否统招全日制:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <label>
-                                        <input id="skip-validation" type="checkbox" class="ace ace-switch ace-switch-4">
-                                        <span class="lbl middle" data-lbl="是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;否"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="hr hr-dotted"></div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">薪酬结构:</label>
-
-                                <div class="col-xs-12 col-sm-9">
-                                    <div class="clearfix">
-                                        <textarea name="comment" id="comment" cols="100" rows="10"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="profile-info-value">
+                        <span class="editable editable-click" id="startworkdate">{{ $job->salary }}</span>
                     </div>
                 </div>
             </div>
-        </div><!-- /.widget-main -->
-    </div><!-- /.widget-body -->
-</div>
+        </div>
+        {{-- 职位信息--结束 --}}
+   </div>
 @endsection
 
 @section('scripts')
-<script src="{{ asset('static/js/wizard.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
 

@@ -204,10 +204,6 @@ jQuery(function($) {
         });
     });
 
-    $("#cid").change(function(){
-        $(this).valid();
-    });
-
     $('#workyears').select2({
         placeholder: {
             id: 0,
