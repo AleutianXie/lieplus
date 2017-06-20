@@ -92,11 +92,11 @@
                             </label>
                         </td>
                         <td><a href="{{ asset('/line/'.$line->id) }}">{{ $line->sn }}</a></td>
-                        <td>{{ App\Helper::getUser($line->customer->creater)->name }}</td>
+                        <td>{{ App\Helper::getUser($line->job->customer->creater)->name }}</td>
                         <td>{{ empty($line->exclusive) ? '否' : App\Helper::getUser($line->exclusive)->name}}</td>
                         <td>{{ $line->priority }}</td>
                         <td>{{ $line->job->name }}</td>
-                        <td>{{ $line->customer->name }}</td>
+                        <td>{{ $line->job->customer->name }}</td>
                         <td>{{ App\Department::name($line->job->did) }}</td>
                         <td>联系中({{ count($line->connection) }}) 意向中({{ count($line->intention) }}) 推荐中({{ count($line->recommendation) }}) 面试中({{ count($line->interview) }}) offer中({{ count($line->offer) }}) 入职中({{ count($line->onboard) }})</td>
                         <td>
@@ -111,11 +111,6 @@
                                         <a href="{{ asset('/line/'.$line->id) }}">
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ asset('/line/'.$line->id.'#resume-tab-4') }}">
-                                        <i class="blue ace-icon fa fa-bell-o bigger-120"></i>
-                                         提醒 </a>
                                     </li>
                                     <li>
                                         <a href="#">

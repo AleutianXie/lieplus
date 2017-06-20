@@ -2,17 +2,18 @@
 
 use Illuminate\Database\Seeder;
 
-class LinesTableSeeder extends Seeder {
+class LinesTableSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         //
         DB::table('lines')->insert([
             'sn' => 'LSX' . date('Ymdhis', time()) . sprintf('%4d', mt_rand(0, 9999)),
-            'cid' => '1',
             'priority' => 1,
             'jid' => 1,
             'show' => 1,

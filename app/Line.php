@@ -47,11 +47,6 @@ class Line extends Model
         return $this->hasMany('App\Station', 'lid')->where(['status' => $status]);
     }
 
-    public function customer()
-    {
-        return $this->hasOne('App\Customer', 'id', 'cid');
-    }
-
     public function job()
     {
         return $this->hasOne('App\Job', 'id', 'jid');

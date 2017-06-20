@@ -45,7 +45,7 @@
                 <div class="col-xs-12 col-sm-12">
                     <a href="#" class="btn btn-default btn-app radius-4">
                         <i class="ace-icon fa fa-user bigger-230"></i>
-                        {{ App\Helper::getUser($line->customer->creater)->name }}
+                        {{ App\Helper::getUser($line->job->customer->creater)->name }}
                     </a>
                     <a href="#" class="btn btn-app btn-primary no-radius">
                         <i class="ace-icon fa fa-low-vision bigger-230"></i>
@@ -126,7 +126,7 @@
                 <div class="profile-info-row">
                     <div class="profile-info-name"> 客户全称： </div>
                     <div class="profile-info-value">
-                        <span class="editable editable-click" id="username" style="display: inline;">{{ $line->customer->name }}</span>
+                        <span class="editable editable-click" id="username" style="display: inline;">{{ $line->job->customer->name }}</span>
                     </div>
                 </div>
                 <div class="profile-info-row">

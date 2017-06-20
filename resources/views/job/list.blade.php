@@ -4,7 +4,6 @@
 <script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('static/js/buttons.flash.min.js') }}"></script>
 <script src="{{ asset('static/js/buttons.html5.min.js') }}"></script>

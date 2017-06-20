@@ -6,10 +6,18 @@
     <div class="tab-content no-border padding-24">
         {{-- 职位信息--开始 --}}
         <div id="resume-tab-1" class="tab-pane fade active in">
-            <h4 class="blue">
-                <i class="blue ace-icon fa fa-hand-o-down bigger-110"></i>
-                职位信息
-            </h4>
+            <div class="pull-left">
+                <h4 class="blue">
+                    <i class="blue ace-icon fa fa-hand-o-down bigger-110"></i>
+                    职位信息
+                </h4>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-primary">
+                    <i class="ace-icon fa fa-empire bigger-110"></i>
+                    生成职位交付流水线
+                </button>
+            </div>
             <div class="space-8"></div>
 
             <div class="profile-user-info profile-user-info-striped">

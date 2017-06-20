@@ -1,4 +1,4 @@
-@extends('layouts.lieplus')
+@extends('layouts.cici')
 
 @section('title'){{ $title }}@endsection
 
