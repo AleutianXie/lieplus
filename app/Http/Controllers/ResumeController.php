@@ -10,12 +10,9 @@ use App\Resume;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 class ResumeController extends Controller
 {
-    private static $prefixTitle = '简历';
-
     public function __construct()
     {
         //$this->middleware('auth:api', ['except' => 'login']);
@@ -35,7 +32,7 @@ class ResumeController extends Controller
         //Region::Address();
         //dd(config('lieplus'));
         return view('resume.index', [
-            'title' => self::$prefixTitle,
+            'title' => '简历',
         ]);
     }
 
@@ -172,34 +169,24 @@ class ResumeController extends Controller
 
     public function mylibrary()
     {
-
         $title = '我的简历库';
 
         $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
 
-        //$rids = MyLibrary::where(['uid' => Auth::id(), 'type' => 1])->get(['rid'])->toArray();
-
-        //$fileds = ['id', 'sn', 'name', 'mobile', 'email', 'feedback'];
-
-        //$resumes = Resume::whereIn('id', $rids)->get($fileds);
-
-        return view('resume.library', [
+        return view('resume.my', [
             'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
             'resumes' => $resumes,
         ]);
     }
 
     public function joblibrary()
     {
-
         $title = '我的职位简历库';
 
         $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
 
         return view('resume.job', [
             'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
             'resumes' => $resumes,
         ]);
     }
@@ -207,27 +194,8 @@ class ResumeController extends Controller
     public function all()
     {
         $title = '猎加简历';
-
-        $breadcrumbs = self::breadcrumbs($title);
-
         $resumes = Resume::all();
 
-        return view('resume.library', compact('title', 'breadcrumbs', 'resumes'));
-    }
-
-    private static function breadcrumbs($title = null)
-    {
-        $retValue = array();
-        $url = URL::current();
-        $url = trim($url, '/index');
-
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url))
-        {
-            return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
-        }
-
-        return [['url' => '/', 'text' => '首页'],
-            ['url' => dirname($url), 'text' => self::$prefixTitle],
-            ['url' => $url, 'text' => $title]];
+        return view('resume.all', compact('title', 'resumes'));
     }
 }

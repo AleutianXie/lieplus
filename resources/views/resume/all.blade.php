@@ -3,8 +3,9 @@
 
 @section('content')
 @include('resume.list', ['resumes' => $resumes])
+{{-- <resume-list resumes="{{ $resumes }}"></resume-list> --}}
 @endsection
 
 @section('breadcrumbs')
-{!! Breadcrumbs::render('resume.job')  !!}
+{!! Breadcrumbs::render('resume.all')  !!}
 @endsection

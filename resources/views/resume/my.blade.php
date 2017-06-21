@@ -5,3 +5,7 @@
 @include('resume.list', ['resumes' => $resumes])
 {{-- <resume-list resumes="{{ $resumes }}"></resume-list> --}}
 @endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('resume.my')  !!}
+@endsection
