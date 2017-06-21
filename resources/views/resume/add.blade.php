@@ -2,6 +2,7 @@
 @section('title'){{ $title }}@endsection
 @section('stylesheet')
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 @endsection
 
 @section('page-header')
@@ -203,6 +204,10 @@
 </form>
 </div>
 {{-- 创建简历表单--结束 --}}
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('resume.add') !!}
 @endsection
 
 @section('scripts')

@@ -11,22 +11,22 @@
 |
  */
 
-Route::get('/', function ()
+/*Route::get('/', function ()
 {
-    return view('welcome');
-});
-//Route::get('/', 'ResumeController@index');
+return view('welcome');
+});*/
+Route::get('/', 'ResumeController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 Route::group(['prefix' => 'resume'], function ()
 {
-    Route::get('/', 'ResumeController@index');
+    Route::get('/', ['as' => 'resume', 'uses' => 'ResumeController@index']);
     Route::get('/index', 'ResumeController@index');
-    Route::match(['get', 'post'], '/add', 'ResumeController@add');
-    Route::match(['get', 'post'], '/{id}', 'ResumeController@detail')->where('id', '[0-9]+');
+    Route::match(['get', 'post'], '/add', ['as' => 'resume.add', 'uses' => 'ResumeController@add']);
+    Route::match(['get', 'post'], '/{id}', ['as' => 'resume.detail', 'uses' => 'ResumeController@detail'])->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/edit', 'ResumeController@edit');
     Route::get('/my', 'ResumeController@mylibrary');
     Route::get('/job', 'ResumeController@joblibrary');

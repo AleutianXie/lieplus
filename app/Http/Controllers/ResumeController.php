@@ -36,7 +36,6 @@ class ResumeController extends Controller
         //dd(config('lieplus'));
         return view('resume.index', [
             'title' => self::$prefixTitle,
-            'breadcrumbs' => self::breadcrumbs(),
         ]);
     }
 
@@ -114,7 +113,6 @@ class ResumeController extends Controller
 
         return view('resume.add', [
             'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
         ]);
     }
 
@@ -148,7 +146,6 @@ class ResumeController extends Controller
 
         return view('resume.detail', [
             'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
             'resume' => $resume,
             'feedbacks' => $feedbacks,
         ]);

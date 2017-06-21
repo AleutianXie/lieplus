@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-datepicker3.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 @endsection
 
 @section('content')
@@ -226,6 +227,10 @@
         {{-- 提醒--结束 --}}
    </div>
 </div>
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('resume.detail', $resume->id) !!}
 @endsection
 
 @section('scripts')

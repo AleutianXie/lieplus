@@ -65,7 +65,7 @@
             <div class="breadcrumbs">
             <!-- breadcrumbs goes here -->
             @section('breadcrumbs')
-            3 Breadcrumbs
+            {!! Breadcrumbs::render('home') !!}
             @show
             </div>
 
