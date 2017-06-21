@@ -1,6 +1,8 @@
 @extends('layouts.cici')
 
 @section('content')
+@include('common.messages')
+
 {{-- <h3 class="pull-left">{{ $line->sn }} 交付流水线 </h3>
  --}}<div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">

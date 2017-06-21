@@ -71,7 +71,7 @@ Route::group(['prefix' => 'line'], function ()
 {
     Route::get('/', 'LineController@index');
     Route::get('/index', 'LineController@index');
-    Route::match(['get', 'post'], '/add', 'LineController@add');
+    Route::post('/add', 'LineController@add');
     Route::match(['get', 'post'], '/{id}', 'LineController@detail')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/edit', 'LineController@edit');
     Route::get('/my', 'LineController@my');

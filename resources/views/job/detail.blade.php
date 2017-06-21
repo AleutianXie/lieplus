@@ -3,6 +3,7 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
+@include('common.messages')
     <div class="tab-content no-border padding-24">
         {{-- 职位信息--开始 --}}
         <div id="resume-tab-1" class="tab-pane fade active in">
@@ -13,10 +14,14 @@
                 </h4>
             </div>
             <div class="pull-right">
+                <form class="form-horizontal" id="customer-form" name="customer-form" action="{{ url('/line/add') }}" method="POST">
+<input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+<input type="hidden" name="jid" value="{{ $job->id }}"/>
                 <button class="btn btn-primary">
                     <i class="ace-icon fa fa-empire bigger-110"></i>
                     生成职位交付流水线
                 </button>
+                </form>
             </div>
             <div class="space-8"></div>
 

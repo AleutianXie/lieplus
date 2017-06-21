@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper;
 use App\Line;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class LineController extends Controller
 {
@@ -25,6 +27,45 @@ class LineController extends Controller
         return view('line.index', ['lines' => $lines]);
     }
 
+    public function add(Request $request)
+    {
+        if ($request->isMethod('POST'))
+        {
+
+            $this->validate($request, [
+                'jid' => [
+                    'required',
+                    Rule::unique('lines')->where(function ($query)
+                    {
+                        $query->where('creater', Auth::id());
+                    }),
+                ],
+            ], [
+                'jid.required' => '请选择:attribute.',
+                'unique' => '该 :attribute 您已经生成过职位交付流水线.',
+            ], [
+                'jid' => '职位编号(ID)',
+            ]);
+
+            $data = $request->input();
+            $line = new Line();
+
+            $line->sn = Helper::generationSN('LSX');
+            $line->priority = 1;
+            $line->jid = $data['jid'];
+            $line->creater = Auth::id();
+            $line->modifier = Auth::id();
+
+            if ($line->save())
+            {
+                return redirect('/line/' . $line->id)->with('success', '生成职位交付流水线成功!');
+            }
+            else
+            {
+                return redirect()->back()->with('error', '生成职位交付流水线失败');
+            }
+        }
+    }
     public function detail(Request $request, $id)
     {
         $title = '流水线详情';
