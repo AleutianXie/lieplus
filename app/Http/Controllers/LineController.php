@@ -6,7 +6,6 @@ use App\Helper;
 use App\Line;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class LineController extends Controller
 {
@@ -35,10 +34,11 @@ class LineController extends Controller
             $this->validate($request, [
                 'jid' => [
                     'required',
-                    Rule::unique('lines')->where(function ($query)
+                    /*Rule::unique('lines')->where(function ($query)
                     {
-                        $query->where('creater', Auth::id());
-                    }),
+                    $query->where('creater', Auth::id());
+                    }),*/
+                    'unique:lines',
                 ],
             ], [
                 'jid.required' => '请选择:attribute.',
@@ -66,6 +66,15 @@ class LineController extends Controller
             }
         }
     }
+
+    public function all()
+    {
+        $lines = Line::where(['show' => 1])->get();
+
+        return view('line.all', ['lines' => $lines]);
+
+    }
+
     public function detail(Request $request, $id)
     {
         $title = '流水线详情';

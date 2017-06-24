@@ -88,6 +88,38 @@
 
         <li class="">
             <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-users"></i>
+                <span class="menu-text">
+                    客户
+                </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="/customer">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        我的客户
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/customer/all">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        猎加客户
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+        <li class="">
+            <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>
                 <span class="menu-text">
                     职位
@@ -153,7 +185,14 @@
 
                     <b class="arrow"></b>
                 </li>
+                <li class="">
+                    <a href="/line/all">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        猎加职位流水线
+                    </a>
 
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
     </ul><!-- /.nav-list -->

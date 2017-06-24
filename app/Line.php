@@ -51,4 +51,9 @@ class Line extends Model
     {
         return $this->hasOne('App\Job', 'id', 'jid');
     }
+
+    public function joblibrary()
+    {
+        return $this->hasMany('App\JobLibrary', 'jid', 'jid');
+    }
 }

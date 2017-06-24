@@ -12,25 +12,26 @@ class ResumeTableSeeder extends Seeder
     public function run()
     {
         //
-        for ($i=0; $i < 20; $i++) {
+        for ($i = 0; $i < 20; $i++)
+        {
 
-        DB::table('resumes')->insert([[
-            'sn' => 'JL'.date('Ymdhis', time()).sprintf('%4d', mt_rand(0, 9999)),
-            'name' => '谢辉生',
-            'mobile' => '159014356'.sprintf('%02d',$i),
-            'email' => 'aleutian.xie'.$i.'@ciciosft.cn',
-            'gender' => 0,
-            'birthdate' => '1993-03-09',
-            'startworkdate' => '2016-11-13',
-            'degree' => 1,
-            'servicestatus' => 0,
-            'province' => '110000',
-            'city' => '110100',
-            'county' => '110105',
-            'position' => 'SDE',
-            'industry' => 'internet',
-            'salary' => 0,
-            'others' => '<p></p><div><h1>求助，为什么会is not defined x<br></h1>
+            DB::table('resumes')->insert([[
+                'sn' => 'JL' . date('Ymdhis', time()) . sprintf('%4d', mt_rand(0, 9999)),
+                'name' => '谢辉生',
+                'mobile' => '159014356' . sprintf('%02d', $i),
+                'email' => 'aleutian.xie' . $i . '@ciciosft.cn',
+                'gender' => 0,
+                'birthdate' => '1993-03-09',
+                'startworkdate' => '2016-11-13',
+                'degree' => 1,
+                'servicestatus' => 0,
+                'province' => '110000',
+                'city' => '110100',
+                'county' => '110105',
+                'position' => 'SDE',
+                'industry' => 'internet',
+                'salary' => 0,
+                'others' => '<p></p><div><h1>求助，为什么会is not defined x<br></h1>
 <div>
 
 <div><a target="_blank" rel="nofollow"></a><a target="_blank" rel="nofollow" href="http://v.t.sina.com.cn/share/share.php?url=http%3A%2F%2Fzhidao.baidu.com%2Fquestion%2F875428589946601812%3Fsharesource%3Dweibo&amp;title=%E6%B1%82%E5%8A%A9%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9Ais%20not%20defined_%E7%99%BE%E5%BA%A6%E7%9F%A5%E9%81%93&amp;pic=https%3A%2F%2Fgss0.bdstatic.com%2F70cFsjip0QIZ8tyhnq%2Fimg%2Fiknow%2Fzhidaologo.png"></a><a target="_blank" rel="nofollow" href="http://connect.qq.com/widget/shareqq/index.html?url=http%3A%2F%2Fzhidao.baidu.com%2Fquestion%2F875428589946601812%3Fsharesource%3Dqq&amp;title=%E6%B1%82%E5%8A%A9%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9Ais%20not%20defined_%E7%99%BE%E5%BA%A6%E7%9F%A5%E9%81%93&amp;pics=https%3A%2F%2Fgss0.bdstatic.com%2F70cFsjip0QIZ8tyhnq%2Fimg%2Fiknow%2Fzhidaologo.png"></a><a target="_blank" rel="nofollow" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http%3A%2F%2Fzhidao.baidu.com%2Fquestion%2F875428589946601812%3Fsharesource%3Dqzone&amp;title=%E6%B1%82%E5%8A%A9%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9Ais%20not%20defined_%E7%99%BE%E5%BA%A6%E7%9F%A5%E9%81%93&amp;pics=https%3A%2F%2Fgss0.bdstatic.com%2F70cFsjip0QIZ8tyhnq%2Fimg%2Fiknow%2Fzhidaologo.png"></a></div>
@@ -239,12 +240,10 @@ span.s1 {font-kerning: none}
 <p class="p1"><span class="s1">7，根据工作台原则，不断推荐最后满足上需求。</span></p>
 <p class="p1"><span class="s1">8、客户顾问或者部门经理将职位的状态设置成close。将不允许大家在操作这个职位流水线，则，整个过程完了。</span></p>
             ',
-'creater' => 1,
-'modifier' => 1,
-'created_at' => date('Y-m-d h:i:s', time()),
-'updated_at' => date('Y-m-d h:i:s', time())]]);
-
-            # code...
+                'creater' => 1,
+                'modifier' => 1,
+                'created_at' => date('Y-m-d h:i:s', time()),
+                'updated_at' => date('Y-m-d h:i:s', time())]]);
         }
     }
 }

@@ -167,13 +167,13 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="joblibaray">职位简历库:</label>
+        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="jid">职位简历库:</label>
         <div class="col-xs-6 col-sm-6">
             <div class="clearfix">
-                <select name="joblibaray" id="joblibaray">
+                <select name="jid" id="jid">
                 <option></option>
-                @foreach (config('lieplus.salary') as $element)
-                <option value="{{ $element['id'] }}">{{ $element['text'] }}</option>
+                @foreach ($assignlines as $assign)
+                <option value="{{ $assign->line->job->id }}">{{ $assign->line->job->sn }}({{ $assign->line->job->name }})</option>
                 @endforeach
                 </select>
             </div>
@@ -305,10 +305,10 @@
         width: 140
     });
 
-    $('#joblibaray').select2({
+    $('#jid').select2({
         placeholder: "请选择职位简历库",
         allowClear: true,
-        width: 200
+        width: 300
     });
 
     $('#others-editor').ace_wysiwyg({

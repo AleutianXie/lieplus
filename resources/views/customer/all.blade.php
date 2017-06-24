@@ -3,5 +3,5 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
-@include('customer.list', ['customers' => array_pluck($assignCustomers, 'customer')])
+@include('customer.list', ['customers' => $customers])
 @endsection

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Resume extends Model
 {
@@ -21,4 +22,18 @@ class Resume extends Model
     {
         return $this->hasMany('App\Alert', 'rid');
     }
+
+//  add check later
+    public function openContact()
+    {
+        return $this->creater == Auth::id() ? 'True' : 'Flase';
+    }
+
+    public function getmobileAttribute($value)
+    {
+        //dd($this->name);
+        //return ucfirst("1234.56");
+        return $this->creater == Auth::id() ? $value : "******";
+    }
+
 }

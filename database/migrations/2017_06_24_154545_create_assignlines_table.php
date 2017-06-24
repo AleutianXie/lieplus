@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStationsTable extends Migration
+class CreateAssignlinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,20 +14,13 @@ class CreateStationsTable extends Migration
     public function up()
     {
         //
-        Schema::create('stations', function (Blueprint $table)
+        Schema::create('assignlines', function (Blueprint $table)
         {
             $table->increments('id');
-            $table->string('sn', 21)->unique();
-            $table->unsignedInteger('lid');
+            $table->unsignedInteger('uid');
+            $table->foreign('uid')->references('id')->on('users');
+            $table->unsignedInteger('lid')->unique();
             $table->foreign('lid')->references('id')->on('lines');
-            $table->unsignedInteger('rid');
-            $table->foreign('rid')->references('id')->on('resumes');
-            $table->enum('status', ['1' => '联系中',
-                '2' => '意向中',
-                '3' => '推荐中',
-                '4' => '面试中',
-                '5' => 'offer中',
-                '6' => '入职中']);
             $table->boolean('show')->default(1);
             $table->unsignedInteger('creater');
             $table->foreign('creater')->references('id')->on('users');
@@ -45,6 +38,6 @@ class CreateStationsTable extends Migration
     public function down()
     {
         //
-        Schema::dropIfExists('stations');
+        Schema::dropIfExists('assignlines');
     }
 }

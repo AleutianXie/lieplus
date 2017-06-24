@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AssignCustomer;
 use App\Customer;
 use App\Region;
 use Illuminate\Http\Request;
@@ -27,12 +28,23 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $title = '客户列表';
-        $customers = Customer::all();
+        $title = '我的客户';
+        $assignCustomers = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get();
 
         return view('customer.index', [
             'title' => $title,
             'breadcrumbs' => self::breadcrumbs(),
+            'assignCustomers' => $assignCustomers,
+        ]);
+    }
+
+    public function all()
+    {
+        $title = '猎加客户';
+        $customers = Customer::all();
+
+        return view('customer.all', [
+            'title' => $title,
             'customers' => $customers,
         ]);
     }

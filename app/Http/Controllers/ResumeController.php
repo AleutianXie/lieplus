@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\AssignLine;
 use App\Helper;
 use App\JobLibrary;
 use App\MyLibrary;
 use App\Region;
 use App\Resume;
+use App\Station;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,6 +102,26 @@ class ResumeController extends Controller
 
                 $library->save();
 
+                // add job library
+                if (isset($data['jid']) && !empty($data['jid']))
+                {
+                    $joblibrary = new JobLibrary();
+                    $joblibrary->uid = Auth::id();
+                    $joblibrary->rid = $resume->id;
+                    $joblibrary->jid = $data['jid'];
+                    $joblibrary->creater = Auth::id();
+                    $joblibrary->save();
+
+                    $station = new Station();
+                    $station->sn = Helper::generationSN('GZT');
+                    $station->lid = $joblibrary->line->id;
+                    $station->rid = $resume->id;
+                    $station->status = 1;
+                    $station->creater = Auth::id();
+                    $station->modifier = Auth::id();
+                    $station->save();
+                }
+
                 return redirect('/resume/' . $resume->id);
             }
             else
@@ -108,8 +130,11 @@ class ResumeController extends Controller
             }
         }
 
+        $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+
         return view('resume.add', [
             'title' => $title,
+            'assignlines' => $assignlines,
         ]);
     }
 
@@ -171,7 +196,7 @@ class ResumeController extends Controller
     {
         $title = '我的简历库';
 
-        $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
+        $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
 
         return view('resume.my', [
             'title' => $title,
@@ -183,7 +208,7 @@ class ResumeController extends Controller
     {
         $title = '我的职位简历库';
 
-        $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'getResume');
+        $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
 
         return view('resume.job', [
             'title' => $title,

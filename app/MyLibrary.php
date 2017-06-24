@@ -9,7 +9,7 @@ class MyLibrary extends Model
     //
     protected $table = 'mylibraries';
 
-    public function getResume()
+    public function resume()
     {
         return $this->hasOne('App\Resume', 'id', 'rid');
     }

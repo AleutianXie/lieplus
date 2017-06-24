@@ -47,6 +47,7 @@ Route::group(['prefix' => 'customer'], function ()
 {
     Route::get('/', 'CustomerController@index');
     Route::get('/index', 'CustomerController@index');
+    Route::get('/all', 'CustomerController@all');
     Route::match(['get', 'post'], '/{id}', 'CustomerController@detail')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/audit/{id}', 'CustomerController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'CustomerController@add');

@@ -12,22 +12,27 @@
                 主页
             </a>
         </li>
-
         <li class="">
             <a data-toggle="tab" href="#resume-tab-2" aria-expanded="false">
-                <i class="green ace-icon fa fa-cc bigger-120"></i>
-                交付工作台
+                <i class="green ace-icon fa fa-folder bigger-120"></i>
+                职位简历库
             </a>
         </li>
         <li class="">
             <a data-toggle="tab" href="#resume-tab-3" aria-expanded="false">
-                <i class="pink ace-icon fa fa-bullhorn bigger-120"></i>
-                职位动态
+                <i class="pink ace-icon fa fa-cc bigger-120"></i>
+                交付工作台
             </a>
         </li>
         <li class="">
             <a data-toggle="tab" href="#resume-tab-4" aria-expanded="false">
-                <i class="orange ace-icon fa fa-cogs bigger-120"></i>
+                <i class="orange ace-icon fa fa-bullhorn bigger-120"></i>
+                职位动态
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#resume-tab-5" aria-expanded="false">
+                <i class="black ace-icon fa fa-cogs bigger-120"></i>
                 模板库
             </a>
         </li>
@@ -192,10 +197,29 @@
         </div>
         {{-- 流水线信息--结束 --}}
 
-        {{-- 交付工作台--开始 --}}
+        {{-- 职位简历库--开始 --}}
         <div id="resume-tab-2" class="tab-pane fade">
-            <h4 class="green">
-                <i class="green ace-icon fa fa-cc bigger-110"></i>
+            <div class="pull-left">
+                <h4 class="green">
+                    <i class="green ace-icon fa fa-folder bigger-110"></i>
+                    职位简历库
+                </h4>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-link">
+                    <a href="/resume/add"><i class="ace-icon fa fa-plus-circle bigger-110"></i>
+                    增加简历</a>
+            </div>
+
+            @include('station.list', ['stations' => $line->joblibrary])
+
+        </div>
+        {{-- 职位简历库--结束 --}}
+
+        {{-- 交付工作台--开始 --}}
+        <div id="resume-tab-3" class="tab-pane fade">
+            <h4 class="pink">
+                <i class="pink ace-icon fa fa-cc bigger-110"></i>
                 交付工作台
             </h4>
 
@@ -270,8 +294,8 @@
 
         {{-- 职位动态--开始 --}}
         <div id="resume-tab-3" class="tab-pane fade">
-            <h4 class="pink">
-                <i class="pink ace-icon fa fa-bullhorn bigger-110"></i>
+            <h4 class="orange">
+                <i class="orange ace-icon fa fa-bullhorn bigger-110"></i>
                 职位动态
             </h4>
 
@@ -282,8 +306,8 @@
 
         {{-- 模板库--开始 --}}
         <div id="resume-tab-4" class="tab-pane fade">
-            <h4 class="orange">
-                <i class="orange ace-icon fa fa-cogs bigger-110"></i>
+            <h4 class="black">
+                <i class="black ace-icon fa fa-cogs bigger-110"></i>
                 模板库
             </h4>
 

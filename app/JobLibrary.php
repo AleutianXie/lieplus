@@ -9,8 +9,13 @@ class JobLibrary extends Model
     //
     protected $table = 'joblibraries';
 
-    public function getResume()
+    public function resume()
     {
         return $this->hasOne('App\Resume', 'id', 'rid');
+    }
+
+    public function line()
+    {
+        return $this->hasOne('App\line', 'jid', 'jid');
     }
 }
