@@ -75,6 +75,14 @@ class LineController extends Controller
 
     }
 
+    public function plan()
+    {
+        $lines = Line::where(['show' => 1])->get();
+
+        return view('line.plan', ['lines' => $lines]);
+
+    }
+
     public function detail(Request $request, $id)
     {
         $title = '流水线详情';

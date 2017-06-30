@@ -78,6 +78,7 @@ Route::group(['prefix' => 'line'], function ()
     Route::get('/my', 'LineController@my');
     Route::get('/job', 'LineController@job');
     Route::get('/all', 'LineController@all');
+    Route::get('/plan', 'LineController@plan');
 });
 
 Route::group(['prefix' => 'project'], function ()

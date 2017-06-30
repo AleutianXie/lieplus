@@ -195,6 +195,15 @@
                 </li>
             </ul>
         </li>
+
+        <li class="">
+            <a href="/line/plan">
+                <i class="menu-icon fa fa-cc"></i>
+                <span class="menu-text"> 今日工作台 </span>
+            </a>
+
+            <b class="arrow"></b>
+        </li>
     </ul><!-- /.nav-list -->
 
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

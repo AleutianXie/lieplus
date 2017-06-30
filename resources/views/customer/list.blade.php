@@ -80,11 +80,11 @@
                         </td>
                         <td><a href="{{ asset('/customer/'.$customer->id) }}"> {{ $customer->sn }}</a></td>
                         <td>{{ $customer->name }}</td>
-                        <td>摘要</td>
+                        <td>{{ count($customer->job) }}</td>
                         <td>{{ $customer->mobile }}</td>
                         <td>{{ $customer->email }}</td>
                         <td>{{ $customer->level }}</td>
-                        <td>职位简历库</td>
+                        <td>{{ $customer->property }}</td>
                         <td>
                             <div class="dropdown">
                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
