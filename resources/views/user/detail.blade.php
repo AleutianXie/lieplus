@@ -132,75 +132,74 @@
                         </div>
                     </div>
 
-                                            <!-- /section:pages/profile.contact -->
-                                            <div class="hr hr12 dotted"></div>
+                    <!-- /section:pages/profile.contact -->
+                    <div class="hr hr12 dotted"></div>
 
-                                            <!-- #section:custom/extra.grid -->
-                                            <div class="clearfix">
-                                                <div class="grid2">
-                                                    <span class="bigger-175 blue">25</span>
+                    <!-- #section:custom/extra.grid -->
+                    <div class="clearfix">
+                        <div class="grid2">
+                            <span class="bigger-175 blue">25</span>
 
-                                                    <br>
-                                                    Followers
-                                                </div>
+                            <br>
+                            Followers
+                        </div>
 
-                                                <div class="grid2">
-                                                    <span class="bigger-175 blue">12</span>
+                        <div class="grid2">
+                            <span class="bigger-175 blue">12</span>
 
-                                                    <br>
-                                                    Following
-                                                </div>
-                                            </div>
-
-                                            <!-- /section:custom/extra.grid -->
-                                            <div class="hr hr16 dotted"></div>
-                                        </div>
-<div class="col-xs-12 col-sm-9">
-
-            <div class="profile-user-info profile-user-info-striped">
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 姓名 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="username" style="display: inline;">{{ $user->name }}</span>
+                            <br>
+                            Following
+                        </div>
                     </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 性别 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="gender" style="display: inline;">{{ isset($user->profile) ? config('lieplus.gender.'.$user->profile->gender.'.text') : '' }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 手机 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="mobile" style="display: inline;">{{ $user->profile->mobile or ''}}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 邮箱 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="email" style="display: inline;">{{ $user->email }}</span>
-                    </div>
-                </div>
 
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 出生日期 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="birthdate">{{ $user->profile->birthdate or ''}}</span>
-                    </div>
+                    <!-- /section:custom/extra.grid -->
+                    <div class="hr hr16 dotted"></div>
                 </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="profile-user-info profile-user-info-striped">
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 姓名 </div>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="username" style="display: inline;">{{ $user->name }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 性别 </div>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="gender" style="display: inline;">{{ isset($user->profile) ? config('lieplus.gender.'.$user->profile->gender.'.text') : '' }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 手机 </div>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="mobile" style="display: inline;">{{ $user->profile->mobile or ''}}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 邮箱 </div>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="email" style="display: inline;">{{ $user->email }}</span>
+                            </div>
+                        </div>
 
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 部门 </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 出生日期 </div>
 
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="servicestatus">{{ $user->profile->did or ''}}</span>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="birthdate">{{ $user->profile->birthdate or ''}}</span>
+                            </div>
+                        </div>
+
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 部门 </div>
+
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="servicestatus">{{ $user->profile->did or ''}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-</div>
-</div>
         </div>
         {{-- 基础信息--结束 --}}
 
@@ -214,26 +213,26 @@
             <div class="space-8"></div>
 
             <div id="edit-password" class="tab-pane active">
-                                                            <div class="space-10"></div>
+            <div class="space-10"></div>
 
-                                                            <div class="form-group">
-                                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-pass1">New Password</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-pass1">新密码</label>
 
-                                                                <div class="col-sm-9">
-                                                                    <input type="password" id="form-field-pass1">
-                                                                </div>
-                                                            </div>
+                <div class="col-sm-9">
+                    <input type="password" id="form-field-pass1">
+                </div>
+            </div>
 
-                                                            <div class="space-4"></div>
+            <div class="space-4"></div>
 
-                                                            <div class="form-group">
-                                                                <label class="col-sm-3 control-label no-padding-right" for="form-field-pass2">Confirm Password</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-pass2">确认密码</label>
 
-                                                                <div class="col-sm-9">
-                                                                    <input type="password" id="form-field-pass2">
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                <div class="col-sm-9">
+                    <input type="password" id="form-field-pass2">
+                </div>
+            </div>
+        </div>
         </div>
         {{-- 密码--结束 --}}
         {{-- 设置--开始 --}}
@@ -264,9 +263,11 @@
 <script type="text/javascript" src="{{ asset('static/js/jquery.xhashchange.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
+    var hash = location.hash;
+            var arr = [ "#baseinfo", "#password", "#settings" ];
+
     $(window).hashchange(function () {
-        var hash = location.hash;
-        var arr = [ "#baseinfo", "#password", "#settings" ];
+        hash = location.hash;
 
         if (jQuery.inArray( hash, arr ) == -1 ) {
             hash = "#baseinfo";
@@ -281,9 +282,24 @@ jQuery(function($) {
         $(hash).siblings().removeClass('in');
     });
 
+            if (jQuery.inArray( hash, arr ) == -1 ) {
+            hash = "#baseinfo";
+            location.hash = hash;
+        }
+
+        $('a[href='+hash+']').parent().addClass('active');
+        $('a[href='+hash+']').parent().siblings().removeClass('active');
+        $(hash).addClass('active');
+        $(hash).addClass('in');
+        $(hash).siblings().removeClass('active');
+        $(hash).siblings().removeClass('in');
+
+
+
     $(document.body).on("click", ".tabbable a[data-toggle]", function(event) {
         location.hash = this.getAttribute("href");
     });
+
 });
 </script>
 @endsection

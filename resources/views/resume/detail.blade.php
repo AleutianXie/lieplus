@@ -244,9 +244,11 @@
 <script type="text/javascript" src="{{ asset('static/js/jquery.xhashchange.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
+    var hash = location.hash;
+    var arr = [ "#resume-tab-1", "#resume-tab-2", "#resume-tab-3", "#resume-tab-4" ];
+
     $(window).hashchange(function () {
-        var hash = location.hash;
-        var arr = [ "#resume-tab-1", "#resume-tab-2", "#resume-tab-3", "#resume-tab-4" ];
+        hash = location.hash;
 
         if (jQuery.inArray( hash, arr ) == -1 ) {
             hash = "#resume-tab-1";
@@ -260,6 +262,18 @@ jQuery(function($) {
         $(hash).siblings().removeClass('active');
         $(hash).siblings().removeClass('in');
     });
+
+    if (jQuery.inArray( hash, arr ) == -1 ) {
+        hash = "#resume-tab-1";
+        location.hash = hash;
+    }
+
+    $('a[href='+hash+']').parent().addClass('active');
+    $('a[href='+hash+']').parent().siblings().removeClass('active');
+    $(hash).addClass('active');
+    $(hash).addClass('in');
+    $(hash).siblings().removeClass('active');
+    $(hash).siblings().removeClass('in');
 
     $(document.body).on("click", ".tabbable a[data-toggle]", function(event) {
         location.hash = this.getAttribute("href");
