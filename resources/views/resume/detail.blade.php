@@ -12,7 +12,7 @@
 @section('content')
 <div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-        <li class="active">
+        <li class="">
             <a data-toggle="tab" href="#resume-tab-1" aria-expanded="false">
                 <i class="blue ace-icon fa fa-file-word-o bigger-120"></i>
                 原件
@@ -42,7 +42,7 @@
 
     <div class="tab-content no-border padding-24">
         {{-- 简历原件--开始 --}}
-        <div id="resume-tab-1" class="tab-pane fade active in">
+        <div id="resume-tab-1" class="tab-pane fade in">
             <h4 class="blue pull-left">
                 <i class="ace-icon fa fa-check bigger-110"></i>
                 简历原件

@@ -12,7 +12,7 @@
 @section('content')
 <div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-        <li class="active">
+        <li class="">
             <a data-toggle="tab" href="#baseinfo" aria-expanded="false">
                 <i class="blue ace-icon fa fa-user bigger-120"></i>
                 基础信息
@@ -36,7 +36,7 @@
 
     <div class="tab-content no-border padding-24">
         {{-- 基础信息--开始 --}}
-        <div id="baseinfo" class="tab-pane fade active in">
+        <div id="baseinfo" class="tab-pane fade in">
             <div class="row">
                 <h4 class="blue pull-left">
                     <i class="ace-icon fa fa-user bigger-110"></i>
@@ -264,7 +264,7 @@
 <script type="text/javascript">
 jQuery(function($) {
     var hash = location.hash;
-            var arr = [ "#baseinfo", "#password", "#settings" ];
+    var arr = [ "#baseinfo", "#password", "#settings" ];
 
     $(window).hashchange(function () {
         hash = location.hash;
@@ -282,19 +282,17 @@ jQuery(function($) {
         $(hash).siblings().removeClass('in');
     });
 
-            if (jQuery.inArray( hash, arr ) == -1 ) {
-            hash = "#baseinfo";
-            location.hash = hash;
-        }
+    if (jQuery.inArray( hash, arr ) == -1 ) {
+        hash = "#baseinfo";
+        location.hash = hash;
+    }
 
-        $('a[href='+hash+']').parent().addClass('active');
-        $('a[href='+hash+']').parent().siblings().removeClass('active');
-        $(hash).addClass('active');
-        $(hash).addClass('in');
-        $(hash).siblings().removeClass('active');
-        $(hash).siblings().removeClass('in');
-
-
+    $('a[href='+hash+']').parent().addClass('active');
+    $('a[href='+hash+']').parent().siblings().removeClass('active');
+    $(hash).addClass('active');
+    $(hash).addClass('in');
+    $(hash).siblings().removeClass('active');
+    $(hash).siblings().removeClass('in');
 
     $(document.body).on("click", ".tabbable a[data-toggle]", function(event) {
         location.hash = this.getAttribute("href");

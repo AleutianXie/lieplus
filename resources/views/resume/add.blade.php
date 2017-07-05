@@ -214,7 +214,6 @@
 <script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
 <script src="{{ asset('static/js/ace.min.js') }}"></script>
