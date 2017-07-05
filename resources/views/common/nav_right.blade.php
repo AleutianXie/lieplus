@@ -268,16 +268,16 @@
 
             <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                 <li>
-                    <a href="#">
+                    <a href="{{ url('/user/'.Auth::id().'#settings') }}">
                         <i class="ace-icon fa fa-cog"></i>
-                        Settings
+                        设置
                     </a>
                 </li>
 
                 <li>
-                    <a href="profile.html">
+                    <a href="{{ url('/user/'.Auth::id().'#baseinfo') }}">
                         <i class="ace-icon fa fa-user"></i>
-                        Profile
+                        用户中心
                     </a>
                 </li>
 
@@ -286,7 +286,7 @@
                 <li>
                     <a href="{{ url('/logout') }}"  onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                         <i class="ace-icon fa fa-power-off"></i>
-                        Logout
+                        退出
                     </a>
                     <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                         {{ csrf_field() }}

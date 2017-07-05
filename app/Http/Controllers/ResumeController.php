@@ -175,6 +175,7 @@ class ResumeController extends Controller
 
     public function edit(Request $request)
     {
+
         $data = $request->input();
         $id = $data['pk'];
         $resume = Resume::find($id);

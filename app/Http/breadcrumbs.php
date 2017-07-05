@@ -46,3 +46,10 @@ Breadcrumbs::register('resume.all', function ($breadcrumbs)
     $breadcrumbs->parent('resume');
     $breadcrumbs->push('猎帮简历库', route('resume.all'));
 });
+
+// Home > UserCenter
+Breadcrumbs::register('user.profile', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('用户中心', route('user.profile', $id));
+});

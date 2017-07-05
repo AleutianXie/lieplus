@@ -241,22 +241,29 @@
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-editable.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/js/address.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/jquery.xhashchange.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
-    var strTab = window.location.hash;
+    $(window).hashchange(function () {
+        var hash = location.hash;
+        var arr = [ "#resume-tab-1", "#resume-tab-2", "#resume-tab-3", "#resume-tab-4" ];
 
-    var arr = [ "#resume-tab-1", "#resume-tab-2", "#resume-tab-3", "#resume-tab-4" ];
+        if (jQuery.inArray( hash, arr ) == -1 ) {
+            hash = "#resume-tab-1";
+            location.hash = hash;
+        }
 
-    if (jQuery.inArray( strTab, arr ) == -1 ) {
-        strTab = "#resume-tab-1";
-    }
+        $('a[href='+hash+']').parent().addClass('active');
+        $('a[href='+hash+']').parent().siblings().removeClass('active');
+        $(hash).addClass('active');
+        $(hash).addClass('in');
+        $(hash).siblings().removeClass('active');
+        $(hash).siblings().removeClass('in');
+    });
 
-    $('a[href='+strTab+']').parent().addClass('active');
-    $('a[href='+strTab+']').parent().siblings().removeClass('active');
-    $(strTab).addClass('active');
-    $(strTab).addClass('in');
-    $(strTab).siblings().removeClass('active');
-    $(strTab).siblings().removeClass('in');
+    $(document.body).on("click", ".tabbable a[data-toggle]", function(event) {
+        location.hash = this.getAttribute("href");
+    });
 
     //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';

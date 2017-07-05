@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -26,4 +26,27 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function profile()
+    {
+        return $this->hasOne('App\Profile', 'uid', 'id');
+    }
+
+    public function role()
+    {
+        return $this->hasMany('App\UserRole', 'uid', 'id');
+    }
+
+    public function getisAdminAttribute()
+    {
+        return !empty($this->hasMany('App\UserRole', 'uid', 'id')->where(['rid' => 1])->get()->toArray());
+    }
+
+    public function hasPermission($model = 'resume', $action = 'view')
+    {
+        return $this->isAdmin || !empty(array_where(array_collapse(array_pluck($this->role, 'permission')), function ($value) use ($model, $action)
+        {
+            return $value->model == strtolower($model) && $value->action == strtolower($action);
+        }));
+    }
 }

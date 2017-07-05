@@ -88,3 +88,6 @@ Route::group(['prefix' => 'project'], function ()
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit');
     Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+');
 });
+
+// for user profile
+Route::get('/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
