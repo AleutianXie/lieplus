@@ -4,6 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\JobLibrary
+ *
+ * @property-read \App\Line $line
+ * @property-read \App\Resume $resume
+ * @mixin \Eloquent
+ */
 class JobLibrary extends Model
 {
     //

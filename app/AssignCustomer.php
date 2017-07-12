@@ -4,6 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\AssignCustomer
+ *
+ * @property-read \App\Customer $customer
+ * @mixin \Eloquent
+ */
 class AssignCustomer extends Model
 {
     //

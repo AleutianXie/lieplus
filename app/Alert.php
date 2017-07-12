@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Alert
+ *
+ * @mixin \Eloquent
+ */
 class Alert extends Model
 {
     //

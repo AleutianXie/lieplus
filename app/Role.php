@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     //
-    //protected $table = 'user_role';
-
+    public function permission()
+    {
+        return $this->hasMany('App\RolePermission', 'rid', 'id');
+    }
 }

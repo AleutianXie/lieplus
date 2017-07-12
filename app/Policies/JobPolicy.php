@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Job;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class JobPolicy
+class JobPolicy extends Policy
 {
     use HandlesAuthorization;
 

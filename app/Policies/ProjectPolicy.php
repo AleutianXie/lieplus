@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Project;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProjectPolicy
+class ProjectPolicy extends Policy
 {
     use HandlesAuthorization;
 

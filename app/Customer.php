@@ -4,6 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Customer
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Job[] $job
+ * @mixin \Eloquent
+ */
 class Customer extends Model
 {
     //

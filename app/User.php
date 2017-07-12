@@ -44,9 +44,9 @@ class User extends Authenticatable
 
     public function hasPermission($model = 'resume', $action = 'view')
     {
-        return $this->isAdmin || !empty(array_where(array_collapse(array_pluck($this->role, 'permission')), function ($value) use ($model, $action)
+        return !empty(array_where(array_collapse(array_pluck($this->role, 'permission')), function ($value) use ($model, $action)
         {
-            return $value->model == strtolower($model) && $value->action == strtolower($action);
+            return $value->model == strtolower($model) && $value->action == strtolower($action) && $value->enabled == 1;
         }));
     }
 }

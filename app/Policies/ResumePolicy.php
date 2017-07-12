@@ -6,7 +6,7 @@ use App\Resume;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ResumePolicy
+class ResumePolicy extends Policy
 {
     use HandlesAuthorization;
 
@@ -20,7 +20,7 @@ class ResumePolicy
     public function view(User $user, Resume $resume)
     {
         //
-        return $user->id == $resume->creater;
+        return $user->hasPermission('resume', 'view');
     }
 
     /**

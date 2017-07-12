@@ -21,6 +21,8 @@ class CreateRolePermissionsTable extends Migration
             $table->foreign('rid')->references('id')->on('roles');
             $table->string('model', 30);
             $table->string('action', 30);
+            $table->binary('description');
+            $table->boolean('enabled')->default(0);
             $table->boolean('show')->default(1);
             $table->unsignedInteger('creater');
             $table->foreign('creater')->references('id')->on('users');

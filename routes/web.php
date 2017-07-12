@@ -53,7 +53,6 @@ Route::group(['prefix' => 'customer'], function ()
     Route::match(['get', 'post'], '/add', 'CustomerController@add');
     Route::post('/edit', 'CustomerController@edit');
     Route::post('/check', 'CustomerController@isExist');
-
 });
 
 Route::group(['prefix' => 'job'], function ()
@@ -91,3 +90,7 @@ Route::group(['prefix' => 'project'], function ()
 
 // for user profile
 Route::get('/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
+Route::post('/user/department/add', 'UserDepartmentController@add');
+Route::post('/role/add', 'RoleController@add');
+Route::post('/user/department/edit', 'UserDepartmentController@edit');
+Route::post('/role/edit', 'RoleController@edit');

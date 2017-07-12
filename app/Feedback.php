@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Feedback
+ *
+ * @mixin \Eloquent
+ */
 class Feedback extends Model
 {
     //

@@ -141,11 +141,11 @@
 
     <div class="form-group text-center">
     <button class="btn btn-primary" type="submit">
-    <i class="ace-icon fa fa-plus align-top bigger-125"></i>
+    <i class="ace-icon fa fa-plus bigger-125"></i>
     新建
     </button>
     <button class="btn" type="reset">
-    <i class="ace-icon fa fa-undo align-top bigger-125"></i>
+    <i class="ace-icon fa fa-undo bigger-125"></i>
     重置
     </button>
     </div>
@@ -162,7 +162,6 @@
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
     var departments = [];

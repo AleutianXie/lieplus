@@ -19,7 +19,7 @@ class CreateUserdepartmentsTable extends Migration
             $table->increments('id');
             $table->string('name', 60);
             $table->string('number', 10)->unique();
-            $table->binary('descrption')->nullable();
+            $table->binary('description')->nullable();
             $table->boolean('show')->default(1);
             $table->unsignedInteger('creater');
             $table->foreign('creater')->references('id')->on('users');

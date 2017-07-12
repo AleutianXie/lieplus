@@ -11,18 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
-class ProjectController extends Controller {
+class ProjectController extends Controller
+{
     private static $prefixTitle = '项目启动书';
 
     //
-    public function __construct() {
+    public function __construct()
+    {
         //$this->middleware('auth:api', ['except' => 'login']);
         $this->middleware('auth');
         Region::Address();
     }
 
-    public function index(Request $request) {
-        if ($request->isMethod('POST')) {
+    public function index(Request $request)
+    {
+        if ($request->isMethod('POST'))
+        {
 
             $this->validate($request, [
                 'name' => ['required', 'unique:customers'],
@@ -62,7 +66,8 @@ class ProjectController extends Controller {
             $customer->county = $data['county'];
             $customer->welfare = $data['welfare'];
             $customer->worktime = $data['worktime'];
-            if (!empty($data['founder'])) {
+            if (!empty($data['founder']))
+            {
                 $customer->founder = $data['founder'];
             }
             $customer->financing = $data['financing'];
@@ -87,12 +92,14 @@ class ProjectController extends Controller {
             $job->creater = Auth::id();
             $job->modifier = Auth::id();
 
-            if ($customer->save()) {
+            if ($customer->save())
+            {
                 $job->cid = $customer->id;
 
                 $departments = explode(",", $data['department']);
 
-                foreach ($departments as $value) {
+                foreach ($departments as $value)
+                {
                     $department = new Department();
                     $department->cid = $customer->id;
                     $department->name = trim($value);
@@ -100,12 +107,14 @@ class ProjectController extends Controller {
                     $department->modifier = Auth::id();
                     $department->save();
 
-                    if ($data['job_department'] == $department->name) {
+                    if ($data['job_department'] == $department->name)
+                    {
                         $job->did = $department->id;
                     }
                 }
 
-                if ($job->save()) {
+                if ($job->save())
+                {
                     $project = new Project();
 
                     $project->sn = Helper::generationSN('XM');
@@ -113,7 +122,8 @@ class ProjectController extends Controller {
                     $project->cid = $customer->id;
                     $project->creater = Auth::id();
                     $project->modifier = Auth::id();
-                    if ($project->save()) {
+                    if ($project->save())
+                    {
                         return $project->id;
                     }
                     return 0;
@@ -127,7 +137,8 @@ class ProjectController extends Controller {
         ]);
     }
 
-    public function audit(Request $request) {
+    public function audit(Request $request)
+    {
         $title = '项目启动书审核';
 
         $projects = Project::all();
@@ -139,7 +150,8 @@ class ProjectController extends Controller {
         ]);
     }
 
-    public function detail(Request $request, $id) {
+    public function detail(Request $request, $id)
+    {
         $title = '项目启动书详情';
         $project = Project::findOrFail($id);
 
@@ -150,12 +162,14 @@ class ProjectController extends Controller {
         ]);
     }
 
-    private static function breadcrumbs($title = null) {
+    private static function breadcrumbs($title = null)
+    {
         $retValue = array();
         $url = URL::current();
         $url = trim($url, '/index');
 
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url)) {
+        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url))
+        {
             return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
         }
 

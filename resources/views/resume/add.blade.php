@@ -192,11 +192,11 @@
     </div>
     <div class="form-group text-center">
     <button class="btn btn-primary" type="submit" onClick="updateText();">
-    <i class="ace-icon fa fa-plus align-top bigger-125"></i>
+    <i class="ace-icon fa fa-plus bigger-125"></i>
     新建
     </button>
     <button class="btn" type="reset">
-    <i class="ace-icon fa fa-undo align-top bigger-125"></i>
+    <i class="ace-icon fa fa-undo bigger-125"></i>
     重置
     </button>
     </div>

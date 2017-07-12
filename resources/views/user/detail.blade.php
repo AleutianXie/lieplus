@@ -7,9 +7,11 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-datepicker3.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/jquery-ui.min.css') }}" />
 @endsection
 
 @section('content')
+@include('common.messages')
 <div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
         <li class="">
@@ -237,13 +239,248 @@
         {{-- 密码--结束 --}}
         {{-- 设置--开始 --}}
         <div id="settings" class="tab-pane fade">
+        <div class="row">
             <h4 class="purple">
                 <i class="green ace-icon fa fa-key bigger-110"></i>
                 设置
             </h4>
         </div>
-        {{-- 设置--结束 --}}
+        <div id="accordion" class="accordion-style2 col-xs-12 col-sm-6">
+            <div class="group">
+                <h3 class="accordion-header">部门</h3>
+                <div>
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>
+                                    编码
+                                </th>
+
+                                <th>
+                                    名称
+                                </th>
+                                <th class="hidden-480">描述</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($departments as $department)
+                            <tr>
+                                <td>{{ $department->number }}</td>
+                                <td>{{ $department->name }}</td>
+                                <td>
+                                    <span class="label label-info arrowed-in arrowed-in-right">{{ $department->description }}</span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <form class="form-horizontal" id="userdepartment-form" name="userdepartment-form" action="{{ url('/user/department/add') }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group">
+                            <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="number">部门编码:</label>
+
+                            <div class="col-xs-12 col-sm-10">
+                                <div class="clearfix">
+                                    <input type="text" id="number" name="number" value="{{ old('number') }}" class="col-xs-12 col-sm-5" required>
+                                    <div class="red">
+                                        {{ $errors->first('number') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="dname">部门名称:</label>
+
+                            <div class="col-xs-12 col-sm-10">
+                                <div class="clearfix">
+                                    <input type="text" id="dname" name="dname" value="{{ old('dname') }}" class="col-xs-12 col-sm-5" required>
+                                    <div class="red">
+                                        {{ $errors->first('dname') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="description">部门描述:</label>
+
+                            <div class="col-xs-12 col-sm-10">
+                                <div class="clearfix">
+                                    <textarea name="description" id="description" cols="40" rows="5" value="{{ old('description') }}"></textarea>
+                                    <div class="red">
+                                        {{ $errors->first('description') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group center">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="ace-icon fa fa-plus"></i>
+                                新建
+                            </button>
+                            <button class="btn" type="reset">
+                                                            <i class="ace-icon fa fa-undo"></i>
+                                重置
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="group">
+                <h3 class="accordion-header">角色</h3>
+                <div>
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+
+                                <th>
+                                    名称
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($roles as $role)
+                            <tr>
+                                <td>{{ $role->id }}</td>
+                                <td>{{ $role->name }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <form class="form-horizontal" id="role-form" name="role-form" action="{{ url('/role/add') }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group">
+                            <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="rname">角色名称:</label>
+
+                            <div class="col-xs-6 col-sm-10">
+                                <div class="clearfix">
+                                    <input type="text" id="rname" name="rname" value="{{ old('rname') }}" class="col-xs-12 col-sm-5" required>
+                                    <div class="red">
+                                        {{ $errors->first('rname') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group center">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="ace-icon fa fa-plus"></i>
+                                新建
+                            </button>
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo"></i>
+                                重置
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="group">
+                <h3 class="accordion-header">权限</h3>
+                <div class="widget-body">
+                    <div class="widget-main padding-8">
+                        <ul id="tree1"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{{-- update phase 2 --}}
+                                            <div class="col-xs-12 col-sm-6">
+                                        <div class="widget-box">
+                                            <div class="widget-header widget-header-flat widget-header-small">
+                                                <h5 class="widget-title">
+                                                    <i class="ace-icon fa fa-signal"></i>
+                                                    Traffic Sources
+                                                </h5>
+
+                                                <div class="widget-toolbar no-border">
+                                                    <div class="inline dropdown-hover">
+                                                        <button class="btn btn-minier btn-primary">
+                                                            This Week
+                                                            <i class="ace-icon fa fa-angle-down icon-on-right bigger-110"></i>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
+                                                            <li class="active">
+                                                                <a href="javascript:void(-1)" class="blue">
+                                                                    <i class="ace-icon fa fa-caret-right bigger-110">&nbsp;</i>
+                                                                    This Week
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:void(-1)">
+                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
+                                                                    Last Week
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:void(-1)">
+                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
+                                                                    This Month
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:void(-1)">
+                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
+                                                                    Last Month
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="widget-body">
+                                                <div class="widget-main">
+                                                    <!-- #section:plugins/charts.flotchart -->
+                                                    <div id="piechart-placeholder" style="width:90%; height:150px"></div>
+
+                                                    <!-- /section:plugins/charts.flotchart -->
+                                                    <div class="hr hr8 hr-double"></div>
+
+                                                    <div class="clearfix">
+                                                        <!-- #section:custom/extra.grid -->
+                                                        <div class="grid3">
+                                                            <span class="grey">
+                                                                <i class="ace-icon fa fa-facebook-square fa-2x blue"></i>
+                                                                &nbsp; likes
+                                                            </span>
+                                                            <h4 class="bigger pull-right">1,255</h4>
+                                                        </div>
+
+                                                        <div class="grid3">
+                                                            <span class="grey">
+                                                                <i class="ace-icon fa fa-twitter-square fa-2x purple"></i>
+                                                                &nbsp; tweets
+                                                            </span>
+                                                            <h4 class="bigger pull-right">941</h4>
+                                                        </div>
+
+                                                        <div class="grid3">
+                                                            <span class="grey">
+                                                                <i class="ace-icon fa fa-pinterest-square fa-2x red"></i>
+                                                                &nbsp; pins
+                                                            </span>
+                                                            <h4 class="bigger pull-right">1,050</h4>
+                                                        </div>
+
+                                                        <!-- /section:custom/extra.grid -->
+                                                    </div>
+                                                </div><!-- /.widget-main -->
+                                            </div><!-- /.widget-body -->
+                                        </div><!-- /.widget-box -->
+                                    </div><!-- /.col -->
    </div>
+           {{-- 设置--结束 --}}
 </div>
 
 @endsection
@@ -261,6 +498,12 @@
 <script src="{{ asset('static/js/ace-editable.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/js/address.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/js/jquery.xhashchange.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/jquery.flot.min.js') }} "></script>
+<script type="text/javascript" src="{{ asset('static/js/jquery.flot.pie.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/jquery.flot.resize.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/tree.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
     var hash = location.hash;
@@ -269,7 +512,7 @@ jQuery(function($) {
     $(window).hashchange(function () {
         hash = location.hash;
 
-        if (jQuery.inArray( hash, arr ) == -1 ) {
+        if (jQuery.inArray( hash, arr ) == -1) {
             hash = "#baseinfo";
             location.hash = hash;
         }
@@ -280,6 +523,7 @@ jQuery(function($) {
         $(hash).addClass('in');
         $(hash).siblings().removeClass('active');
         $(hash).siblings().removeClass('in');
+        history.replaceState(null, null, hash);
     });
 
     if (jQuery.inArray( hash, arr ) == -1 ) {
@@ -293,11 +537,176 @@ jQuery(function($) {
     $(hash).addClass('in');
     $(hash).siblings().removeClass('active');
     $(hash).siblings().removeClass('in');
+    history.replaceState(null, null, hash);
 
     $(document.body).on("click", ".tabbable a[data-toggle]", function(event) {
-        location.hash = this.getAttribute("href");
+        hash = this.getAttribute("href");
+        location.hash = hash;
+        history.replaceState(null, null, hash);
     });
 
+    //jquery accordion
+    $( "#accordion" ).accordion({
+        collapsible: true ,
+        heightStyle: "content",
+        animate: 250,
+        header: ".accordion-header"
+    }).sortable({
+        axis: "y",
+        handle: ".accordion-header",
+        stop: function( event, ui ) {
+            // IE doesn't register the blur when sorting
+            // so trigger focusout handlers to remove .ui-state-focus
+            ui.item.children( ".accordion-header" ).triggerHandler( "focusout" );
+        }
+    });
+
+
+    var sampleData = initiateDemoData();//see below
+
+
+    $('#tree1').ace_tree({
+        dataSource: sampleData['dataSource1'],
+        multiSelect: true,
+        cacheItems: true,
+        'open-icon' : 'ace-icon tree-minus',
+        'close-icon' : 'ace-icon tree-plus',
+        'itemSelect' :  {{ Auth::user()->isAdmin ? 'true' : 'false' }},
+        'folderSelect': false,
+        'selected-icon' : 'ace-icon fa fa-check',
+        'unselected-icon' : 'ace-icon fa fa-times',
+        loadingHTML : '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>'
+    });
+
+    function initiateDemoData(){
+        var tree_data = {
+            //attr = {
+                    //         'classes': 'required-item red-text',
+                    //         'data-parent': parentId,
+                    //         'guid': guid,
+                    //         'id': guid
+                    //     }
+            @foreach ($roles as $role)
+            {{-- expr --}}
+            '{{ $role->name }}' : {
+                text: '{{ $role->name }}',
+                type: 'folder',
+                @if (count($role->permission))
+                additionalParameters: {
+                    children: {
+                        @foreach ($role->permission as $permission)
+                        '{{ $permission->id }}': {
+                            text: '{{ $permission->description}}',
+                            type: 'item',
+                            @if ($permission->enabled)
+                            attr: {
+                                class: 'tree-selected',
+                                'data-icon': 'ace-icon fa fa-check',
+                            }
+                            @endif
+                        },
+                        @endforeach
+                    },
+                }
+                @endif
+            },
+            @endforeach
+        }
+
+        var dataSource1 = function(options, callback){
+            var $data = null
+            if(!("text" in options) && !("type" in options)){
+                $data = tree_data;//the root tree
+                callback({ data: $data });
+                return;
+            }
+            else if("type" in options && options.type == "folder") {
+                if("additionalParameters" in options && "children" in options.additionalParameters)
+                    $data = options.additionalParameters.children || {};
+                else $data = {}//no data
+            }
+
+            if($data != null)//this setTimeout is only for mimicking some random delay
+                setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+
+            //we have used static data here
+            //but you can retrieve your data dynamically from a server using ajax call
+            //checkout examples/treeview.html and examples/treeview.js for more info
+        }
+
+        return {'dataSource1': dataSource1 }
+    }
+
+// TODO: upate phase 2
+              //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
+              //but sometimes it brings up errors with normal resize event handlers
+              $.resize.throttleWindow = false;
+
+              var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
+              var data = [
+                { label: "简历",  data: 38.7, color: "#68BC31"},
+                { label: "流水线",  data: 24.5, color: "#2091CF"},
+                { label: "职位",  data: 8.2, color: "#AF4E96"},
+                { label: "客户",  data: 18.6, color: "#DA5430"},
+                { label: "项目",  data: 10, color: "#FEE074"}
+              ]
+              function drawPieChart(placeholder, data, position) {
+                  $.plot(placeholder, data, {
+                    series: {
+                        pie: {
+                            show: true,
+                            tilt:0.8,
+                            highlight: {
+                                opacity: 0.25
+                            },
+                            stroke: {
+                                color: '#fff',
+                                width: 2
+                            },
+                            startAngle: 2
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: position || "ne",
+                        labelBoxBorderColor: null,
+                        margin:[-30,15]
+                    }
+                    ,
+                    grid: {
+                        hoverable: true,
+                        clickable: true
+                    }
+                 })
+             }
+             drawPieChart(placeholder, data);
+
+             /**
+             we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
+             so that's not needed actually.
+             */
+             placeholder.data('chart', data);
+             placeholder.data('draw', drawPieChart);
+
+
+              //pie chart tooltip example
+              var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+              var previousPoint = null;
+
+              placeholder.on('plothover', function (event, pos, item) {
+                if(item) {
+                    if (previousPoint != item.seriesIndex) {
+                        previousPoint = item.seriesIndex;
+                        var tip = item.series['label'] + " : " + item.series['percent']+'%';
+                        $tooltip.show().children(0).text(tip);
+                    }
+                    $tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
+                } else {
+                    $tooltip.hide();
+                    previousPoint = null;
+                }
+
+             });
 });
 </script>
 @endsection
