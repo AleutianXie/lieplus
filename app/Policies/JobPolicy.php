@@ -19,7 +19,7 @@ class JobPolicy extends Policy
      */
     public function view(User $user, Job $job)
     {
-        //
+        return $user->hasPermission($this->get_class_name($job), __FUNCTION__);
     }
 
     /**
@@ -30,7 +30,7 @@ class JobPolicy extends Policy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasPermission('job', __FUNCTION__);
     }
 
     /**
@@ -42,7 +42,7 @@ class JobPolicy extends Policy
      */
     public function update(User $user, Job $job)
     {
-        //
+        return $user->hasPermission($this->get_class_name($job), __FUNCTION__);
     }
 
     /**
@@ -54,6 +54,6 @@ class JobPolicy extends Policy
      */
     public function delete(User $user, Job $job)
     {
-        //
+        return $user->hasPermission($this->get_class_name($job), __FUNCTION__);
     }
 }

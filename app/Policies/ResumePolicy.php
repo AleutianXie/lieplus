@@ -19,8 +19,7 @@ class ResumePolicy extends Policy
      */
     public function view(User $user, Resume $resume)
     {
-        //
-        return $user->hasPermission('resume', 'view');
+        return $user->hasPermission($this->get_class_name($resume), __FUNCTION__);
     }
 
     /**
@@ -31,7 +30,7 @@ class ResumePolicy extends Policy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasPermission('resume', __FUNCTION__);
     }
 
     /**
@@ -43,7 +42,7 @@ class ResumePolicy extends Policy
      */
     public function update(User $user, Resume $resume)
     {
-        //
+        return $user->hasPermission($this->get_class_name($resume), __FUNCTION__);
     }
 
     /**
@@ -55,6 +54,6 @@ class ResumePolicy extends Policy
      */
     public function delete(User $user, Resume $resume)
     {
-        //
+        return $user->hasPermission($this->get_class_name($resume), __FUNCTION__);
     }
 }

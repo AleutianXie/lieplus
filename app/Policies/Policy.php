@@ -10,4 +10,9 @@ class Policy
     {
         return $user->isAdmin ? true : null;
     }
+
+    protected function get_class_name($class)
+    {
+        return array_last(explode('\\', get_class($class)));
+    }
 }

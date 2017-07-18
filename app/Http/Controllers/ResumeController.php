@@ -135,6 +135,7 @@ class ResumeController extends Controller
         return view('resume.add', [
             'title' => $title,
             'assignlines' => $assignlines,
+            'jid' => isset($request->input()['jid']) ? $request->input()['jid'] : 0,
         ]);
     }
 
@@ -184,7 +185,7 @@ class ResumeController extends Controller
         $data = $request->input();
         $id = $data['pk'];
         $resume = Resume::find($id);
-        $resume->$data['name'] = $data['value'];
+        $resume->{$data['name']} = $data['value'];
         $resume->modifier = Auth::id();
 
         if ($resume->save())

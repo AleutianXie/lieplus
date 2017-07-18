@@ -173,7 +173,7 @@
                 <select name="jid" id="jid">
                 <option></option>
                 @foreach ($assignlines as $assign)
-                <option value="{{ $assign->line->job->id }}">{{ $assign->line->job->sn }}({{ $assign->line->job->name }})</option>
+                <option value="{{ $assign->line->job->id }}" @if($assign->line->job->id == $jid) selected="selected" @endif>{{ $assign->line->job->sn }}({{ $assign->line->job->name }})</option>
                 @endforeach
                 </select>
             </div>

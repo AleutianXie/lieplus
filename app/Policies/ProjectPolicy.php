@@ -19,7 +19,7 @@ class ProjectPolicy extends Policy
      */
     public function view(User $user, Project $project)
     {
-        //
+        return $user->hasPermission($this->get_class_name($project), __FUNCTION__);
     }
 
     /**
@@ -30,7 +30,7 @@ class ProjectPolicy extends Policy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasPermission('project', __FUNCTION__);
     }
 
     /**
@@ -42,7 +42,7 @@ class ProjectPolicy extends Policy
      */
     public function update(User $user, Project $project)
     {
-        //
+        return $user->hasPermission($this->get_class_name($project), __FUNCTION__);
     }
 
     /**
@@ -54,6 +54,6 @@ class ProjectPolicy extends Policy
      */
     public function delete(User $user, Project $project)
     {
-        //
+        return $user->hasPermission($this->get_class_name($project), __FUNCTION__);
     }
 }

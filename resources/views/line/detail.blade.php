@@ -207,7 +207,7 @@
             </div>
             <div class="pull-right">
                 <button class="btn btn-link">
-                    <a href="/resume/add"><i class="ace-icon fa fa-plus-circle bigger-110"></i>
+                    <a href="/resume/add?jid={{ $line->jid }}"><i class="ace-icon fa fa-plus-circle bigger-110"></i>
                     增加简历</a>
             </div>
 
