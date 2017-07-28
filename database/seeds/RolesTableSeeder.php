@@ -35,7 +35,7 @@ class RolesTableSeeder extends Seeder
             'updated_at' => date('Y-m-d H:i:s', time())]);
         DB::table('roles')->insert([
             'id' => 4,
-            'name' => '招聘经理',
+            'name' => '招聘顾问',
             'creater' => 1,
             'modifier' => 1,
             'created_at' => date('Y-m-d H:i:s', time()),

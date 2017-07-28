@@ -587,7 +587,7 @@ jQuery(function($) {
                     //         'id': guid
                     //     }
             @foreach ($roles as $role)
-            {{-- expr --}}
+            @if ($role->id != 1)
             '{{ $role->name }}' : {
                 text: '{{ $role->name }}',
                 type: 'folder',
@@ -610,6 +610,7 @@ jQuery(function($) {
                 }
                 @endif
             },
+            @endif
             @endforeach
         }
 
