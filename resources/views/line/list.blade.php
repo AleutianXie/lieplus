@@ -110,6 +110,11 @@
                                          查看 </a>
                                     </li>
                                     <li>
+                                        <a href="javascript:void(-1);" onclick="assign({{ $line->id }});">
+                                        <i class="blue ace-icon fa fa-hand-pointer-o bigger-120"></i>
+                                         分配招聘顾问 </a>
+                                    </li>
+                                    <li>
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
                                          加入职位简历库 </a>
@@ -126,6 +131,7 @@
                     @endforeach
                 </tbody>
             </table>
+            <div id="optional-dialog" class="row hide">
             @endif
         </div>
         <!-- 简历列表--结束 -->
@@ -136,5 +142,19 @@
 </div><!-- /.col -->
 </div>
 
-
-
+@section('scripts')
+    <!-- inline scripts related to this page -->
+    <link rel="stylesheet" href="{{ asset('static/css/jquery-ui.min.css') }}" />
+    <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.ui.touch-punch.min.js') }}"></script>
+    <script type="text/javascript">
+        function assign(id){
+            $("#optional-dialog").removeClass('hide').load('/line/assign/'+id).dialog({
+                modal: true,
+                title: "分配招聘顾问",
+                width: '25%',
+                resizable: false
+            });
+        }
+    </script>
+@endsection

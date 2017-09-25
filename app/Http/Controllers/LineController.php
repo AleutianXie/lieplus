@@ -94,4 +94,9 @@ class LineController extends Controller
             //'breadcrumbs' => self::breadcrumbs($title),
         ]);
     }
+
+    public function assign(Request $request, $id)
+    {
+        return view('line.assign', compact('id'));
+    }
 }
