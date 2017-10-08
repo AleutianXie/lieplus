@@ -267,12 +267,14 @@
             </a>
 
             <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                @role('admin')
                 <li>
                     <a href="{{ url('/user/'.Auth::id().'#settings') }}">
                         <i class="ace-icon fa fa-cog"></i>
                         设置
                     </a>
                 </li>
+                @endrole
 
                 <li>
                     <a href="{{ url('/user/'.Auth::id().'#baseinfo') }}">
@@ -281,6 +283,14 @@
                     </a>
                 </li>
 
+                @role('admin')
+                <li>
+                    <a href="{{ url('/admin') }}">
+                        <i class="ace-icon fa fa-user"></i>
+                        用户管理
+                    </a>
+                </li>
+                @endrole
                 <li class="divider"></li>
 
                 <li>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Resume;
 
 class ResumeTableSeeder extends Seeder
 {
@@ -14,11 +15,11 @@ class ResumeTableSeeder extends Seeder
         //
         for ($i = 0; $i < 20; $i++)
         {
-
+            $mobile = '159014356' . sprintf('%02d', $i);
             DB::table('resumes')->insert([[
-                'sn' => 'JL' . date('Ymdhis', time()) . sprintf('%4d', mt_rand(0, 9999)),
+                'sn' => 'JL' . date('Ymdhis', time()) . sprintf('%04d', mt_rand(0, 9999)),
                 'name' => '谢辉生',
-                'mobile' => '159014356' . sprintf('%02d', $i),
+                'mobile' => $mobile,
                 'email' => 'aleutian.xie' . $i . '@ciciosft.cn',
                 'gender' => 0,
                 'birthdate' => '1993-03-09',
@@ -244,6 +245,16 @@ span.s1 {font-kerning: none}
                 'modifier' => 1,
                 'created_at' => date('Y-m-d h:i:s', time()),
                 'updated_at' => date('Y-m-d h:i:s', time())]]);
+
+            $rid = Resume::where(['mobile' => $mobile])->value('id');
+            DB::table('mylibraries')->insert([
+                'uid' => 1,
+                'rid' => $rid,
+                'show' => 1,
+                'creater' => 1,
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ]);
         }
     }
 }

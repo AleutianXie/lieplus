@@ -31,11 +31,7 @@ class CustomerController extends Controller
         $title = '我的客户';
         $assignCustomers = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get();
 
-        return view('customer.index', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'assignCustomers' => $assignCustomers,
-        ]);
+        return view('customer.index', compact('title', 'assignCustomers'));
     }
 
     public function all()
@@ -52,6 +48,7 @@ class CustomerController extends Controller
     public function add(Request $request)
     {
         $title = '新建客户';
+        $route_name = 'customer.add';
 
         if ($request->isMethod('POST'))
         {
@@ -111,10 +108,7 @@ class CustomerController extends Controller
             // }
         }
 
-        return view('customer.add', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
-        ]);
+        return view('customer.add', compact('title', 'route_name'));
     }
 
     public function detail(Request $request, $id)
@@ -122,20 +116,13 @@ class CustomerController extends Controller
         $title = '客户信息';
         $customer = Customer::findOrFail($id);
 
-        return view('customer.detail', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'customer' => $customer,
-        ]);
+        return view('customer.detail', compact('title', 'customer'));
     }
 
     public function audit(Request $request, $id)
     {
         $title = '审核客户';
-        return view('customer.audit', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-        ]);
+        return view('customer.audit', compact('title'));
     }
 
     public function isExist(Request $request)
@@ -174,21 +161,5 @@ class CustomerController extends Controller
             //redirect()->back();
             return '更新失败';
         }
-    }
-
-    private static function breadcrumbs($title = null)
-    {
-        $retValue = array();
-        $url = URL::current();
-        $url = trim($url, '/index');
-
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url))
-        {
-            return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
-        }
-
-        return [['url' => '/', 'text' => '首页'],
-            ['url' => dirname($url), 'text' => self::$prefixTitle],
-            ['url' => $url, 'text' => $title]];
     }
 }

@@ -16,15 +16,15 @@ class AlertController extends Controller
         $alert = Alert::findOrFail($id);
         $resume = Resume::findOrFail($rid);
 
-        return view('alert.detail', ['alert' => $alert, 'resume' => $resume]);
+        return view('alert.detail', compact('alert', 'resume'));
     }
 
     public function add(Request $request, $rid)
     {
         //$resume = Resume::findOrFail($id);
-$alert = new Alert();
-$resume = Resume::findOrFail($rid);
-        return view('alert.add', ['alert' => $alert, 'resume' => $resume]);
+        $alert = new Alert();
+        $resume = Resume::findOrFail($rid);
+        return view('alert.add', compact('alert', 'resume'));
     }
 
     public function save(Request $request)

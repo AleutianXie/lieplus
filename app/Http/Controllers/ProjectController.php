@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\URL;
 
 class ProjectController extends Controller
 {
-    private static $prefixTitle = '项目启动书';
-
     //
     public function __construct()
     {
@@ -131,23 +129,16 @@ class ProjectController extends Controller
             }
         }
 
-        return view('BD.project', [
-            'title' => self::$prefixTitle,
-            'breadcrumbs' => self::breadcrumbs(),
-        ]);
+        $title = '项目启动书';
+        return view('BD.project', compact('title'));
     }
 
     public function audit(Request $request)
     {
         $title = '项目启动书审核';
-
         $projects = Project::all();
 
-        return view('BD.audit', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'projects' => $projects,
-        ]);
+        return view('BD.audit', compact('title', 'projects'));
     }
 
     public function detail(Request $request, $id)
@@ -155,27 +146,6 @@ class ProjectController extends Controller
         $title = '项目启动书详情';
         $project = Project::findOrFail($id);
 
-        return view('bd.detail', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
-            'project' => $project,
-        ]);
+        return view('bd.detail', compact('title', 'project'));
     }
-
-    private static function breadcrumbs($title = null)
-    {
-        $retValue = array();
-        $url = URL::current();
-        $url = trim($url, '/index');
-
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url))
-        {
-            return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
-        }
-
-        return [['url' => '/', 'text' => '首页'],
-            ['url' => dirname($url), 'text' => self::$prefixTitle],
-            ['url' => $url, 'text' => $title]];
-    }
-
 }

@@ -53,3 +53,93 @@ Breadcrumbs::register('user.profile', function ($breadcrumbs, $id)
     $breadcrumbs->parent('home');
     $breadcrumbs->push('用户中心', route('user.profile', $id));
 });
+
+// Home
+Breadcrumbs::register('admin', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('用户列表', route('admin'));
+});
+
+// Home > Job
+Breadcrumbs::register('job', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('职位', route('job'));
+});
+// Home > Job > all
+Breadcrumbs::register('job.all', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('job');
+    $breadcrumbs->push('猎加职位', route('job.all'));
+});
+
+// Home > Job > detail
+Breadcrumbs::register('job.detail', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('job');
+    $breadcrumbs->push('职位详情', route('job.detail', $id));
+});
+
+// Home > Job > add
+Breadcrumbs::register('job.add', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('job');
+    $breadcrumbs->push('新建职位', route('job.add'));
+});
+
+// Home > Job
+Breadcrumbs::register('project', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('项目启动书', route('project'));
+});
+
+// Home > Job > detail
+Breadcrumbs::register('project.detail', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('project');
+    $breadcrumbs->push('项目启动书详细', route('project.detail', $id));
+});
+
+// Home > Customer
+Breadcrumbs::register('customer', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('客户', route('customer'));
+});
+
+// Home > Customer > all
+Breadcrumbs::register('customer.all', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('customer');
+    $breadcrumbs->push('猎加客户', route('customer.all'));
+});
+
+// Home > Customer
+Breadcrumbs::register('line', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('职位流水线', route('line'));
+});
+
+// Home > Customer > all
+Breadcrumbs::register('line.all', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('line');
+    $breadcrumbs->push('猎加职位流水线', route('line.all'));
+});
+
+// Home > Customer > detail
+Breadcrumbs::register('line.detail', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('line');
+    $breadcrumbs->push('职位流水线详情', route('line.detail', $id));
+});
+
+// Home > Customer > plan
+Breadcrumbs::register('line.plan', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('line');
+    $breadcrumbs->push('今日工作台', route('line.plan'));
+});

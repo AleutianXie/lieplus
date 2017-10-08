@@ -19,11 +19,11 @@ class CreateProfilesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('uid');
             $table->foreign('uid')->references('id')->on('users');
-            $table->string('number', 11)->unique();
+            $table->string('number', 11)->nullable();
             $table->string('avatar', 60)->nullable();
             $table->date('birthdate')->nullable();
             $table->boolean('gender')->nullable();
-            $table->string('mobile', 11)->unique();
+            $table->string('mobile', 11)->nullable();
             $table->unsignedInteger('did')->nullable();
             $table->foreign('did')->references('id')->on('userdepartments');
             $table->boolean('show')->default(1);

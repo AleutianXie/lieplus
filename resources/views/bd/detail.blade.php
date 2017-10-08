@@ -3,6 +3,7 @@
 
 @section('stylesheet')
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 @endsection
 
 @section('content')
@@ -206,4 +207,8 @@
         {{-- 客户信息--结束 --}}
    </div>
 </div>
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('project.detail', $project->id) !!}
 @endsection

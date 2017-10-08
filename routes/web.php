@@ -45,9 +45,9 @@ Route::group(['prefix' => 'alert'], function ()
 
 Route::group(['prefix' => 'customer'], function ()
 {
-    Route::get('/', 'CustomerController@index');
-    Route::get('/index', 'CustomerController@index');
-    Route::get('/all', 'CustomerController@all');
+    Route::get('/', 'CustomerController@index')->name('customer');
+    Route::get('/index', 'CustomerController@index')->name('customer');
+    Route::get('/all', 'CustomerController@all')->name('customer.all');
     Route::match(['get', 'post'], '/{id}', 'CustomerController@detail')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/audit/{id}', 'CustomerController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'CustomerController@add');
@@ -57,41 +57,50 @@ Route::group(['prefix' => 'customer'], function ()
 
 Route::group(['prefix' => 'job'], function ()
 {
-    Route::get('/', 'JobController@index');
-    Route::get('/index', 'JobController@index');
-    Route::get('/all', 'JobController@all');
-    Route::match(['get', 'post'], '/{id}', 'JobController@detail')->where('id', '[0-9]+');
+    Route::get('/', 'JobController@index')->name('job');
+    Route::get('/index', 'JobController@index')->name('job.index');
+    Route::get('/all', 'JobController@all')->name('job.all');
+    Route::match(['get', 'post'], '/{id}', 'JobController@detail')->where('id', '[0-9]+')->name('job.detail');
     Route::match(['get', 'post'], '/audit/{id}', 'JobController@audit')->where('id', '[0-9]+');
-    Route::match(['get', 'post'], '/add', 'JobController@add');
+    Route::match(['get', 'post'], '/add', 'JobController@add')->name('job.add');
     Route::post('/edit', 'JobController@edit');
 
 });
 
 Route::group(['prefix' => 'line'], function ()
 {
-    Route::get('/', 'LineController@index');
-    Route::get('/index', 'LineController@index');
+    Route::get('/', 'LineController@index')->name('line');
+    Route::get('/index', 'LineController@index')->name('line');
     Route::post('/add', 'LineController@add');
-    Route::match(['get', 'post'], '/{id}', 'LineController@detail')->where('id', '[0-9]+');
+    Route::match(['get', 'post'], '/{id}', 'LineController@detail')->where('id', '[0-9]+')->name('line.detail');
     Route::match(['get', 'post'], '/edit', 'LineController@edit');
-    Route::get('/my', 'LineController@my');
+    Route::get('/my', 'LineController@my')->name('line.my');
     Route::get('/job', 'LineController@job');
-    Route::get('/all', 'LineController@all');
-    Route::get('/plan', 'LineController@plan');
-    Route::get('/assign/{id}', 'LineController@assign')->where('id', '[0-9]+');
+    Route::get('/all', 'LineController@all')->name('line.all');
+    Route::get('/plan', 'LineController@plan')->name('line.plan');
+    Route::match(['get', 'post'],'/assign/{id}', 'LineController@assign')->where('id', '[0-9]+');
 });
 
 Route::group(['prefix' => 'project'], function ()
 {
-    Route::match(['get', 'post'], '/', 'ProjectController@index');
-    Route::match(['get', 'post'], '/index', 'ProjectController@index');
+    Route::match(['get', 'post'], '/', 'ProjectController@index')->name('project');
+    Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project');
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit');
-    Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+');
+    Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
 });
 
 // for user profile
-Route::get('/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
+Route::match(['get', 'post'],'/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
+Route::post('/user/edit', ['as' => 'user.edit', 'uses' => 'UserController@edit'])->where('id', '[0-9]+');
 Route::post('/user/department/add', 'UserDepartmentController@add');
 Route::post('/role/add', 'RoleController@add');
 Route::post('/user/department/edit', 'UserDepartmentController@edit');
 Route::post('/role/edit', 'RoleController@edit');
+
+// admin
+Route::group(['prefix' => 'admin'], function ()
+{
+    Route::match(['get', 'post'], '/', ['as' => 'admin', 'uses' => 'UserController@index']);
+    Route::match(['get', 'post'], '/index', ['as' => 'admin.index', 'uses' => 'UserController@index']);
+    Route::match(['get', 'post'], '/addrole', 'UserController@addrole');
+});

@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\AssignLine;
 use App\Helper;
 use App\Line;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class LineController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+
+        //Region::Address();
     }
 
     /**
@@ -97,6 +102,45 @@ class LineController extends Controller
 
     public function assign(Request $request, $id)
     {
-        return view('line.assign', compact('id'));
+        if ($request->isMethod('POST')) {
+
+            $data = $request->input();
+            $lid = $data['lid'];
+            $uid = $data['uid'];
+            $this->validate($request, [
+                'uid' => 'required|integer',
+                'lid' => [
+                    'required',
+                    'integer',
+                    Rule::unique('assignlines')->where(function ($query) use ($uid)
+                    {
+                        $query->where('uid', $uid);
+                    }),
+                ],
+            ], [ 
+                'unique' => '已经分配过该 :attribute.',
+            ], [
+                'uid' => '用户号',
+                'lid' => '流水线',
+            ]);
+
+            $assignLine = new AssignLine();
+            $assignLine->uid = $uid;
+            $assignLine->lid = $lid;
+            $assignLine->creater = Auth::id();
+            $assignLine->modifier = Auth::id();
+
+            if ($assignLine->save()) {
+                return redirect()->back()->with('success', '分配成功！');
+            }
+            else {
+                return redirect()->back()->with('error', '分配失败！');
+            }
+        }
+
+
+        $users = User::role('recruiter')->get(); 
+
+        return view('line.assign', compact('id','users'));
     }
 }

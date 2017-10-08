@@ -78,7 +78,7 @@
                 <li class="">
                     <a href="/resume/all">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        猎帮简历库
+                        猎加简历库
                     </a>
 
                     <b class="arrow"></b>
@@ -158,7 +158,7 @@
                 <li>
                 <a href="/job/all">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        猎帮职位
+                        猎加职位
                     </a>
 
                     <b class="arrow"></b>

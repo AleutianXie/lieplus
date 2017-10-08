@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -32,12 +34,12 @@ class User extends Authenticatable
         return $this->hasOne('App\Profile', 'uid', 'id');
     }
 
-    public function role()
+/*    public function role()
     {
         return $this->hasMany('App\UserRole', 'uid', 'id');
-    }
+    }*/
 
-    public function getisAdminAttribute()
+/*    public function getisAdminAttribute()
     {
         return !empty($this->hasMany('App\UserRole', 'uid', 'id')->where(['rid' => 1])->get()->toArray());
     }
@@ -48,5 +50,5 @@ class User extends Authenticatable
         {
             return $value->model == strtolower($model) && $value->action == strtolower($action) && $value->enabled == 1;
         }));
-    }
+    }*/
 }

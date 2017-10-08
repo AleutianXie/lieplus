@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use App\User;
 
 class RolesTableSeeder extends Seeder
 {
@@ -11,41 +13,19 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
-        DB::table('roles')->insert([
-            'id' => 1,
-            'name' => '管理员',
-            'creater' => 1,
-            'modifier' => 1,
-            'created_at' => date('Y-m-d H:i:s', time()),
-            'updated_at' => date('Y-m-d H:i:s', time())]);
-        DB::table('roles')->insert([
-            'id' => 2,
-            'name' => '部门经理',
-            'creater' => 1,
-            'modifier' => 1,
-            'created_at' => date('Y-m-d H:i:s', time()),
-            'updated_at' => date('Y-m-d H:i:s', time())]);
-        DB::table('roles')->insert([
-            'id' => 3,
-            'name' => 'BD',
-            'creater' => 1,
-            'modifier' => 1,
-            'created_at' => date('Y-m-d H:i:s', time()),
-            'updated_at' => date('Y-m-d H:i:s', time())]);
-        DB::table('roles')->insert([
-            'id' => 4,
-            'name' => '招聘顾问',
-            'creater' => 1,
-            'modifier' => 1,
-            'created_at' => date('Y-m-d H:i:s', time()),
-            'updated_at' => date('Y-m-d H:i:s', time())]);
-        DB::table('roles')->insert([
-            'id' => 5,
-            'name' => '客户顾问',
-            'creater' => 1,
-            'modifier' => 1,
-            'created_at' => date('Y-m-d H:i:s', time()),
-            'updated_at' => date('Y-m-d H:i:s', time())]);
+        echo "Create Role admin.\n";
+        Role::create(['name' => 'admin']);
+        echo "Create Role manager.\n";
+        Role::create(['name' => 'manager']);
+        echo "Create Role bd.\n";
+        Role::create(['name' => 'bd']);
+        echo "Create Role recruiter.\n";
+        Role::create(['name' => 'recruiter']);
+        echo "Create Role customer.\n";
+        Role::create(['name' => 'customer']);
+        echo "Assign Role admin to Adminstrator.\n";
+        $user = User::where(['name' => 'Aleutian Xie'])->first();
+        $user->assignRole('admin');
+        echo "OK!";
     }
 }

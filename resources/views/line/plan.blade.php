@@ -3,8 +3,9 @@
 @section('content')
 
 @include('common.messages')
-<h1>我的工作台</h1>
-
 @include('station.list', ['stations' => array()])
+@endsection
 
+@section('breadcrumbs')
+{!! Breadcrumbs::render('line.plan') !!}
 @endsection

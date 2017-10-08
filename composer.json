@@ -11,9 +11,12 @@
         "php": ">=5.6.4",
         "barryvdh/laravel-debugbar": "^2.3",
         "barryvdh/laravel-ide-helper": "^2.2",
+        "caouecs/Laravel-lang": "~3.0",
         "davejamesmiller/laravel-breadcrumbs": "^3.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "^1.0",
+        "laravelcollective/html": "^5.4.0",
+        "spatie/laravel-permission": "^2.7",
         "tom-lingham/searchy": "2.*"
     },
     "require-dev": {

@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 
 <!-- page specific plugin scripts -->
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
@@ -100,13 +101,8 @@
                                     </li>
                                     <li>
                                         <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
-                                         加入职位简历库 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
-                                         重新加入工作台 </a>
+                                        <i class="blue ace-icon fa fa-play bigger-120"></i>
+                                         分配 </a>
                                     </li>
                                 </ul>
                             </div>

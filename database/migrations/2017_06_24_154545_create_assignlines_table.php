@@ -19,7 +19,7 @@ class CreateAssignlinesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('uid');
             $table->foreign('uid')->references('id')->on('users');
-            $table->unsignedInteger('lid')->unique();
+            $table->unsignedInteger('lid');
             $table->foreign('lid')->references('id')->on('lines');
             $table->boolean('show')->default(1);
             $table->unsignedInteger('creater');

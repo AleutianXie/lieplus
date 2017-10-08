@@ -28,15 +28,12 @@ class JobController extends Controller {
      */
     public function index() {
         $title = '我的职位';
+        $route_name = 'job';
         //$jobs = Job::all();
 
         $jobs = Job::where(['creater' => Auth::id(), 'show' => 1])->get();
 
-        return view('job.index', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'jobs' => $jobs,
-        ]);
+        return view('job.index', compact('title', 'route_name', 'jobs'));
     }
 
     /**
@@ -46,13 +43,10 @@ class JobController extends Controller {
      */
     public function all() {
         $title = '猎帮职位';
+        $route_name = 'job.all';
         $jobs = Job::all();
 
-        return view('job.index', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'jobs' => $jobs,
-        ]);
+        return view('job.index', compact('title', 'route_name', 'jobs'));
     }
 
     public function add(Request $request) {
@@ -109,35 +103,13 @@ class JobController extends Controller {
 
         $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
 
-        return view('job.add', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs($title),
-            'assignedCustomers' => $assignedCustomers,
-        ]);
+        return view('job.add', compact('title', 'assignedCustomers'));
     }
 
     public function detail(Request $request, $id) {
         $title = '职位信息';
         $job = Job::findOrFail($id);
 
-        return view('job.detail', [
-            'title' => $title,
-            'breadcrumbs' => self::breadcrumbs(),
-            'job' => $job,
-        ]);
-    }
-
-    private static function breadcrumbs($title = null) {
-        $retValue = array();
-        $url = URL::current();
-        $url = trim($url, '/index');
-
-        if (null == $title || 'http:' == dirname($url) || 'https:' == dirname($url)) {
-            return [['url' => '/', 'text' => '首页'], ['url' => $url, 'text' => self::$prefixTitle]];
-        }
-
-        return [['url' => '/', 'text' => '首页'],
-            ['url' => dirname($url), 'text' => self::$prefixTitle],
-            ['url' => $url, 'text' => $title]];
+        return view('job.detail', compact('title', 'job'));
     }
 }

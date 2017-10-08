@@ -2,6 +2,11 @@
 
 @section('title'){{ $title }}@endsection
 
+@section('stylesheet')
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+@endsection
+
 @section('content')
 @include('common.messages')
     <div class="tab-content no-border padding-24">
@@ -94,6 +99,10 @@
         </div>
         {{-- 职位信息--结束 --}}
    </div>
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('job.detail', $job->id) !!}
 @endsection
 
 @section('scripts')

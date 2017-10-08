@@ -15,7 +15,7 @@ class Customer extends Model
     //
     protected $table = 'customers';
 
-    public function job()
+    public function jobs()
     {
         return $this->hasMany('App\Job', 'cid');
     }

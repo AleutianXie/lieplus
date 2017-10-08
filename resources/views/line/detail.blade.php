@@ -319,6 +319,10 @@
 </div>
 @endsection
 
+@section('breadcrumbs')
+{!! Breadcrumbs::render('line.detail', $line->id) !!}
+@endsection
+
 @section('scripts')
 <script type="text/javascript">
         $('table[id^=dynamic-table]').each(function(){

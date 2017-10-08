@@ -14,7 +14,7 @@ class UserDepartmentController extends Controller
     {
         //$this->middleware('auth:api', ['except' => 'login']);
         $this->middleware('auth');
-        Region::Address();
+        //Region::Address();
     }
 
     public function add(Request $request)

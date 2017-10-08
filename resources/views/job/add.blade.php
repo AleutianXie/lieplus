@@ -3,6 +3,7 @@
 
 @section('stylesheet')
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 @endsection
 
 @section('content')
@@ -156,8 +157,11 @@
 </div>
 @endsection
 
+@section('breadcrumbs')
+{!! Breadcrumbs::render('job.add') !!}
+@endsection
+
 @section('scripts')
-<script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/ace.min.js') }}"></script>

@@ -27,17 +27,19 @@
                 密码
             </a>
         </li>
-
+        @role('admin')
         <li class="">
             <a data-toggle="tab" href="#settings" aria-expanded="false">
                 <i class="purple ace-icon fa fa-cog bigger-120"></i>
                 设置
             </a>
         </li>
+        @endrole
     </ul>
 
     <div class="tab-content no-border padding-24">
         {{-- 基础信息--开始 --}}
+        @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
         <div id="baseinfo" class="tab-pane fade in">
             <div class="row">
                 <h4 class="blue pull-left">
@@ -162,7 +164,18 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> 姓名 </div>
                             <div class="profile-info-value">
-                                <span class="editable editable-click" id="username" style="display: inline;">{{ $user->name }}</span>
+                                <span class="editable editable-click" id="name" style="display: inline;">{{ $user->name }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> 员工号 </div>
+
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="number">
+                                    @isset ($user->profile->number)
+                                        {{ $user->profile->number }}
+                                    @endisset
+                                    </span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -174,7 +187,10 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> 手机 </div>
                             <div class="profile-info-value">
-                                <span class="editable editable-click" id="mobile" style="display: inline;">{{ $user->profile->mobile or ''}}</span>
+                                <span class="editable editable-click" id="mobile" style="display: inline;">
+                                    @isset ($user->profile->mobile)
+                                       {{ $user->profile->mobile }} 
+                                    @endisset</span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -188,7 +204,11 @@
                             <div class="profile-info-name"> 出生日期 </div>
 
                             <div class="profile-info-value">
-                                <span class="editable editable-click" id="birthdate">{{ $user->profile->birthdate or ''}}</span>
+                                <span class="editable editable-click" id="birthdate">
+                                    @isset ($user->profile->birthdate)
+                                        {{ $user->profile->birthdate }}
+                                    @endisset
+                                    </span>
                             </div>
                         </div>
 
@@ -196,13 +216,63 @@
                             <div class="profile-info-name"> 部门 </div>
 
                             <div class="profile-info-value">
-                                <span class="editable editable-click" id="servicestatus">{{ $user->profile->did or ''}}</span>
+                                <span class="editable editable-click" id="did">
+                                    @isset ($user->profile->did)
+                                        {{ $user->profile->department->name }}
+                                    @endisset
+                                    </span>
                             </div>
                         </div>
                     </div>
+
+                    <div class="space-8"></div>
+                    <div class="panel panel-default profile-user-info profile-user-info-striped">
+                        <div class="panel-heading">角色列表</div>
+
+                        <div class="panel-body">
+                            <table class="table table-hover table-striped">
+                                <tbody>
+                                    @foreach($user->getRoleNames() as $role_name)
+                                    <tr>
+                                        <td>{{ __('lieplus.roles.'.$role_name) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            @role('admin')
+                            <a href="#" class="btn btn-link" onclick="assign({{ $user->id }});">
+                                <i class="ace-icon fa fa-plus-circle bigger-120 green"></i>&nbsp;
+                                分配
+                            </a>
+                            @endrole
+                        </div>
+
+                        <div id="role-dialog" class="row hide">
+                            <form class="form-horizontal" id="validation-form" method="post" action="/admin/addrole">
+                                <div class="form-group text-center">
+                                    <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}" />
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <select name="role" id="role">
+                                        @foreach ($roles as $role)
+                                        @if ('admin' != $role->name && !in_array($role->name, $user->getRoleNames()->toArray()))
+                                            <option value="{{ $role->name }}">{{ __('lieplus.roles.'.$role->name) }}</option>
+                                        @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group text-center">
+                                    <button class="btn btn-primary" type="submit">
+                                    <i class="ace-icon fa fa-plus-circle"></i>
+                                    提交
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
                 </div>
             </div>
         </div>
+        @endif
         {{-- 基础信息--结束 --}}
 
         {{-- 密码--开始 --}}
@@ -238,6 +308,7 @@
         </div>
         {{-- 密码--结束 --}}
         {{-- 设置--开始 --}}
+        @role('admin')
         <div id="settings" class="tab-pane fade">
         <div class="row">
             <h4 class="purple">
@@ -347,12 +418,12 @@
                             @foreach ($roles as $role)
                             <tr>
                                 <td>{{ $role->id }}</td>
-                                <td>{{ $role->name }}</td>
+                                <td>{{ __('lieplus.roles.'.$role->name) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <form class="form-horizontal" id="role-form" name="role-form" action="{{ url('/role/add') }}" method="POST">
+{{--                     <form class="form-horizontal" id="role-form" name="role-form" action="{{ url('/role/add') }}" method="POST">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                             <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="rname">角色名称:</label>
@@ -376,7 +447,7 @@
                                 重置
                             </button>
                         </div>
-                    </form>
+                    </form> --}}
                 </div>
             </div>
 
@@ -480,13 +551,16 @@
                                         </div><!-- /.widget-box -->
                                     </div><!-- /.col -->
    </div>
+   @else
+   Access Deny!
+   @endrole
            {{-- 设置--结束 --}}
 </div>
 
 @endsection
 
 @section('breadcrumbs')
-{!! Breadcrumbs::render('user.profile', $user->id) !!}
+{!! Breadcrumbs::render('user.profile', Auth::user()->id) !!}
 @endsection
 
 @section('scripts')
@@ -504,6 +578,135 @@
 <script type="text/javascript" src="{{ asset('static/js/jquery.flot.resize.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/js/tree.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/js/ace-elements.min.js') }}"></script>
+
+<script type="text/javascript">
+        //editables on first profile page
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
+    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
+                                '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';
+    //editables
+    //text editable
+        $('#name').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'text',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            error: function(response){
+                return response.responseJSON.errors.name[0];
+            }
+        });
+
+        $('#email').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'text',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            error: function(response){
+                return response.responseJSON.errors.email[0];
+            }
+        });
+
+        $('#number').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'text',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            error: function(response){
+                return response.responseJSON.errors.number[0];
+            }
+        });
+
+        $('#gender').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'select2',
+            url: '/user/edit',
+            params: {'_token' :'{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            //onblur:'ignore',
+            source: [{'id':0, 'text':'女'},{'id':1, 'text':'男'}],
+            select2: {
+                'width': 140,
+            }
+        });
+        $('#mobile').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'text',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            error: function(response){
+                return response.responseJSON.errors.mobile[0];
+            }
+        });
+        $('#birthdate').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'text',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            error: function(response){
+                return response.responseJSON.errors.birthdate[0];
+            }
+        });
+
+    // var provinces = [{"id":1, "text":"name"},{"id":2, "text": "name2"}];
+
+        $('#did').editable({
+            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
+            @else
+            disabled: true,
+            @endif
+            type: 'select2',
+            url: '/user/edit',
+            params: {'_token' : '{{ csrf_token() }}'},
+            pk: {{ $user->id }},
+            source: {!! json_encode($departmentList) !!},
+            select2: {
+                minimumResultsForSearch: Infinity,
+                'width': 180,
+            },
+            error: function(response){
+                return response.responseJSON.errors.pid[0];
+            }
+        });
+
+        function assign(id){
+            $("#role-dialog").removeClass('hide').dialog({
+                modal: true,
+                title: "分配角色",
+                width: '25%',
+                resizable: false
+            });
+        }
+
+        $('#role').select2({
+            minimumResultsForSearch: -1,
+            width: 140
+        });
+</script>
+
 <script type="text/javascript">
 jQuery(function($) {
     var hash = location.hash;
@@ -571,7 +774,7 @@ jQuery(function($) {
         cacheItems: true,
         'open-icon' : 'ace-icon tree-minus',
         'close-icon' : 'ace-icon tree-plus',
-        'itemSelect' :  {{ Auth::user()->isAdmin ? 'true' : 'false' }},
+        'itemSelect' :  @role('admin')'true'@else'false'@endrole,
         'folderSelect': false,
         'selected-icon' : 'ace-icon fa fa-check',
         'unselected-icon' : 'ace-icon fa fa-times',
@@ -587,9 +790,9 @@ jQuery(function($) {
                     //         'id': guid
                     //     }
             @foreach ($roles as $role)
-            @if ($role->id != 1)
+            @if ($role->name != 'admin')
             '{{ $role->name }}' : {
-                text: '{{ $role->name }}',
+                text: '{{ __('lieplus.roles.'.$role->name) }}',
                 type: 'folder',
                 @if (count($role->permission))
                 additionalParameters: {

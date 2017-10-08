@@ -3,6 +3,7 @@
 @section('title'){{ $title }}@endsection
 @section('stylesheet')
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 @endsection
 
 @section('content')
@@ -329,6 +330,10 @@
         </div><!-- /.widget-main -->
     </div><!-- /.widget-body -->
 </div>
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('project') !!}
 @endsection
 
 @section('scripts')

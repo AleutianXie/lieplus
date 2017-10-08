@@ -5,3 +5,7 @@
 @section('content')
 @include('customer.list', ['customers' => $customers])
 @endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('customer.all') !!}
+@endsection

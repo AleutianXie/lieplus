@@ -97,7 +97,6 @@ class ResumeController extends Controller
                 $library = new MyLibrary();
                 $library->uid = Auth::id();
                 $library->rid = $resume->id;
-                $library->type = 1;
                 $library->creater = Auth::id();
 
                 $library->save();
@@ -146,11 +145,6 @@ class ResumeController extends Controller
 
         $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         $feedbacks = array();
-
-        if (!Auth::user()->can('view', $resume))
-        {
-            abort(403, '无权访问！');
-        }
 
         foreach ($feedbacks_obj as $fitem)
         {

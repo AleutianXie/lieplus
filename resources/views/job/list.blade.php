@@ -1,4 +1,6 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 
 <!-- page specific plugin scripts -->
 <script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
@@ -101,7 +103,7 @@
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
                                     </li>
-                                    <li>
+{{--                                     <li>
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
                                          加入职位简历库 </a>
@@ -110,7 +112,7 @@
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
                                          重新加入工作台 </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </td>

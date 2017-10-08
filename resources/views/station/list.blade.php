@@ -41,7 +41,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="table-header">
-            简历列表
+            工作台列表
         </div>
 
         <!-- 简历列表--开始 -->

@@ -77,7 +77,7 @@ return [
     |
      */
 
-    'locale' => 'en',
+    'locale' => 'zh-CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -186,6 +186,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         TomLingham\Searchy\SearchyServiceProvider::class,
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*
@@ -236,6 +237,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\ServiceProvider::class,
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
         'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
+
     ],
 
 ];

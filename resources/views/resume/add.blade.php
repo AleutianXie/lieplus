@@ -29,7 +29,9 @@
         <div class="col-xs-6 col-sm-2">
             @foreach (config('lieplus.gender') as $element)
             <label class="control-label line-height-1 blue">
-                <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}" required />
+                <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}" @if ($element['id'] == old('gender'))
+                    checked="checked" 
+                @endif required />
                 <span class="lbl"> {{ $element['text'] }}</span>
                 &nbsp;
             </label>
@@ -48,7 +50,7 @@
                     <i class="ace-icon fa fa-phone"></i>
                 </span>
 
-                <input type="tel" id="mobile" name="mobile"  required pattern="1(3|4|5|7|8)[0-9]{9}"/>
+                <input type="tel" id="mobile" name="mobile" value="{{ old('mobile') }}" required pattern="1(3|4|5|7|8)[0-9]{9}"/>
             </div>
             <span class="red">
                 {{ $errors->first('mobile') }}
@@ -62,7 +64,7 @@
                     <i class="ace-icon fa fa-envelope"></i>
                 </span>
 
-                <input type="email" name="email" id="email" required />
+                <input type="email" name="email" id="email" value="{{ old('email') }}" required />
             </div>
             <span class="red">
                 {{ $errors->first('email') }}
@@ -211,7 +213,6 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
