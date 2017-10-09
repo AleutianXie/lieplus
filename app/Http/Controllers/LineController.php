@@ -26,9 +26,10 @@ class LineController extends Controller
      */
     public function index()
     {
-        $lines = Line::where(['creater' => Auth::id(), 'show' => 1])->get();
+        $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+        $lines = array_pluck($assignlines, 'line');
 
-        return view('line.index', ['lines' => $lines]);
+        return view('line.index', compact('lines'));
     }
 
     public function add(Request $request)

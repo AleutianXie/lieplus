@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 //use App\Region;
+use App\Profile;
 use App\User;
 use App\UserDepartment;
-use App\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Validator;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -27,7 +27,7 @@ class UserController extends Controller
             'role_id' => __('lieplus.role'),
         ];
 
-        $this->validationRules  = [
+        $this->validationRules = [
             'name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:profiles'],
@@ -51,7 +51,8 @@ class UserController extends Controller
         $user = User::find($id);
         //dd($request->url());
         $departmentList = [];
-        foreach ($departments as $department) {
+        foreach ($departments as $department)
+        {
             $departmentList[] = ['id' => $department->id, 'text' => $department->name];
         }
         return view('user.detail', compact('title', 'departments', 'roles', 'user', 'departmentList'));
@@ -89,7 +90,8 @@ class UserController extends Controller
                 $this->attributes
             );
 
-            if ($data['name'] == 'name' || $data['name'] == 'email') {
+            if ($data['name'] == 'name' || $data['name'] == 'email')
+            {
                 $user->{$data['name']} = $data['value'];
 
                 if (!$user->save())
@@ -97,9 +99,11 @@ class UserController extends Controller
                     return '更新失败';
                 }
             }
-            else {
+            else
+            {
                 $profile = Profile::where(['uid' => $id])->first();
-                if ($profile == null) {
+                if ($profile == null)
+                {
                     $profile = new Profile();
                     $profile->uid = $id;
                     $profile->creater = Auth::id();
@@ -123,10 +127,12 @@ class UserController extends Controller
             $user = User::find($data['user_id']);
             // dd($user);
             // dd($user->assignRole($data['role']));
-            if ($user->assignRole($data['role'])) {
+            if ($user->assignRole($data['role']))
+            {
                 return redirect()->back()->with('success', '分配成功！');
             }
-            else {
+            else
+            {
                 return redirect()->back()->with('error', '分配失败！');
             }
         }

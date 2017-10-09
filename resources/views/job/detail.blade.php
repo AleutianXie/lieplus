@@ -18,16 +18,18 @@
                     职位信息
                 </h4>
             </div>
+            @role('admin')
             <div class="pull-right">
                 <form class="form-horizontal" id="customer-form" name="customer-form" action="{{ url('/line/add') }}" method="POST">
-<input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-<input type="hidden" name="jid" value="{{ $job->id }}"/>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="jid" value="{{ $job->id }}"/>
                 <button class="btn btn-primary">
                     <i class="ace-icon fa fa-empire bigger-110"></i>
                     生成职位交付流水线
                 </button>
                 </form>
             </div>
+            @endrole
             <div class="space-8"></div>
 
             <div class="profile-user-info profile-user-info-striped">
