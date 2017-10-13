@@ -1,53 +1,8 @@
-<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
-
-<!-- page specific plugin scripts -->
-<script src="{{ asset('static/js/jquery-2.1.4.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
-<script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
-        <!-- ace settings handler -->
-        <script src="{{ asset('static/js/ace-extra.min.js') }}"></script>
-
-<script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
-<!-- inline scripts related to this page -->
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('span[id^=feedback]').each(function(){
-            $(this).editable({
-                params: {'_token' : '{{ csrf_token() }}'},
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return '反馈不能为空！';
-                    }
-                }
-
-            });
-        });
-    });
-</script>
-
-<div class="row">
-<div class="col-xs-12">
 <!-- PAGE CONTENT BEGINS -->
-<div class="row">
-    <div class="col-xs-12">
-        <div class="table-header">
-            工作台列表
-        </div>
-
         <!-- 简历列表--开始 -->
-        <div>
             @if(count($stations))
-            <table id='dynamic-table' class="table table-striped table-bordered table-hover">
+            <div class="col-md-12">
+            <table id='' class="table table-striped table-bordered table-hover" style="width: 100%">
                 <thead>
                     <tr>
                         <th class="center">
@@ -125,15 +80,9 @@
                     @endforeach
                 </tbody>
             </table>
-            @endif
         </div>
+            @endif
         <!-- 简历列表--结束 -->
-    </div>
-</div>
-
-<!-- PAGE CONTENT ENDS -->
-</div><!-- /.col -->
-</div>
 
 
 

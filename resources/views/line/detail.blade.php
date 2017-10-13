@@ -323,15 +323,44 @@
 {!! Breadcrumbs::render('line.detail', $line->id) !!}
 @endsection
 
+@section('stylesheet')
+<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
+@endsection
+
 @section('scripts')
+
+<script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('static/js/select2.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
+<script src="{{ asset('static/js/ace.min.js') }}"></script>
+<script src="{{ asset('static/js/bootstrap-wysiwyg.min.js') }}"></script>
+<script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
+<script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
+<script src="{{ asset('static/js/ace-editable.min.js') }}"></script>
+
+<!-- inline scripts related to this page -->
 <script type="text/javascript">
-        $('table[id^=dynamic-table]').each(function(){
-            $(this).dataTable({
-                language: {
-                    url: '{{ asset('static/localisation/Chinese.json') }}'
-                },
-                dom: 'lftip',
+    $(document).ready(function(){
+        $('span[id^=feedback]').each(function(){
+            $(this).editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return '反馈不能为空！';
+                    }
+                }
+
             });
         });
+
+        $('table.table').dataTable({
+            language: {
+                url: '{{ asset('static/localisation/Chinese.json') }}'
+            },
+        });
+    });
 </script>
 @endsection

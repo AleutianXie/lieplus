@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
 
 <!-- page specific plugin scripts -->
 
