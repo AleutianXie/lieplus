@@ -187,6 +187,7 @@ return [
         TomLingham\Searchy\SearchyServiceProvider::class,
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ],
 
     /*
@@ -237,6 +238,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\ServiceProvider::class,
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
         'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
 

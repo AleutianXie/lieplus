@@ -12,6 +12,7 @@ use App\Station;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\DataTables;
 
 class ResumeController extends Controller
 {
@@ -197,31 +198,36 @@ class ResumeController extends Controller
     {
         $title = '我的简历库';
 
-        $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
-
-        return view('resume.my', [
-            'title' => $title,
-            'resumes' => $resumes,
-        ]);
+        return view('resume.my', compact('title'));
     }
 
     public function joblibrary()
     {
         $title = '我的职位简历库';
 
-        $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
-
-        return view('resume.job', [
-            'title' => $title,
-            'resumes' => $resumes,
-        ]);
+        return view('resume.job', compact('title'));
     }
 
     public function all()
     {
         $title = '猎加简历';
-        $resumes = Resume::all();
+        return view('resume.all', compact('title'));
+    }
 
-        return view('resume.all', compact('title', 'resumes'));
+    public function search(Request $request, $type)
+    {
+        $resumes = [];
+        if ('my' == $type) {
+            $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+                    $resumes = array_map(function($value) { $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1']; return array_intersect_key($value->toArray(), $keys);},$resumes);
+        }
+        if ('job' == $type) {
+            $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+                    $resumes = array_map(function($value) { $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1']; return array_intersect_key($value->toArray(), $keys);},$resumes);
+        }
+        if ('all' == $type) {
+            $resumes = Resume::where(['show' => 1])->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback'])->toArray();
+        }
+        return Datatables::of($resumes)->make();
     }
 }

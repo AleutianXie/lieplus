@@ -8,6 +8,7 @@ use App\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
 {
@@ -29,20 +30,13 @@ class CustomerController extends Controller
     public function index()
     {
         $title = '我的客户';
-        $assignCustomers = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get();
-
-        return view('customer.index', compact('title', 'assignCustomers'));
+        return view('customer.index', compact('title'));
     }
 
     public function all()
     {
         $title = '猎加客户';
-        $customers = Customer::all();
-
-        return view('customer.all', [
-            'title' => $title,
-            'customers' => $customers,
-        ]);
+        return view('customer.all', compact('title'));
     }
 
     public function add(Request $request)
@@ -161,5 +155,19 @@ class CustomerController extends Controller
             //redirect()->back();
             return '更新失败';
         }
+    }
+
+    public function search(Request $request, $type)
+    {
+        $resumes = [];
+        if ('my' == $type) {
+            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+            $customers = array_pluck($assignCustomers, 'customer');
+            //$jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+        }
+        if ('all' == $type) {
+            $customers = Customer::where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property' ]);
+        }
+        return Datatables::of($customers)->make();
     }
 }

@@ -2,8 +2,12 @@
 
 @section('title'){{ $title }}@endsection
 
-@section('content')
+@section('stylesheet')
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+@endsection
 
+@section('content')
 <div class="profile-user-info profile-user-info-striped">
     <div class="profile-info-row">
         <div class="profile-info-name"> 公司全称 </div>
@@ -112,6 +116,10 @@
     </div> --}}
 </div>
 
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('customer.detail', $customer->id) !!}
 @endsection
 
 @section('scripts')

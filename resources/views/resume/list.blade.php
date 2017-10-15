@@ -15,13 +15,94 @@
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+        //editables on first profile page
+    $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
+        $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('resume.search', $type) }}',
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
+                    }
+                },
+                {data: 'name'},
+                {data: null, defaultContent: '摘要'},
+                {data: 'mobile'},
+                {data: 'email'},
+                {
+                    data: 'feedback',
+                    defaultContent: '新增反馈',
+                    render: function (data, type, row)
+                    {
+                        if(!data)
+                        {
+                            data = '新增反馈';
+                        }
+                        return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                    }
+                },
+                {
+                    data: null,
+                    defaultContent: '职位简历库'
+                },
+                {
+                    data: null,
+                    render: function(data, type, row){
+                        return    "<div class='dropdown'>" + 
+                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                              "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
+                                               "提醒 </a>" + 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                               "加入我的简历库 </a>"+ 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                               "加入职位简历库 </a>" +
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#'>" +
+                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                               "重新加入工作台 </a>" +
+                                          "</li>" + 
+                                      "</ul>" +
+                                  "</div>";
+                }}
+        ]
         });
 
+
+$('#dynamic-table tbody').on('click','span[id^=feedback]', function (e) {  
+                             $(this).editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return '反馈不能为空！';
+                    }
+                }
+
+            });
+            } );
         $('span[id^=feedback').each(function(){
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
@@ -35,7 +116,6 @@
         });
     });
 </script>
-
 <div class="row">
 <div class="col-xs-12">
 <!-- PAGE CONTENT BEGINS -->
@@ -52,16 +132,15 @@
 
         <!-- 简历列表--开始 -->
         <div>
-            @if(count($resumes))
-            <table id='dynamic-table' class="table table-striped table-bordered table-hover">
+            <table id='dynamic-table' class="table table-striped table-bordered table-hover" style="width: 100%">
                 <thead>
                     <tr>
-                        <th class="center">
+{{--                         <th class="center">
                             <label class="pos-rel">
                                 <input type="checkbox" class="ace" />
                                 <span class="lbl"></span>
                             </label>
-                        </th>
+                        </th> --}}
                         <th>编号</th>
                         <th>姓名</th>
                         <th>摘要</th>
@@ -78,7 +157,7 @@
                         <th>操作</th>
                     </tr>
                 </thead>
-                <tbody>
+{{--                 <tbody>
                     @foreach($resumes as $resume)
                     <tr>
                         <td class="center">
@@ -94,7 +173,7 @@
                         <td>{{ $resume->email }}</td>
                         <td><span class="editable editable-click" id="feedback[{{ $resume->id }}]" data-name="text" data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk="{{ $resume->id }}">{{ $resume->feedback }}
   {{--{{ route('serie/quick_update', $serie->id) }}   {{ nl2br($serie->video) }}  --}}
-</span></td>
+{{-- </span></td>
                         <td>职位简历库</td>
                         <td>
                             <div class="dropdown">
@@ -134,9 +213,8 @@
                         </td>
                     </tr>
                     @endforeach
-                </tbody>
+                </tbody> --}}
             </table>
-            @endif
         </div>
         <!-- 简历列表--结束 -->
     </div>

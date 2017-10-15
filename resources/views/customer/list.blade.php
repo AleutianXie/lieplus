@@ -15,22 +15,86 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
+        $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
-        });
-
-        $('span[id^=feedback').each(function(){
-            $(this).editable({
-                params: {'_token' : '{{ csrf_token() }}'},
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return '反馈不能为空！';
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('customer.search', $type) }}',
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/customer')}}/" + row.id+ "'>" + data +"</a>";
                     }
-                }
-
-            });
+                },
+                {data: 'name'},
+                {data: 'industry'},
+                {
+                    data: null,
+                    defaultContent: '0',
+                },
+                {
+                    data: null,
+                    defaultContent: '0',
+                },
+                {
+                    data: null,
+                    defaultContent: '0',
+                },
+                {
+                    data: 'level',
+                    defaultContent: '不限',
+                    render: function (data, type, row)
+                    {
+                        if(data == '')
+                        {
+                            data = '不限';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'property',
+                    defaultContent: '是',
+                    render: function (data, type, row)
+                    {
+                        return data == 1 ? '是' : '否';
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row){
+                        return    "<div class='dropdown'>" + 
+                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/customer') }}/" + row.id + "'>"+
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                          "</li>" +  
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                               "加入我的简历库 </a>"+ 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                               "加入职位简历库 </a>" +
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#'>" +
+                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                               "重新加入工作台 </a>" +
+                                          "</li>" + 
+                                      "</ul>" +
+                                  "</div>";
+                }}
+        ]
         });
     });
 </script>
@@ -51,16 +115,10 @@
 
         <!-- 客户列表--开始 -->
         <div>
-            @if(count($customers))
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </th>
+                        <th>编号</th>
                         <th>公司名称</th>
                         <th>行业</th>
                         <th>职位数</th>
@@ -72,14 +130,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($customers as $customer)
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
+{{--                     <tr>
                         <td><a href="{{ asset('/customer/'.$customer->id) }}"> {{ $customer->sn }}</a></td>
                         <td>{{ $customer->name }}</td>
                         <td>{{ count($customer->job) }}</td>
@@ -108,11 +159,9 @@
                                 </ul>
                             </div>
                         </td>
-                    </tr>
-                    @endforeach
+                    </tr> --}}
                 </tbody>
             </table>
-            @endif
         </div>
         <!-- 客户列表--结束 -->
     </div>

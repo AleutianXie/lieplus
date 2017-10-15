@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Resume;
+use App\User;
+use Yajra\DataTables\DataTables;
 
 class HomeController extends Controller
 {
@@ -23,10 +25,21 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $resumes = Resume::where(['creater' => 2])->get();
-;
-        return view('home', ['name' => 'LiePlus', 'resumes' => $resumes]);
+        //$resumes = Resume::where(['creater' => 2])->get();
+
+            //return Datatables::of(User::all())->make(true);
+
+        return view('home');
     }
+
+    public function getuser()
+    {
+        $users = User::select(['id', 'name','email','created_at','updated_at']);
+
+        return Datatables::of($users)->make();
+
+    }
+
 }

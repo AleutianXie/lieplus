@@ -3,7 +3,7 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
-@include('customer.list', ['customers' => $customers])
+@include('customer.list', ['type' => 'all'])
 @endsection
 
 @section('breadcrumbs')

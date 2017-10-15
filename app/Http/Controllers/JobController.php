@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\DataTables;
+
 
 class JobController extends Controller {
     private static $prefixTitle = '职位';
@@ -29,11 +31,10 @@ class JobController extends Controller {
     public function index() {
         $title = '我的职位';
         $route_name = 'job';
-        //$jobs = Job::all();
 
-        $jobs = Job::where(['creater' => Auth::id(), 'show' => 1])->get();
+        $type = 'my';
 
-        return view('job.index', compact('title', 'route_name', 'jobs'));
+        return view('job.index', compact('title', 'route_name', 'type'));
     }
 
     /**
@@ -44,9 +45,9 @@ class JobController extends Controller {
     public function all() {
         $title = '猎帮职位';
         $route_name = 'job.all';
-        $jobs = Job::all();
+        $type = 'all';
 
-        return view('job.index', compact('title', 'route_name', 'jobs'));
+        return view('job.index', compact('title', 'route_name', 'type'));
     }
 
     public function add(Request $request) {
@@ -111,5 +112,17 @@ class JobController extends Controller {
         $job = Job::findOrFail($id);
 
         return view('job.detail', compact('title', 'job'));
+    }
+
+    public function search(Request $request, $type)
+    {
+        $resumes = [];
+        if ('my' == $type) {
+            $jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+        }
+        if ('all' == $type) {
+            $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+        }
+        return Datatables::of($jobs)->make();
     }
 }

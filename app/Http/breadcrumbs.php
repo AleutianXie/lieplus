@@ -116,28 +116,35 @@ Breadcrumbs::register('customer.all', function ($breadcrumbs)
     $breadcrumbs->push('猎加客户', route('customer.all'));
 });
 
-// Home > Customer
+// Home > Customer > detail
+Breadcrumbs::register('customer.detail', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('customer');
+    $breadcrumbs->push('客户详情', route('customer.detail', $id));
+});
+
+// Home > Line
 Breadcrumbs::register('line', function ($breadcrumbs)
 {
     $breadcrumbs->parent('home');
     $breadcrumbs->push('职位流水线', route('line'));
 });
 
-// Home > Customer > all
+// Home > Line > all
 Breadcrumbs::register('line.all', function ($breadcrumbs)
 {
     $breadcrumbs->parent('line');
     $breadcrumbs->push('猎加职位流水线', route('line.all'));
 });
 
-// Home > Customer > detail
+// Home > Line > detail
 Breadcrumbs::register('line.detail', function ($breadcrumbs, $id)
 {
     $breadcrumbs->parent('line');
     $breadcrumbs->push('职位流水线详情', route('line.detail', $id));
 });
 
-// Home > Customer > plan
+// Home > Line > plan
 Breadcrumbs::register('line.plan', function ($breadcrumbs)
 {
     $breadcrumbs->parent('line');

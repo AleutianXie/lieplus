@@ -2,7 +2,7 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
-@include('resume.list', ['resumes' => $resumes])
+@include('resume.list', ['type' => 'all'])
 {{-- <resume-list resumes="{{ $resumes }}"></resume-list> --}}
 @endsection
 

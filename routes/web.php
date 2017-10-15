@@ -21,6 +21,8 @@ Auth::routes();
 
 Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
+Route::get('/getuser', ['as' => 'home.get', 'uses' => 'HomeController@getuser']);
+
 Route::group(['prefix' => 'resume'], function ()
 {
     Route::get('/', ['as' => 'resume', 'uses' => 'ResumeController@index']);
@@ -31,6 +33,7 @@ Route::group(['prefix' => 'resume'], function ()
     Route::get('/my', ['as' => 'resume.my', 'uses' => 'ResumeController@mylibrary']);
     Route::get('/job', ['as' => 'resume.job', 'uses' => 'ResumeController@joblibrary']);
     Route::get('/all', ['as' => 'resume.all', 'uses' => 'ResumeController@all']);
+    Route::get('/search/{type}', 'ResumeController@search')->where(['type' => 'my|all|job'])->name('resume.search');
     Route::post('/feedback', 'FeedbackController@add');
 });
 
@@ -48,11 +51,12 @@ Route::group(['prefix' => 'customer'], function ()
     Route::get('/', 'CustomerController@index')->name('customer');
     Route::get('/index', 'CustomerController@index')->name('customer');
     Route::get('/all', 'CustomerController@all')->name('customer.all');
-    Route::match(['get', 'post'], '/{id}', 'CustomerController@detail')->where('id', '[0-9]+');
+    Route::match(['get', 'post'], '/{id}', 'CustomerController@detail')->where('id', '[0-9]+')->name('customer.detail');
     Route::match(['get', 'post'], '/audit/{id}', 'CustomerController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'CustomerController@add');
     Route::post('/edit', 'CustomerController@edit');
     Route::post('/check', 'CustomerController@isExist');
+    Route::get('/search/{type}', 'CustomerController@search')->where(['type' => 'my|all'])->name('customer.search');
 });
 
 Route::group(['prefix' => 'job'], function ()
@@ -63,6 +67,7 @@ Route::group(['prefix' => 'job'], function ()
     Route::match(['get', 'post'], '/{id}', 'JobController@detail')->where('id', '[0-9]+')->name('job.detail');
     Route::match(['get', 'post'], '/audit/{id}', 'JobController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'JobController@add')->name('job.add');
+    Route::get('/search/{type}', 'JobController@search')->where(['type' => 'my|all'])->name('job.search');
     Route::post('/edit', 'JobController@edit');
 
 });

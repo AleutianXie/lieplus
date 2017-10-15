@@ -17,22 +17,110 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
+        $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
-        });
-
-        $('span[id^=feedback').each(function(){
-            $(this).editable({
-                params: {'_token' : '{{ csrf_token() }}'},
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return '反馈不能为空！';
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('job.search', $type) }}',
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/job')}}/" + row.id+ "'>" + data +"</a>";
                     }
-                }
-
-            });
+                },
+                {data: 'customer.name'},
+                {data: 'name'},
+                {
+                    data: 'workyears',
+                    defaultContent: '不限',
+                    render: function (data, type, row)
+                    {
+                        if(data == '')
+                        {
+                            data = '不限';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'gender',
+                    defaultContent: '不限',
+                    render: function (data, type, row)
+                    {
+                        if(data == '')
+                        {
+                            data = '不限';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'majors',
+                    defaultContent: '不限',
+                    render: function (data, type, row)
+                    {
+                        if(data == '')
+                        {
+                            data = '不限';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'degree',
+                    defaultContent: '不限',
+                    render: function (data, type, row)
+                    {
+                        if(data == '')
+                        {
+                            data = '不限';
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: 'unified',
+                    defaultContent: '是',
+                    render: function (data, type, row)
+                    {
+                        return data == 1 ? '是' : '否';
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row){
+                        return    "<div class='dropdown'>" + 
+                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/job') }}/" + row.id + "'>"+
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                          "</li>" +  
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                               "加入我的简历库 </a>"+ 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                               "加入职位简历库 </a>" +
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#'>" +
+                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                               "重新加入工作台 </a>" +
+                                          "</li>" + 
+                                      "</ul>" +
+                                  "</div>";
+                }}
+        ]
         });
     });
 </script>
@@ -53,16 +141,9 @@
 
         <!-- 客户列表--开始 -->
         <div>
-            @if(count($jobs))
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </th>
                         <th>编号</th>
                         <th>客户全称</th>
                         <th>职位名称</th>
@@ -75,14 +156,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($jobs as $job)
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
+{{--                     <tr>
                         <td><a href="{{ asset('/job/'.$job->id) }}">{{ $job->sn }}</a></td>
                         <td>{{ $job->customer->name }}</td>
                         <td>{{ $job->name }}</td>
@@ -103,7 +177,7 @@
                                         <a href="{{ asset('/job/'.$job->id) }}">
                                         <i class="blue ace-icon fa fa-eye bigger-120"></i>
                                          查看 </a>
-                                    </li>
+                                    </li> --}}
 {{--                                     <li>
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
@@ -114,14 +188,12 @@
                                         <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
                                          重新加入工作台 </a>
                                     </li> --}}
-                                </ul>
+{{--                                 </ul>
                             </div>
                         </td>
-                    </tr>
-                    @endforeach
+                    </tr> --}}
                 </tbody>
             </table>
-            @endif
         </div>
         <!-- 客户列表--结束 -->
     </div>
