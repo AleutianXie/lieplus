@@ -18,4 +18,9 @@ class Job extends Model
     {
         return $this->hasOne('App\Customer', 'id', 'cid');
     }
+
+    public function department()
+    {
+        return $this->hasOne('App\Department', 'id', 'did');
+    }
 }

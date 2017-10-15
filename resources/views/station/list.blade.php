@@ -1,15 +1,8 @@
 <!-- 简历列表--开始 -->
-@if(count($stations))
 <div class="col-md-12">
-<table id='' class="table table-striped table-bordered table-hover" style="width: 100%">
+<table data-status={{ $status }} class="table table-striped table-bordered table-hover" style="width: 100%">
     <thead>
         <tr>
-            <th class="center">
-                <label class="pos-rel">
-                    <input type="checkbox" class="ace" />
-                    <span class="lbl"></span>
-                </label>
-            </th>
             <th>编号</th>
             <th>姓名</th>
             <th>摘要</th>
@@ -27,8 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($stations as $station)
-        <tr>
+{{--         <tr>
             <td class="center">
                 <label class="pos-rel">
                     <input type="checkbox" class="ace" />
@@ -75,10 +67,8 @@
                     </ul>
                 </div>
             </td>
-        </tr>
-        @endforeach
+        </tr> --}}
     </tbody>
 </table>
 </div>
-@endif
 <!-- 简历列表--结束 -->

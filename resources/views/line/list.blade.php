@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
 
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <!-- page specific plugin scripts -->
@@ -20,23 +21,72 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
+        $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
-        });
-
-        $('span[id^=feedback').each(function(){
-            $(this).editable({
-                params: {'_token' : '{{ csrf_token() }}'},
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return '反馈不能为空！';
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('line.search', $type) }}',
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/line')}}/" + row.id+ "'>" + data +"</a>";
                     }
-                }
-
-            });
+                },
+                {data: 'recruiter'},
+                {data: 'exclusive', defaultContent: '否',},
+                {data: 'priority'},
+                {data: 'job.name'},
+                {data: 'job.customer.name'},
+                {data: 'job.department.name'},
+                {
+                    data: null,
+                    render: function (data, type, row)
+                    {
+                        return '联系中(' + row.connection.length +') 意向中(' + row.intention.length + ') 推荐中(' + row.recommendation.length + ')) 面试中(' + row.interview.length + ') offer中(' + row.offer.length + ') 入职中(' + row.onboard.length + ')';
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row){
+                        return    "<div class='dropdown'>" + 
+                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/line') }}/" + row.id + "'>"+
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                          "</li>" + 
+                                          "<li>" +
+                                            "<a href='javascript:void(-1);' onclick='assign(" + row.id + ");'>" + 
+                                            "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" + 
+                                            "分配招聘顾问 </a>" + 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                               "加入我的简历库 </a>"+ 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                               "加入职位简历库 </a>" +
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#'>" +
+                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                               "重新加入工作台 </a>" +
+                                          "</li>" + 
+                                      "</ul>" +
+                                  "</div>";
+                }}
+        ]
         });
+
     });
 </script>
 
@@ -56,16 +106,9 @@
 
         <!-- 简历列表--开始 -->
         <div>
-            @if(count($lines))
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </th>
                         <th>编号</th>
                         <th>客户顾问</th>
                         <th>是否专属</th>
@@ -82,14 +125,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($lines as $line)
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
+{{--                    <tr>
                         <td><a href="{{ asset('/line/'.$line->id) }}">{{ $line->sn }}</a></td>
                         <td>{{ App\Helper::getUser($line->job->customer->creater)->name }}</td>
                         <td>{{ empty($line->exclusive) ? '否' : App\Helper::getUser($line->exclusive)->name}}</td>
@@ -116,7 +152,7 @@
                                         <i class="blue ace-icon fa fa-hand-pointer-o bigger-120"></i>
                                          分配招聘顾问 </a>
                                     </li>
-{{--                                     <li>
+                                    <li>
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
                                          加入职位简历库 </a>
@@ -125,16 +161,14 @@
                                         <a href="#">
                                         <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
                                          重新加入工作台 </a>
-                                    </li> --}}
+                                    </li>
                                 </ul>
                             </div>
                         </td>
-                    </tr>
-                    @endforeach
+                    </tr> --}}
                 </tbody>
             </table>
             <div id="optional-dialog" class="row hide">
-            @endif
         </div>
         <!-- 简历列表--结束 -->
     </div>

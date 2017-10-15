@@ -2,7 +2,7 @@
 
 @section('content')
 @include('common.messages')
-@include('line.list', ['lines', $lines])
+@include('line.list', ['type' => 'all'])
 @endsection
 
 @section('breadcrumbs')

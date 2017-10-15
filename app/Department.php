@@ -28,11 +28,6 @@ class Department extends Model
 
     }
 
-    public static function name($id)
-    {
-        return static::where(['id' => $id])->get(['name'])[0]->name;
-    }
-
     public static function getNamesByCid($cid)
     {
         return array_pluck(static::where(['cid' => $cid])->get(['name']), 'name');

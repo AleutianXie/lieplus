@@ -1,5 +1,13 @@
 @extends('layouts.cici')
 
+@section('stylesheet')
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/bootstrap-datepicker3.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
+@endsection
+
 @section('content')
 @include('common.messages')
 
@@ -139,7 +147,7 @@
                 <div class="profile-info-row">
                     <div class="profile-info-name"> 招聘部门： </div>
                     <div class="profile-info-value">
-                        <span class="editable editable-click" id="gender" style="display: inline;">{{ App\Department::name($line->job->did) }}</span>
+                        <span class="editable editable-click" id="gender" style="display: inline;">{{ $line->job->department->name }}</span>
                     </div>
                 </div>
                 <div class="profile-info-row">
@@ -211,7 +219,7 @@
                     增加简历</a>
             </div>
 
-            @include('station.list', ['stations' => $line->joblibrary])
+            @include('station.list', ['status' => 0])
 
         </div>
         {{-- 职位简历库--结束 --}}
@@ -268,24 +276,24 @@
 
                                             <div class="tab-content">
                                                 <div id="connection" class="tab-pane in active">
-                                                @include('station.list', ['stations' => $line->connection])
+                                                @include('station.list', ['status' => 1])
                                                 </div>
 
                                                 <div id="intention" class="tab-pane">
-                                                @include('station.list', ['stations' => $line->intention])
+                                                @include('station.list', ['status' => 2])
                                                 </div>
 
                                                 <div id="recommendation" class="tab-pane">
-                                                @include('station.list', ['stations' => $line->recommendation])
+                                                @include('station.list', ['status' => 3])
                                                 </div>
                                                 <div id="interview" class="tab-pane">
-                                                @include('station.list', ['stations' => $line->interview])
+                                                @include('station.list', ['status' => 4])
                                                 </div>
                                                 <div id="offer" class="tab-pane">
-                                                @include('station.list', ['stations' => $line->offer])
+                                                @include('station.list', ['status' => 5])
                                                 </div>
                                                 <div id="onboard" class="tab-pane">
-                                                @include('station.list', ['stations' => $line->onboard])
+                                                @include('station.list', ['status' => 6])
                                                 </div>
                                             </div>
                                         </div>
@@ -323,11 +331,6 @@
 {!! Breadcrumbs::render('line.detail', $line->id) !!}
 @endsection
 
-@section('stylesheet')
-<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
-@endsection
 
 @section('scripts')
 
@@ -342,10 +345,94 @@
 <script src="{{ asset('static/js/ace-editable.min.js') }}"></script>
 
 <!-- inline scripts related to this page -->
+
+
 <script type="text/javascript">
+        //editables on first profile page
+    $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-        $('span[id^=feedback]').each(function(){
-            $(this).editable({
+        $('table.table').each(function(){
+            var status = $(this)[0].dataset.status;
+                    $(this).DataTable({
+            language: {
+                url: '{{ asset('static/localisation/Chinese.json') }}'
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '/line/stations/{{ $line->id }}/'+ status,
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
+                    }
+                },
+                {data: 'name'},
+                {data: null, defaultContent: '摘要'},
+                {data: 'mobile'},
+                {data: 'email'},
+                {
+                    data: 'feedback',
+                    defaultContent: '新增反馈',
+                    render: function (data, type, row)
+                    {
+                        if(!data)
+                        {
+                            data = '新增反馈';
+                        }
+                        return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                    }
+                },
+                {
+                    data: null,
+                    defaultContent: '职位简历库'
+                },
+                {
+                    data: null,
+                    render: function(data, type, row){
+                        return    "<div class='dropdown'>" + 
+                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                              "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
+                                               "提醒 </a>" + 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                               "加入我的简历库 </a>"+ 
+                                          "</li>" + 
+                                          "<li>" +
+                                              "<a href='#'>" + 
+                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                               "加入职位简历库 </a>" +
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#'>" +
+                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                               "重新加入工作台 </a>" +
+                                          "</li>" + 
+                                      "</ul>" +
+                                  "</div>";
+                }}
+        ]
+        });
+        }
+
+            );
+
+
+
+$('table.table tbody').on('click','span[id^=feedback]', function (e) {  
+                             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
                     if($.trim(value) == '') {
@@ -354,13 +441,7 @@
                 }
 
             });
-        });
-
-        $('table.table').dataTable({
-            language: {
-                url: '{{ asset('static/localisation/Chinese.json') }}'
-            },
-        });
+            } );
     });
 </script>
 @endsection

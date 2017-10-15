@@ -9,6 +9,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\DataTables;
 
 class LineController extends Controller
 {
@@ -26,10 +27,7 @@ class LineController extends Controller
      */
     public function index()
     {
-        $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-        $lines = array_pluck($assignlines, 'line');
-
-        return view('line.index', compact('lines'));
+        return view('line.index');
     }
 
     public function add(Request $request)
@@ -75,10 +73,7 @@ class LineController extends Controller
 
     public function all()
     {
-        $lines = Line::where(['show' => 1])->get();
-
-        return view('line.all', ['lines' => $lines]);
-
+        return view('line.all');
     }
 
     public function plan()
@@ -97,13 +92,13 @@ class LineController extends Controller
         return view('line.detail', [
             'title' => $title,
             'line' => $line,
-            //'breadcrumbs' => self::breadcrumbs($title),
         ]);
     }
 
     public function assign(Request $request, $id)
     {
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST'))
+        {
 
             $data = $request->input();
             $lid = $data['lid'];
@@ -118,7 +113,7 @@ class LineController extends Controller
                         $query->where('uid', $uid);
                     }),
                 ],
-            ], [ 
+            ], [
                 'unique' => '已经分配过该 :attribute.',
             ], [
                 'uid' => '用户号',
@@ -131,17 +126,96 @@ class LineController extends Controller
             $assignLine->creater = Auth::id();
             $assignLine->modifier = Auth::id();
 
-            if ($assignLine->save()) {
+            if ($assignLine->save())
+            {
                 return redirect()->back()->with('success', '分配成功！');
             }
-            else {
+            else
+            {
                 return redirect()->back()->with('error', '分配失败！');
             }
         }
 
+        $users = User::role('recruiter')->get();
 
-        $users = User::role('recruiter')->get(); 
+        return view('line.assign', compact('id', 'users'));
+    }
 
-        return view('line.assign', compact('id','users'));
+    public function search(Request $request, $type)
+    {
+        $lines = [];
+        if ('my' == $type)
+        {
+            $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'lid']);
+            $lines = array_pluck($assignLines, 'line');
+            foreach ($lines as $key => $value)
+            {
+                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->department = $value->job->department->name;
+                $value->connection = $value->connection;
+                $value->intention = $value->intention;
+                $value->recommendation = $value->recommendation;
+                $value->interview = $value->interview;
+                $value->offer = $value->offer;
+                $value->onboard = $value->onboard;
+                $lines[$key] = $value;
+            }
+            //$lines = array_pluck($assignLines, 'line');
+            //$jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+        }
+        if ('all' == $type)
+        {
+            $lines = Line::with('job')->where(['show' => 1])->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
+            foreach ($lines as $key => $value)
+            {
+                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->department = $value->job->department->name;
+                $value->connection = count($value->connection);
+                $value->intention = count($value->intention);
+                $value->recommendation = count($value->recommendation);
+                $value->interview = count($value->interview);
+                $value->offer = count($value->offer);
+                $value->onboard = count($value->onboard);
+                $lines[$key] = $value;
+            }
+        }
+
+        return Datatables::of($lines)->make();
+    }
+
+    public function getStations(Request $request, $lid, $status)
+    {
+        $line = Line::findOrFail($lid);
+        $stations = [];
+        if (0 == $status)
+        {
+            $stations = $line->joblibrary;
+        }
+        if (1 == $status)
+        {
+            $stations = $line->connection;
+        }
+        if (2 == $status)
+        {
+            $stations = $line->intention;
+        }
+        if (3 == $status)
+        {
+            $stations = $line->recommendation;
+        }
+        if (4 == $status)
+        {
+            $stations = $line->interview;
+        }
+        if (5 == $status)
+        {
+            $stations = $line->offer;
+        }
+        if (6 == $status)
+        {
+            $stations = $line->onboard;
+        }
+        $stations = array_pluck($stations, 'resume');
+        return Datatables::of($stations)->make();
     }
 }

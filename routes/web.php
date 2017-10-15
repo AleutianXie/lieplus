@@ -84,6 +84,8 @@ Route::group(['prefix' => 'line'], function ()
     Route::get('/all', 'LineController@all')->name('line.all');
     Route::get('/plan', 'LineController@plan')->name('line.plan');
     Route::match(['get', 'post'],'/assign/{id}', 'LineController@assign')->where('id', '[0-9]+');
+    Route::get('/search/{type}', 'LineController@search')->where(['type' => 'my|all'])->name('line.search');
+    Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-6]?'])->name('line.detail.stations');
 });
 
 Route::group(['prefix' => 'project'], function ()
