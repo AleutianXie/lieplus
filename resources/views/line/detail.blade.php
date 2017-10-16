@@ -361,95 +361,90 @@
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
         $('table.table').each(function(){
-            var status = $(this)[0].dataset.status;
-                    $(this).DataTable({
-            language: {
-                url: '{{ asset('static/localisation/Chinese.json') }}'
-            },
-            processing: true,
-            serverSide: true,
-            ajax: '/line/stations/{{ $line->id }}/'+ status,
-            columns: [
-                {
-                    data: 'sn',
-                    render: function (data, type, row )
-                    {
-                        return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
-                    }
+                var status = $(this)[0].dataset.status;
+                $(this).DataTable({
+                    language: {
+                    url: '{{ asset('static/localisation/Chinese.json') }}'
                 },
-                {data: 'name'},
-                {data: null, defaultContent: '摘要'},
-                {data: 'mobile'},
-                {data: 'email'},
-                {
-                    data: 'feedback',
-                    defaultContent: '新增反馈',
-                    render: function (data, type, row)
+                processing: true,
+                serverSide: true,
+                ajax: '/line/stations/{{ $line->id }}/'+ status,
+                columns: [
                     {
-                        if(!data)
+                        data: 'sn',
+                        render: function (data, type, row )
                         {
-                            data = '新增反馈';
+                            return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
                         }
-                        return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
-                    }
-                },
-                {
-                    data: null,
-                    defaultContent: '职位简历库'
-                },
-                {
-                    data: null,
-                    render: function(data, type, row){
-                        return    "<div class='dropdown'>" + 
-                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
-                                          "</li>" + 
-                                        "<li>" + 
-                                          "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
-                                              "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
-                                               "提醒 </a>" + 
-                                          "</li>" + 
-                                          "<li>" + 
-                                              "<a href='#' id = 'next-" + row.id + "'>" + 
-                                              "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
-                                               " 下一步 </a>" + 
-                                          "</li>" + 
+                    },
+                    {data: 'name'},
+                    {data: null, defaultContent: '摘要'},
+                    {data: 'mobile'},
+                    {data: 'email'},
+                    {
+                        data: 'feedback',
+                        defaultContent: '新增反馈',
+                        render: function (data, type, row)
+                        {
+                            if(!data)
+                            {
+                                data = '新增反馈';
+                            }
+                            return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                        }
+                    },
+                    {
+                        data: null,
+                        defaultContent: '职位简历库'
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row){
+                            return    "<div class='dropdown'>" + 
+                                          "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                              "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                              "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                          "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                              "<li>" + 
+                                                  "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                                  "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
+                                              "</li>" + 
                                             "<li>" + 
-                                              "<a href='#/" + row.id + "#resume-tab-4') }}'>" + 
-                                              "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
-                                               " 放弃 </a>" + 
-                                          "</li>" + 
-                                          "<li>" +
-                                              "<a href='#'>" + 
-                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                               " 加入我的简历库 </a>"+ 
-                                          "</li>" + 
-                                          "<li>" +
-                                              "<a href='#'>" + 
-                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                               " 加入职位简历库 </a>" +
-                                          "</li>" + 
-                                          "<li>" + 
-                                              "<a href='#'>" +
-                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                               " 重新加入工作台 </a>" +
-                                          "</li>" + 
-                                      "</ul>" +
-                                  "</div>";
-                }}
-        ]
+                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                                  "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
+                                                   "提醒 </a>" + 
+                                              "</li>" + 
+                                              "<li>" + 
+                                                  "<a href='#' id='next-" + row.id + "'>" + 
+                                                  "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
+                                                   " 下一步 </a>" + 
+                                              "</li>" + 
+                                                "<li>" + 
+                                                  "<a href='#' id='abandon-" + row.id + "'>" + 
+                                                  "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
+                                                   " 放弃 </a>" + 
+                                              "</li>" + 
+                                              "<li>" +
+                                                  "<a href='#' id='create-" + row.id + "'>" + 
+                                                  "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                                   " 加入工作台 </a>" +
+                                              "</li>" + 
+                                              "<li>" + 
+                                                  "<a href='#' id='reactive-" + row.id + "'>" +
+                                                  "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                                   " 重新加入工作台 </a>" +
+                                              "</li>" + 
+                                          "</ul>" +
+                                      "</div>";
+                        }
+                    }
+                ]
+            });
         });
-        }
-            );
 
 
 
-$('table.table tbody').on('click','span[id^=feedback]', function (e) {  
+        $('table.table tbody').on('click','span[id^=feedback]', function (e) {  
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -457,20 +452,58 @@ $('table.table tbody').on('click','span[id^=feedback]', function (e) {
                         return '反馈不能为空！';
                     }
                 }
-
             });
-            });
-$('table.table tbody').on('click','a[id^=next]', function (e) {
+        });
 
-        var rid = $(this)[0].id.substring(5);
-        $.ajax({
-            type: 'post',
-            url: '{{ url('/station/next/'.$line->id)}}/' + rid,
-            data: { '_token' : '{{ csrf_token() }}' },
-            success: function(data){
-                alert(data);
-                location.reload();
-            },
+        $('table.table tbody').on('click','a[id^=next]', function (e) {
+            var rid = $(this)[0].id.substring(5);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/station/next/'.$line->id)}}/' + rid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(data){
+                    alert(data);
+                    location.reload();
+                },
+            });
+        });
+
+        $('table.table tbody').on('click','a[id^=abandon]', function (e) {
+            var rid = $(this)[0].id.substring(8);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/station/abandon/'.$line->id)}}/' + rid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(data){
+                    alert(data);
+                    location.reload();
+                },
+            });
+        });
+
+        $('table.table tbody').on('click','a[id^=reactive]', function (e) {
+            var rid = $(this)[0].id.substring(9);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/station/reactive/'.$line->id)}}/' + rid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(data){
+                    alert(data);
+                    location.reload();
+                },
+            });
+        });
+
+        $('table.table tbody').on('click','a[id^=create]', function (e) {
+            var rid = $(this)[0].id.substring(7);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/station/create/'.$line->id)}}/' + rid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(data){
+                    alert(data);
+                    location.reload();
+                },
             });
         });
     });

@@ -14,23 +14,29 @@ class Station extends Model
 
     public function next()
     {
-        if (!in_array($this->status, ['联系中', '意向中', '推荐中', '面试中', 'offer中'])) {
+        if (!in_array($this->status, ['联系中', '意向中', '推荐中', '面试中', 'offer中']))
+        {
             return false;
         }
-        if ($this->status == '联系中') {
-        $this->status = 2;
+        if ($this->status == '联系中')
+        {
+            $this->status = 2;
         }
-                if ($this->status == '意向中') {
-        $this->status = 3;
+        if ($this->status == '意向中')
+        {
+            $this->status = 3;
         }
-                if ($this->status == '推荐中') {
-        $this->status = 4;
+        if ($this->status == '推荐中')
+        {
+            $this->status = 4;
         }
-                if ($this->status == '面试中') {
-        $this->status = 5;
+        if ($this->status == '面试中')
+        {
+            $this->status = 5;
         }
-        if ($this->status == 'offer中') {
-        $this->status = 6;
+        if ($this->status == 'offer中')
+        {
+            $this->status = 6;
         }
         return $this->save();
     }

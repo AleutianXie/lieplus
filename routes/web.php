@@ -99,15 +99,18 @@ Route::group(['prefix' => 'project'], function ()
 Route::group(['prefix' => 'station'], function ()
 {
     Route::post( '/next/{lid}/{rid}', 'StationController@next')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.next');
+    Route::post( '/abandon/{lid}/{rid}', 'StationController@abandon')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.abandon');
+    Route::post( '/reactive/{lid}/{rid}', 'StationController@reactive')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.reactive');
+    Route::post( '/create/{lid}/{rid}', 'StationController@create')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.create');
 });
 
 // for user profile
 Route::match(['get', 'post'],'/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
 Route::post('/user/edit', ['as' => 'user.edit', 'uses' => 'UserController@edit'])->where('id', '[0-9]+');
 Route::post('/user/department/add', 'UserDepartmentController@add');
-Route::post('/role/add', 'RoleController@add');
+//Route::post('/role/add', 'RoleController@add');
 Route::post('/user/department/edit', 'UserDepartmentController@edit');
-Route::post('/role/edit', 'RoleController@edit');
+//Route::post('/role/edit', 'RoleController@edit');
 
 // admin
 Route::group(['prefix' => 'admin'], function ()
