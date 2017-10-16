@@ -88,7 +88,10 @@ class LineController extends Controller
     {
         $title = '流水线详情';
         $line = Line::findOrFail($id);
-
+//dd($line->joblibrary);
+        // foreach ($line->onboard as $value) {
+        //     dd($value->next());
+        // }
         return view('line.detail', [
             'title' => $title,
             'line' => $line,
@@ -214,6 +217,9 @@ class LineController extends Controller
         if (6 == $status)
         {
             $stations = $line->onboard;
+        }
+        if (7 == $status) {
+            $stations = $line->closed;
         }
         $stations = array_pluck($stations, 'resume');
         return Datatables::of($stations)->make();

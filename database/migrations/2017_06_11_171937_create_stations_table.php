@@ -29,6 +29,7 @@ class CreateStationsTable extends Migration
                 '5' => 'offer中',
                 '6' => '入职中']);
             $table->boolean('show')->default(1);
+            $table->boolean('show')->default(0);
             $table->unsignedInteger('creater');
             $table->foreign('creater')->references('id')->on('users');
             $table->unsignedInteger('modifier');

@@ -272,6 +272,12 @@
                                                         入职中
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#closed">
+                                                        <i class="green ace-icon fa fa-close"></i>
+                                                        维护中
+                                                    </a>
+                                                </li>
                                             </ul>
 
                                             <div class="tab-content">
@@ -294,6 +300,9 @@
                                                 </div>
                                                 <div id="onboard" class="tab-pane">
                                                 @include('station.list', ['status' => 6])
+                                                </div>
+                                                <div id="closed" class="tab-pane">
+                                                @include('station.list', ['status' => 7])
                                                 </div>
                                             </div>
                                         </div>
@@ -398,27 +407,37 @@
                                       "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
                                           "<li>" + 
                                               "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
                                           "</li>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                        "<li>" + 
+                                          "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
                                               "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
                                                "提醒 </a>" + 
+                                          "</li>" + 
+                                          "<li>" + 
+                                              "<a href='#' id = 'next-" + row.id + "'>" + 
+                                              "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
+                                               " 下一步 </a>" + 
+                                          "</li>" + 
+                                            "<li>" + 
+                                              "<a href='#/" + row.id + "#resume-tab-4') }}'>" + 
+                                              "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
+                                               " 放弃 </a>" + 
                                           "</li>" + 
                                           "<li>" +
                                               "<a href='#'>" + 
                                               "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                               "加入我的简历库 </a>"+ 
+                                               " 加入我的简历库 </a>"+ 
                                           "</li>" + 
                                           "<li>" +
                                               "<a href='#'>" + 
                                               "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                               "加入职位简历库 </a>" +
+                                               " 加入职位简历库 </a>" +
                                           "</li>" + 
                                           "<li>" + 
                                               "<a href='#'>" +
                                               "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                               "重新加入工作台 </a>" +
+                                               " 重新加入工作台 </a>" +
                                           "</li>" + 
                                       "</ul>" +
                                   "</div>";
@@ -426,13 +445,12 @@
         ]
         });
         }
-
             );
 
 
 
 $('table.table tbody').on('click','span[id^=feedback]', function (e) {  
-                             $(this).editable({
+            $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
                     if($.trim(value) == '') {
@@ -441,7 +459,21 @@ $('table.table tbody').on('click','span[id^=feedback]', function (e) {
                 }
 
             });
-            } );
+            });
+$('table.table tbody').on('click','a[id^=next]', function (e) {
+
+        var rid = $(this)[0].id.substring(5);
+        $.ajax({
+            type: 'post',
+            url: '{{ url('/station/next/'.$line->id)}}/' + rid,
+            data: { '_token' : '{{ csrf_token() }}' },
+            success: function(data){
+                alert(data);
+                location.reload();
+            },
+            });
+        });
     });
+
 </script>
 @endsection

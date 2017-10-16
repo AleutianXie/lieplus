@@ -14,32 +14,32 @@ class Line extends Model
 
     public function connection()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 1]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 1, 'show' => 1, 'disable' => 0]);
     }
 
     public function intention()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 2]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 2, 'show' => 1, 'disable' => 0]);
     }
 
     public function recommendation()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 3]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 3, 'show' => 1, 'disable' => 0]);
     }
 
     public function interview()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 4]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 4, 'show' => 1, 'disable' => 0]);
     }
 
     public function offer()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 5]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 5, 'show' => 1, 'disable' => 0]);
     }
 
     public function onboard()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 6]);
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 6, 'show' => 1, 'disable' => 0]);
     }
 
     public function GetStationsByStatus($status)
@@ -55,5 +55,10 @@ class Line extends Model
     public function joblibrary()
     {
         return $this->hasMany('App\JobLibrary', 'jid', 'jid');
+    }
+
+    public function closed()
+    {
+        return $this->hasMany('App\Station', 'lid')->where(['show' => 1, 'disable' => 1]);
     }
 }

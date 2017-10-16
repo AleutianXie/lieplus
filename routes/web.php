@@ -85,7 +85,7 @@ Route::group(['prefix' => 'line'], function ()
     Route::get('/plan', 'LineController@plan')->name('line.plan');
     Route::match(['get', 'post'],'/assign/{id}', 'LineController@assign')->where('id', '[0-9]+');
     Route::get('/search/{type}', 'LineController@search')->where(['type' => 'my|all'])->name('line.search');
-    Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-6]?'])->name('line.detail.stations');
+    Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-7]?'])->name('line.detail.stations');
 });
 
 Route::group(['prefix' => 'project'], function ()
@@ -94,6 +94,11 @@ Route::group(['prefix' => 'project'], function ()
     Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project');
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit');
     Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
+});
+
+Route::group(['prefix' => 'station'], function ()
+{
+    Route::post( '/next/{lid}/{rid}', 'StationController@next')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.next');
 });
 
 // for user profile
