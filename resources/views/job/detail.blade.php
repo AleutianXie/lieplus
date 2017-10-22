@@ -48,7 +48,7 @@
                 <div class="profile-info-row">
                     <div class="profile-info-name"> 招聘部门： </div>
                     <div class="profile-info-value">
-                        <span class="editable editable-click" id="gender" style="display: inline;">{{ App\Department::name($job->did) }}</span>
+                        <span class="editable editable-click" id="gender" style="display: inline;">{{ $job->department->name }}</span>
                     </div>
                 </div>
                 <div class="profile-info-row">

@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Resume;
 
-class ResumeTableSeeder extends Seeder
+class ResumesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
