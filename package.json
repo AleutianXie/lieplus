@@ -28,6 +28,7 @@
     "vue": "^2.3.2"
   },
   "dependencies": {
-    "datatables.net": "^1.10.15"
+    "datatables.net": "^1.10.15",
+    "sweetalert2": "^6.11.0"
   }
 }

@@ -13,6 +13,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
+use App\Line;
 
 class ResumeController extends Controller
 {
@@ -197,13 +198,30 @@ class ResumeController extends Controller
     public function mylibrary()
     {
         $title = '我的简历库';
-
-        return view('resume.my', compact('title'));
+        if (Auth::user()->hasRole('admin')) {
+            $lines = Line::all();
+        }
+        else {
+        $assignlines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get();
+        if ($assignlines) {
+        $lines = array_pluck($assignlines, 'line');
+        }
+        else{
+            $lines = [];
+        }
+        }
+        return view('resume.my', compact('title', 'lines'));
     }
 
     public function joblibrary()
     {
         $title = '我的职位简历库';
+        if (Auth::user()->hasRole('admin')) {
+            $lines = Line::all();
+        }
+        else {
+        $lines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+        }
 
         return view('resume.job', compact('title'));
     }
@@ -217,17 +235,44 @@ class ResumeController extends Controller
     public function search(Request $request, $type)
     {
         $resumes = [];
-        if ('my' == $type) {
+        if ('my' == $type)
+        {
             $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
-                    $resumes = array_map(function($value) { $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1']; return array_intersect_key($value->toArray(), $keys);},$resumes);
+            $resumes = array_map(function ($value)
+            {
+                $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1'];
+                return array_intersect_key($value->toArray(), $keys);
+            }, $resumes);
         }
-        if ('job' == $type) {
+        if ('job' == $type)
+        {
             $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
-                    $resumes = array_map(function($value) { $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1']; return array_intersect_key($value->toArray(), $keys);},$resumes);
+            $resumes = array_map(function ($value)
+            {
+                $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1'];
+                return array_intersect_key($value->toArray(), $keys);
+            }, $resumes);
         }
-        if ('all' == $type) {
+        if ('all' == $type)
+        {
             $resumes = Resume::where(['show' => 1])->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback'])->toArray();
         }
         return Datatables::of($resumes)->make();
+    }
+
+    public function addmy(Request $request, $id)
+    {
+        $mylibrary = MyLibrary::where(['rid' => $id, 'uid' => Auth::id()])->get();
+        if (!empty($mylibrary)) {
+            return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
+        }
+        $mylibrary = new MyLibrary();
+        $mylibrary->rid = $id;
+        $mylibrary->uid = Auth::id();
+        $mylibrary->creater = Auth::id();
+        if ($mylibrary->save()) {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 2, 'msg' => '操作失败！']);
     }
 }
