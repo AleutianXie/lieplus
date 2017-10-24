@@ -16,6 +16,7 @@
 <script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
 <script src="{{ asset('static/js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
         //editables on first profile page
@@ -59,32 +60,36 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        return    "<div class='dropdown'>" + 
-                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
-                                          "</li>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
-                                              "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
-                                               "提醒 </a>" + 
-                                          "</li>" + 
-                                          "<li>" +
-                                              "<a href='#' id='my-" + row.id + "'>" + 
-                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                               "加入我的简历库 </a>"+ 
-                                          "</li>" + 
-                                          "<li>" +
-                                              "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" + 
-                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                               "加入职位简历库 </a>" +
-                                          "</li>" + 
-                                      "</ul>" +
-                                  "</div>";
+                        return "<div class='dropdown'>" + 
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                            "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                "<li>" + 
+                                    "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
+                                "</li>" + 
+                                "<li>" + 
+                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
+                                        "提醒 </a>" + 
+                                "</li>" + 
+                                @if ('my' != $type)
+                                "<li>" +
+                                    "<a href='#' id='my-" + row.id + "'>" + 
+                                    "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
+                                        "加入我的简历库 </a>"+ 
+                                "</li>" + 
+                                @endif
+                                @if ('job' != $type)
+                                "<li>" +
+                                    "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" + 
+                                        "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
+                                        "加入职位简历库 </a>" +
+                                "</li>" + 
+                                @endif
+                            "</ul>" +
+                        "</div>";
                 }}
         ]
         });
@@ -128,6 +133,29 @@
             placeholder: "请选择职位简历库",
             allowClear: true,
             width: 300
+        });
+        $('#modal-job').ajaxForm({
+            beforeSubmit:function(){
+                var jid = $("#modal-job select[name=jid]").val();
+                if(jid == ''){
+                    swal({
+                        title: '加入职位简历库',
+                        text: '请选择职位简历库',
+                        type: 'error',
+                        allowOutsideClick: false,
+                    });
+                }
+            },
+            success:function(response) {
+                var data = $.parseJSON(response);
+                var type = data['code'] == 0 ? 'success' : 'error';
+                swal({
+                    title: '加入职位简历库',
+                    text: data['msg'],
+                    type: type,
+                    allowOutsideClick: false,
+                });
+            }
         });
     });
 </script>
@@ -178,7 +206,7 @@
                 <h4 class="modal-title">加入职位简历库</h4>
             </div>
             <div class="modal-body">
-                <form  method="POST" action="">
+                <form  method="POST" action="{{ route('resume.addjob') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="rid" value="">
                     <div class="form-group">

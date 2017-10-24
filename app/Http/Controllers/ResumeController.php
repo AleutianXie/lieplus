@@ -202,13 +202,13 @@ class ResumeController extends Controller
             $lines = Line::all();
         }
         else {
-        $assignlines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get();
-        if ($assignlines) {
-        $lines = array_pluck($assignlines, 'line');
-        }
-        else{
-            $lines = [];
-        }
+            $assignlines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get();
+            if ($assignlines) {
+                $lines = array_pluck($assignlines, 'line');
+            }
+            else{
+                $lines = [];
+            }
         }
         return view('resume.my', compact('title', 'lines'));
     }
@@ -220,16 +220,23 @@ class ResumeController extends Controller
             $lines = Line::all();
         }
         else {
-        $lines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+            $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+            if ($assignlines) {
+                $lines = array_pluck($assignlines, 'line');
+            }
+            else{
+                $lines = [];
+            }
         }
 
-        return view('resume.job', compact('title'));
+        return view('resume.job', compact('title', 'lines'));
     }
 
     public function all()
     {
         $title = '猎加简历';
-        return view('resume.all', compact('title'));
+        $lines = Line::all();
+        return view('resume.all', compact('title', 'lines'));
     }
 
     public function search(Request $request, $type)
@@ -262,7 +269,7 @@ class ResumeController extends Controller
 
     public function addmy(Request $request, $id)
     {
-        $mylibrary = MyLibrary::where(['rid' => $id, 'uid' => Auth::id()])->get();
+        $mylibrary = MyLibrary::where(['rid' => $id, 'uid' => Auth::id()])->first();
         if (!empty($mylibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
         }
@@ -271,6 +278,35 @@ class ResumeController extends Controller
         $mylibrary->uid = Auth::id();
         $mylibrary->creater = Auth::id();
         if ($mylibrary->save()) {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 2, 'msg' => '操作失败！']);
+    }
+
+    public function addjob(Request $request)
+    {
+        $this->validate($request, [
+            'rid' => 'required',
+            'jid' => 'required',
+        ], [
+            'jid.required' => '请选择:attribute.',
+        ], [
+            'rid' => '简历',
+            'jid' => '职位简历库',
+        ]);
+        $data = $request->input();
+        $rid = $data['rid'];
+        $jid = $data['jid'];
+        $joblibrary = JobLibrary::where(['rid' => $rid, 'uid' => Auth::id()])->first();
+        if (!empty($joblibrary)) {
+            return json_encode(['code' => 1, 'msg' => '简历已经在该职位简历库中！']);
+        }
+        $joblibrary = new JobLibrary();
+        $joblibrary->rid = $rid;
+        $joblibrary->jid = $jid;
+        $joblibrary->uid = Auth::id();
+        $joblibrary->creater = Auth::id();
+        if ($joblibrary->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 2, 'msg' => '操作失败！']);

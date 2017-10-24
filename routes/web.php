@@ -32,6 +32,7 @@ Route::group(['prefix' => 'resume'], function ()
     Route::match(['get', 'post'], '/edit', 'ResumeController@edit');
     Route::get('/my', ['as' => 'resume.my', 'uses' => 'ResumeController@mylibrary']);
     Route::post('/my/add/{id}', 'ResumeController@addmy')->where(['id' => '[0-9]+'])->name('resume.addmy');
+    Route::post('/job/add/', 'ResumeController@addjob')->name('resume.addjob');
     Route::get('/job', ['as' => 'resume.job', 'uses' => 'ResumeController@joblibrary']);
     Route::get('/all', ['as' => 'resume.all', 'uses' => 'ResumeController@all']);
     Route::get('/search/{type}', 'ResumeController@search')->where(['type' => 'my|all|job'])->name('resume.search');
