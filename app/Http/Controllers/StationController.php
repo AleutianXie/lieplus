@@ -20,9 +20,9 @@ class StationController extends Controller
         $staion = Station::where(['lid' => $lid, 'rid' => $rid])->first();
         if ($staion->next())
         {
-            return '操作成功！';
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
         };
-        return '操作失败！';
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 
     public function abandon(Request $request, $lid, $rid)
@@ -30,9 +30,9 @@ class StationController extends Controller
         $staion = Station::where(['lid' => $lid, 'rid' => $rid])->first();
         if ($staion->abandon())
         {
-            return '操作成功！';
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
-        return '操作失败！';
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 
     public function reactive(Request $request, $lid, $rid)
@@ -40,16 +40,16 @@ class StationController extends Controller
         $staion = Station::where(['lid' => $lid, 'rid' => $rid])->first();
         if ($staion->reactive())
         {
-            return '操作成功！';
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
-        return '操作失败！';
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 
     public function create(Request $request, $lid, $rid)
     {
         if (Station::where(['lid' => $lid, 'rid' => $rid])->first())
         {
-            return '简历已经在工作台';
+            return json_encode(['code' => 2, 'msg' => '简历已经在工作台！']);
         }
         $station = new Station();
         $station->sn = Helper::generationSN('GZT');
@@ -59,8 +59,8 @@ class StationController extends Controller
         $station->modifier = Auth::id();
         if ($station->save())
         {
-            return '操作成功！';
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
-        return '操作失败！';
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 }

@@ -345,6 +345,7 @@
 
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('static/js/fnReloadAjax.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
 <script src="{{ asset('static/js/ace.min.js') }}"></script>
@@ -361,9 +362,11 @@
         //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
+                        var dt=[];
+
         $('table.table').each(function(){
                 var status = $(this)[0].dataset.status;
-                $(this).DataTable({
+                dt[status] = $(this).DataTable({
                     language: {
                     url: '{{ asset('static/localisation/Chinese.json') }}'
                 },
@@ -401,42 +404,51 @@
                     {
                         data: null,
                         render: function(data, type, row){
-                            return    "<div class='dropdown'>" + 
-                                          "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                              "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                              "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                          "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                              "<li>" + 
-                                                  "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                                  "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
-                                              "</li>" + 
-                                            "<li>" + 
-                                              "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
-                                                  "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
-                                                   "提醒 </a>" + 
-                                              "</li>" + 
-                                              "<li>" + 
-                                                  "<a href='#' id='next-" + row.id + "'>" + 
-                                                  "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
-                                                   " 下一步 </a>" + 
-                                              "</li>" + 
-                                                "<li>" + 
-                                                  "<a href='#' id='abandon-" + row.id + "'>" + 
-                                                  "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
-                                                   " 放弃 </a>" + 
-                                              "</li>" + 
-                                              "<li>" +
-                                                  "<a href='#' id='create-" + row.id + "'>" + 
+                            var btnGHtml = "<div class='dropdown'>" + 
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                    "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                "<li>" + 
+                                    "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
+                                "</li>" + 
+                                "<li>" + 
+                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a>" + 
+                                "</li>";
+                                if (status == 0){
+                                    btnGHtml += "<li>" + "<a href='#' id='create-" + row.id + "'>" + 
                                                   "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
                                                    " 加入工作台 </a>" +
-                                              "</li>" + 
-                                              "<li>" + 
-                                                  "<a href='#' id='reactive-" + row.id + "'>" +
-                                                  "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                                   " 重新加入工作台 </a>" +
-                                              "</li>" + 
-                                          "</ul>" +
-                                      "</div>";
+                                                "</li>";
+                                }
+                                if (status != 0 && status != 7 && status != 6) {
+                                    btnGHtml += "<li><a href='#' id='next-" + row.id + "'>" + 
+                                    "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
+                                        " 下一步 </a>" + 
+                                    "</li>";
+                                }
+                                if (status != 0 && status != 7 ) {
+                                    btnGHtml += 
+                                    "<li>" + 
+                                        "<a href='#' id='abandon-" + row.id + "'>" + 
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
+                                            " 放弃 </a>" + 
+                                    "</li>";
+                                }
+                                if (status == 7) {
+                                    btnGHtml +=
+                                    "<li>" + 
+                                        "<a href='#' id='reactive-" + row.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                                " 重新加入工作台 </a>" +
+                                    "</li>";
+                                }
+
+                            btnGHtml += "</ul></div>";
+                            return btnGHtml;
+
                         }
                     }
                 ]
@@ -458,52 +470,89 @@
 
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
+            var status = $(this).parents('table')[0].dataset.status;
+            var next = parseInt(status) + 1;
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/next/'.$line->id)}}/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
-                success: function(data){
-                    alert(data);
-                    location.reload();
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '下一步',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt[status].ajax.reload();
+                    dt[next].ajax.reload();
                 },
             });
         });
 
         $('table.table tbody').on('click','a[id^=abandon]', function (e) {
             var rid = $(this)[0].id.substring(8);
+            var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/abandon/'.$line->id)}}/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
-                success: function(data){
-                    alert(data);
-                    location.reload();
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '放弃',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt[status].ajax.reload();
+                    dt[7].ajax.reload();
                 },
             });
         });
 
         $('table.table tbody').on('click','a[id^=reactive]', function (e) {
             var rid = $(this)[0].id.substring(9);
+            var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/reactive/'.$line->id)}}/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
-                success: function(data){
-                    alert(data);
-                    location.reload();
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '重新加入工作台',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt[status].ajax.reload();
+                    dt[1].ajax.reload();
                 },
             });
         });
 
         $('table.table tbody').on('click','a[id^=create]', function (e) {
             var rid = $(this)[0].id.substring(7);
+            var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/create/'.$line->id)}}/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
-                success: function(data){
-                    alert(data);
-                    location.reload();
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '加入工作台',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt[status].ajax.reload();
+                    dt[1].ajax.reload();
                 },
             });
         });
