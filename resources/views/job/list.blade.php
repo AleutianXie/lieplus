@@ -105,17 +105,12 @@
                                           "<li>" +
                                               "<a href='#'>" + 
                                               "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                               "加入我的简历库 </a>"+ 
+                                               "暂停 </a>"+ 
                                           "</li>" + 
                                           "<li>" +
                                               "<a href='#'>" + 
                                               "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                               "加入职位简历库 </a>" +
-                                          "</li>" + 
-                                          "<li>" + 
-                                              "<a href='#'>" +
-                                              "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                               "重新加入工作台 </a>" +
+                                               "重新发布 </a>" +
                                           "</li>" + 
                                       "</ul>" +
                                   "</div>";

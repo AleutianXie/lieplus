@@ -16,6 +16,9 @@
             </th>
             <th>反馈</th>
             <th>职位</th>
+            @isset ($plan)
+                <th>流水线</th>
+            @endisset
             <th>操作</th>
         </tr>
     </thead>

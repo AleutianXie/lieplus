@@ -144,6 +144,7 @@
                         type: 'error',
                         allowOutsideClick: false,
                     });
+                return false;
                 }
             },
             success:function(response) {

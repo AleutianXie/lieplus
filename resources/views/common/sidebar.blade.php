@@ -197,7 +197,7 @@
         </li>
 
         <li class="">
-            <a href="/line/plan">
+            <a href="/plan">
                 <i class="menu-icon fa fa-cc"></i>
                 <span class="menu-text"> 今日工作台 </span>
             </a>

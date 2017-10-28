@@ -345,7 +345,6 @@
 
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/fnReloadAjax.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
 <script src="{{ asset('static/js/ace.min.js') }}"></script>
@@ -359,10 +358,10 @@
 
 
 <script type="text/javascript">
-        //editables on first profile page
+    //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-                        var dt=[];
+        var dt=[];
 
         $('table.table').each(function(){
                 var status = $(this)[0].dataset.status;
