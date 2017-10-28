@@ -9,6 +9,6 @@ class Plan extends Model
     //
     public function line()
     {
-        return $this->hasOne('App\line', 'id', 'lid');
+        return $this->hasOne('App\Line', 'id', 'lid');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Plan;
 use App\Line;
+use App\AssignLine;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
