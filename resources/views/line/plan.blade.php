@@ -64,12 +64,12 @@
                 入职中
             </a>
         </li>
-{{--         <li>
+        <li>
             <a data-toggle="tab" href="#closed">
                 <i class="green ace-icon fa fa-close"></i>
                 维护中
             </a>
-        </li> --}}
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -92,6 +92,9 @@
         </div>
         <div id="onboard" class="tab-pane">
         @include('station.list', ['status' => 6, 'plan' => 1])
+        </div>
+        <div id="closed" class="tab-pane">
+        @include('station.list', ['status' => 7, 'plan' => 1])
         </div>
     </div>
 </div>
@@ -153,18 +156,18 @@
                 ajax: '/plan/stations/'+ status,
                 columns: [
                     {
-                        data: 'sn',
+                        data: 'resume.sn',
                         render: function (data, type, row )
                         {
-                            return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
+                            return "<a href='{{ asset('/resume')}}/" + row.resume.id+ "'>" + data +"</a>";
                         }
                     },
-                    {data: 'name'},
+                    {data: 'resume.name'},
                     {data: null, defaultContent: '摘要'},
-                    {data: 'mobile'},
-                    {data: 'email'},
+                    {data: 'resume.mobile'},
+                    {data: 'resume.email'},
                     {
-                        data: 'feedback',
+                        data: 'resume.feedback',
                         defaultContent: '新增反馈',
                         render: function (data, type, row)
                         {
@@ -172,7 +175,7 @@
                             {
                                 data = '新增反馈';
                             }
-                            return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                            return "<span class='editable editable-click' id='feedback[" + row.resume.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.resume.id+"'>"+data +"</span>";
                         }
                     },
                     {
@@ -180,8 +183,7 @@
                         defaultContent: '职位简历库'
                     },
                     {
-                        data: null,
-                        defaultContent: '职位流水线'
+                        data: 'name',
                     },
                     {
                         data: null,
@@ -192,21 +194,21 @@
                                     "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
                                         "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
                                 "<li>" + 
-                                    "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
+                                    "<a href='{{ asset('/resume') }}/" + row.resume.id + "'>"+
                                         "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
                                 "</li>" + 
                                 "<li>" + 
-                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
+                                    "<a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" + 
                                         "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a>" + 
                                 "</li>";
                                 if (status == 0){
-                                    btnGHtml += "<li>" + "<a href='#' id='create-" + row.id + "'>" + 
+                                    btnGHtml += "<li>" + "<a href='#' id='create-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
                                                   "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
                                                    " 加入工作台 </a>" +
                                                 "</li>";
                                 }
                                 if (status != 0 && status != 7 && status != 6) {
-                                    btnGHtml += "<li><a href='#' id='next-" + row.id + "'>" + 
+                                    btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
                                     "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
                                         " 下一步 </a>" + 
                                     "</li>";
@@ -214,7 +216,7 @@
                                 if (status != 0 && status != 7 ) {
                                     btnGHtml += 
                                     "<li>" + 
-                                        "<a href='#' id='abandon-" + row.id + "'>" + 
+                                        "<a href='#' id='abandon-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
                                             "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
                                             " 放弃 </a>" + 
                                     "</li>";
@@ -222,7 +224,7 @@
                                 if (status == 7) {
                                     btnGHtml +=
                                     "<li>" + 
-                                        "<a href='#' id='reactive-" + row.id + "'>" +
+                                        "<a href='#' id='reactive-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
                                             "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
                                                 " 重新加入工作台 </a>" +
                                     "</li>";
@@ -252,11 +254,12 @@
 
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
+            var lid = $(this)[0].dataset.lid;
             var status = $(this).parents('table')[0].dataset.status;
             var next = parseInt(status) + 1;
             $.ajax({
                 type: 'post',
-                url: '{{ url('/station/next/')}}/' + rid,
+                url: '{{ url('/station/next/')}}/' + lid + '/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
                 success: function(response){
                     var data = $.parseJSON(response);
@@ -275,10 +278,11 @@
 
         $('table.table tbody').on('click','a[id^=abandon]', function (e) {
             var rid = $(this)[0].id.substring(8);
+            var lid = $(this)[0].dataset.lid;
             var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
-                url: '{{ url('/station/abandon/')}}/' + rid,
+                url: '{{ url('/station/abandon/')}}/' + lid + '/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
                 success: function(response){
                     var data = $.parseJSON(response);
@@ -297,10 +301,11 @@
 
         $('table.table tbody').on('click','a[id^=reactive]', function (e) {
             var rid = $(this)[0].id.substring(9);
+            var lid = $(this)[0].dataset.lid;
             var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
-                url: '{{ url('/station/reactive/')}}/' + rid,
+                url: '{{ url('/station/reactive/')}}/' + lid + '/' + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
                 success: function(response){
                     var data = $.parseJSON(response);
@@ -319,10 +324,11 @@
 
         $('table.table tbody').on('click','a[id^=create]', function (e) {
             var rid = $(this)[0].id.substring(7);
+            var lid = $(this)[0].dataset.lid;
             var status = $(this).parents('table')[0].dataset.status;
             $.ajax({
                 type: 'post',
-                url: '{{ url('/station/create/')}}/' + rid,
+                url: '{{ url('/station/create/')}}/' + lid + '/'  + rid,
                 data: { '_token' : '{{ csrf_token() }}' },
                 success: function(response){
                     var data = $.parseJSON(response);
@@ -379,6 +385,7 @@
                 dt[4].ajax.reload();
                 dt[5].ajax.reload();
                 dt[6].ajax.reload();
+                dt[7].ajax.reload();
 
             }
         });
