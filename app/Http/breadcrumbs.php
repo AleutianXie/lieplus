@@ -144,9 +144,9 @@ Breadcrumbs::register('line.detail', function ($breadcrumbs, $id)
     $breadcrumbs->push('职位流水线详情', route('line.detail', $id));
 });
 
-// Home > Line > plan
+// Home  > plan
 Breadcrumbs::register('line.plan', function ($breadcrumbs)
 {
-    $breadcrumbs->parent('line');
+    $breadcrumbs->parent('home');
     $breadcrumbs->push('今日工作台', route('line.plan'));
 });
