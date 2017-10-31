@@ -116,7 +116,7 @@
         提交
         </button>
     </div>
-</form>
+    </form>
 </div>
 {{-- 交付工作台--结束 --}}
 @endsection

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\AssignCustomer;
 use App\Customer;
 use App\Region;
-//use App\Job;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
@@ -31,13 +31,15 @@ class CustomerController extends Controller
     public function index()
     {
         $title = '我的客户';
-        return view('customer.index', compact('title'));
+        $users = User::role('recruiter')->get();
+        return view('customer.index', compact('title', 'users'));
     }
 
     public function all()
     {
         $title = '猎加客户';
-        return view('customer.all', compact('title'));
+        $users = User::role('recruiter')->get();
+        return view('customer.all', compact('title', 'users'));
     }
 
     public function add(Request $request)
@@ -202,5 +204,34 @@ class CustomerController extends Controller
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 1, 'msg' => '操作失败！']);
+    }
+
+    public function assign(Request $request)
+    {
+        $this->validate($request, [
+            'cid' => 'required',
+            'uid' => 'required',
+        ], [
+            'uid.required' => '请选择:attribute.',
+        ], [
+            'cid' => '客户',
+            'uid' => '客户顾问',
+        ]);
+        $data = $request->input();
+        $cid = $data['cid'];
+        $uid = $data['uid'];
+        $assignedCustomer = AssignedCustomer::where(['cid' => $cid, 'uid' => $uid])->first();
+        if (!empty($assignedCustomer)) {
+            return json_encode(['code' => 1, 'msg' => '该客户顾问已经分配过该职位！']);
+        }
+        $assignedCustomer = new AssignedCustomer();
+        $assignedCustomer->cid = $cid;
+        $assignedCustomer->uid = $uid;
+        $assignedCustomer->creater = Auth::id();
+        $assignedCustomer->modifier = Auth::id();
+        if ($assignedCustomer->save()) {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 2, 'msg' => '操作失败！']);
     }
 }

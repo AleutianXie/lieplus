@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
 
 <!-- page specific plugin scripts -->
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
@@ -12,6 +13,8 @@
 <script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
+<script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/sweetalert2.all.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
@@ -71,7 +74,7 @@
                                             "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
                                         "</li>";
                         @role('admin|manager')
-                        btnGHtml += "<li>" + "<a href='#'>" + 
+                        btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "'>" + 
                         "<i class='blue ace-icon fa fa-hand-lizard-o bigger-120'></i>" + 
                             " 分配客户顾问 </a>"+ 
                             "</li>";
@@ -90,7 +93,7 @@
                             "</li>";
                         }
                         @role('admin|manager|customer')
-                            btnGHtml += "<li>" + "<a href='#'>" +
+                            btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
                             "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
                                 " 增加职位 </a>" +
                             "</li>";
@@ -141,6 +144,43 @@
                 },
             });
         });
+
+        @role('admin|manager')
+        $("#assign-dialog").on("show.bs.modal", function(e) {
+            var btn = $(e.relatedTarget),
+            cid = btn.data("cid");
+            $("#modal-job input[name=cid]").val(cid);
+        })
+        $('#uid').select2({
+            placeholder: "请选择客户顾问",
+            width: 330
+        });
+        $('#assign-dialog').ajaxForm({
+            beforeSubmit:function(){
+                var uid = $("select[name=uid]").val();
+                if(uid == ''){
+                    swal({
+                        title: '分配客户顾问',
+                        text: '请选择客户顾问',
+                        type: 'error',
+                        allowOutsideClick: false,
+                    });
+                    return false;
+                }
+            },
+            success:function(response) {
+                var data = $.parseJSON(response);
+                var type = data['code'] == 0 ? 'success' : 'error';
+                swal({
+                    title: '分配客户顾问',
+                    text: data['msg'],
+                    type: type,
+                    allowOutsideClick: false,
+                });
+                dt.ajax.reload();
+            }
+        });
+        @endrole
     });
 </script>
 
@@ -212,6 +252,46 @@
     </div>
 </div>
 
+{{-- 加入简历库 --}}
+<div class="modal fade" id="assign-dialog" tabIndex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                ×
+                </button>
+                <h4 class="modal-title">分配客户顾问</h4>
+            </div>
+            <div class="modal-body">
+                <form  method="POST" action="{{ route('customer.assign') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="cid" id="cid" value="">
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="jid">职位简历库:</label>
+                        <div class="col-xs-6 col-sm-6">
+                            <div class="clearfix">
+                                <select name="uid" id="uid">
+                                <option></option>
+                                @isset ($lines)
+                                <option></option>
+                                @foreach ($users as $user)
+                                <option value="{{ $user->id }}">{{ $line->name }}</option>
+                                @endforeach
+                                @endisset
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-success btn-xs">
+                            <i class="ace-icon fa fa-plus bigger-125"></i> 加入
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- PAGE CONTENT ENDS -->
 </div><!-- /.col -->
 </div>

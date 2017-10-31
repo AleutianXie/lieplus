@@ -101,9 +101,13 @@ class JobController extends Controller {
 
         // Customer need update for only assigned
         $assignedCustomers = Customer::where(['creater' => 1])->get(['id', 'name']);
-
         $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
 
+        $data = $request->input();
+        if (isset($data['cid'])) {
+            $cid = $data['cid'];
+            return view('job.add', compact('title', 'assignedCustomers', 'cid'));
+        }
         return view('job.add', compact('title', 'assignedCustomers'));
     }
 

@@ -61,6 +61,7 @@ Route::group(['prefix' => 'customer'], function ()
     Route::get('/search/{type}', 'CustomerController@search')->where(['type' => 'my|all'])->name('customer.search');
     Route::post('/pause/{jid}', 'CustomerController@pause')->where('id', '[0-9]+')->name('customer.pause');
     Route::post('/open/{jid}', 'CustomerController@open')->where('id', '[0-9]+')->name('customer.open');
+    Route::post('/assign', 'CustomerController@assign')->name('customer.assign');
 });
 
 Route::group(['prefix' => 'job'], function ()

@@ -26,9 +26,15 @@
             <select name="cid" id="cid" class="col-xs-12 col-sm-4">
                 <option></option>
                 @foreach($assignedCustomers as $key => $value)
+                    @if (!empty(old('cid')))
                     <option value="{{ $key }}" @if (old('cid') == $key)
                         selected="selected"
                     @endif>{{ $value}}</option>
+                    @else
+                    <option value="{{ $key }}" @if (isset($cid) && $cid == $key)
+                        selected="selected"
+                    @endif>{{ $value}}</option>
+                    @endif
                 @endforeach
             </select>
             <div class="red">
