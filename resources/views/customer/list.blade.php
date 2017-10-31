@@ -272,7 +272,7 @@
                             <div class="clearfix">
                                 <select name="uid" id="uid">
                                 <option></option>
-                                @isset ($lines)
+                                @isset ($users)
                                 <option></option>
                                 @foreach ($users as $user)
                                 <option value="{{ $user->id }}">{{ $line->name }}</option>
