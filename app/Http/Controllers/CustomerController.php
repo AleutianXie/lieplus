@@ -220,16 +220,16 @@ class CustomerController extends Controller
         $data = $request->input();
         $cid = $data['cid'];
         $uid = $data['uid'];
-        $assignedCustomer = AssignedCustomer::where(['cid' => $cid, 'uid' => $uid])->first();
-        if (!empty($assignedCustomer)) {
+        $assignCustomer = AssignCustomer::where(['cid' => $cid, 'uid' => $uid])->first();
+        if (!empty($assignCustomer)) {
             return json_encode(['code' => 1, 'msg' => '该客户顾问已经分配过该职位！']);
         }
-        $assignedCustomer = new AssignedCustomer();
-        $assignedCustomer->cid = $cid;
-        $assignedCustomer->uid = $uid;
-        $assignedCustomer->creater = Auth::id();
-        $assignedCustomer->modifier = Auth::id();
-        if ($assignedCustomer->save()) {
+        $assignCustomer = new AssignedCustomer();
+        $assignCustomer->cid = $cid;
+        $assignCustomer->uid = $uid;
+        $assignCustomer->creater = Auth::id();
+        $assignCustomer->modifier = Auth::id();
+        if ($assignCustomer->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 2, 'msg' => '操作失败！']);
