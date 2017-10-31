@@ -23,4 +23,16 @@ class Job extends Model
     {
         return $this->hasOne('App\Department', 'id', 'did');
     }
+
+    public function pause()
+    {
+        $this->closed = 1;
+        return $this->save();
+    }
+
+    public function open()
+    {
+        $this->closed = 0;
+        return $this->save();
+    }
 }

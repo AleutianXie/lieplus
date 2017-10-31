@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AssignCustomer;
 use App\Customer;
 use App\Region;
+//use App\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
@@ -169,5 +170,37 @@ class CustomerController extends Controller
             $customers = Customer::where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property' ]);
         }
         return Datatables::of($customers)->make();
+    }
+
+    public function pause(Request $request, $id)
+    {
+        $customer = Customer::with('jobs')->findOrFail($id);
+        if ($customer->closed) {
+            return json_encode(['code' => 2, 'msg' => '该客户已经暂停！']);
+        }
+        if ($customer->pause())
+        {
+            foreach ($customer->jobs as $job) {
+                $job->closed = 1;
+                if (!$job->save()) {
+                    return json_encode(['code' => 3, 'msg' => '客户暂停成功，但对应的某职位暂停失败，请手动去暂停！']);
+                }
+            }
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
+    }
+
+    public function open(Request $request, $id)
+    {
+        $customer = Customer::findOrFail($id);
+        if (!$customer->closed) {
+            return json_encode(['code' => 2, 'msg' => '该客户已经在合作！']);
+        }
+        if ($customer->open())
+        {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 }

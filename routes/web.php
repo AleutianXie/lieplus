@@ -59,6 +59,8 @@ Route::group(['prefix' => 'customer'], function ()
     Route::post('/edit', 'CustomerController@edit');
     Route::post('/check', 'CustomerController@isExist');
     Route::get('/search/{type}', 'CustomerController@search')->where(['type' => 'my|all'])->name('customer.search');
+    Route::post('/pause/{jid}', 'CustomerController@pause')->where('id', '[0-9]+')->name('customer.pause');
+    Route::post('/open/{jid}', 'CustomerController@open')->where('id', '[0-9]+')->name('customer.open');
 });
 
 Route::group(['prefix' => 'job'], function ()
@@ -71,7 +73,8 @@ Route::group(['prefix' => 'job'], function ()
     Route::match(['get', 'post'], '/add', 'JobController@add')->name('job.add');
     Route::get('/search/{type}', 'JobController@search')->where(['type' => 'my|all'])->name('job.search');
     Route::post('/edit', 'JobController@edit');
-
+    Route::post('/pause/{jid}', 'JobController@pause')->where('id', '[0-9]+')->name('job.pause');
+    Route::post('/open/{jid}', 'JobController@open')->where('id', '[0-9]+')->name('job.open');
 });
 
 Route::group(['prefix' => 'line'], function ()

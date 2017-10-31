@@ -19,4 +19,16 @@ class Customer extends Model
     {
         return $this->hasMany('App\Job', 'cid');
     }
+
+    public function pause()
+    {
+        $this->closed = 1;
+        return $this->save();
+    }
+
+    public function open()
+    {
+        $this->closed = 0;
+        return $this->save();
+    }
 }

@@ -34,7 +34,7 @@ class CreateCustomersTable extends Migration
             $table->enum('level', ['未设置', '1级', '2级', '3级'])->default('未设置');
             $table->enum('type', ['未设置', '未签约', '已签约', '有成交'])->default('未设置');
             $table->boolean('show')->default(1);
-            $table->boolean('archive')->default(1);
+            $table->boolean('closed')->default(0);
             $table->unsignedInteger('creater');
             $table->foreign('creater')->references('id')->on('users');
             $table->unsignedInteger('modifier');

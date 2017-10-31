@@ -14,10 +14,11 @@
 <script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
+<script src="{{ asset('static/js/sweetalert2.all.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').DataTable({
+        var dt = $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
             },
@@ -93,29 +94,71 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        return    "<div class='dropdown'>" + 
-                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/job') }}/" + row.id + "'>"+
-                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
-                                          "</li>" +  
-                                          "<li>" +
-                                              "<a href='#'>" + 
-                                              "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                               "暂停 </a>"+ 
-                                          "</li>" + 
-                                          "<li>" +
-                                              "<a href='#'>" + 
-                                              "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                               "重新发布 </a>" +
-                                          "</li>" + 
-                                      "</ul>" +
-                                  "</div>";
+                        var btnGHtml = "<div class='dropdown'>" + 
+                        "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
+                            "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
+                                " 操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
+                                    "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
+                                        "<li>" + 
+                                            "<a href='{{ asset('/job') }}/" + row.id + "'>"+
+                                            "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
+                                        "</li>";
+                        if (row.closed == 0) {
+                            btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" + 
+                                            "<i class='blue ace-icon fa fa-pause bigger-120'></i>" + 
+                                               " 暂停 </a>"+ 
+                                         "</li>";
+                        }
+                        else {
+                            btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" + 
+                                            "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" + 
+                                               " 重新发布 </a>" +
+                                         "</li>";
+                        }
+                        btnGHtml += "</ul></div>";
+                        return btnGHtml;
                 }}
         ]
+        });
+
+        $('table.table tbody').on('click','a[id^=pause-]', function (e) {
+            var jid = $(this)[0].id.substring(6);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/job/pause/')}}/' + jid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '暂停',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt.ajax.reload();
+                },
+            });
+        });
+
+        $('table.table tbody').on('click','a[id^=reopen-]', function (e) {
+            var jid = $(this)[0].id.substring(7);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/job/open/')}}/' + jid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '重新发布',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt.ajax.reload();
+                },
+            });
         });
     });
 </script>

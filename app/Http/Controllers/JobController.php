@@ -121,8 +121,37 @@ class JobController extends Controller {
             $jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
         }
         if ('all' == $type) {
-            $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+            $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
         }
         return Datatables::of($jobs)->make();
+    }
+
+    public function pause(Request $request, $id)
+    {
+        $job = Job::findOrFail($id);
+        if ($job->closed) {
+            return json_encode(['code' => 2, 'msg' => '该职位已经暂停！']);
+        }
+        if ($job->pause())
+        {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
+    }
+
+    public function open(Request $request, $id)
+    {
+        $job = Job::findOrFail($id);
+        if (!$job->closed) {
+            return json_encode(['code' => 2, 'msg' => '该职位已经发布！']);
+        }
+        if ($job->customer->closed) {
+            return json_encode(['code' => 3, 'msg' => '该职位对应客户已经暂停！']);
+        }
+        if ($job->open())
+        {
+            return json_encode(['code' => 0, 'msg' => '操作成功！']);
+        }
+        return json_encode(['code' => 1, 'msg' => '操作失败！']);
     }
 }

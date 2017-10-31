@@ -389,11 +389,15 @@
                         defaultContent: '新增反馈',
                         render: function (data, type, row)
                         {
+                            @if ($line->job->closed == 0)
                             if(!data)
                             {
                                 data = '新增反馈';
                             }
                             return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                            @else
+                            return data;
+                            @endif
                         }
                     },
                     {
@@ -403,6 +407,7 @@
                     {
                         data: null,
                         render: function(data, type, row){
+                            @if ($line->job->closed == 0)
                             var btnGHtml = "<div class='dropdown'>" + 
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
                                 "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
@@ -446,16 +451,17 @@
                                 }
 
                             btnGHtml += "</ul></div>";
+                            @else
+                            btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>已暂停</span>";
+                            @endif
                             return btnGHtml;
-
                         }
                     }
                 ]
             });
         });
 
-
-
+        @if ($line->job->closed == 0)
         $('table.table tbody').on('click','span[id^=feedback]', function (e) {  
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
@@ -466,6 +472,7 @@
                 }
             });
         });
+        @endif
 
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
