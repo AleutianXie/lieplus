@@ -224,7 +224,7 @@ class CustomerController extends Controller
         if (!empty($assignCustomer)) {
             return json_encode(['code' => 1, 'msg' => '该客户顾问已经分配过该职位！']);
         }
-        $assignCustomer = new AssignedCustomer();
+        $assignCustomer = new AssignCustomer();
         $assignCustomer->cid = $cid;
         $assignCustomer->uid = $uid;
         $assignCustomer->creater = Auth::id();
