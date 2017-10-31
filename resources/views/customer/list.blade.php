@@ -149,7 +149,7 @@
         $("#assign-dialog").on("show.bs.modal", function(e) {
             var btn = $(e.relatedTarget),
             cid = btn.data("cid");
-            $("#modal-job input[name=cid]").val(cid);
+            $("#assign-dialog input[name=cid]").val(cid);
         })
         $('#uid').select2({
             placeholder: "请选择客户顾问",
