@@ -31,14 +31,14 @@ class CustomerController extends Controller
     public function index()
     {
         $title = '我的客户';
-        $users = User::role('recruiter')->get();
+        $users = User::role('customer')->get();
         return view('customer.index', compact('title', 'users'));
     }
 
     public function all()
     {
         $title = '猎加客户';
-        $users = User::role('recruiter')->get();
+        $users = User::role('customer')->get();
         return view('customer.all', compact('title', 'users'));
     }
 
