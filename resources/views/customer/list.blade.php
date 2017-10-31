@@ -275,7 +275,7 @@
                                 @isset ($users)
                                 <option></option>
                                 @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $line->name }}</option>
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                                 @endisset
                                 </select>
