@@ -25,7 +25,7 @@ class Resume extends Model
 
     public function getmobileAttribute($value)
     {
-        return Auth::user()->isAdmin || $this->creater == Auth::id() || $this->passNDays() ? $value : substr_replace($value, "****", 3, 4);
+        return Auth::user()->hasRole('admin') || $this->creater == Auth::id() || $this->passNDays() ? $value : substr_replace($value, "****", 3, 4);
     }
 
     public function getemailAttribute($value)
@@ -34,7 +34,7 @@ class Resume extends Model
         $start = $index - 4 >= 1 ? $index - 4 : 1;
         $length = $index - 4 >= 1 ? 4 : $index - 1;
         $replace = $index - 4 >= 1 ? '****' : substr('****', $length);
-        return Auth::user()->isAdmin || $this->creater == Auth::id() || $this->passNDays() ? $value : substr_replace($value, $replace, $start, $length);
+        return Auth::user()->hasRole('admin') || $this->creater == Auth::id() || $this->passNDays() ? $value : substr_replace($value, $replace, $start, $length);
     }
 
     private function passNDays(int $n = 1)

@@ -244,7 +244,7 @@ class ResumeController extends Controller
         $resumes = [];
         if ('my' == $type)
         {
-            $resumes = array_pluck(MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+            $resumes = array_pluck(MyLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
             $resumes = array_map(function ($value)
             {
                 $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1'];
@@ -253,7 +253,7 @@ class ResumeController extends Controller
         }
         if ('job' == $type)
         {
-            $resumes = array_pluck(JobLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+            $resumes = array_pluck(JobLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
             $resumes = array_map(function ($value)
             {
                 $keys = ['id' => 1, 'sn' => 1, 'name' => 'name', 'mobile' => 1, 'email' => '1', 'feedback' => '1'];
@@ -262,7 +262,7 @@ class ResumeController extends Controller
         }
         if ('all' == $type)
         {
-            $resumes = Resume::where(['show' => 1])->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback'])->toArray();
+            $resumes = Resume::where(['show' => 1])->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at'])->toArray();
         }
         return Datatables::of($resumes)->make();
     }
