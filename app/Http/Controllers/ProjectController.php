@@ -130,7 +130,7 @@ class ProjectController extends Controller
 		}
 
 		$title = '项目启动书';
-		return view('BD.project', compact('title'));
+		return view('bd.project', compact('title'));
 	}
 
 	public function edit(Request $request)
@@ -152,7 +152,7 @@ class ProjectController extends Controller
 		$title = '项目启动书审核';
 		$projects = Project::all();
 
-		return view('BD.audit', compact('title', 'projects'));
+		return view('bd.audit', compact('title', 'projects'));
 	}
 
 	public function detail(Request $request, $id)
