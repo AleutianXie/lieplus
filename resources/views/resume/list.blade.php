@@ -19,7 +19,7 @@
 <script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
-        //editables on first profile page
+    //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
         $('#dynamic-table').DataTable({
@@ -55,38 +55,47 @@
                 },
                 {
                     data: null,
-                    defaultContent: '职位简历库'
+                    render: function(data, type, row){
+                        var spanGHtml = '';
+                        $.each(row.lsx, function(index, value, array) {
+                                spanGHtml += '<span>' + value + '</span>';
+                            if((row.lsx.length - 1) != index){
+                                spanGHtml += '<br/>';
+                            }
+                        });
+                        return spanGHtml;
+                    }
                 },
                 {
                     data: null,
                     render: function(data, type, row){
-                        return "<div class='dropdown'>" + 
-                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                            "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                "<li>" + 
+                        return "<div class='dropdown'>" +
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                                "操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                            "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                                "<li>" +
                                     "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
-                                "</li>" + 
-                                "<li>" + 
-                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
-                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" + 
-                                        "提醒 </a>" + 
-                                "</li>" + 
+                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" +
+                                "</li>" +
+                                "<li>" +
+                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" +
+                                        "提醒 </a>" +
+                                "</li>" +
                                 @if ('my' != $type)
                                 "<li>" +
-                                    "<a href='#' id='my-" + row.id + "'>" + 
-                                    "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                        "加入我的简历库 </a>"+ 
-                                "</li>" + 
+                                    "<a href='#' id='my-" + row.id + "'>" +
+                                    "<i class='blue ace-icon fa fa-download bigger-120'></i>" +
+                                        "加入我的简历库 </a>"+
+                                "</li>" +
                                 @endif
                                 @if ('job' != $type)
                                 "<li>" +
-                                    "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" + 
-                                        "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                        "加入职位简历库 </a>" +
-                                "</li>" + 
+                                    "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" +
+                                        "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" +
+                                        "加入职位流水线 </a>" +
+                                "</li>" +
                                 @endif
                             "</ul>" +
                         "</div>";
@@ -94,7 +103,7 @@
         ]
         });
 
-        $('#dynamic-table tbody').on('click','span[id^=feedback]', function (e) {  
+        $('#dynamic-table tbody').on('click','span[id^=feedback]', function (e) {
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -130,7 +139,7 @@
         })
 
         $('#jid').select2({
-            placeholder: "请选择职位简历库",
+            placeholder: "请选择职位流水线",
             allowClear: true,
             width: 300
         });
@@ -139,8 +148,8 @@
                 var jid = $("#modal-job select[name=jid]").val();
                 if(jid == ''){
                     swal({
-                        title: '加入职位简历库',
-                        text: '请选择职位简历库',
+                        title: '加入职位流水线',
+                        text: '请选择职位流水线',
                         type: 'error',
                         allowOutsideClick: false,
                     });
@@ -151,7 +160,7 @@
                 var data = $.parseJSON(response);
                 var type = data['code'] == 0 ? 'success' : 'error';
                 swal({
-                    title: '加入职位简历库',
+                    title: '加入职位流水线',
                     text: data['msg'],
                     type: type,
                     allowOutsideClick: false,
@@ -186,7 +195,7 @@
                             邮箱
                         </th>
                         <th>反馈</th>
-                        <th>职位</th>
+                        <th>流水线</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -204,7 +213,7 @@
                 <button type="button" class="close" data-dismiss="modal">
                 ×
                 </button>
-                <h4 class="modal-title">加入职位简历库</h4>
+                <h4 class="modal-title">加入职位流水线</h4>
             </div>
             <div class="modal-body">
                 <form  method="POST" action="{{ route('resume.addjob') }}">
