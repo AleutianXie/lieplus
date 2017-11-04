@@ -180,11 +180,21 @@
                 <li class="">
                     <a href="/line">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        我的职位流水线
+                        我负责招聘的流水线
                     </a>
 
                     <b class="arrow"></b>
                 </li>
+                @role('admin|customer')
+                <li class="">
+                    <a href="/line/customer">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        我负责客户的流水线
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                @endrole
                 <li class="">
                     <a href="/line/all">
                         <i class="menu-icon fa fa-caret-right"></i>
