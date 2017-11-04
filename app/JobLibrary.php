@@ -13,16 +13,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class JobLibrary extends Model
 {
-    //
-    protected $table = 'joblibraries';
+	//
+	protected $table = 'joblibraries';
 
-    public function resume()
-    {
-        return $this->hasOne('App\Resume', 'id', 'rid');
-    }
+	public function resume()
+	{
+		return $this->hasOne('App\Resume', 'id', 'rid');
+	}
 
-    public function line()
-    {
-        return $this->hasOne('App\line', 'jid', 'jid');
-    }
+	public function line()
+	{
+		return $this->hasOne('App\Line', 'jid', 'jid');
+	}
 }
