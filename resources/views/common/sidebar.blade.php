@@ -118,6 +118,44 @@
             </ul>
         </li>
 
+        @role('admin|manager|BD')
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-list-ol"></i>
+                <span class="menu-text">
+                    项目
+                </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                @role('admin|BD')
+                <li class="">
+                    <a href="/project">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        项目启动书
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                @endrole
+                @role('admin|manager')
+                <li class="">
+                    <a href="/project/audit">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        项目审批
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                @endrole
+            </ul>
+        </li>
+        @endrole
+
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>
@@ -131,14 +169,6 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
-                    <a href="/project">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        项目启动书
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
                 <li class="">
                     <a href="/job/add">
                         <i class="menu-icon fa fa-caret-right"></i>

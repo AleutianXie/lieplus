@@ -1,9 +1,13 @@
-@extends('layouts.lieplus')
+@extends('layouts.cici')
 
 @section('title'){{ $title }}@endsection
 
 @section('content')
 @include('bd.list', ['audit' => true])
+@endsection
+
+@section('breadcrumbs')
+{!! Breadcrumbs::render('project.audit') !!}
 @endsection
 
 @section('scripts')

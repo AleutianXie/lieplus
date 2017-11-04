@@ -102,6 +102,13 @@ Breadcrumbs::register('project.detail', function ($breadcrumbs, $id)
 	$breadcrumbs->push('项目启动书详细', route('project.detail', $id));
 });
 
+// Home > Job > audit
+Breadcrumbs::register('project.audit', function ($breadcrumbs)
+{
+	$breadcrumbs->parent('project');
+	$breadcrumbs->push('项目审核', route('project.audit'));
+});
+
 // Home > Customer
 Breadcrumbs::register('customer', function ($breadcrumbs)
 {

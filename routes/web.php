@@ -98,8 +98,10 @@ Route::group(['prefix' => 'project'], function ()
 {
 	Route::match(['get', 'post'], '/', 'ProjectController@index')->name('project');
 	Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project');
-	Route::match(['get', 'post'], '/audit', 'ProjectController@audit');
+	Route::match(['get', 'post'], '/audit', 'ProjectController@audit')->name('project.audit');
+	Route::post('/edit', 'ProjectController@edit');
 	Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
+	Route::get('/search/{type}', 'ProjectController@search')->where(['type' => 'all'])->name('project.search');
 });
 
 Route::group(['prefix' => 'station'], function ()

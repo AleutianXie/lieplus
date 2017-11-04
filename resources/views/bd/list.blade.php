@@ -1,4 +1,7 @@
+<link rel="stylesheet" href="{{ asset('static/css/select2.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('static/css/dataTables.bootstrap.min.css') }}" />
 
 <!-- page specific plugin scripts -->
 <script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
@@ -10,25 +13,139 @@
 <script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
+<script src="{{ asset('static/js/select2.min.js') }}"></script>
+<script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+    //editables on first profile page
+    $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-        $('#dynamic-table').dataTable({
+        $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
-            }
-        });
-
-        $('span[id^=feedback').each(function(){
-            $(this).editable({
-                params: {'_token' : '{{ csrf_token() }}'},
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return '反馈不能为空！';
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('project.search', 'all') }}',
+            columns: [
+                {
+                    data: 'sn',
+                    render: function (data, type, row )
+                    {
+                        return "<a href='{{ asset('/project')}}/" + row.id+ "'>" + data +"</a>";
+                    }
+                },
+                {data: 'company.name'},
+                {data: 'job.name'},
+                {
+                    data: 'company.level',
+                    render: function (data, type, row)
+                    {
+                        return "<span class='editable editable-click' id='level-" + row.company.id + "' data-name='level' data-type='select2' data-url='/customer/edit' data-pk='" + row.company.id + "'>" + data + "</span>";
+                    }
+                },
+                {
+                    data: 'company.type',
+                    render: function (data, type, row)
+                    {
+                        return "<span class='editable editable-click' id='type-" + row.company.id + "' data-name='type' data-type='select2' data-url='/customer/edit' data-pk='" + row.company.id + "'>" + data + "</span>";
+                    }
+                },
+                {
+                    data: 'status',
+                    render: function (data, type, row)
+                    {
+                        return "<span class='editable editable-click' id='status-" + row.id + "' data-name='status' data-type='select2' data-url='/project/edit' data-pk='" + row.id + "'>" + data + "</span>";
                     }
                 }
+        ]
+        });
 
+        $('#dynamic-table tbody').on('click','span[id^=level-]', function (e) {
+            $(this).editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                source: {!! json_encode(config('lieplus.companylevel')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140,
+                }
             });
+        });
+
+        $('#dynamic-table tbody').on('click','span[id^=type-]', function (e) {
+            $(this).editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                source: {!! json_encode(config('lieplus.companytype')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140,
+                }
+            });
+        });
+
+        $('#dynamic-table tbody').on('click','span[id^=status-]', function (e) {
+            $(this).editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                source: {!! json_encode(config('lieplus.projectstatus')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140,
+                }
+            });
+        });
+
+        $('table.table tbody').on('click','a[id^=my-]', function (e) {
+            var rid = $(this)[0].id.substring(3);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/resume/my/add')}}/' + rid,
+                data: { '_token' : '{{ csrf_token() }}' },
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '加入我的简历库',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                },
+            });
+        });
+        $("#modal-job").on("show.bs.modal", function(e) {
+            var btn = $(e.relatedTarget),
+            rid = btn.data("rid");
+            $("#modal-job input[name=rid]").val(rid);
+        })
+
+        $('#jid').select2({
+            placeholder: "请选择职位流水线",
+            allowClear: true,
+            width: 300
+        });
+        $('#modal-job').ajaxForm({
+            beforeSubmit:function(){
+                var jid = $("#modal-job select[name=jid]").val();
+                if(jid == ''){
+                    swal({
+                        title: '加入职位流水线',
+                        text: '请选择职位流水线',
+                        type: 'error',
+                        allowOutsideClick: false,
+                    });
+                return false;
+                }
+            },
+            success:function(response) {
+                var data = $.parseJSON(response);
+                var type = data['code'] == 0 ? 'success' : 'error';
+                swal({
+                    title: '加入职位流水线',
+                    text: data['msg'],
+                    type: type,
+                    allowOutsideClick: false,
+                });
+            }
         });
     });
 </script>
@@ -38,11 +155,6 @@
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
     <div class="col-xs-12">
-{{--         <h3 class="header smaller lighter blue">jQuery dataTables</h3>
-
-        <div class="clearfix">
-            <div class="pull-right tableTools-container"></div>
-        </div> --}}
         <div class="table-header">
             项目启动书列表
         </div>
@@ -53,67 +165,16 @@
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </th>
                         <th>编号</th>
                         <th>公司全称</th>
                         <th>职位名称</th>
-                        <th>创建人</th>
-                        <th>创建时间</th>
-                        <th>操作</th>
+                        <th>级别</th>
+                        <th>类型</th>
+                        <th>状态</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($projects as $project)
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" />
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
-                        <td>{{ $project->sn }}</td>
-                        <td>{{ $project->cid }}</td>
-                        <td>{{ $project->jid }}</td>
-                        <td>{{ $project->creater }}</td>
-                        <td>{{ $project->created_at }}</td>
-                        <td>
-                            <div class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
-                                    <i class="purple ace-icon fa fa-asterisk bigger-120"></i>
-                                    操作
-                                    <i class="ace-icon fa fa-caret-down"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
-                                    <li>
-                                        <a href="{{ asset('/resume/'.$project->id) }}">
-                                        <i class="blue ace-icon fa fa-eye bigger-120"></i>
-                                         查看 </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ asset('/resume/'.$project->id.'#resume-tab-4') }}">
-                                        <i class="blue ace-icon fa fa-bell-o bigger-120"></i>
-                                         提醒 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
-                                         加入职位简历库 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
-                                         重新加入工作台 </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
+
                 </tbody>
             </table>
             @endif
