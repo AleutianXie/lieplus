@@ -36,72 +36,67 @@
                 },
                 {data: 'name'},
                 {data: 'industry'},
-                {
-                    data: null,
-                    defaultContent: '0',
-                },
-                {
-                    data: null,
-                    defaultContent: '0',
-                },
-                {
-                    data: null,
-                    defaultContent: '0',
-                },
-                {
-                    data: 'level',
-                    defaultContent: '不限',
-                    render: function (data, type, row)
-                    {
-                        if(data == '')
-                        {
-                            data = '不限';
-                        }
-                        return data;
-                    }
-                },
+                {data: 'jobCount'},
+                {data: 'openCount'},
+                {data: 'closedCount'},
+                {data: 'level'},
                 {data: 'property'},
                 {
                     data: null,
                     render: function(data, type, row){
-                        var btnGHtml = "<div class='dropdown'>" + 
-                        "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                            "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                " 操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                    "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                        "<li>" + 
-                                            "<a href='{{ asset('/customer') }}/" + row.id + "'>"+
-                                            "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
-                                        "</li>";
-                        @role('admin|manager')
-                        btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "'>" + 
-                        "<i class='blue ace-icon fa fa-hand-lizard-o bigger-120'></i>" + 
-                            " 分配客户顾问 </a>"+ 
-                            "</li>";
-                        @endrole
+                        if('通过' === row.project.status) {
+                            var btnGHtml = "<div class='dropdown'>" +
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                                    " 操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                                            "<li>" +
+                                                "<a href='{{ asset('/customer') }}/" + row.id + "'>"+
+                                                "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" +
+                                            "</li>";
+                            @role('admin|manager')
+                            btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "'>" +
+                            "<i class='blue ace-icon fa fa-hand-lizard-o bigger-120'></i>" +
+                                " 分配客户顾问 </a>"+
+                                "</li>";
+                            @endrole
 
-                        if (row.closed == 0) {
-                            btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" + 
-                            "<i class='blue ace-icon fa fa-pause bigger-120'></i>" + 
-                                " 暂停合作 </a>" +
-                            "</li>";
-                        }
-                        else {
-                            btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" + 
-                            "<i class='blue ace-icon fa fa-play bigger-120'></i>" + 
-                                " 重启合作 </a>" +
-                            "</li>";
-                        }
-                        @role('admin|manager|customer')
-                            btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
-                            "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                " 增加职位 </a>" +
-                            "</li>";
-                        @endrole
+                            if (row.ismine == 1) {
+                                if (row.closed == 0) {
+                                    btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
+                                    "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
+                                        " 暂停合作 </a>" +
+                                    "</li>";
+                                }
+                                else {
+                                    btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" +
+                                    "<i class='blue ace-icon fa fa-play bigger-120'></i>" +
+                                        " 重启合作 </a>" +
+                                    "</li>";
+                                }
+                                btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
+                                "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                    " 增加职位 </a>" +
+                                "</li>";
+                            }
+                            else {
+                                @role('admin|manager|customer')
+                                    btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
+                                    "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                        " 增加职位 </a>" +
+                                    "</li>";
+                                @endrole
+                            }
 
-                        btnGHtml += "</ul></div>";
+                            btnGHtml += "</ul></div>";
+                        }
+                        else
+                        {
+                            btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>" + row.project.status + "</span>"
+                        }
                         return btnGHtml;
-                }}
+                    }
+                }
         ]
         });
 

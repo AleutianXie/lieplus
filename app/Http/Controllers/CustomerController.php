@@ -124,11 +124,20 @@ class CustomerController extends Controller
 		{
 			$assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
 			$customers = array_pluck($assignCustomers, 'customer');
-			//$jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
 		}
 		if ('all' == $type)
 		{
-			$customers = Customer::where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property']);
+			$customers = Customer::with('jobs')->with('project')->where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property']);
+		}
+		$cids = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get(['cid']);
+		$cids = array_pluck($cids, 'cid');
+		foreach ($customers as $key => $customer)
+		{
+			$customers[$key] = $customer->with('jobs')->with('project')->where(['show' => 1])->first(['id', 'sn', 'name', 'industry', 'level', 'property']);
+			$customers[$key]['jobCount'] = count($customer->jobs);
+			$customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
+			$customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
+			$customers[$key]['ismine'] = in_array($customer->id, $cids);
 		}
 		return Datatables::of($customers)->make();
 	}
