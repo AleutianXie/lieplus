@@ -116,7 +116,7 @@ class PlanController extends Controller
 			}
 			foreach ($stations as $station)
 			{
-				$data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'resume' => $station->resume];
+				$data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'resume' => $station->resume, 'recruiter' => User::find($station->modifier)->name];
 			}
 		}
 		return Datatables::of($data)->make();

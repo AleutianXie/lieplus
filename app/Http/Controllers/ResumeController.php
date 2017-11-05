@@ -184,13 +184,8 @@ class ResumeController extends Controller
 		$resume->{$data['name']} = $data['value'];
 		$resume->modifier = Auth::id();
 
-		if ($resume->save())
+		if (!$resume->save())
 		{
-			//redirect(url('/resume'));
-		}
-		else
-		{
-			//redirect()->back();
 			return '更新失败';
 		}
 	}

@@ -246,6 +246,7 @@ class LineController extends Controller
 		}
 		foreach ($stations as $key => $station)
 		{
+			$stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
 			$stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
 			$stations[$key]['resume'] = $station->resume;
 		}

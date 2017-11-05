@@ -417,10 +417,7 @@
                             @endif
                         }
                     },
-                    {
-                        data: null,
-                        defaultContent: '职位简历库'
-                    },
+                    {data: 'recruiter'},
                     {
                         data: null,
                         render: function(data, type, row){

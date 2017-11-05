@@ -187,10 +187,7 @@
                             return "<span class='editable editable-click' id='feedback[" + row.resume.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.resume.id+"'>"+data +"</span>";
                         }
                     },
-                    {
-                        data: null,
-                        defaultContent: '职位简历库'
-                    },
+                    {data: 'recruiter'},
                     {data: 'name'},
                     {
                         data: null,
