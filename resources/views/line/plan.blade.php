@@ -39,7 +39,12 @@
                 意向中
             </a>
         </li>
-
+        <li>
+            <a data-toggle="tab" href="#audit">
+                <i class="grey ace-icon fa fa-arrow-down bigger-110"></i>
+                审批中
+            </a>
+        </li>
         <li>
             <a data-toggle="tab" href="#recommendation">
                 <i class="pink ace-icon fa fa-arrow-down"></i>
@@ -81,6 +86,10 @@
         @include('station.list', ['status' => 2, 'plan' => 1])
         </div>
 
+        <div id="audit" class="tab-pane">
+        @include('station.list', ['status' => 7, 'plan' => 1])
+        </div>
+
         <div id="recommendation" class="tab-pane">
         @include('station.list', ['status' => 3, 'plan' => 1])
         </div>
@@ -94,7 +103,7 @@
         @include('station.list', ['status' => 6, 'plan' => 1])
         </div>
         <div id="closed" class="tab-pane">
-        @include('station.list', ['status' => 7, 'plan' => 1])
+        @include('station.list', ['status' => 8, 'plan' => 1])
         </div>
     </div>
 </div>
@@ -182,48 +191,86 @@
                         data: null,
                         defaultContent: '职位简历库'
                     },
-                    {
-                        data: 'name',
-                    },
+                    {data: 'name'},
                     {
                         data: null,
                         render: function(data, type, row){
-                            var btnGHtml = "<div class='dropdown'>" + 
-                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                    "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                "<li>" + 
+                            @if ($line->job->closed == 0)
+                            var btnGHtml = "<div class='dropdown'>" +
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                                    "操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                                "<li>" +
                                     "<a href='{{ asset('/resume') }}/" + row.resume.id + "'>"+
-                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
-                                "</li>" + 
-                                "<li>" + 
-                                    "<a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" + 
-                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a>" + 
+                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" +
                                 "</li>";
                                 if (status == 0){
-                                    btnGHtml += "<li>" + "<a href='#' id='create-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
-                                                  "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                                   " 加入工作台 </a>" +
-                                                "</li>";
+                                    @role('admin|recruiter')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li>" + "<a href='#' id='create-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                        "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" +
+                                        " 加入工作台 </a></li>";
+                                    @endrole
                                 }
-                                if (status != 0 && status != 7 && status != 6) {
-                                    btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
-                                    "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
-                                        " 下一步 </a>" + 
-                                    "</li>";
+                                if (status == 1 || status == 2){
+                                    @role('admin|recruiter')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                        "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" +
+                                            " 下一步 </a>" +
+                                        "</li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @endrole
                                 }
-                                if (status != 0 && status != 7 ) {
-                                    btnGHtml += 
-                                    "<li>" + 
-                                        "<a href='#' id='abandon-" + row.resume.id + "' data-lid='" + row.lid + "'>" + 
-                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
-                                            " 放弃 </a>" + 
-                                    "</li>";
+                                if (status == 3 || status == 4 || status == 5 || status == 7)
+                                {
+                                    @role('admin|customer|manager')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                        "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" +
+                                            " 下一步 </a>" +
+                                        "</li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @else
+                                        @role('recruiter')
+                                        if(row.ismine == 1){
+                                            btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        }
+                                        @endrole
+                                    @endrole
                                 }
-                                if (status == 7) {
+                                if (status == 6)
+                                {
+                                    @role('admin|customer|manager')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @else
+                                        @role('recruiter')
+                                        if(row.ismine == 1){
+                                            btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        }
+                                        @endrole
+                                    @endrole
+                                }
+                                if (status == 8) {
                                     btnGHtml +=
-                                    "<li>" + 
+                                    "<li>" +
                                         "<a href='#' id='reactive-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
                                             "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
                                                 " 重新加入工作台 </a>" +
@@ -231,8 +278,10 @@
                                 }
 
                             btnGHtml += "</ul></div>";
+                            @else
+                            btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>已暂停</span>";
+                            @endif
                             return btnGHtml;
-
                         }
                     }
                 ]
@@ -241,7 +290,7 @@
 
 
 
-        $('table.table tbody').on('click','span[id^=feedback]', function (e) {  
+        $('table.table tbody').on('click','span[id^=feedback]', function (e) {
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -256,7 +305,20 @@
             var rid = $(this)[0].id.substring(5);
             var lid = $(this)[0].dataset.lid;
             var status = $(this).parents('table')[0].dataset.status;
-            var next = parseInt(status) + 1;
+            var next = 0;
+            if (parseInt(status) == 2 ) {
+                next = 7;
+            }
+            else if (parseInt(status) == 7 ) {
+                next = 3;
+            }
+            else if (parseInt(status) == 6 ) {
+                next = 8;
+            }
+            else
+            {
+                next = parseInt(status) + 1;
+            }
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/next/')}}/' + lid + '/' + rid,
@@ -294,7 +356,7 @@
                         allowOutsideClick: false,
                     });
                     dt[status].ajax.reload();
-                    dt[7].ajax.reload();
+                    dt[8].ajax.reload();
                 },
             });
         });
@@ -386,6 +448,7 @@
                 dt[5].ajax.reload();
                 dt[6].ajax.reload();
                 dt[7].ajax.reload();
+                dt[8].ajax.reload();
 
             }
         });

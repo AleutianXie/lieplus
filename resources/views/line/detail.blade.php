@@ -93,6 +93,12 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
+                            <div class="profile-info-name"> 审批中： </div>
+                            <div class="profile-info-value">
+                                <span class="editable editable-click" id="username" style="display: inline;">{{ count($line->audit) }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
                             <div class="profile-info-name"> 推荐中： </div>
                             <div class="profile-info-value">
                                 <span class="editable editable-click" id="gender" style="display: inline;">{{ count($line->recommendation) }}</span>
@@ -249,6 +255,13 @@
                                                 </li>
 
                                                 <li>
+                                                    <a data-toggle="tab" href="#audit">
+                                                        <i class="grey ace-icon fa fa-arrow-down bigger-110"></i>
+                                                        审批中
+                                                    </a>
+                                                </li>
+
+                                                <li>
                                                     <a data-toggle="tab" href="#recommendation">
                                                         <i class="pink ace-icon fa fa-arrow-down"></i>
                                                         推荐中
@@ -289,6 +302,10 @@
                                                 @include('station.list', ['status' => 2])
                                                 </div>
 
+                                                <div id="audit" class="tab-pane">
+                                                @include('station.list', ['status' => 7])
+                                                </div>
+
                                                 <div id="recommendation" class="tab-pane">
                                                 @include('station.list', ['status' => 3])
                                                 </div>
@@ -302,7 +319,7 @@
                                                 @include('station.list', ['status' => 6])
                                                 </div>
                                                 <div id="closed" class="tab-pane">
-                                                @include('station.list', ['status' => 7])
+                                                @include('station.list', ['status' => 8])
                                                 </div>
                                             </div>
                                         </div>
@@ -374,18 +391,18 @@
                 ajax: '/line/stations/{{ $line->id }}/'+ status,
                 columns: [
                     {
-                        data: 'sn',
+                        data: 'resume.sn',
                         render: function (data, type, row )
                         {
                             return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
                         }
                     },
-                    {data: 'name'},
+                    {data: 'resume.name'},
                     {data: null, defaultContent: '摘要'},
-                    {data: 'mobile'},
-                    {data: 'email'},
+                    {data: 'resume.mobile'},
+                    {data: 'resume.email'},
                     {
-                        data: 'feedback',
+                        data: 'resume.feedback',
                         defaultContent: '新增反馈',
                         render: function (data, type, row)
                         {
@@ -394,7 +411,7 @@
                             {
                                 data = '新增反馈';
                             }
-                            return "<span class='editable editable-click' id='feedback[" + row.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.id+"'>"+data +"</span>";
+                            return "<span class='editable editable-click' id='feedback[" + row.resume.id + "]' data-name='text' data-emptytext='新增反馈' data-type='text' data-url='/resume/feedback' data-pk='"+row.resume.id+"'>"+data +"</span>";
                             @else
                             return data;
                             @endif
@@ -408,43 +425,82 @@
                         data: null,
                         render: function(data, type, row){
                             @if ($line->job->closed == 0)
-                            var btnGHtml = "<div class='dropdown'>" + 
-                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                    "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                "<li>" + 
-                                    "<a href='{{ asset('/resume') }}/" + row.id + "'>"+
-                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
-                                "</li>" + 
-                                "<li>" + 
-                                    "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" + 
-                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a>" + 
+                            var btnGHtml = "<div class='dropdown'>" +
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                                "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                                    "操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                                        "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                                "<li>" +
+                                    "<a href='{{ asset('/resume') }}/" + row.resume.id + "'>"+
+                                        "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" +
                                 "</li>";
                                 if (status == 0){
-                                    btnGHtml += "<li>" + "<a href='#' id='create-" + row.id + "'>" + 
-                                                  "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                                   " 加入工作台 </a>" +
-                                                "</li>";
+                                    @role('admin|recruiter')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li>" + "<a href='#' id='create-" + row.resume.id + "'>" +
+                                        "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" +
+                                        " 加入工作台 </a></li>";
+                                    @endrole
                                 }
-                                if (status != 0 && status != 7 && status != 6) {
-                                    btnGHtml += "<li><a href='#' id='next-" + row.id + "'>" + 
-                                    "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" + 
-                                        " 下一步 </a>" + 
-                                    "</li>";
+                                if (status == 1 || status == 2){
+                                    @role('admin|recruiter')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "'>" +
+                                        "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" +
+                                            " 下一步 </a>" +
+                                        "</li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @endrole
                                 }
-                                if (status != 0 && status != 7 ) {
-                                    btnGHtml += 
-                                    "<li>" + 
-                                        "<a href='#' id='abandon-" + row.id + "'>" + 
-                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" + 
-                                            " 放弃 </a>" + 
-                                    "</li>";
+                                if (status == 3 || status == 4 || status == 5 || status == 7)
+                                {
+                                    @role('admin|customer|manager')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "'>" +
+                                        "<i class='blue ace-icon fa fa-arrow-right bigger-120'></i>" +
+                                            " 下一步 </a>" +
+                                        "</li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @else
+                                        @role('recruiter')
+                                        if(row.ismine == 1){
+                                            btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        }
+                                        @endrole
+                                    @endrole
                                 }
-                                if (status == 7) {
+                                if (status == 6)
+                                {
+                                    @role('admin|customer|manager')
+                                        btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                        "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                " 放弃 </a>" +
+                                            "</li>";
+                                    @else
+                                        @role('recruiter')
+                                        if(row.ismine == 1){
+                                            btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
+                                            "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+                                        }
+                                        @endrole
+                                    @endrole
+                                }
+                                if (status == 8) {
                                     btnGHtml +=
-                                    "<li>" + 
-                                        "<a href='#' id='reactive-" + row.id + "'>" +
+                                    "<li>" +
+                                        "<a href='#' id='reactive-" + row.resume.id + "'>" +
                                             "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
                                                 " 重新加入工作台 </a>" +
                                     "</li>";
@@ -462,7 +518,7 @@
         });
 
         @if ($line->job->closed == 0)
-        $('table.table tbody').on('click','span[id^=feedback]', function (e) {  
+        $('table.table tbody').on('click','span[id^=feedback]', function (e) {
             $(this).editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -477,7 +533,20 @@
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
             var status = $(this).parents('table')[0].dataset.status;
-            var next = parseInt(status) + 1;
+            var next = 0;
+            if (parseInt(status) == 2 ) {
+                next = 7;
+            }
+            else if (parseInt(status) == 7 ) {
+                next = 3;
+            }
+            else if (parseInt(status) == 6 ) {
+                next = 8;
+            }
+            else
+            {
+                next = parseInt(status) + 1;
+            }
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/next/'.$line->id)}}/' + rid,
@@ -514,7 +583,7 @@
                         allowOutsideClick: false,
                     });
                     dt[status].ajax.reload();
-                    dt[7].ajax.reload();
+                    dt[8].ajax.reload();
                 },
             });
         });

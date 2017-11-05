@@ -6,7 +6,6 @@ use App\AssignCustomer;
 use App\AssignLine;
 use App\Helper;
 use App\Line;
-use App\MyLibrary;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -239,18 +238,24 @@ class LineController extends Controller
 		}
 		if (7 == $status)
 		{
+			$stations = $line->audit;
+		}
+		if (8 == $status)
+		{
 			$stations = $line->closed;
 		}
-		$resumes = array_pluck($stations, 'resume');
+		foreach ($stations as $key => $station)
+		{
+			$stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
+			$stations[$key]['resume'] = $station->resume;
+		}
 		if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status))
 		{
-			$rids = MyLibrary::where(['uid' => Auth::id(), 'show' => 1])->get(['rid']);
-			$rids = array_pluck($rids, 'rid');
-			$resumes = array_where($resumes, function ($resume) use ($rids)
+			$stations = array_where($stations, function ($station)
 			{
-				return in_array($resume->id, $rids);
+				return $station->ismine == 1;
 			});
 		}
-		return Datatables::of($resumes)->make();
+		return Datatables::of($stations)->make();
 	}
 }
