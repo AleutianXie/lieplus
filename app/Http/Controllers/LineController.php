@@ -14,249 +14,251 @@ use Yajra\DataTables\DataTables;
 
 class LineController extends Controller
 {
-	public function __construct()
-	{
-		$this->middleware('auth');
-	}
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-	/**
-	 * Show the line home page.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		return view('line.index');
-	}
+    /**
+     * Show the line home page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('line.index');
+    }
 
-	public function customer()
-	{
-		return view('line.customer');
-	}
+    public function customer()
+    {
+        return view('line.customer');
+    }
 
-	public function add(Request $request)
-	{
-		if ($request->isMethod('POST'))
-		{
+    public function add(Request $request)
+    {
+        if ($request->isMethod('POST'))
+        {
 
-			$this->validate($request, [
-				'jid' => [
-					'required',
-					'unique:lines',
-				],
-			], [
-				'jid.required' => '请选择:attribute.',
-				'unique' => '该 :attribute 您已经生成过职位交付流水线.',
-			], [
-				'jid' => '职位编号(ID)',
-			]);
+            $this->validate($request, [
+                'jid' => [
+                    'required',
+                    'unique:lines',
+                ],
+            ], [
+                'jid.required' => '请选择:attribute.',
+                'unique' => '该 :attribute 您已经生成过职位交付流水线.',
+            ], [
+                'jid' => '职位编号(ID)',
+            ]);
 
-			$data = $request->input();
-			$line = new Line();
+            $data = $request->input();
+            $line = new Line();
 
-			$line->sn = Helper::generationSN('LSX');
-			$line->priority = 1;
-			$line->jid = $data['jid'];
-			$line->creater = Auth::id();
-			$line->modifier = Auth::id();
+            $line->sn = Helper::generationSN('LSX');
+            $line->priority = 1;
+            $line->jid = $data['jid'];
+            $line->creater = Auth::id();
+            $line->modifier = Auth::id();
 
-			if ($line->save())
-			{
-				return redirect('/line/' . $line->id)->with('success', '生成职位交付流水线成功!');
-			}
-			else
-			{
-				return redirect()->back()->with('error', '生成职位交付流水线失败');
-			}
-		}
-	}
+            if ($line->save())
+            {
+                return redirect('/line/' . $line->id)->with('success', '生成职位交付流水线成功!');
+            }
+            else
+            {
+                return redirect()->back()->with('error', '生成职位交付流水线失败');
+            }
+        }
+    }
 
-	public function all()
-	{
-		return view('line.all');
-	}
+    public function all()
+    {
+        return view('line.all');
+    }
 
-	public function plan()
-	{
-		$lines = Line::where(['show' => 1])->get();
+    public function plan()
+    {
+        $lines = Line::where(['show' => 1])->get();
 
-		return view('line.plan', ['lines' => $lines]);
+        return view('line.plan', ['lines' => $lines]);
 
-	}
+    }
 
-	public function detail(Request $request, $id)
-	{
-		$title = '流水线详情';
-		$line = Line::findOrFail($id);
-		return view('line.detail', [
-			'title' => $title,
-			'line' => $line,
-		]);
-	}
+    public function detail(Request $request, $id)
+    {
+        $title = '流水线详情';
+        $line = Line::findOrFail($id);
+        return view('line.detail', [
+            'title' => $title,
+            'line' => $line,
+        ]);
+    }
 
-	public function assign(Request $request, $id)
-	{
-		if ($request->isMethod('POST'))
-		{
+    public function assign(Request $request, $id)
+    {
+        if ($request->isMethod('POST'))
+        {
 
-			$data = $request->input();
-			$lid = $data['lid'];
-			$uid = $data['uid'];
-			$this->validate($request, [
-				'uid' => 'required|integer',
-				'lid' => [
-					'required',
-					'integer',
-					Rule::unique('assignlines')->where(function ($query) use ($uid)
-					{
-						$query->where('uid', $uid);
-					}),
-				],
-			], [
-				'unique' => '已经分配过该 :attribute.',
-			], [
-				'uid' => '用户号',
-				'lid' => '流水线',
-			]);
+            $data = $request->input();
+            $lid = $data['lid'];
+            $uid = $data['uid'];
+            $this->validate($request, [
+                'uid' => 'required|integer',
+                'lid' => [
+                    'required',
+                    'integer',
+                    Rule::unique('assignlines')->where(function ($query) use ($uid)
+                    {
+                        $query->where('uid', $uid);
+                    }),
+                ],
+            ], [
+                'unique' => '已经分配过该 :attribute.',
+            ], [
+                'uid' => '用户号',
+                'lid' => '流水线',
+            ]);
 
-			$assignLine = new AssignLine();
-			$assignLine->uid = $uid;
-			$assignLine->lid = $lid;
-			$assignLine->creater = Auth::id();
-			$assignLine->modifier = Auth::id();
+            $assignLine = new AssignLine();
+            $assignLine->uid = $uid;
+            $assignLine->lid = $lid;
+            $assignLine->creater = Auth::id();
+            $assignLine->modifier = Auth::id();
 
-			if ($assignLine->save())
-			{
-				return redirect()->back()->with('success', '分配成功！');
-			}
-			else
-			{
-				return redirect()->back()->with('error', '分配失败！');
-			}
-		}
+            if ($assignLine->save())
+            {
+                return redirect()->back()->with('success', '分配成功！');
+            }
+            else
+            {
+                return redirect()->back()->with('error', '分配失败！');
+            }
+        }
 
-		$users = User::role('recruiter')->get();
+        $users = User::role('recruiter')->get();
 
-		return view('line.assign', compact('id', 'users'));
-	}
+        return view('line.assign', compact('id', 'users'));
+    }
 
-	public function search(Request $request, $type)
-	{
-		$lines = [];
-		if ('my' == $type)
-		{
-			$assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'lid']);
-			$lines = array_pluck($assignLines, 'line');
-			foreach ($lines as $key => $value)
-			{
-				$value->recruiter = Helper::getUser($value->job->customer->creater)->name;
-				$value->department = $value->job->department->name;
-				$value->connection = $value->connection;
-				$value->intention = $value->intention;
-				$value->recommendation = $value->recommendation;
-				$value->interview = $value->interview;
-				$value->offer = $value->offer;
-				$value->onboard = $value->onboard;
-				$lines[$key] = $value;
-			}
-		}
-		if ('all' == $type)
-		{
-			$lines = Line::with('job')->where(['show' => 1])->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
-			foreach ($lines as $key => $value)
-			{
-				$value->recruiter = Helper::getUser($value->job->customer->creater)->name;
-				$value->department = $value->job->department->name;
-				$value->connection = count($value->connection);
-				$value->intention = count($value->intention);
-				$value->recommendation = count($value->recommendation);
-				$value->interview = count($value->interview);
-				$value->offer = count($value->offer);
-				$value->onboard = count($value->onboard);
-				$lines[$key] = $value;
-			}
-		}
-		if ('customer' == $type)
-		{
-			$customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get();
-			$customers = array_pluck($customers, 'customer');
-			$lines = [];
-			foreach ($customers as $customer)
-			{
-				$jobs = $customer->jobs;
-				foreach ($jobs as $job)
-				{
-					$line = $job->line;
-					$line->recruiter = Helper::getUser($line->job->customer->creater)->name;
-					$line->department = $line->job->department->name;
-					$line->connection = count($line->connection);
-					$line->intention = count($line->intention);
-					$line->recommendation = count($line->recommendation);
-					$line->interview = count($line->interview);
-					$line->offer = count($line->offer);
-					$line->onboard = count($line->onboard);
-					$lines[] = $line;
-					//dd($job->line);
-				}
-			}
-		}
+    public function search(Request $request, $type)
+    {
+        $lines = [];
+        if ('my' == $type)
+        {
+            $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'lid']);
+            $lines = array_pluck($assignLines, 'line');
+            foreach ($lines as $key => $value)
+            {
+                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->department = $value->job->department->name;
+                $value->connection = $value->connection;
+                $value->intention = $value->intention;
+                $value->recommendation = $value->recommendation;
+                $value->interview = $value->interview;
+                $value->offer = $value->offer;
+                $value->onboard = $value->onboard;
+                $lines[$key] = $value;
+            }
+        }
+        if ('all' == $type)
+        {
+            $lines = Line::with('job')->where(['show' => 1])->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
+            foreach ($lines as $key => $value)
+            {
+                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->department = $value->job->department->name;
+                $value->connection = count($value->connection);
+                $value->intention = count($value->intention);
+                $value->recommendation = count($value->recommendation);
+                $value->interview = count($value->interview);
+                $value->offer = count($value->offer);
+                $value->onboard = count($value->onboard);
+                $lines[$key] = $value;
+            }
+        }
+        if ('customer' == $type)
+        {
+            $customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get();
+            $customers = array_pluck($customers, 'customer');
+            $lines = [];
+            foreach ($customers as $customer)
+            {
+                if (isset($customer->jobs))
+                {
+                    $jobs = $customer->jobs;
+                    foreach ($jobs as $job)
+                    {
+                        $line = $job->line;
+                        $line->recruiter = Helper::getUser($line->job->customer->creater)->name;
+                        $line->department = $line->job->department->name;
+                        $line->connection = count($line->connection);
+                        $line->intention = count($line->intention);
+                        $line->recommendation = count($line->recommendation);
+                        $line->interview = count($line->interview);
+                        $line->offer = count($line->offer);
+                        $line->onboard = count($line->onboard);
+                        $lines[] = $line;
+                    }
+                }
+            }
+        }
 
-		return Datatables::of($lines)->make();
-	}
+        return Datatables::of($lines)->make();
+    }
 
-	public function getStations(Request $request, $lid, $status)
-	{
-		$line = Line::findOrFail($lid);
-		$stations = [];
-		if (0 == $status)
-		{
-			$stations = $line->joblibrary;
-		}
-		if (1 == $status)
-		{
-			$stations = $line->connection;
-		}
-		if (2 == $status)
-		{
-			$stations = $line->intention;
-		}
-		if (3 == $status)
-		{
-			$stations = $line->recommendation;
-		}
-		if (4 == $status)
-		{
-			$stations = $line->interview;
-		}
-		if (5 == $status)
-		{
-			$stations = $line->offer;
-		}
-		if (6 == $status)
-		{
-			$stations = $line->onboard;
-		}
-		if (7 == $status)
-		{
-			$stations = $line->audit;
-		}
-		if (8 == $status)
-		{
-			$stations = $line->closed;
-		}
-		foreach ($stations as $key => $station)
-		{
-			$stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
-			$stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
-			$stations[$key]['resume'] = $station->resume;
-		}
-		if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status))
-		{
-			$stations = array_where($stations, function ($station)
-			{
-				return $station->ismine == 1;
-			});
-		}
-		return Datatables::of($stations)->make();
-	}
+    public function getStations(Request $request, $lid, $status)
+    {
+        $line = Line::findOrFail($lid);
+        $stations = [];
+        if (0 == $status)
+        {
+            $stations = $line->joblibrary;
+        }
+        if (1 == $status)
+        {
+            $stations = $line->connection;
+        }
+        if (2 == $status)
+        {
+            $stations = $line->intention;
+        }
+        if (3 == $status)
+        {
+            $stations = $line->recommendation;
+        }
+        if (4 == $status)
+        {
+            $stations = $line->interview;
+        }
+        if (5 == $status)
+        {
+            $stations = $line->offer;
+        }
+        if (6 == $status)
+        {
+            $stations = $line->onboard;
+        }
+        if (7 == $status)
+        {
+            $stations = $line->audit;
+        }
+        if (8 == $status)
+        {
+            $stations = $line->closed;
+        }
+        foreach ($stations as $key => $station)
+        {
+            $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
+            $stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
+            $stations[$key]['resume'] = $station->resume;
+        }
+        if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status))
+        {
+            $stations = array_where($stations, function ($station)
+            {
+                return $station->ismine == 1;
+            });
+        }
+        return Datatables::of($stations)->make();
+    }
 }
