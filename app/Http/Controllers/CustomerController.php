@@ -133,11 +133,14 @@ class CustomerController extends Controller
         $cids = array_pluck($cids, 'cid');
         foreach ($customers as $key => $customer)
         {
-            $customers[$key] = $customer->with('jobs')->with('project')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property']);
-            $customers[$key]['jobCount'] = count($customer->jobs);
-            $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
-            $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
-            $customers[$key]['ismine'] = in_array($customer->id, $cids);
+            if ($customer)
+            {
+                $customers[$key] = $customer->with('jobs')->with('project')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property']);
+                $customers[$key]['jobCount'] = count($customer->jobs);
+                $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
+                $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
+                $customers[$key]['ismine'] = in_array($customer->id, $cids);
+            }
         }
         return Datatables::of($customers)->make();
     }
