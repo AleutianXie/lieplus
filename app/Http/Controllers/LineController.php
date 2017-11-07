@@ -257,7 +257,7 @@ class LineController extends Controller
             $stations = is_array($stations) ? $stations : $stations->toArray();
             $stations = array_where($stations, function ($station)
             {
-                return $station->ismine == 1;
+                return $station['ismine'] == 1;
             });
         }
         return Datatables::of($stations)->make();
