@@ -147,7 +147,7 @@ class CustomerController extends Controller
                 $customers[$key]['jobCount'] = 0;
                 $customers[$key]['openCount'] = 0;
                 $customers[$key]['closedCount'] = 0;
-                $customers[$key]['ismine'] = 0;
+                $customers[$key]['ismine'] = false;
 
             }
         }

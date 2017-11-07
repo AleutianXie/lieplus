@@ -34,11 +34,11 @@
                         return "<a href='{{ asset('/customer')}}/" + row.id+ "'>" + data +"</a>";
                     }
                 },
-                {data: 'name'},
-                {data: 'industry'},
-                {data: 'jobCount'},
-                {data: 'openCount'},
-                {data: 'closedCount'},
+                {data: 'name', defaultContent: ''},
+                {data: 'industry', defaultContent: ''},
+                {data: 'jobCount', defaultContent: '0'},
+                {data: 'openCount', defaultContent: '0'},
+                {data: 'closedCount', defaultContent: '0'},
                 {data: 'level'},
                 {data: 'property'},
                 {
