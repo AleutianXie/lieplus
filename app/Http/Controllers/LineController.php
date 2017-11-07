@@ -254,6 +254,7 @@ class LineController extends Controller
         }
         if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status))
         {
+            $stations = is_array($stations) ? $stations : $stations->toArray();
             $stations = array_where($stations, function ($station)
             {
                 return $station->ismine == 1;
