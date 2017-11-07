@@ -119,7 +119,7 @@ class CustomerController extends Controller
 
     public function search(Request $request, $type)
     {
-        $resumes = [];
+        $customers = [];
         if ('my' == $type)
         {
             $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
@@ -131,6 +131,7 @@ class CustomerController extends Controller
         }
         $cids = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get(['cid']);
         $cids = array_pluck($cids, 'cid');
+
         foreach ($customers as $key => $customer)
         {
             if ($customer)
@@ -140,6 +141,14 @@ class CustomerController extends Controller
                 $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
                 $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
                 $customers[$key]['ismine'] = in_array($customer->id, $cids);
+            }
+            else
+            {
+                $customers[$key]['jobCount'] = 0;
+                $customers[$key]['openCount'] = 0;
+                $customers[$key]['closedCount'] = 0;
+                $customers[$key]['ismine'] = 0;
+
             }
         }
         return Datatables::of($customers)->make();
