@@ -118,7 +118,7 @@
             </ul>
         </li>
 
-        @role('admin|manager|BD')
+        @role('admin|manager|bd')
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list-ol"></i>
@@ -132,7 +132,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                @role('admin|BD')
+                @role('admin|bd')
                 <li class="">
                     <a href="/project">
                         <i class="menu-icon fa fa-caret-right"></i>
