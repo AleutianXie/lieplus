@@ -61,7 +61,20 @@
                                 "</li>";
                             @endrole
 
-                            if (row.ismine == 1) {
+                            @role('customer')
+                                if (row.ismine == 1 && row.closed == 0) {
+                                    btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
+                                    "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
+                                        " 暂停合作 </a>" +
+                                    "</li>";
+                                }
+                                btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
+                                "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
+                                    " 增加职位 </a>" +
+                                "</li>";
+                            @endrole
+
+                            @role('admin|manager')
                                 if (row.closed == 0) {
                                     btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
                                     "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
@@ -78,16 +91,7 @@
                                 "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
                                     " 增加职位 </a>" +
                                 "</li>";
-                            }
-                            else {
-                                @role('admin|manager|customer')
-                                    btnGHtml += "<li>" + "<a href='/job/add?cid=" + row.id + "'>" +
-                                    "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                        " 增加职位 </a>" +
-                                    "</li>";
-                                @endrole
-                            }
-
+                            @endrole
                             btnGHtml += "</ul></div>";
                         }
                         else

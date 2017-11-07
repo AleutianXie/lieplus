@@ -144,7 +144,19 @@ class CustomerController extends Controller
 
     public function pause(Request $request, $id)
     {
+        $user = Auth::user();
+
+        if (!$user->hasRole('admin') && !$user->hasRole('manager') && !$user->hasRole('customer'))
+        {
+            return json_encode(['code' => 3, 'msg' => '您没有权限暂停该客户！']);
+        }
         $customer = Customer::with('jobs')->findOrFail($id);
+        $cids = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get(['cid']);
+        $cids = array_pluck($cids, 'cid');
+        if ($user->hasRole('customer') && !in_array($customer->id, $cids))
+        {
+            return json_encode(['code' => 3, 'msg' => '您没有权限暂停该客户！']);
+        }
         if ($customer->closed)
         {
             return json_encode(['code' => 2, 'msg' => '该客户已经暂停！']);
@@ -166,6 +178,10 @@ class CustomerController extends Controller
 
     public function open(Request $request, $id)
     {
+        if (!$user->hasRole('admin') && !$user->hasRole('manager') && !$user->hasRole('customer'))
+        {
+            return json_encode(['code' => 3, 'msg' => '您没有权限启动/重新启动与该客户的合作！']);
+        }
         $customer = Customer::findOrFail($id);
         if (!$customer->closed)
         {
@@ -180,6 +196,10 @@ class CustomerController extends Controller
 
     public function assign(Request $request)
     {
+        if (!$user->hasRole('admin') && !$user->hasRole('manager'))
+        {
+            return json_encode(['code' => 3, 'msg' => '您没有权限分配客户顾问！']);
+        }
         $this->validate($request, [
             'cid' => 'required',
             'uid' => 'required',
