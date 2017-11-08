@@ -94,29 +94,35 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        var btnGHtml = "<div class='dropdown'>" + 
-                        "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                            "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                " 操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                    "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                        "<li>" + 
+                        if('通过' === row.customer.project.status) {
+                        var btnGHtml = "<div class='dropdown'>" +
+                        "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                            "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                                " 操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                                    "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                                        "<li>" +
                                             "<a href='{{ asset('/job') }}/" + row.id + "'>"+
-                                            "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" + 
+                                            "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" +
                                         "</li>";
                         if (row.closed == 0) {
-                            btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" + 
-                                            "<i class='blue ace-icon fa fa-pause bigger-120'></i>" + 
-                                               " 暂停 </a>"+ 
+                            btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
+                                               " 暂停 </a>"+
                                          "</li>";
                         }
                         else {
-                            btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" + 
-                                            "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" + 
+                            btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" +
+                                            "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" +
                                                " 重新发布 </a>" +
                                          "</li>";
                         }
                         btnGHtml += "</ul></div>";
+                    }
+                    else {
+                        btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>项目 " + row.project.status + "</span>"
+                    }
                         return btnGHtml;
+                    }
                 }}
         ]
         });

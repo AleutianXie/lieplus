@@ -3,7 +3,11 @@
 @section('title'){{ $title }}@endsection
 
 @section('content')
+@role('admin|manager')
 @include('bd.list', ['audit' => true])
+@else
+Access Deny!
+@endrole
 @endsection
 
 @section('breadcrumbs')
