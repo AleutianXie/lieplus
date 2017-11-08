@@ -25,7 +25,8 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route('job.search', $type) }}',
-            columns: [
+            columns:
+            [
                 {
                     data: 'sn',
                     render: function (data, type, row )
@@ -123,8 +124,8 @@
                         }
                         return btnGHtml;
                     }
-                }}
-        ]
+                }
+            ]
         });
 
         $('table.table tbody').on('click','a[id^=pause-]', function (e) {
