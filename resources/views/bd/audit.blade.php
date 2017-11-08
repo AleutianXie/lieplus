@@ -6,6 +6,7 @@
 @role('admin|manager')
 @include('bd.list', ['audit' => true])
 @else
+<link rel="stylesheet" href="{{ asset('static/css/ace.min.css') }}" />
 Access Deny!
 @endrole
 @endsection
