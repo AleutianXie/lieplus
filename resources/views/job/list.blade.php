@@ -120,7 +120,7 @@
                             btnGHtml += "</ul></div>";
                         }
                         else {
-                            btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>项目 " + row.project.status + "</span>";
+                            btnGHtml = "<span class='label label-info arrowed-in arrowed-in-right'>项目 " + row.customer.project.status + "</span>";
                         }
                         return btnGHtml;
                     }
