@@ -266,7 +266,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="cid" id="cid" value="">
                     <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="jid">客房顾问:</label>
+                        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="jid">客户顾问:</label>
                         <div class="col-xs-6 col-sm-6">
                             <div class="clearfix">
                                 <select name="uid" id="uid">
