@@ -189,7 +189,7 @@
                             <div class="profile-info-value">
                                 <span class="editable editable-click" id="mobile" style="display: inline;">
                                     @isset ($user->profile->mobile)
-                                       {{ $user->profile->mobile }} 
+                                       {{ $user->profile->mobile }}
                                     @endisset</span>
                             </div>
                         </div>
@@ -551,8 +551,6 @@
                                         </div><!-- /.widget-box -->
                                     </div><!-- /.col -->
    </div>
-   @else
-   Access Deny!
    @endrole
            {{-- 设置--结束 --}}
 </div>
