@@ -179,6 +179,8 @@ class CustomerController extends Controller
 
     public function open(Request $request, $id)
     {
+        $user = Auth::user();
+
         if (!$user->hasRole('admin') && !$user->hasRole('manager') && !$user->hasRole('customer'))
         {
             return json_encode(['code' => 3, 'msg' => '您没有权限启动/重新启动与该客户的合作！']);
@@ -197,6 +199,8 @@ class CustomerController extends Controller
 
     public function assign(Request $request)
     {
+        $user = Auth::user();
+
         if (!$user->hasRole('admin') && !$user->hasRole('manager'))
         {
             return json_encode(['code' => 3, 'msg' => '您没有权限分配客户顾问！']);

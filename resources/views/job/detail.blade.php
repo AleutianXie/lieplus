@@ -18,7 +18,7 @@
                     职位信息
                 </h4>
             </div>
-            @role('admin')
+            @role('admin|manager')
             <div class="pull-right">
                 <form class="form-horizontal" id="customer-form" name="customer-form" action="{{ url('/line/add') }}" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
