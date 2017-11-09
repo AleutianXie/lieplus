@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AssignCustomer;
 use App\Customer;
 use App\Department;
 use App\Helper;
@@ -133,7 +134,18 @@ class JobController extends Controller
         $resumes = [];
         if ('my' == $type)
         {
-            $jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
+            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+            $customers = array_pluck($assignCustomers, 'customer');
+            $jobs = [];
+            foreach ($customers as $customer)
+            {
+                foreach ($customer->jobs as $job)
+                {
+                    $jobs[] = $job;
+                }
+            }
+            //dd($jobs);
+            //$jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
         }
         if ('all' == $type)
         {

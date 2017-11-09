@@ -17,6 +17,6 @@ class AssignCustomer extends Model
 
     public function customer()
     {
-        return $this->hasOne('App\Customer', 'id', 'cid');
+        return $this->hasOne('App\Customer', 'id', 'cid')->with('jobs');
     }
 }
