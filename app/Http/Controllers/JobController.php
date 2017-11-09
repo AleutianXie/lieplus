@@ -9,15 +9,15 @@ use App\Job;
 use App\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 
-
-class JobController extends Controller {
+class JobController extends Controller
+{
     private static $prefixTitle = '职位';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         Region::Address();
         Department::get();
@@ -28,7 +28,8 @@ class JobController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         $title = '我的职位';
         $route_name = 'job';
 
@@ -42,7 +43,8 @@ class JobController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function all() {
+    public function all()
+    {
         $title = '猎帮职位';
         $route_name = 'job.all';
         $type = 'all';
@@ -50,17 +52,20 @@ class JobController extends Controller {
         return view('job.index', compact('title', 'route_name', 'type'));
     }
 
-    public function add(Request $request) {
+    public function add(Request $request)
+    {
         $title = '新建职位';
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST'))
+        {
             $data = $request->input();
 
             $this->validate($request,
                 [
                     'cid' => 'required',
                     'name' => ['required',
-                        Rule::unique('jobs')->where(function ($query) use ($data) {
+                        Rule::unique('jobs')->where(function ($query) use ($data)
+                        {
                             $query->where('did', $data['did']);})],
                     'requirement' => 'required',
                     'salary' => 'required',
@@ -92,9 +97,12 @@ class JobController extends Controller {
             $job->salary = $data['salary'];
             $job->creater = Auth::id();
             $job->modifier = Auth::id();
-            if ($job->save()) {
+            if ($job->save())
+            {
                 return redirect()->back()->with('success', '创建成功！');
-            } else {
+            }
+            else
+            {
                 return redirect()->back()->with('error', '创建失败！');
             }
         }
@@ -104,14 +112,16 @@ class JobController extends Controller {
         $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
 
         $data = $request->input();
-        if (isset($data['cid'])) {
+        if (isset($data['cid']))
+        {
             $cid = $data['cid'];
             return view('job.add', compact('title', 'assignedCustomers', 'cid'));
         }
         return view('job.add', compact('title', 'assignedCustomers'));
     }
 
-    public function detail(Request $request, $id) {
+    public function detail(Request $request, $id)
+    {
         $title = '职位信息';
         $job = Job::findOrFail($id);
 
@@ -121,10 +131,12 @@ class JobController extends Controller {
     public function search(Request $request, $type)
     {
         $resumes = [];
-        if ('my' == $type) {
+        if ('my' == $type)
+        {
             $jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
         }
-        if ('all' == $type) {
+        if ('all' == $type)
+        {
             $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
         }
         return Datatables::of($jobs)->make();
@@ -133,7 +145,8 @@ class JobController extends Controller {
     public function pause(Request $request, $id)
     {
         $job = Job::findOrFail($id);
-        if ($job->closed) {
+        if ($job->closed)
+        {
             return json_encode(['code' => 2, 'msg' => '该职位已经暂停！']);
         }
         if ($job->pause())
@@ -146,10 +159,12 @@ class JobController extends Controller {
     public function open(Request $request, $id)
     {
         $job = Job::findOrFail($id);
-        if (!$job->closed) {
+        if (!$job->closed)
+        {
             return json_encode(['code' => 2, 'msg' => '该职位已经发布！']);
         }
-        if ($job->customer->closed) {
+        if ($job->customer->closed)
+        {
             return json_encode(['code' => 3, 'msg' => '该职位对应客户已经暂停！']);
         }
         if ($job->open())
