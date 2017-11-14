@@ -1,4 +1,4 @@
-@role('admin|manager')
+@role('admin|manager|customer')
 <form class="form-horizontal" id="validation-form" method="post" action="/line/assign/{{ $id }}">
     <div class="form-group text-center">
         <input type="hidden" name="lid" id="lid" value="{{ $id }}" />
