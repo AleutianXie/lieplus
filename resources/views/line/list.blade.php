@@ -52,37 +52,24 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        return    "<div class='dropdown'>" + 
-                                      "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" + 
-                                          "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" + 
-                                          "操作<i class='ace-icon fa fa-caret-down'></i></a>" + 
-                                      "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" + 
-                                          "<li>" + 
-                                              "<a href='{{ asset('/line') }}/" + row.id + "'>"+
-                                              "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" + 
-                                          "</li>" + 
-                                          "<li>" +
-                                            "<a href='javascript:void(-1);' onclick='assign(" + row.id + ");'>" + 
-                                            "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" + 
-                                            "分配招聘顾问 </a>" + 
-                                          "</li>" + 
-                                          // "<li>" +
-                                          //     "<a href='#'>" + 
-                                          //     "<i class='blue ace-icon fa fa-download bigger-120'></i>" + 
-                                          //      "加入我的简历库 </a>"+ 
-                                          // "</li>" + 
-                                          // "<li>" +
-                                          //     "<a href='#'>" + 
-                                          //     "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" + 
-                                          //      "加入职位简历库 </a>" +
-                                          // "</li>" + 
-                                          // "<li>" + 
-                                          //     "<a href='#'>" +
-                                          //     "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                          //      "重新加入工作台 </a>" +
-                                          // "</li>" + 
-                                      "</ul>" +
-                                  "</div>";
+                        var btnGHtml = "<div class='dropdown'>" +
+                            "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
+                              "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
+                              "操作<i class='ace-icon fa fa-caret-down'></i></a>" +
+                            "<ul class='dropdown-menu dropdown-lighter dropdown-125 pull-right'>" +
+                              "<li>" +
+                                  "<a href='{{ asset('/line') }}/" + row.id + "'>"+
+                                  "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" +
+                              "</li>";
+                        @role('admin|manager|customer')
+                        btnGHtml += "<li>" +
+                        "<a href='javascript:void(-1);' onclick='assign(" + row.id + ");'>" +
+                        "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" +
+                        "分配招聘顾问 </a>" +
+                        "</li>";
+                        @endrole
+                        btnGHtml += "</ul></div>";
+                        return btnGHtml;
                 }}
         ]
         });

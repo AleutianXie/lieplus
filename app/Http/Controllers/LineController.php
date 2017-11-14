@@ -46,7 +46,7 @@ class LineController extends Controller
                 ],
             ], [
                 'jid.required' => '请选择:attribute.',
-                'unique' => '该 :attribute 您已经生成过职位交付流水线.',
+                'unique'       => '该 :attribute 您已经生成过职位交付流水线.',
             ], [
                 'jid' => '职位编号(ID)',
             ]);
@@ -90,7 +90,7 @@ class LineController extends Controller
         $line = Line::findOrFail($id);
         return view('line.detail', [
             'title' => $title,
-            'line' => $line,
+            'line'  => $line,
         ]);
     }
 
@@ -188,16 +188,20 @@ class LineController extends Controller
                     $jobs = $customer->jobs;
                     foreach ($jobs as $job)
                     {
-                        $line = $job->line;
-                        $line->recruiter = Helper::getUser($line->job->customer->creater)->name;
-                        $line->department = $line->job->department->name;
-                        $line->connection = count($line->connection);
-                        $line->intention = count($line->intention);
-                        $line->recommendation = count($line->recommendation);
-                        $line->interview = count($line->interview);
-                        $line->offer = count($line->offer);
-                        $line->onboard = count($line->onboard);
-                        $lines[] = $line;
+                        if ($job->line)
+                        {
+
+                            $line = $job->line;
+                            $line->recruiter = Helper::getUser($line->job->customer->creater)->name;
+                            $line->department = $line->job->department->name;
+                            $line->connection = count($line->connection);
+                            $line->intention = count($line->intention);
+                            $line->recommendation = count($line->recommendation);
+                            $line->interview = count($line->interview);
+                            $line->offer = count($line->offer);
+                            $line->onboard = count($line->onboard);
+                            $lines[] = $line;
+                        }
                     }
                 }
             }
