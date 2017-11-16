@@ -38,7 +38,7 @@
 
             <b class="arrow"></b>
         </li>
-
+        @role('admin|manager|customer|recruiter')
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
@@ -117,6 +117,7 @@
                 </li>
             </ul>
         </li>
+        @endrole
 
         @role('admin|manager|bd')
         <li class="">
@@ -156,6 +157,7 @@
         </li>
         @endrole
 
+        @role('admin|manager|customer|recruiter')
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>
@@ -195,7 +197,6 @@
                 </li>
             </ul>
         </li>
-
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
@@ -244,6 +245,7 @@
 
             <b class="arrow"></b>
         </li>
+        @endrole
     </ul><!-- /.nav-list -->
 
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
