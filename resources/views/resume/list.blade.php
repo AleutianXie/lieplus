@@ -69,7 +69,7 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        return "<div class='dropdown'>" +
+                        var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                                 "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
                                 "操作<i class='ace-icon fa fa-caret-down'></i></a>" +
@@ -82,23 +82,25 @@
                                     "<a href='{{ asset('/resume/') }}/" + row.id + "#resume-tab-4') }}'>" +
                                         "<i class='blue ace-icon fa fa-bell-o bigger-120'></i>" +
                                         "提醒 </a>" +
-                                "</li>" +
+                                "</li>";
+
                                 @if ('my' != $type)
-                                "<li>" +
+                                if(row.isMine == '0')
+                                btnGHtml += "<li>" +
                                     "<a href='#' id='my-" + row.id + "'>" +
                                     "<i class='blue ace-icon fa fa-download bigger-120'></i>" +
                                         "加入我的简历库 </a>"+
-                                "</li>" +
+                                "</li>";
                                 @endif
                                 @if ('job' != $type)
-                                "<li>" +
+                                btnGHtml += "<li>" +
                                     "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" +
                                         "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" +
                                         "加入职位流水线 </a>" +
-                                "</li>" +
+                                "</li>";
                                 @endif
-                            "</ul>" +
-                        "</div>";
+                            btnGHtml += "</ul></div>";
+                            return btnGHtml;
                 }}
         ]
         });

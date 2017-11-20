@@ -81,7 +81,7 @@ Route::group(['prefix' => 'job'], function ()
 Route::group(['prefix' => 'line'], function ()
 {
     Route::get('/', 'LineController@index')->name('line');
-    Route::get('/index', 'LineController@index')->name('line');
+    Route::get('/index', 'LineController@index')->name('line.index');
     Route::post('/add', 'LineController@add');
     Route::match(['get', 'post'], '/{id}', 'LineController@detail')->where('id', '[0-9]+')->name('line.detail');
     Route::match(['get', 'post'], '/edit', 'LineController@edit');
@@ -97,7 +97,7 @@ Route::group(['prefix' => 'line'], function ()
 Route::group(['prefix' => 'project'], function ()
 {
     Route::match(['get', 'post'], '/', 'ProjectController@index')->name('project');
-    Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project');
+    Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project.index');
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit')->name('project.audit');
     Route::post('/edit', 'ProjectController@edit');
     Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');

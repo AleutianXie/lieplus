@@ -91,7 +91,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <a href="/customer/all">
+                    <a href="{{ route('customer.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加客户
                     </a>
@@ -118,7 +118,7 @@
             <ul class="submenu">
                 @role('admin|bd')
                 <li class="">
-                    <a href="/project">
+                    <a href="{{ route('project') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         项目启动书
                     </a>
@@ -128,7 +128,7 @@
                 @endrole
                 @role('admin|manager')
                 <li class="">
-                    <a href="/project/audit">
+                    <a href="{{ route('project.audit') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         项目审批
                     </a>
@@ -155,7 +155,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/job/add">
+                    <a href="{{ route('job.add') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建
                     </a>
@@ -163,7 +163,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li>
-                <a href="/job/">
+                <a href="{{ route('job') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我的职位
                     </a>
@@ -171,7 +171,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li>
-                <a href="/job/all">
+                <a href="{{ route('job.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加职位
                     </a>
@@ -192,7 +192,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/line">
+                    <a href="{{ route('line') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我负责招聘的流水线
                     </a>
@@ -201,7 +201,7 @@
                 </li>
                 @role('admin|customer')
                 <li class="">
-                    <a href="/line/customer">
+                    <a href="{{ route('line.customer') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我负责客户的流水线
                     </a>
@@ -210,7 +210,7 @@
                 </li>
                 @endrole
                 <li class="">
-                    <a href="/line/all">
+                    <a href="{{ route('line.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加职位流水线
                     </a>
@@ -221,7 +221,7 @@
         </li>
 
         <li class="">
-            <a href="/plan">
+            <a href="{{ route('line.plan') }}">
                 <i class="menu-icon fa fa-cc"></i>
                 <span class="menu-text"> 今日工作台 </span>
             </a>

@@ -53,22 +53,22 @@ class ResumeController extends Controller
         {
 
             $this->validate($request, [
-                'name' => 'required',
-                'gender' => 'required',
-                'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
-                'email' => 'required|email|unique:resumes',
-                'birthdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()),
+                'name'          => 'required',
+                'gender'        => 'required',
+                'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
+                'email'         => 'required|email|unique:resumes',
+                'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
                 'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
             ], [
                 'gender.required' => '请选择:attribute.',
-                'unique' => ':attribute 已经存在.',
+                'unique'          => ':attribute 已经存在.',
                 'before_or_equal' => ':attribute 必须早于或等于',
-                'after_or_equal' => ':attribute 必须晚于或等于',
+                'after_or_equal'  => ':attribute 必须晚于或等于',
             ], [
-                'gender' => '性别',
-                'mobile' => '手机',
-                'email' => '邮箱',
-                'birthdate' => '出生日期',
+                'gender'        => '性别',
+                'mobile'        => '手机',
+                'email'         => '邮箱',
+                'birthdate'     => '出生日期',
                 'startworkdate' => '开始工作日期',
             ]);
 
@@ -134,9 +134,9 @@ class ResumeController extends Controller
         $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
 
         return view('resume.add', [
-            'title' => $title,
+            'title'       => $title,
             'assignlines' => $assignlines,
-            'jid' => isset($request->input()['jid']) ? $request->input()['jid'] : 0,
+            'jid'         => isset($request->input()['jid']) ? $request->input()['jid'] : 0,
         ]);
     }
 
@@ -163,14 +163,14 @@ class ResumeController extends Controller
             }
 
             $feedbacks[$date][] = array(
-                'text' => $fitem->text,
+                'text'    => $fitem->text,
                 'creater' => User::find($resume->creater)->name,
-                'ctime' => $keys[1]);
+                'ctime'   => $keys[1]);
         }
 
         return view('resume.detail', [
-            'title' => $title,
-            'resume' => $resume,
+            'title'     => $title,
+            'resume'    => $resume,
             'feedbacks' => $feedbacks,
         ]);
     }
@@ -271,6 +271,8 @@ class ResumeController extends Controller
             }
             $resumes[$key] = $resume;
             $resumes[$key]['lsx'] = $lsx;
+            $resumes[$key]['isMine'] = $resume->isMine;
+
         }
         return Datatables::of($resumes)->make();
     }
