@@ -1,8 +1,8 @@
 <?php
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use App\User;
 
 class RolesTableSeeder extends Seeder
 {
@@ -26,6 +26,6 @@ class RolesTableSeeder extends Seeder
         echo "Assign Role admin to Adminstrator.\n";
         $user = User::where(['name' => 'Aleutian Xie'])->first();
         $user->assignRole('admin');
-        echo "OK!";
+        echo "OK!\n";
     }
 }
