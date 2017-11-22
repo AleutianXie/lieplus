@@ -231,14 +231,28 @@ class ResumeController extends Controller
                 $lines = [];
             }
         }
-
         return view('resume.job', compact('title', 'lines'));
     }
 
     public function all()
     {
         $title = '猎加简历';
-        $lines = Line::all();
+        if (Auth::user()->hasRole('admin'))
+        {
+            $lines = Line::all();
+        }
+        else
+        {
+            $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+            if ($assignlines)
+            {
+                $lines = array_pluck($assignlines, 'line');
+            }
+            else
+            {
+                $lines = [];
+            }
+        }
         return view('resume.all', compact('title', 'lines'));
     }
 
@@ -325,4 +339,37 @@ class ResumeController extends Controller
         }
         return json_encode(['code' => 2, 'msg' => '操作失败！']);
     }
+
+    public function jobmodal(Request $request, $id)
+    {
+        if ($request->isMethod('GET'))
+        {
+            $resume = Resume::findOrFail($id);
+            $jids = array_pluck($resume->joblibraries, 'jid');
+            //dd($jids);
+            $lines = [];
+            if (Auth::user()->hasRole('admin'))
+            {
+                $lines = Line::all();
+            }
+            else
+            {
+                $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
+                if ($assignlines)
+                {
+                    $lines = array_pluck($assignlines, 'line');
+                }
+            }
+            foreach ($lines as $line)
+            {
+                $line->isAssigned = 0;
+                if (in_array($line->job->id, $jids))
+                {
+                    $line->isAssigned = 1;
+                }
+            }
+        }
+        return view('resume.modaljob', compact('lines', 'resume'));
+    }
+
 }

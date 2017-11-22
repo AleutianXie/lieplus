@@ -22,7 +22,7 @@
     //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-        $('#dynamic-table').DataTable({
+        var dt = $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
             },
@@ -94,7 +94,7 @@
                                 @endif
                                 @if ('job' != $type)
                                 btnGHtml += "<li>" +
-                                    "<a href='#' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" +
+                                    "<a href='/resume/jobmodal/" + row.id + "' data-toggle='modal' data-target='#modal-job' data-rid='" + row.id + "'>" +
                                         "<i class='blue ace-icon fa fa-plus-square bigger-120'></i>" +
                                         "加入职位流水线 </a>" +
                                 "</li>";
@@ -131,20 +131,11 @@
                         type: type,
                         allowOutsideClick: false,
                     });
+                    dt.ajax.reload();
                 },
             });
         });
-        $("#modal-job").on("show.bs.modal", function(e) {
-            var btn = $(e.relatedTarget),
-            rid = btn.data("rid");
-            $("#modal-job input[name=rid]").val(rid);
-        })
 
-        $('#jid').select2({
-            placeholder: "请选择职位流水线",
-            allowClear: true,
-            width: 300
-        });
         $('#modal-job').ajaxForm({
             beforeSubmit:function(){
                 var jid = $("#modal-job select[name=jid]").val();
@@ -167,6 +158,11 @@
                     type: type,
                     allowOutsideClick: false,
                 });
+                if(type == 'success')
+                {
+                    $("#modal-job").modal("hide");
+                }
+                dt.ajax.reload();
             }
         });
     });
@@ -204,45 +200,10 @@
             </table>
         </div>
         <!-- 简历列表--结束 -->
-    </div>
-</div>
-
 {{-- 加入简历库 --}}
-<div class="modal fade" id="modal-job" tabIndex="-1">
+<div class="modal fade" id="modal-job" tabIndex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                ×
-                </button>
-                <h4 class="modal-title">加入职位流水线</h4>
-            </div>
-            <div class="modal-body">
-                <form  method="POST" action="{{ route('resume.addjob') }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="rid" value="">
-                    <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="jid">职位简历库:</label>
-                        <div class="col-xs-6 col-sm-6">
-                            <div class="clearfix">
-                                <select name="jid" id="jid">
-                                <option></option>
-                                @isset ($lines)
-                                @foreach ($lines as $line)
-                                <option value="{{ $line->job->id }}">{{ $line->job->sn }}({{ $line->job->name }})</option>
-                                @endforeach
-                                @endisset
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-success btn-xs">
-                            <i class="ace-icon fa fa-plus bigger-125"></i> 加入
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>
