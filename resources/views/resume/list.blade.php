@@ -28,6 +28,7 @@
             },
             processing: true,
             serverSide: true,
+            bStateSave: true,
             ajax: '{{ route('resume.search', $type) }}',
             columns: [
                 {
@@ -131,8 +132,21 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt.ajax.reload();
+                    dt.draw(false);
                 },
+            });
+        });
+
+        $('#modal-job').on('hide.bs.modal', function () {
+            $(this).removeData("bs.modal");
+            $(".modal-content").children().remove();
+        });
+
+        $('#modal-job').on('loaded.bs.modal', function () {
+            $('#jid').select2({
+                placeholder: "请选择职位流水线",
+                allowClear: true,
+                width: 300
             });
         });
 
@@ -162,7 +176,7 @@
                 {
                     $("#modal-job").modal("hide");
                 }
-                dt.ajax.reload();
+                dt.draw(false);
             }
         });
     });

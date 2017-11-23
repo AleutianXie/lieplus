@@ -36,13 +36,4 @@
         </form>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#jid').select2({
-            placeholder: "请选择职位流水线",
-            allowClear: true,
-            width: 300
-        });
-    });
-</script>
 @endrole
