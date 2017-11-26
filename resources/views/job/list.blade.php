@@ -25,6 +25,13 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route('job.search', $type) }}',
+            createdRow: function (row, data, dataIndex)
+            {
+                if(data.closed == 0)
+                {
+                    $(row).addClass('success');
+                }
+            },
             columns:
             [
                 {
@@ -96,6 +103,7 @@
                     data: null,
                     render: function(data, type, row){
                         if('通过' === row.customer.project.status) {
+                            console.log(row.isMine);
                             var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                                 "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
@@ -105,6 +113,7 @@
                                                 "<a href='{{ asset('/job') }}/" + row.id + "'>"+
                                                 "<i class='blue ace-icon fa fa-eye bigger-120'></i> 查看 </a>" +
                                             "</li>";
+                            @role('admin|manager')
                             if (row.closed == 0) {
                                 btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
                                                 "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
@@ -117,6 +126,23 @@
                                                    " 重新发布 </a>" +
                                              "</li>";
                             }
+                            @endrole
+                            @role('customer')
+                            if (row.isMine == 1) {
+                                if (row.closed == 0) {
+                                    btnGHtml += "<li>" + "<a href='#' id='pause-" + row.id + "'>" +
+                                                    "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
+                                                       " 暂停 </a>"+
+                                                 "</li>";
+                                }
+                                else {
+                                    btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" +
+                                                    "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" +
+                                                       " 重新发布 </a>" +
+                                                 "</li>";
+                                }
+                            }
+                            @endrole
                             btnGHtml += "</ul></div>";
                         }
                         else {
@@ -143,7 +169,7 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt.ajax.reload();
+                    dt.draw(false);
                 },
             });
         });
@@ -163,7 +189,7 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt.ajax.reload();
+                    dt.draw(false);
                 },
             });
         });
@@ -175,11 +201,6 @@
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
     <div class="col-xs-12">
-{{--         <h3 class="header smaller lighter blue">jQuery dataTables</h3>
-
-        <div class="clearfix">
-            <div class="pull-right tableTools-container"></div>
-        </div> --}}
         <div class="table-header">
             职位列表
         </div>
@@ -201,42 +222,6 @@
                     </tr>
                 </thead>
                 <tbody>
-{{--                     <tr>
-                        <td><a href="{{ asset('/job/'.$job->id) }}">{{ $job->sn }}</a></td>
-                        <td>{{ $job->customer->name }}</td>
-                        <td>{{ $job->name }}</td>
-                        <td>{{ $job->workyears != '' ? $job->workyears : '不限' }}</td>
-                        <td>{{ $job->gender != '' ? $job->gender : '不限' }}</td>
-                        <td>{{ $job->majors != '' ? $job->majors : '不限' }}</td>
-                        <td>{{ $job->degree != '' ? $job->degree : '不限' }}</td>
-                        <td>{{ $job->unified == 1 ? '是' : '否' }}</td>
-                        <td>
-                            <div class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
-                                    <i class="purple ace-icon fa fa-asterisk bigger-120"></i>
-                                    操作
-                                    <i class="ace-icon fa fa-caret-down"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
-                                    <li>
-                                        <a href="{{ asset('/job/'.$job->id) }}">
-                                        <i class="blue ace-icon fa fa-eye bigger-120"></i>
-                                         查看 </a>
-                                    </li> --}}
-{{--                                     <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
-                                         加入职位简历库 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
-                                         重新加入工作台 </a>
-                                    </li> --}}
-{{--                                 </ul>
-                            </div>
-                        </td>
-                    </tr> --}}
                 </tbody>
             </table>
         </div>

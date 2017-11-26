@@ -63,26 +63,26 @@ class JobController extends Controller
 
             $this->validate($request,
                 [
-                    'cid' => 'required',
-                    'name' => ['required',
+                    'cid'         => 'required',
+                    'name'        => ['required',
                         Rule::unique('jobs')->where(function ($query) use ($data)
                         {
                             $query->where('did', $data['did']);})],
                     'requirement' => 'required',
-                    'salary' => 'required',
+                    'salary'      => 'required',
                 ],
                 [
-                    'cid.required' => '请选择:attribute.',
-                    'name.required' => '请输入:attribute.',
-                    'name.unique' => ':attribute 已经存在.',
+                    'cid.required'         => '请选择:attribute.',
+                    'name.required'        => '请输入:attribute.',
+                    'name.unique'          => ':attribute 已经存在.',
                     'requirement.required' => '请输入:attribute.',
-                    'salary.required' => '请输入:attribute.',
+                    'salary.required'      => '请输入:attribute.',
                 ],
                 [
-                    'cid' => '客户',
-                    'name' => '职位名称',
+                    'cid'         => '客户',
+                    'name'        => '职位名称',
                     'requirement' => '任职要求',
-                    'salary' => '薪酬结构',
+                    'salary'      => '薪酬结构',
                 ]);
             $job = new Job();
             $job->sn = Helper::generationSN('ZW');
@@ -150,6 +150,11 @@ class JobController extends Controller
         if ('all' == $type)
         {
             $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
+        }
+
+        foreach ($jobs as $key => $job)
+        {
+            $jobs[$key]['isMine'] = $job->isMine;
         }
         return Datatables::of($jobs)->make();
     }

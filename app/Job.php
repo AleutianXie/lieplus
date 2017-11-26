@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\AssignCustomer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Job
@@ -38,5 +40,14 @@ class Job extends Model
     {
         $this->closed = 0;
         return $this->save();
+    }
+
+    public function getisMineAttribute()
+    {
+        if (AssignCustomer::where(['uid' => Auth::id(), 'cid' => $this->customer->id])->first())
+        {
+            return true;
+        }
+        return false;
     }
 }

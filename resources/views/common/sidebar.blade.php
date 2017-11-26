@@ -140,7 +140,7 @@
         </li>
         @endrole
 
-        @role('admin|manager|customer|recruiter')
+        @role('admin|manager|customer')
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>

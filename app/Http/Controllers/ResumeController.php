@@ -261,17 +261,16 @@ class ResumeController extends Controller
         $resumes = [];
         if ('my' == $type)
         {
-            $resumes = array_pluck(MyLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+            $resumes = array_pluck(MyLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->orderByDesc('created_at')->get(), 'resume');
         }
         if ('job' == $type)
         {
-            $resumes = array_pluck(JobLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->get(), 'resume');
+            $resumes = array_pluck(JobLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->orderByDesc('created_at')->get(), 'resume');
         }
         if ('all' == $type)
         {
-            $resumes = Resume::where(['show' => 1])->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at']);
+            $resumes = Resume::where(['show' => 1])->orderByDesc('created_at')->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at']);
         }
-
         foreach ($resumes as $key => $resume)
         {
             $lsx = [];
@@ -286,7 +285,6 @@ class ResumeController extends Controller
             $resumes[$key] = $resume;
             $resumes[$key]['lsx'] = $lsx;
             $resumes[$key]['isMine'] = $resume->isMine;
-
         }
         return Datatables::of($resumes)->make();
     }
