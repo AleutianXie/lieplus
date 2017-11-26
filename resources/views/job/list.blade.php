@@ -151,9 +151,6 @@
                         return btnGHtml;
                     }
                 }
-            ],
-            order: [
-                ['created_at', 'desc']
             ]
         });
 

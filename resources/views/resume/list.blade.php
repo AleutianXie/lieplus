@@ -30,6 +30,7 @@
             serverSide: true,
             bStateSave: true,
             ajax: '{{ route('resume.search', $type) }}',
+            ordering: false,
             columns: [
                 {
                     data: 'sn',
@@ -103,7 +104,7 @@
                             btnGHtml += "</ul></div>";
                             return btnGHtml;
                 }}
-        ]
+            ]
         });
 
         $('#dynamic-table tbody').on('click','span[id^=feedback]', function (e) {
