@@ -180,6 +180,8 @@
                 </li>
             </ul>
         </li>
+        @endrole
+        @role('admin|manager|customer|recruiter')
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
@@ -191,6 +193,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
+                @role('admin|manager|recruiter')
                 <li class="">
                     <a href="{{ route('line') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -199,7 +202,8 @@
 
                     <b class="arrow"></b>
                 </li>
-                @role('admin|customer')
+                @endrole
+                @role('admin|manager|customer')
                 <li class="">
                     <a href="{{ route('line.customer') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -209,6 +213,7 @@
                     <b class="arrow"></b>
                 </li>
                 @endrole
+                @role('admin|manager')
                 <li class="">
                     <a href="{{ route('line.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -217,9 +222,9 @@
 
                     <b class="arrow"></b>
                 </li>
+                @endrole
             </ul>
         </li>
-
         <li class="">
             <a href="{{ route('line.plan') }}">
                 <i class="menu-icon fa fa-cc"></i>

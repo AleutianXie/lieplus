@@ -28,6 +28,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route('line.search', $type) }}',
+            ordering: false,
             columns: [
                 {
                     data: 'sn',

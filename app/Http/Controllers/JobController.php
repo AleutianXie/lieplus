@@ -134,7 +134,7 @@ class JobController extends Controller
         $resumes = [];
         if ('my' == $type)
         {
-            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(['uid', 'cid']);
             $customers = array_pluck($assignCustomers, 'customer');
             $jobs = [];
             foreach ($customers as $customer)
@@ -149,7 +149,7 @@ class JobController extends Controller
         }
         if ('all' == $type)
         {
-            $jobs = Job::with('customer')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
+            $jobs = Job::with('customer')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
         }
 
         foreach ($jobs as $key => $job)

@@ -389,6 +389,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: '/line/stations/{{ $line->id }}/'+ status,
+                ordering: false,
                 columns: [
                     {
                         data: 'resume.sn',
@@ -557,8 +558,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[next].ajax.reload();
+                    dt[status].draw(false);
+                    dt[next].draw(false);
                 },
             });
         });
@@ -579,8 +580,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[8].ajax.reload();
+                    dt[status].draw(false);
+                    dt[8].draw(false);
                 },
             });
         });
@@ -601,8 +602,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[1].ajax.reload();
+                    dt[status].draw(false);
+                    dt[1].draw(false);
                 },
             });
         });
@@ -623,8 +624,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[1].ajax.reload();
+                    dt[status].draw(false);
+                    dt[1].draw(false);
                 },
             });
         });

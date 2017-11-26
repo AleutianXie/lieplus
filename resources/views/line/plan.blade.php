@@ -163,6 +163,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: '/plan/stations/'+ status,
+                ordering: false,
                 columns: [
                     {
                         data: 'resume.sn',
@@ -329,8 +330,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[next].ajax.reload();
+                    dt[status].draw(false);
+                    dt[next].draw(false);
                 },
             });
         });
@@ -352,8 +353,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[8].ajax.reload();
+                    dt[status].draw(false);
+                    dt[8].draw(false);
                 },
             });
         });
@@ -375,8 +376,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[1].ajax.reload();
+                    dt[status].draw(false);
+                    dt[1].draw(false);
                 },
             });
         });
@@ -398,8 +399,8 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt[status].ajax.reload();
-                    dt[1].ajax.reload();
+                    dt[status].draw(false);
+                    dt[1].draw(false);
                 },
             });
         });
@@ -438,14 +439,14 @@
                     type: type,
                     allowOutsideClick: false,
                 });
-                dt[1].ajax.reload();
-                dt[2].ajax.reload();
-                dt[3].ajax.reload();
-                dt[4].ajax.reload();
-                dt[5].ajax.reload();
-                dt[6].ajax.reload();
-                dt[7].ajax.reload();
-                dt[8].ajax.reload();
+                dt[1].draw(false);
+                dt[2].draw(false);
+                dt[3].draw(false);
+                dt[4].draw(false);
+                dt[5].draw(false);
+                dt[6].draw(false);
+                dt[7].draw(false);
+                dt[8].draw(false);
 
             }
         });

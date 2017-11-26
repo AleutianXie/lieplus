@@ -145,7 +145,7 @@ class LineController extends Controller
         $lines = [];
         if ('my' == $type)
         {
-            $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'lid']);
+            $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(['uid', 'lid']);
             $lines = array_pluck($assignLines, 'line');
             foreach ($lines as $key => $value)
             {
@@ -162,7 +162,7 @@ class LineController extends Controller
         }
         if ('all' == $type)
         {
-            $lines = Line::with('job')->where(['show' => 1])->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
+            $lines = Line::with('job')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
             foreach ($lines as $key => $value)
             {
                 $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
@@ -178,7 +178,7 @@ class LineController extends Controller
         }
         if ('customer' == $type)
         {
-            $customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get();
+            $customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get();
             $customers = array_pluck($customers, 'customer');
             $lines = [];
             foreach ($customers as $customer)
