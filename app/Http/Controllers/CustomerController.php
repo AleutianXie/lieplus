@@ -47,19 +47,19 @@ class CustomerController extends Controller
         {
             $this->validate($request,
                 [
-                    'name' => 'required',
-                    'mobile' => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
-                    'email' => 'required|email|unique:resumes',
-                    'birthdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()),
+                    'name'          => 'required',
+                    'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
+                    'email'         => 'required|email|unique:resumes',
+                    'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
                     'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
                 ], [
-                    'unique' => ':attribute 已经存在.',
+                    'unique'          => ':attribute 已经存在.',
                     'before_or_equal' => ':attribute 必须早于或等于',
-                    'after_or_equal' => ':attribute 必须晚于或等于',
+                    'after_or_equal'  => ':attribute 必须晚于或等于',
                 ], [
-                    'mobile' => '手机',
-                    'email' => '邮箱',
-                    'birthdate' => '出生日期',
+                    'mobile'        => '手机',
+                    'email'         => '邮箱',
+                    'birthdate'     => '出生日期',
                     'startworkdate' => '开始工作日期',
                 ]);
             $data = $request->input();
@@ -134,7 +134,7 @@ class CustomerController extends Controller
 
         foreach ($customers as $key => $customer)
         {
-            $customers[$key] = $customer->with('jobs')->with('project')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property']);
+            $customers[$key] = $customer->with('jobs')->with('project')->with('assigned')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property']);
             $customers[$key]['jobCount'] = count($customer->jobs);
             $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
             $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));

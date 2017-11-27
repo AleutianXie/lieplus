@@ -17,12 +17,17 @@ class Customer extends Model
 
     public function jobs()
     {
-        return $this->hasMany('App\Job', 'cid')->with('customer');
+        return $this->hasMany('App\Job', 'cid')->with('customer')->with('line');
     }
 
     public function project()
     {
         return $this->hasOne('App\Project', 'cid');
+    }
+
+    public function assigned()
+    {
+        return $this->hasOne('App\AssignCustomer', 'cid')->with('adviser');
     }
 
     public function pause()

@@ -149,7 +149,7 @@ class JobController extends Controller
         }
         if ('all' == $type)
         {
-            $jobs = Job::with('customer')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
+            $jobs = Job::with('customer')->with('line')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
         }
 
         foreach ($jobs as $key => $job)

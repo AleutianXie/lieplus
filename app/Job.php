@@ -17,7 +17,7 @@ class Job extends Model
     //
     public function customer()
     {
-        return $this->hasOne('App\Customer', 'id', 'cid')->with('project');
+        return $this->hasOne('App\Customer', 'id', 'cid')->with('project')->with('assigned');
     }
 
     public function department()

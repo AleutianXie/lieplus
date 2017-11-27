@@ -19,4 +19,9 @@ class AssignCustomer extends Model
     {
         return $this->hasOne('App\Customer', 'id', 'cid')->with('jobs');
     }
+
+    public function adviser()
+    {
+        return $this->hasOne('App\User', 'id', 'uid');
+    }
 }

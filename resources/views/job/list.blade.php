@@ -42,6 +42,18 @@
                     }
                 },
                 {data: 'customer.name'},
+                {
+                    data: null,
+                    render: function (data, type, row)
+                    {
+                        var ret = '';
+                        if (row.customer.assigned)
+                        {
+                            ret = row.customer.assigned.adviser.name;
+                        }
+                        return ret;
+                    }
+                },
                 {data: 'name'},
                 {
                     data: 'workyears',
@@ -103,7 +115,6 @@
                     data: null,
                     render: function(data, type, row){
                         if('通过' === row.customer.project.status) {
-                            console.log(row.isMine);
                             var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                                 "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
@@ -126,6 +137,15 @@
                                                    " 重新发布 </a>" +
                                              "</li>";
                             }
+
+                            if(!row.line)
+                            {
+                                btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
+                            }
+                            else
+                            {
+                                btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
+                            }
                             @endrole
                             @role('customer')
                             if (row.isMine == 1) {
@@ -140,6 +160,14 @@
                                                     "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" +
                                                        " 重新发布 </a>" +
                                                  "</li>";
+                                }
+                                if(!row.line)
+                                {
+                                    btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
+                                }
+                                else
+                                {
+                                    btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
                                 }
                             }
                             @endrole
@@ -180,11 +208,39 @@
                 type: 'post',
                 url: '{{ url('/job/open/')}}/' + jid,
                 data: { '_token' : '{{ csrf_token() }}' },
-                success: function(response){
+                success: function(response) {
                     var data = $.parseJSON(response);
                     var type = data['code'] == 0 ? 'success' : 'error';
                     swal({
                         title: '重新发布',
+                        text: data['msg'],
+                        type: type,
+                        allowOutsideClick: false,
+                    });
+                    dt.draw(false);
+                },
+            });
+        });
+        $('table.table tbody').on('click','a[id^=generate-]', function (e) {
+            var jid = $(this)[0].id.substring(9);
+            $.ajax({
+                type: 'post',
+                url: '{{ url('/line/add')}}',
+                data: { '_token' : '{{ csrf_token() }}', 'jid' : jid },
+                error: function(response) {
+                    swal({
+                        title: '生成职位流水线',
+                        text: response.responseJSON.errors.jid[0],
+                        type: 'error',
+                        allowOutsideClick: false,
+                    });
+                    return response.responseJSON.errors.jid[0];
+                },
+                success: function(response){
+                    var data = $.parseJSON(response);
+                    var type = data['code'] == 0 ? 'success' : 'error';
+                    swal({
+                        title: '生成职位流水线',
                         text: data['msg'],
                         type: type,
                         allowOutsideClick: false,
@@ -212,6 +268,7 @@
                     <tr>
                         <th>编号</th>
                         <th>客户全称</th>
+                        <th>客户顾问</th>
                         <th>职位名称</th>
                         <th>工作年限</th>
                         <th>性别</th>

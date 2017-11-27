@@ -62,11 +62,11 @@ class LineController extends Controller
 
             if ($line->save())
             {
-                return redirect('/line/' . $line->id)->with('success', '生成职位交付流水线成功!');
+                return json_encode(['code' => 0, 'msg' => '操作成功！']);
             }
             else
             {
-                return redirect()->back()->with('error', '生成职位交付流水线失败');
+                return json_encode(['code' => 1, 'msg' => '操作失败！']);
             }
         }
     }
