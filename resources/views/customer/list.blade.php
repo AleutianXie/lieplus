@@ -27,6 +27,13 @@
             serverSide: true,
             ajax: '{{ route('customer.search', $type) }}',
             ordering: false,
+            createdRow: function (row, data, dataIndex)
+            {
+                if(data.closed == 0)
+                {
+                    $(row).addClass('success');
+                }
+            },
             columns: [
                 {
                     data: 'sn',
@@ -77,8 +84,8 @@
                             }
                             else
                             {
-                                btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#change-dialog' data-cid='" + row.id + "' data-aid='" + row.assigned.adviser.id + " '>" +
-                                "<i class='blue ace-icon fa fa-hand-lizard-o bigger-120'></i>" +
+                                btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "' data-aid='" + row.assigned.adviser.id + " '>" +
+                                "<i class='blue ace-icon fa fa-hand-scissors-o bigger-120'></i>" +
                                     " 更换客户顾问 </a>"+
                                     "</li>";
                             }
@@ -172,11 +179,19 @@
             var btn = $(e.relatedTarget),
             cid = btn.data("cid");
             $("#assign-dialog input[name=cid]").val(cid);
+            $('#uid').select2({
+                placeholder: "请选择客户顾问",
+                width: 330
+            });
+            aid = btn.data("aid");
+            if (aid)
+            {
+                $("#assign-dialog input[name=aid]").val(aid);
+                $('#uid').find('option[value=' + aid + ']').attr("disabled", "disabled");
+            }
+
         })
-        $('#uid').select2({
-            placeholder: "请选择客户顾问",
-            width: 330
-        });
+
         $('#assign-dialog').ajaxForm({
             beforeSubmit:function(){
                 var uid = $("select[name=uid]").val();
@@ -259,6 +274,7 @@
                 <form  method="POST" action="{{ route('customer.assign') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="cid" id="cid" value="">
+                    <input type="hidden" name="aid" id="aid" value="">
                     <div class="form-group">
                         <label class="control-label col-xs-12 col-sm-2 no-padding-right">客户顾问:</label>
                         <div class="col-xs-6 col-sm-6">
