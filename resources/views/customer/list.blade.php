@@ -193,6 +193,7 @@
         $('#modal-job').on('hide.bs.modal', function () {
             $(this).removeData("bs.modal");
             $(".modal-content").children().remove();
+            $('#uid').val();
         });
 
         $('#assign-dialog').ajaxForm({
