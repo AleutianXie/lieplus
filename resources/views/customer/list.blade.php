@@ -186,7 +186,7 @@
             aid = btn.data("aid");
             if (aid)
             {
-                $("#assign-dialog input[name=aid]").val(aid);
+                $("#uid").prop("disabled", false);
                 $('#uid').find('option[value=' + aid + ']').attr("disabled", "disabled");
             }
         })
@@ -278,7 +278,6 @@
                 <form  method="POST" action="{{ route('customer.assign') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="cid" id="cid" value="">
-                    <input type="hidden" name="aid" id="aid" value="">
                     <div class="form-group">
                         <label class="control-label col-xs-12 col-sm-2 no-padding-right">客户顾问:</label>
                         <div class="col-xs-6 col-sm-6">
