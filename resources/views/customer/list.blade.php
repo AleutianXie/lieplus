@@ -190,7 +190,7 @@
             }
         })
 
-        $('#modal-job').on('hide.bs.modal', function () {
+        $('#assign-dialog').on('hide.bs.modal', function () {
             $(this).removeData("bs.modal");
             $(".modal-content").children().remove();
         });
