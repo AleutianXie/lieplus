@@ -234,10 +234,10 @@ class CustomerController extends Controller
         return json_encode(['code' => 2, 'msg' => '操作失败！']);
     }
 
-    public function assignmodal(Request $request, $aid = null)
+    public function assignmodal(Request $request, $cid, $aid = null)
     {
         $users = User::role('customer')->get();
 
-        return view('customer.assign', compact('aid', 'users'));
+        return view('customer.assign', compact('cid', 'aid', 'users'));
     }
 }

@@ -8,7 +8,7 @@
 <div class="modal-body">
     <form  method="POST" action="{{ route('customer.assign') }}">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="cid" id="cid" value="">
+        <input type="hidden" name="cid" id="cid" value="{{ $cid }}">
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-2 no-padding-right">客户顾问:</label>
             <div class="col-xs-6 col-sm-6">

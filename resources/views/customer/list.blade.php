@@ -77,14 +77,14 @@
                             @role('admin|manager')
                             if (!row.assigned)
                             {
-                                btnGHtml += "<li>" + "<a href='/customer/assignmodal' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "'>" +
+                                btnGHtml += "<li>" + "<a href='/customer/assignmodal/" + row.id + "' data-toggle='modal' data-target='#assign-dialog'>" +
                                 "<i class='blue ace-icon fa fa-hand-lizard-o bigger-120'></i>" +
                                     " 分配客户顾问 </a>"+
                                     "</li>";
                             }
                             else
                             {
-                                btnGHtml += "<li>" + "<a href='/customer/assignmodal/" + row.assigned.adviser.id + "' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "'>" +
+                                btnGHtml += "<li>" + "<a href='/customer/assignmodal/" + row.id + "/" + row.assigned.adviser.id + "' data-toggle='modal' data-target='#assign-dialog'>" +
                                 "<i class='blue ace-icon fa fa-hand-scissors-o bigger-120'></i>" +
                                     " 更换客户顾问 </a>"+
                                     "</li>";

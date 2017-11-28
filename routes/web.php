@@ -63,7 +63,7 @@ Route::group(['prefix' => 'customer'], function ()
     Route::post('/pause/{jid}', 'CustomerController@pause')->where('id', '[0-9]+')->name('customer.pause');
     Route::post('/open/{jid}', 'CustomerController@open')->where('id', '[0-9]+')->name('customer.open');
     Route::post('/assign', 'CustomerController@assign')->name('customer.assign');
-    Route::get('/assignmodal/{aid?}', 'CustomerController@assignmodal')->where('aid', '[0-9]+')->name('customer.assign.modal');
+    Route::get('/assignmodal/{cid}/{aid?}', 'CustomerController@assignmodal')->where('cid', '[0-9]+')->where('aid', '[0-9]+')->name('customer.assign.modal');
 
 });
 
