@@ -186,8 +186,7 @@
             aid = btn.data("aid");
             if (aid)
             {
-                $("#uid").prop("disabled", false);
-                $('#uid').find('option[value=' + aid + ']').attr("disabled", "disabled");
+                $("#uid").find("option[value='" + aid + "']").attr("disabled", "disabled");
             }
         })
 
