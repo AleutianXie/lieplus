@@ -18,7 +18,9 @@
                     @isset ($users)
                     <option></option>
                     @foreach ($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    <option value="{{ $user->id }}" @if ( $user->id == $aid )
+                         disabled="disabled"
+                        @endif>{{ $user->name }}</option>
                     @endforeach
                     @endisset
                     </select>
