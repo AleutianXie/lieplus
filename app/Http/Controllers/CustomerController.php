@@ -134,13 +134,13 @@ class CustomerController extends Controller
 
         foreach ($customers as $key => $customer)
         {
-            $customers[$key] = $customer->with('jobs')->with('project')->with('assigned')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property', 'closed']);
+            $customers[$key] = $customer->with('jobs')->with('project')->with('assigned')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property', 'closed', 'created_at']);
             $customers[$key]['jobCount'] = count($customer->jobs);
             $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
             $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
             $customers[$key]['ismine'] = in_array($customer->id, $cids);
         }
-        return Datatables::of($customers)->make();
+        return Datatables::of($customers->sortByDesc('created_at'))->make();
     }
 
     public function pause(Request $request, $id)

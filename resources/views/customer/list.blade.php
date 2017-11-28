@@ -44,9 +44,13 @@
                 },
                 {data: 'name', defaultContent: ''},
                 {data: 'industry', defaultContent: ''},
-                {data: 'jobCount', defaultContent: '0'},
-                {data: 'openCount', defaultContent: '0'},
-                {data: 'closedCount', defaultContent: '0'},
+                {
+                    data:null,
+                    render: function (data, type, row)
+                    {
+                        return "<a href='#'>总共 <span class='badge'>" + row.jobCount + "</span> 其中open <span class='badge'>" + row.openCount + "</span>; closed<span class='badge'>" + row.closedCount + "</span> </a>"
+                    }
+                },
                 {data: 'level'},
                 {data: 'property'},
                 {
@@ -228,11 +232,6 @@
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
     <div class="col-xs-12">
-{{--         <h3 class="header smaller lighter blue">jQuery dataTables</h3>
-
-        <div class="clearfix">
-            <div class="pull-right tableTools-container"></div>
-        </div> --}}
         <div class="table-header">
             客户列表
         </div>
@@ -246,8 +245,6 @@
                         <th>公司名称</th>
                         <th>行业</th>
                         <th>职位数</th>
-                        <th>Open</th>
-                        <th>Closed</th>
                         <th>等级</th>
                         <th>公司类型</th>
                         <th>客户顾问</th>

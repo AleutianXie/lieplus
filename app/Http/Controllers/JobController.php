@@ -9,6 +9,7 @@ use App\Helper;
 use App\Job;
 use App\Region;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
@@ -67,7 +68,9 @@ class JobController extends Controller
                     'name'        => ['required',
                         Rule::unique('jobs')->where(function ($query) use ($data)
                         {
-                            $query->where('did', $data['did']);})],
+                            $query->where('did', $data['did']);
+                        }),
+                    ],
                     'requirement' => 'required',
                     'salary'      => 'required',
                 ],
@@ -131,32 +134,25 @@ class JobController extends Controller
 
     public function search(Request $request, $type)
     {
-        $resumes = [];
+        $jobs = new Collection([]);
         if ('my' == $type)
         {
-            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(['uid', 'cid']);
-            $customers = array_pluck($assignCustomers, 'customer');
-            $jobs = [];
-            foreach ($customers as $customer)
+            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+            foreach ($assignCustomers as $assignCustomer)
             {
-                foreach ($customer->jobs as $job)
-                {
-                    $jobs[] = $job;
-                }
+                $jobs = $jobs->merge($assignCustomer->customer->jobs);
             }
-            //dd($jobs);
-            //$jobs = Job::with('customer')->where(['creater' => Auth::id(), 'show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified']);
         }
         if ('all' == $type)
         {
-            $jobs = Job::with('customer')->with('line')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed']);
+            $jobs = Job::with('customer')->with('line')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed', 'created_at']);
         }
 
         foreach ($jobs as $key => $job)
         {
             $jobs[$key]['isMine'] = $job->isMine;
         }
-        return Datatables::of($jobs)->make();
+        return Datatables::of($jobs->sortByDesc('created_at'))->make();
     }
 
     public function pause(Request $request, $id)

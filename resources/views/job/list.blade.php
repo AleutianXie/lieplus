@@ -25,6 +25,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route('job.search', $type) }}',
+            ordering: false,
             createdRow: function (row, data, dataIndex)
             {
                 if(data.closed == 0)
@@ -130,21 +131,20 @@
                                                 "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
                                                    " 暂停 </a>"+
                                              "</li>";
+                                if(!row.line)
+                                {
+                                    btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
+                                }
+                                else
+                                {
+                                    btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
+                                }
                             }
                             else {
                                 btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" +
                                                 "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" +
                                                    " 重新发布 </a>" +
                                              "</li>";
-                            }
-
-                            if(!row.line)
-                            {
-                                btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
-                            }
-                            else
-                            {
-                                btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
                             }
                             @endrole
                             @role('customer')
@@ -154,20 +154,20 @@
                                                     "<i class='blue ace-icon fa fa-pause bigger-120'></i>" +
                                                        " 暂停 </a>"+
                                                  "</li>";
+                                    if(!row.line)
+                                    {
+                                        btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
+                                    }
+                                    else
+                                    {
+                                        btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
+                                    }
                                 }
                                 else {
                                     btnGHtml += "<li>" + "<a href='#' id='reopen-" + row.id + "'>" +
                                                     "<i class='blue ace-icon fa fa-refresh bigger-120'></i>" +
                                                        " 重新发布 </a>" +
                                                  "</li>";
-                                }
-                                if(!row.line)
-                                {
-                                    btnGHtml += "<li><a href='#' id='generate-" + row.id +"'><i class='blue ace-icon fa fa-empire bigger-120'></i> 生成流水线 </a></li>";
-                                }
-                                else
-                                {
-                                    btnGHtml += "<li><a href='{{ Url('/line') }}/" + row.line.id +"'><i class='blue ace-icon fa fa-eye-slash bigger-120'></i> 查看流水线 </a></li>";
                                 }
                             }
                             @endrole
