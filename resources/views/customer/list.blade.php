@@ -216,7 +216,7 @@
                     allowOutsideClick: false,
                 });
                 dt.draw(false);
-                $(this).modal('hide');
+                $('#assign-dialog').modal('hide');
             }
         });
         @endrole
