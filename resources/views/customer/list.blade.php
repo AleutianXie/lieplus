@@ -84,7 +84,7 @@
                             }
                             else
                             {
-                                btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "' data-aid='" + row.assigned.adviser.id + " '>" +
+                                btnGHtml += "<li>" + "<a href='#' data-toggle='modal' data-target='#assign-dialog' data-cid='" + row.id + "' data-aid='" + row.assigned.adviser.id + "'>" +
                                 "<i class='blue ace-icon fa fa-hand-scissors-o bigger-120'></i>" +
                                     " 更换客户顾问 </a>"+
                                     "</li>";
@@ -189,8 +189,12 @@
                 $("#assign-dialog input[name=aid]").val(aid);
                 $('#uid').find('option[value=' + aid + ']').attr("disabled", "disabled");
             }
-
         })
+
+        $('#modal-job').on('hide.bs.modal', function () {
+            $(this).removeData("bs.modal");
+            $(".modal-content").children().remove();
+        });
 
         $('#assign-dialog').ajaxForm({
             beforeSubmit:function(){
