@@ -149,7 +149,7 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt.ajax.reload();
+                    dt.draw(false);
                 },
             });
         });
@@ -169,7 +169,7 @@
                         type: type,
                         allowOutsideClick: false,
                     });
-                    dt.ajax.reload();
+                    dt.draw(false);
                 },
             });
         });
@@ -215,7 +215,8 @@
                     type: type,
                     allowOutsideClick: false,
                 });
-                dt.ajax.reload();
+                dt.draw(false);
+                $(this).modal('hide');
             }
         });
         @endrole
