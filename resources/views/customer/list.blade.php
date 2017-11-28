@@ -186,14 +186,13 @@
             aid = btn.data("aid");
             if (aid)
             {
-                $("#uid").find("option[value='" + aid + "']").attr("disabled", "disabled");
+                $('#uid').val(aid).prop('disabled', true);
             }
         })
 
         $('#modal-job').on('hide.bs.modal', function () {
             $(this).removeData("bs.modal");
             $(".modal-content").children().remove();
-            $('#uid').val();
         });
 
         $('#assign-dialog').ajaxForm({
