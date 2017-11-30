@@ -113,47 +113,6 @@
                     </tr>
                 </thead>
                 <tbody>
-{{--                    <tr>
-                        <td><a href="{{ asset('/line/'.$line->id) }}">{{ $line->sn }}</a></td>
-                        <td>{{ App\Helper::getUser($line->job->customer->creater)->name }}</td>
-                        <td>{{ empty($line->exclusive) ? '否' : App\Helper::getUser($line->exclusive)->name}}</td>
-                        <td>{{ $line->priority }}</td>
-                        <td>{{ $line->job->name }}</td>
-                        <td>{{ $line->job->customer->name }}</td>
-                        <td>{{ App\Department::name($line->job->did) }}</td>
-                        <td>联系中({{ count($line->connection) }}) 意向中({{ count($line->intention) }}) 推荐中({{ count($line->recommendation) }}) 面试中({{ count($line->interview) }}) offer中({{ count($line->offer) }}) 入职中({{ count($line->onboard) }})</td>
-                        <td>
-                            <div class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
-                                    <i class="purple ace-icon fa fa-asterisk bigger-120"></i>
-                                    操作
-                                    <i class="ace-icon fa fa-caret-down"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right">
-                                    <li>
-                                        <a href="{{ asset('/line/'.$line->id) }}">
-                                        <i class="blue ace-icon fa fa-eye bigger-120"></i>
-                                         查看 </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(-1);" onclick="assign({{ $line->id }});">
-                                        <i class="blue ace-icon fa fa-hand-pointer-o bigger-120"></i>
-                                         分配招聘顾问 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-square bigger-120"></i>
-                                         加入职位简历库 </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                        <i class="blue ace-icon fa fa-plus-circle bigger-120"></i>
-                                         重新加入工作台 </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr> --}}
                 </tbody>
             </table>
             <div id="optional-dialog" class="row hide">

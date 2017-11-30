@@ -285,12 +285,6 @@
                                                         入职中
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a data-toggle="tab" href="#closed">
-                                                        <i class="green ace-icon fa fa-close"></i>
-                                                        维护中
-                                                    </a>
-                                                </li>
                                             </ul>
 
                                             <div class="tab-content">
@@ -303,23 +297,20 @@
                                                 </div>
 
                                                 <div id="audit" class="tab-pane">
-                                                @include('station.list', ['status' => 7])
+                                                @include('station.list', ['status' => 3])
                                                 </div>
 
                                                 <div id="recommendation" class="tab-pane">
-                                                @include('station.list', ['status' => 3])
-                                                </div>
-                                                <div id="interview" class="tab-pane">
                                                 @include('station.list', ['status' => 4])
                                                 </div>
-                                                <div id="offer" class="tab-pane">
+                                                <div id="interview" class="tab-pane">
                                                 @include('station.list', ['status' => 5])
                                                 </div>
-                                                <div id="onboard" class="tab-pane">
+                                                <div id="offer" class="tab-pane">
                                                 @include('station.list', ['status' => 6])
                                                 </div>
-                                                <div id="closed" class="tab-pane">
-                                                @include('station.list', ['status' => 8])
+                                                <div id="onboard" class="tab-pane">
+                                                @include('station.list', ['status' => 7])
                                                 </div>
                                             </div>
                                         </div>
@@ -455,7 +446,7 @@
                                             "</li>";
                                     @endrole
                                 }
-                                if (status == 3 || status == 4 || status == 5 || status == 7)
+                                if (status == 3 || status == 4 || status == 5 || status == 6)
                                 {
                                     @role('admin|customer|manager')
                                         btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
@@ -477,7 +468,7 @@
                                         @endrole
                                     @endrole
                                 }
-                                if (status == 6)
+                                if (status == 7)
                                 {
                                     @role('admin|customer|manager')
                                         btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
@@ -494,14 +485,6 @@
                                         }
                                         @endrole
                                     @endrole
-                                }
-                                if (status == 8) {
-                                    btnGHtml +=
-                                    "<li>" +
-                                        "<a href='#' id='reactive-" + row.resume.id + "'>" +
-                                            "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                                " 重新加入工作台 </a>" +
-                                    "</li>";
                                 }
 
                             btnGHtml += "</ul></div>";
@@ -530,21 +513,9 @@
 
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
-            var status = $(this).parents('table')[0].dataset.status;
-            var next = 0;
-            if (parseInt(status) == 2 ) {
-                next = 7;
-            }
-            else if (parseInt(status) == 7 ) {
-                next = 3;
-            }
-            else if (parseInt(status) == 6 ) {
-                next = 8;
-            }
-            else
-            {
-                next = parseInt(status) + 1;
-            }
+            var status = parseInt($(this).parents('table')[0].dataset.status);
+            var next = status + 1;
+
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/next/'.$line->id)}}/' + rid,
@@ -566,7 +537,7 @@
 
         $('table.table tbody').on('click','a[id^=abandon]', function (e) {
             var rid = $(this)[0].id.substring(8);
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/abandon/'.$line->id)}}/' + rid,
@@ -581,14 +552,13 @@
                         allowOutsideClick: false,
                     });
                     dt[status].draw(false);
-                    dt[8].draw(false);
                 },
             });
         });
 
         $('table.table tbody').on('click','a[id^=reactive]', function (e) {
             var rid = $(this)[0].id.substring(9);
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/reactive/'.$line->id)}}/' + rid,
@@ -610,7 +580,7 @@
 
         $('table.table tbody').on('click','a[id^=create]', function (e) {
             var rid = $(this)[0].id.substring(7);
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/create/'.$line->id)}}/' + rid,

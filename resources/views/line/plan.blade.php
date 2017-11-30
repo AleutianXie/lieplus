@@ -69,12 +69,6 @@
                 入职中
             </a>
         </li>
-        <li>
-            <a data-toggle="tab" href="#closed">
-                <i class="green ace-icon fa fa-close"></i>
-                维护中
-            </a>
-        </li>
     </ul>
 
     <div class="tab-content">
@@ -87,23 +81,20 @@
         </div>
 
         <div id="audit" class="tab-pane">
-        @include('station.list', ['status' => 7, 'plan' => 1])
+        @include('station.list', ['status' => 3, 'plan' => 1])
         </div>
 
         <div id="recommendation" class="tab-pane">
-        @include('station.list', ['status' => 3, 'plan' => 1])
-        </div>
-        <div id="interview" class="tab-pane">
         @include('station.list', ['status' => 4, 'plan' => 1])
         </div>
-        <div id="offer" class="tab-pane">
+        <div id="interview" class="tab-pane">
         @include('station.list', ['status' => 5, 'plan' => 1])
         </div>
-        <div id="onboard" class="tab-pane">
+        <div id="offer" class="tab-pane">
         @include('station.list', ['status' => 6, 'plan' => 1])
         </div>
-        <div id="closed" class="tab-pane">
-        @include('station.list', ['status' => 8, 'plan' => 1])
+        <div id="onboard" class="tab-pane">
+        @include('station.list', ['status' => 7, 'plan' => 1])
         </div>
     </div>
 </div>
@@ -226,7 +217,7 @@
                                             "</li>";
                                     @endrole
                                 }
-                                if (status == 3 || status == 4 || status == 5 || status == 7)
+                                if (status == 3 || status == 4 || status == 5 || status == 6)
                                 {
                                     @role('admin|customer|manager')
                                         btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
@@ -248,7 +239,7 @@
                                         @endrole
                                     @endrole
                                 }
-                                if (status == 6)
+                                if (status == 7)
                                 {
                                     @role('admin|customer|manager')
                                         btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
@@ -265,14 +256,6 @@
                                         }
                                         @endrole
                                     @endrole
-                                }
-                                if (status == 8) {
-                                    btnGHtml +=
-                                    "<li>" +
-                                        "<a href='#' id='reactive-" + row.resume.id + "' data-lid='" + row.lid + "'>" +
-                                            "<i class='blue ace-icon fa fa-plus-circle bigger-120'></i>" +
-                                                " 重新加入工作台 </a>" +
-                                    "</li>";
                                 }
 
                             btnGHtml += "</ul></div>";
@@ -302,21 +285,9 @@
         $('table.table tbody').on('click','a[id^=next]', function (e) {
             var rid = $(this)[0].id.substring(5);
             var lid = $(this)[0].dataset.lid;
-            var status = $(this).parents('table')[0].dataset.status;
-            var next = 0;
-            if (parseInt(status) == 2 ) {
-                next = 7;
-            }
-            else if (parseInt(status) == 7 ) {
-                next = 3;
-            }
-            else if (parseInt(status) == 6 ) {
-                next = 8;
-            }
-            else
-            {
-                next = parseInt(status) + 1;
-            }
+            var status = parseInt($(this).parents('table')[0].dataset.status);
+            var next = parseInt(status) + 1;
+
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/next/')}}/' + lid + '/' + rid,
@@ -339,7 +310,7 @@
         $('table.table tbody').on('click','a[id^=abandon]', function (e) {
             var rid = $(this)[0].id.substring(8);
             var lid = $(this)[0].dataset.lid;
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/abandon/')}}/' + lid + '/' + rid,
@@ -354,7 +325,6 @@
                         allowOutsideClick: false,
                     });
                     dt[status].draw(false);
-                    dt[8].draw(false);
                 },
             });
         });
@@ -362,7 +332,7 @@
         $('table.table tbody').on('click','a[id^=reactive]', function (e) {
             var rid = $(this)[0].id.substring(9);
             var lid = $(this)[0].dataset.lid;
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/reactive/')}}/' + lid + '/' + rid,
@@ -385,7 +355,7 @@
         $('table.table tbody').on('click','a[id^=create]', function (e) {
             var rid = $(this)[0].id.substring(7);
             var lid = $(this)[0].dataset.lid;
-            var status = $(this).parents('table')[0].dataset.status;
+            var status = parseInt($(this).parents('table')[0].dataset.status);
             $.ajax({
                 type: 'post',
                 url: '{{ url('/station/create/')}}/' + lid + '/'  + rid,
@@ -446,8 +416,7 @@
                 dt[5].draw(false);
                 dt[6].draw(false);
                 dt[7].draw(false);
-                dt[8].draw(false);
-
+                $('#add-dialog').modal('hide');
             }
         });
     });

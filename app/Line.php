@@ -66,4 +66,9 @@ class Line extends Model
     {
         return $this->hasMany('App\Station', 'lid')->where(['show' => 1, 'disable' => 1])->latest()->orderByDesc('id');
     }
+
+    public function assign()
+    {
+        return $this->hasMany('App\AssignLine', 'lid');
+    }
 }
