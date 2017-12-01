@@ -119,11 +119,11 @@ class CustomerController extends Controller
 
     public function search(Request $request, $type)
     {
-        $customers = [];
+        $customers = collect([]);
         if ('my' == $type)
         {
             $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
-            $customers = array_pluck($assignCustomers, 'customer');
+            $customers = collect(array_pluck($assignCustomers, 'customer'));
         }
         if ('all' == $type)
         {
