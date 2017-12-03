@@ -77,6 +77,7 @@
 <script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
+<script src="{{ asset('static/js/sweetalert2.all.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
