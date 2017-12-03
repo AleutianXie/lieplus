@@ -92,7 +92,7 @@ Route::group(['prefix' => 'line'], function ()
     Route::get('/customer', 'LineController@customer')->name('line.customer');
     Route::get('/job', 'LineController@job');
     Route::get('/all', 'LineController@all')->name('line.all');
-    Route::match(['get', 'post'], '/assign/{id}', 'LineController@assign')->where('id', '[0-9]+');
+    Route::match(['get', 'post'], '/assign/{lid}', 'LineController@assign')->where('lid', '[0-9]+')->name('line.assign');
     Route::get('/search/{type}', 'LineController@search')->where(['type' => 'my|all|customer'])->name('line.search');
     Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-8]?'])->name('line.detail.stations');
 });

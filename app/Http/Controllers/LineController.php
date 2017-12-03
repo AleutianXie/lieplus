@@ -94,14 +94,14 @@ class LineController extends Controller
         ]);
     }
 
-    public function assign(Request $request, $id)
+    public function assign(Request $request, $lid)
     {
+        $line = Line::findOrFail($lid);
         if ($request->isMethod('POST'))
         {
-
             $data = $request->input();
-            $lid = $data['lid'];
             $uid = $data['uid'];
+            $lid = $data['lid'];
             $this->validate($request, [
                 'uid' => 'required|integer',
                 'lid' => [
@@ -127,17 +127,19 @@ class LineController extends Controller
 
             if ($assignLine->save())
             {
-                return redirect()->back()->with('success', '分配成功！');
+                return json_encode(['code' => 0, 'msg' => '操作成功！']);
             }
             else
             {
-                return redirect()->back()->with('error', '分配失败！');
+                return json_encode(['code' => 1, 'msg' => '操作失败！']);
             }
         }
 
         $users = User::role('recruiter')->get();
+        $aids = AssignLine::where(compact('lid'))->get(['uid']);
+        $aids = array_pluck($aids, 'uid');
 
-        return view('line.assign', compact('id', 'users'));
+        return view('line.assign', compact('line', 'users', 'aids'));
     }
 
     public function search(Request $request, $type)
