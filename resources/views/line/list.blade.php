@@ -37,7 +37,14 @@
                         return "<a href='{{ asset('/line')}}/" + row.id+ "'>" + data +"</a>";
                     }
                 },
-                {data: 'recruiter'},
+                {data: 'customer'},
+                {
+                    data: 'advisers',
+                    render: function (data, type, row)
+                    {
+                        return data.join('<br/>')
+                    }
+                },
                 {data: 'exclusive', defaultContent: '否',},
                 {data: 'priority'},
                 {data: 'job.name'},
@@ -99,6 +106,7 @@
                     <tr>
                         <th>编号</th>
                         <th>客户顾问</th>
+                        <th>招聘顾问</th>
                         <th>是否专属</th>
                         <th>
                             等级

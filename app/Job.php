@@ -27,7 +27,7 @@ class Job extends Model
 
     public function line()
     {
-        return $this->belongsTo('App\Line', 'id', 'jid');
+        return $this->belongsTo('App\Line', 'id', 'jid')->with('assign');
     }
 
     public function pause()

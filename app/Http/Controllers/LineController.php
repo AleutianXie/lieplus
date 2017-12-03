@@ -149,23 +149,31 @@ class LineController extends Controller
             $lines = array_pluck($assignLines, 'line');
             foreach ($lines as $key => $value)
             {
-                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->customer = Helper::getUser($value->job->customer->creater)->name;
+                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v)
+                {
+                    return Helper::getUser($v)->name;
+                }, array_pluck($value->assign, 'uid'));
                 $value->department = $value->job->department->name;
-                $value->connection = $value->connection;
-                $value->intention = $value->intention;
-                $value->recommendation = $value->recommendation;
-                $value->interview = $value->interview;
-                $value->offer = $value->offer;
-                $value->onboard = $value->onboard;
+                $value->connection = count($value->connection);
+                $value->intention = count($value->intention);
+                $value->recommendation = count($value->recommendation);
+                $value->interview = count($value->interview);
+                $value->offer = count($value->offer);
+                $value->onboard = count($value->onboard);
                 $lines[$key] = $value;
             }
         }
         if ('all' == $type)
         {
-            $lines = Line::with('job')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
+            $lines = Line::with('job')->with('assign')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
             foreach ($lines as $key => $value)
             {
-                $value->recruiter = Helper::getUser($value->job->customer->creater)->name;
+                $value->customer = Helper::getUser($value->job->customer->creater)->name;
+                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v)
+                {
+                    return Helper::getUser($v)->name;
+                }, array_pluck($value->assign, 'uid'));
                 $value->department = $value->job->department->name;
                 $value->connection = count($value->connection);
                 $value->intention = count($value->intention);
@@ -180,7 +188,6 @@ class LineController extends Controller
         {
             $customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get();
             $customers = array_pluck($customers, 'customer');
-            $lines = [];
             foreach ($customers as $customer)
             {
                 if (isset($customer->jobs))
@@ -190,9 +197,12 @@ class LineController extends Controller
                     {
                         if ($job->line)
                         {
-
                             $line = $job->line;
-                            $line->recruiter = Helper::getUser($line->job->customer->creater)->name;
+                            $line->customer = Helper::getUser($line->job->customer->creater)->name;
+                            $line->advisers = empty($line->assign) ? $line->assign : array_map(function ($v)
+                            {
+                                return Helper::getUser($v)->name;
+                            }, array_pluck($line->assign, 'uid'));
                             $line->department = $line->job->department->name;
                             $line->connection = count($line->connection);
                             $line->intention = count($line->intention);
@@ -206,7 +216,6 @@ class LineController extends Controller
                 }
             }
         }
-
         return Datatables::of($lines)->make();
     }
 

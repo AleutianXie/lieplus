@@ -17,7 +17,7 @@ class AssignLine extends Model
 
     public function line()
     {
-        return $this->hasOne('App\Line', 'id', 'lid');
+        return $this->hasOne('App\Line', 'id', 'lid')->with('assign');
     }
 
     public function adviser()

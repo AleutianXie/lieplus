@@ -418,7 +418,7 @@
                 dt[5].draw(false);
                 dt[6].draw(false);
                 dt[7].draw(false);
-                $('#add-dialog').modal('hide');
+                $('#add-dialog').dialog('close');
             }
         });
     });
