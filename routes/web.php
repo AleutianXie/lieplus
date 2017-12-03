@@ -15,7 +15,7 @@
 {
 return view('welcome');
 });*/
-Route::get('/', 'ResumeController@index');
+Route::get('/', 'ResumeController@mylibrary');
 
 Auth::routes();
 
