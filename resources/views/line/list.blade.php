@@ -82,7 +82,7 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#dynamic-table').DataTable({
+        var dt = $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
             },
