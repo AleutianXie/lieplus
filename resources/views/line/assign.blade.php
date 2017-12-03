@@ -8,7 +8,7 @@
         <h4 class="modal-title">分配招聘顾问</h4>
     </div>
     <div class="modal-body">
-        <form  method="POST" action="{{ route('resume.addjob') }}">
+        <form  method="POST" action="{{ route('line.assign') }}">
             <div class="form-group text-center">
                 <input type="hidden" name="lid" id="lid" value="{{ $line->id }}" />
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
