@@ -8,7 +8,7 @@
 
 @section('content')
 @include('common.messages')
-
+@role('admin|manager|customer')
 <div class="widget-box">
     <div class="widget-header widget-header-blue widget-header-flat">
         <h4 class="widget-title lighter">职位信息</h4>
@@ -161,6 +161,9 @@
 </div>
 </div>
 </div>
+@else
+Access Denied!
+@endrole
 @endsection
 
 @section('breadcrumbs')
@@ -171,6 +174,7 @@
 <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
+@role('admin|manager|customer')
 <script type="text/javascript">
 jQuery(function($) {
     var departments = [];
@@ -245,4 +249,5 @@ jQuery(function($) {
     });
 });
 </script>
+@endrole
 @endsection

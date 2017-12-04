@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Traits\hasRole;
 use Yajra\DataTables\DataTables;
 
 class JobController extends Controller
@@ -63,8 +64,15 @@ class JobController extends Controller
 
             $this->validate($request,
                 [
-                    'cid'         => 'required',
-                    'name'        => ['required',
+                    'cid'         => Auth::user()->hasRole('admin|manager') ? 'required' : [
+                        'required',
+                        Rule::exists('cid')->where(function ($query)
+                        {
+                            $query->where('uid', Auth::id());
+                        }),
+                    ],
+                    'name'        => [
+                        'required',
                         Rule::unique('jobs')->where(function ($query) use ($data)
                         {
                             $query->where('did', $data['did']);
@@ -75,6 +83,7 @@ class JobController extends Controller
                 ],
                 [
                     'cid.required'         => '请选择:attribute.',
+                    'cid.exists'           => '你无权给未分配:attribute 增加职位',
                     'name.required'        => '请输入:attribute.',
                     'name.unique'          => ':attribute 已经存在.',
                     'requirement.required' => '请输入:attribute.',
