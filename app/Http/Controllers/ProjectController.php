@@ -150,9 +150,8 @@ class ProjectController extends Controller
     public function audit(Request $request)
     {
         $title = '项目启动书审核';
-        $projects = Project::latest()->get();
 
-        return view('bd.audit', compact('title', 'projects'));
+        return view('bd.audit', compact('title'));
     }
 
     public function detail(Request $request, $id)
@@ -167,7 +166,7 @@ class ProjectController extends Controller
     {
         if ('all' == $type)
         {
-            $projects = Project::with('job')->with('company')->where(['show' => 1])->orderBy('status')->get(['id', 'sn', 'jid', 'cid', 'status']);
+            $projects = Project::with('job')->with('company')->where(['show' => 1])->orderBy('status')->latest()->get(['id', 'sn', 'jid', 'cid', 'status']);
         }
         return Datatables::of($projects)->make();
     }

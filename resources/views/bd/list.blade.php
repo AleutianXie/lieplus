@@ -108,7 +108,6 @@
 
         <!-- 项目启动书列表--开始 -->
         <div>
-            @if(count($projects))
             <table id='dynamic-table' class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -124,7 +123,6 @@
 
                 </tbody>
             </table>
-            @endif
         </div>
         <!-- 项目启动书列表--结束 -->
     </div>
