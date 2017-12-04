@@ -20,13 +20,14 @@
     //editables on first profile page
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function(){
-        $('#dynamic-table').DataTable({
+        var dt = $('#dynamic-table').DataTable({
             language: {
                 url: '{{ asset('static/localisation/Chinese.json') }}'
             },
             processing: true,
             serverSide: true,
             ajax: '{{ route('project.search', 'all') }}',
+            ordering: false,
             columns: [
                 {
                     data: 'sn',
@@ -92,60 +93,6 @@
                     'width': 140,
                 }
             });
-        });
-
-        $('table.table tbody').on('click','a[id^=my-]', function (e) {
-            var rid = $(this)[0].id.substring(3);
-            $.ajax({
-                type: 'post',
-                url: '{{ url('/resume/my/add')}}/' + rid,
-                data: { '_token' : '{{ csrf_token() }}' },
-                success: function(response){
-                    var data = $.parseJSON(response);
-                    var type = data['code'] == 0 ? 'success' : 'error';
-                    swal({
-                        title: '加入我的简历库',
-                        text: data['msg'],
-                        type: type,
-                        allowOutsideClick: false,
-                    });
-                },
-            });
-        });
-        $("#modal-job").on("show.bs.modal", function(e) {
-            var btn = $(e.relatedTarget),
-            rid = btn.data("rid");
-            $("#modal-job input[name=rid]").val(rid);
-        })
-
-        $('#jid').select2({
-            placeholder: "请选择职位流水线",
-            allowClear: true,
-            width: 300
-        });
-        $('#modal-job').ajaxForm({
-            beforeSubmit:function(){
-                var jid = $("#modal-job select[name=jid]").val();
-                if(jid == ''){
-                    swal({
-                        title: '加入职位流水线',
-                        text: '请选择职位流水线',
-                        type: 'error',
-                        allowOutsideClick: false,
-                    });
-                return false;
-                }
-            },
-            success:function(response) {
-                var data = $.parseJSON(response);
-                var type = data['code'] == 0 ? 'success' : 'error';
-                swal({
-                    title: '加入职位流水线',
-                    text: data['msg'],
-                    type: type,
-                    allowOutsideClick: false,
-                });
-            }
         });
     });
 </script>
