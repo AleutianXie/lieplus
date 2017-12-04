@@ -239,23 +239,23 @@ class LineController extends Controller
         }
         if (3 == $status)
         {
-            $stations = $line->recommendation;
+            $stations = $line->audit;
         }
         if (4 == $status)
         {
-            $stations = $line->interview;
+            $stations = $line->recommendation;
         }
         if (5 == $status)
         {
-            $stations = $line->offer;
+            $stations = $line->interview;
         }
         if (6 == $status)
         {
-            $stations = $line->onboard;
+            $stations = $line->offer;
         }
         if (7 == $status)
         {
-            $stations = $line->audit;
+            $stations = $line->onboard;
         }
         if (8 == $status)
         {
