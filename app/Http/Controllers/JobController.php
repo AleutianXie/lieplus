@@ -61,14 +61,14 @@ class JobController extends Controller
         if ($request->isMethod('POST'))
         {
             $data = $request->input();
-
+            $uid = Auth::id();
             $this->validate($request,
                 [
                     'cid'         => Auth::user()->hasRole('admin|manager') ? 'required' : [
                         'required',
-                        Rule::exists('assigncustomers')->where(function ($query)
+                        Rule::exists('assigncustomers')->where(function ($query) use ($uid)
                         {
-                            $query->where('uid', Auth::id());
+                            $query->where('uid', $uid);
                         }),
                     ],
                     'name'        => [
