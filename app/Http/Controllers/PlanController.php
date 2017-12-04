@@ -70,12 +70,15 @@ class PlanController extends Controller
     //
     public function getStations(Request $request, $status)
     {
-        $statusVal = ['1' => '联系中',
-            '2'               => '意向中',
-            '3'               => '推荐中',
-            '4'               => '面试中',
-            '5'               => 'offer中',
-            '6'               => '入职中'];
+        $statusVal = [
+            '1' => '联系中',
+            '2' => '意向中',
+            '3' => '审批中',
+            '4' => '推荐中',
+            '5' => '面试中',
+            '6' => 'offer中',
+            '7' => '入职中',
+        ];
         $plans = Plan::with('line')->where(['creater' => Auth::id(), 'show' => 1])->where('created_at', 'like', date("Y-m-d", time()) . '%')->get();
         $lines = array_pluck($plans, 'line');
         $data = [];
@@ -91,29 +94,25 @@ class PlanController extends Controller
             {
                 $stations = $line->intention;
             }
-            if (7 == $status)
+            if (3 == $status)
             {
                 $stations = $line->audit;
             }
-            if (3 == $status)
+            if (4 == $status)
             {
                 $stations = $line->recommendation;
             }
-            if (4 == $status)
+            if (5 == $status)
             {
                 $stations = $line->interview;
             }
-            if (5 == $status)
+            if (6 == $status)
             {
                 $stations = $line->offer;
             }
-            if (6 == $status)
+            if (7 == $status)
             {
                 $stations = $line->onboard;
-            }
-            if (8 == $status)
-            {
-                $stations = $line->closed;
             }
             foreach ($stations as $station)
             {
