@@ -24,27 +24,27 @@ class Line extends Model
 
     public function audit()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 7, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 3, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
     }
 
     public function recommendation()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 3, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 4, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
     }
 
     public function interview()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 4, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 5, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
     }
 
     public function offer()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 5, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 6, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
     }
 
     public function onboard()
     {
-        return $this->hasMany('App\Station', 'lid')->where(['status' => 6, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
+        return $this->hasMany('App\Station', 'lid')->where(['status' => 7, 'show' => 1, 'disable' => 0])->latest()->orderByDesc('id');
     }
 
     public function GetStationsByStatus($status)
