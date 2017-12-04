@@ -30,7 +30,7 @@
             @foreach (config('lieplus.gender') as $element)
             <label class="control-label line-height-1 blue">
                 <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}" @if ($element['id'] == old('gender'))
-                    checked="checked" 
+                    checked="checked"
                 @endif required />
                 <span class="lbl"> {{ $element['text'] }}</span>
                 &nbsp;
@@ -217,7 +217,6 @@
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-wysiwyg.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>

@@ -24,7 +24,7 @@
     <!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li class="active">
+        <li @if(Request::fullUrl() == route('front')) class="active" @endif>
             <a href="/">
                 <i class="menu-icon fa fa-home"></i>
                 <span class="menu-text"> 首页 </span>
@@ -32,36 +32,36 @@
             <b class="arrow"></b>
         </li>
         @role('admin|manager|customer|recruiter')
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li @if(starts_with(Request::fullUrl(), route('resume'))) class="open" @endif>
+            <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
                 <span class="menu-text"> 简历 </span>
                 <b class="arrow fa fa-angle-down"></b>
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('resume.add'))) class="active" @endif>
                     <a href="{{ route('resume.add') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建
                     </a>
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('resume.my'))) class="active" @endif>
                     <a href="{{ route('resume.my') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我的简历库
                     </a>
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('resume.job'))) class="active" @endif>
                     <a href="{{ route('resume.job') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         职位简历库
                     </a>
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('resume.all'))) class="active" @endif>
                     <a href="{{ route('resume.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加简历库
@@ -70,8 +70,8 @@
                 </li>
             </ul>
         </li>
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li @if(starts_with(Request::fullUrl(), route('customer'))) class="open" @endif>
+            <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-users"></i>
                 <span class="menu-text">
                     客户
@@ -82,20 +82,19 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
-                    <a href="{{ route('customer') }}">
+                <li @if(starts_with(Request::fullUrl(), route('customer.index'))) class="active" @endif>
+                    <a href="{{ route('customer.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我的客户
                     </a>
 
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('customer.all'))) class="active" @endif>
                     <a href="{{ route('customer.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加客户
                     </a>
-
                     <b class="arrow"></b>
                 </li>
             </ul>
@@ -103,8 +102,8 @@
         @endrole
 
         @role('admin|manager|bd')
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li @if(starts_with(Request::fullUrl(), route('project'))) class="open" @endif">
+            <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list-ol"></i>
                 <span class="menu-text">
                     项目
@@ -117,8 +116,8 @@
 
             <ul class="submenu">
                 @role('admin|bd')
-                <li class="">
-                    <a href="{{ route('project') }}">
+                <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="active" @endif>
+                    <a href="{{ route('project.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         项目启动书
                     </a>
@@ -127,7 +126,7 @@
                 </li>
                 @endrole
                 @role('admin|manager')
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('project.audit'))) class="active" @endif>
                     <a href="{{ route('project.audit') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         项目审批
@@ -141,8 +140,8 @@
         @endrole
 
         @role('admin|manager|customer')
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li @if(starts_with(Request::fullUrl(), route('job'))) class="open" @endif>
+            <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>
                 <span class="menu-text">
                     职位
@@ -154,7 +153,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
+                <li  @if(starts_with(Request::fullUrl(), route('job.add'))) class="active" @endif>
                     <a href="{{ route('job.add') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建
@@ -162,15 +161,15 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li>
-                <a href="{{ route('job') }}">
+                <li  @if(starts_with(Request::fullUrl(), route('job.index'))) class="active" @endif>
+                <a href="{{ route('job.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我的职位
                     </a>
 
                     <b class="arrow"></b>
                 </li>
-                <li>
+                <li  @if(starts_with(Request::fullUrl(), route('job.all'))) class="active" @endif>
                 <a href="{{ route('job.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加职位
@@ -182,8 +181,8 @@
         </li>
         @endrole
         @role('admin|manager|customer|recruiter')
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li @if(starts_with(Request::fullUrl(), route('line'))) class="open" @endif>
+            <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> 流水线 </span>
 
@@ -194,8 +193,8 @@
 
             <ul class="submenu">
                 @role('admin|manager|recruiter')
-                <li class="">
-                    <a href="{{ route('line') }}">
+                <li @if(starts_with(Request::fullUrl(), route('line.index'))) class="active" @endif>
+                    <a href="{{ route('line.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我负责招聘的流水线
                     </a>
@@ -204,7 +203,7 @@
                 </li>
                 @endrole
                 @role('admin|manager|customer')
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('line.customer'))) class="active" @endif>
                     <a href="{{ route('line.customer') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         我负责客户的流水线
@@ -214,7 +213,7 @@
                 </li>
                 @endrole
                 @role('admin|manager')
-                <li class="">
+                <li @if(starts_with(Request::fullUrl(), route('line.all'))) class="active" @endif>
                     <a href="{{ route('line.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         猎加职位流水线
@@ -225,7 +224,7 @@
                 @endrole
             </ul>
         </li>
-        <li class="">
+        <li @if(starts_with(Request::fullUrl(), route('line.plan'))) class="active" @endif>
             <a href="{{ route('line.plan') }}">
                 <i class="menu-icon fa fa-cc"></i>
                 <span class="menu-text"> 今日工作台 </span>

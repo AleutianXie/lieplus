@@ -6,5 +6,5 @@
 @endsection
 
 @section('breadcrumbs')
-{!! Breadcrumbs::render('line') !!}
+{!! Breadcrumbs::render('line.index') !!}
 @endsection

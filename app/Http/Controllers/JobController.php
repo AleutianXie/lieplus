@@ -33,8 +33,7 @@ class JobController extends Controller
     public function index()
     {
         $title = '我的职位';
-        $route_name = 'job';
-
+        $route_name = 'job.index';
         $type = 'my';
 
         return view('job.index', compact('title', 'route_name', 'type'));

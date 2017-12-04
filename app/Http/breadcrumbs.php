@@ -73,7 +73,12 @@ Breadcrumbs::register('job.all', function ($breadcrumbs)
     $breadcrumbs->parent('job');
     $breadcrumbs->push('猎加职位', route('job.all'));
 });
-
+// Home > Job > index
+Breadcrumbs::register('job.index', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('job');
+    $breadcrumbs->push('我的职位', route('job.index'));
+});
 // Home > Job > detail
 Breadcrumbs::register('job.detail', function ($breadcrumbs, $id)
 {
@@ -116,6 +121,13 @@ Breadcrumbs::register('customer', function ($breadcrumbs)
     $breadcrumbs->push('客户', route('customer'));
 });
 
+// Home > Customer > index
+Breadcrumbs::register('customer.index', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('customer');
+    $breadcrumbs->push('我的客户', route('customer.index'));
+});
+
 // Home > Customer > all
 Breadcrumbs::register('customer.all', function ($breadcrumbs)
 {
@@ -143,7 +155,12 @@ Breadcrumbs::register('line.all', function ($breadcrumbs)
     $breadcrumbs->parent('line');
     $breadcrumbs->push('猎加职位流水线', route('line.all'));
 });
-
+// Home > Line > index
+Breadcrumbs::register('line.index', function ($breadcrumbs)
+{
+    $breadcrumbs->parent('line');
+    $breadcrumbs->push('我负责招聘职位流水线', route('line.index'));
+});
 Breadcrumbs::register('line.customer', function ($breadcrumbs)
 {
     $breadcrumbs->parent('line');

@@ -170,7 +170,6 @@
 @section('scripts')
 <script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {

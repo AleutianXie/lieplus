@@ -7,5 +7,5 @@
 @endsection
 
 @section('breadcrumbs')
-{!! Breadcrumbs::render('customer') !!}
+{!! Breadcrumbs::render('customer.index') !!}
 @endsection

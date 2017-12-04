@@ -130,7 +130,6 @@
 <script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('static/js/select2.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.hotkeys.index.min.js') }}"></script>
-<script src="{{ asset('static/js/ace.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-elements.min.js') }}"></script>
 <script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
 <script src="{{ asset('static/js/ace-editable.min.js') }}"></script>

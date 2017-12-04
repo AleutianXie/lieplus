@@ -15,7 +15,7 @@
 {
 return view('welcome');
 });*/
-Route::get('/', 'ResumeController@mylibrary');
+Route::get('/', 'ResumeController@mylibrary')->name('front');
 
 Auth::routes();
 
