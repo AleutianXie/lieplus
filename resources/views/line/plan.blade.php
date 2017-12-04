@@ -183,7 +183,7 @@
                     {
                         data: null,
                         render: function(data, type, row){
-                            if (row.line.job.closed == 0) {
+                            if (row.closed == 0) {
                                 var btnGHtml = "<div class='dropdown'>" +
                                 "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                                     "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +

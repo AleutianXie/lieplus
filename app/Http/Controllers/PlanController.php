@@ -85,7 +85,6 @@ class PlanController extends Controller
         foreach ($lines as $line)
         {
             $stations = [];
-
             if (1 == $status)
             {
                 $stations = $line->connection;
@@ -116,7 +115,7 @@ class PlanController extends Controller
             }
             foreach ($stations as $station)
             {
-                $data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'resume' => $station->resume, 'recruiter' => User::find($station->modifier)->name];
+                $data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'closed' => $line->job->closed, 'resume' => $station->resume, 'recruiter' => User::find($station->modifier)->name];
             }
         }
         return Datatables::of($data)->make();
