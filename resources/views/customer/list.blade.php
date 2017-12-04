@@ -48,7 +48,7 @@
                     data:null,
                     render: function (data, type, row)
                     {
-                        return "<a href='#'>总共 <span class='badge'>" + row.jobCount + "</span> 其中open <span class='badge'>" + row.openCount + "</span>; closed<span class='badge'>" + row.closedCount + "</span> </a>"
+                        return "<a href='#'>总共 <span class='badge'>" + row.jobCount + "</span> 其中open <span class='badge'>" + row.openCount + "</span> closed<span class='badge'>" + row.closedCount + "</span> </a>"
                     }
                 },
                 {data: 'level'},
