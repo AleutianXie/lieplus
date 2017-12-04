@@ -66,7 +66,7 @@ class JobController extends Controller
                 [
                     'cid'         => Auth::user()->hasRole('admin|manager') ? 'required' : [
                         'required',
-                        Rule::exists('cid')->where(function ($query)
+                        Rule::exists('assigncustomers')->where(function ($query)
                         {
                             $query->where('uid', Auth::id());
                         }),
