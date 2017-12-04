@@ -110,8 +110,8 @@ class JobController extends Controller
             }
         }
 
-        $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
-        $assignCustomers = array_pluck($assignCustomers, 'customer');
+        $assignedCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+        $assignedCustomers = array_pluck($assignedCustomers, 'customer');
         $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
 
         $data = $request->input();
