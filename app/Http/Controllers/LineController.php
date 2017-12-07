@@ -138,35 +138,35 @@ class LineController extends Controller
             $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(['uid', 'lid']);
             $lines = array_pluck($assignLines, 'line');
             foreach ($lines as $key => $value) {
-                $value->customer = Helper::getUser($value->job->customer->assigned->adviser->id)->name;
-                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
+                    $value->customer = empty($value->job->customer->assigned) ? $value->job->customer->assigned : Helper::getUser($value->job->customer->assigned->adviser->id)->name;
+                    $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
-                }, array_pluck($value->assign, 'uid'));
-                $value->department = $value->job->department->name;
-                $value->connection = count($value->connection);
-                $value->intention = count($value->intention);
-                $value->recommendation = count($value->recommendation);
-                $value->interview = count($value->interview);
-                $value->offer = count($value->offer);
-                $value->onboard = count($value->onboard);
-                $lines[$key] = $value;
+                    }, array_pluck($value->assign, 'uid'));
+                    $value->department = $value->job->department->name;
+                    $value->connection = count($value->connection);
+                    $value->intention = count($value->intention);
+                    $value->recommendation = count($value->recommendation);
+                    $value->interview = count($value->interview);
+                    $value->offer = count($value->offer);
+                    $value->onboard = count($value->onboard);
+                    $lines[$key] = $value;
             }
         }
         if ('all' == $type) {
             $lines = Line::with('job')->with('assign')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
             foreach ($lines as $key => $value) {
-                $value->customer = Helper::getUser($value->job->customer->assigned->adviser->id)->name;
-                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
+                    $value->customer = empty($value->job->customer->assigned) ? $value->job->customer->assigned : Helper::getUser($value->job->customer->assigned->adviser->id)->name;
+                    $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
-                }, array_pluck($value->assign, 'uid'));
-                $value->department = $value->job->department->name;
-                $value->connection = count($value->connection);
-                $value->intention = count($value->intention);
-                $value->recommendation = count($value->recommendation);
-                $value->interview = count($value->interview);
-                $value->offer = count($value->offer);
-                $value->onboard = count($value->onboard);
-                $lines[$key] = $value;
+                    }, array_pluck($value->assign, 'uid'));
+                    $value->department = $value->job->department->name;
+                    $value->connection = count($value->connection);
+                    $value->intention = count($value->intention);
+                    $value->recommendation = count($value->recommendation);
+                    $value->interview = count($value->interview);
+                    $value->offer = count($value->offer);
+                    $value->onboard = count($value->onboard);
+                    $lines[$key] = $value;
             }
         }
         if ('customer' == $type) {
@@ -177,19 +177,19 @@ class LineController extends Controller
                     $jobs = $customer->jobs;
                     foreach ($jobs as $job) {
                         if ($job->line) {
-                            $line = $job->line;
-                            $line->customer = Helper::getUser($line->job->customer->assigned->adviser->id)->name;
+                            $line           = $job->line;
+                            $line->customer = empty($line->job->customer->assigned) ? $line->job->customer->assigned : Helper::getUser($line->job->customer->assigned->adviser->id)->name;
                             $line->advisers = empty($line->assign) ? $line->assign : array_map(function ($v) {
                                 return Helper::getUser($v)->name;
                             }, array_pluck($line->assign, 'uid'));
-                            $line->department = $line->job->department->name;
-                            $line->connection = count($line->connection);
-                            $line->intention = count($line->intention);
+                            $line->department     = $line->job->department->name;
+                            $line->connection     = count($line->connection);
+                            $line->intention      = count($line->intention);
                             $line->recommendation = count($line->recommendation);
-                            $line->interview = count($line->interview);
-                            $line->offer = count($line->offer);
-                            $line->onboard = count($line->onboard);
-                            $lines[] = $line;
+                            $line->interview      = count($line->interview);
+                            $line->offer          = count($line->offer);
+                            $line->onboard        = count($line->onboard);
+                            $lines[]              = $line;
                         }
                     }
                 }
@@ -231,8 +231,8 @@ class LineController extends Controller
         }
         foreach ($stations as $key => $station) {
             $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
-            $stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
-            $stations[$key]['resume'] = $station->resume;
+            $stations[$key]['ismine']    = $station->modifier == Auth::id() ? 1 : 0;
+            $stations[$key]['resume']    = $station->resume;
         }
         if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status)) {
             $stations = is_array($stations) ? $stations : $stations->toArray();

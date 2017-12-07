@@ -54,7 +54,7 @@ class Line extends Model
 
     public function job()
     {
-        return $this->hasOne('App\Job', 'id', 'jid')->latest()->orderByDesc('id');
+        return $this->hasOne('App\Job', 'id', 'jid')->latest()->orderByDesc('id')->with('customer');
     }
 
     public function joblibrary()
