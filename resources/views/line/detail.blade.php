@@ -386,7 +386,7 @@
                         data: 'resume.sn',
                         render: function (data, type, row )
                         {
-                            return "<a href='{{ asset('/resume')}}/" + row.id+ "'>" + data +"</a>";
+                            return "<a href='{{ asset('/resume')}}/" + row.resume.id+ "'>" + data +"</a>";
                         }
                     },
                     {data: 'resume.name'},
