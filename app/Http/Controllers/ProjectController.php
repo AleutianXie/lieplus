@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Customer;
 use App\Department;
 use App\Helper;
 use App\Job;
 use App\Project;
 use App\Region;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
@@ -23,9 +25,7 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->isMethod('POST'))
-        {
-
+        if ($request->isMethod('POST')) {
             $this->validate($request, [
                 'name'        => ['required', 'unique:customers'],
                 'department'  => 'required',
@@ -54,78 +54,77 @@ class ProjectController extends Controller
                 'welfare'    => '薪资福利',
             ]);
 
-            $data = $request->input();
+            try {
+                DB::beginTransaction();
+                $data = $request->input();
 
-            $customer = new Customer();
-            $customer->sn = Helper::generationSN('KH');
-            $customer->name = $data['name'];
-            $customer->province = $data['province'];
-            $customer->city = $data['city'];
-            $customer->county = $data['county'];
-            $customer->welfare = $data['welfare'];
-            $customer->worktime = $data['worktime'];
-            if (!empty($data['founder']))
-            {
-                $customer->founder = $data['founder'];
-            }
-            $customer->financing = $data['financing'];
-            $customer->industry = $data['industry'];
-            $customer->ranking = $data['ranking'];
-            $customer->property = $data['property'];
-            $customer->size = $data['size'];
-            $customer->introduce = $data['introduce'];
-            $customer->creater = Auth::id();
-            $customer->modifier = Auth::id();
+                // add customer
+                $customer           = new Customer();
+                $customer->sn       = Helper::generationSN('KH');
+                $customer->name     = $data['name'];
+                $customer->province = $data['province'];
+                $customer->city     = $data['city'];
+                $customer->county   = $data['county'];
+                $customer->welfare  = $data['welfare'];
+                $customer->worktime = $data['worktime'];
+                if (!empty($data['founder'])) {
+                    $customer->founder = $data['founder'];
+                }
+                $customer->financing = $data['financing'];
+                $customer->industry  = $data['industry'];
+                $customer->ranking   = $data['ranking'];
+                $customer->property  = $data['property'];
+                $customer->size      = $data['size'];
+                $customer->introduce = $data['introduce'];
+                $customer->creater   = Auth::id();
+                $customer->modifier  = Auth::id();
+                $customer->save();
+                // add job
+                $job              = new Job();
+                $job->sn          = Helper::generationSN('ZW');
+                $job->name        = $data['job_name'];
+                $job->requirement = $data['requirement'];
+                $job->workyears   = $data['workyears'];
+                $job->gender      = $data['gender'];
+                $job->majors      = $data['majors'];
+                $job->degree      = $data['degree'];
+                $job->unified     = isset($data['unified']) ? $data['unified'] : 0;
+                $job->salary      = $data['salary'];
+                $job->creater     = Auth::id();
+                $job->modifier    = Auth::id();
+                $job->cid         = $customer->id;
+                $departments      = explode(",", $data['department']);
 
-            $job = new Job();
-            $job->sn = Helper::generationSN('ZW');
-            $job->name = $data['job_name'];
-            $job->requirement = $data['requirement'];
-            $job->workyears = $data['workyears'];
-            $job->gender = $data['gender'];
-            $job->majors = $data['majors'];
-            $job->degree = $data['degree'];
-            $job->unified = isset($data['unified']) ? $data['unified'] : 0;
-            $job->salary = $data['salary'];
-            $job->creater = Auth::id();
-            $job->modifier = Auth::id();
-
-            if ($customer->save())
-            {
-                $job->cid = $customer->id;
-
-                $departments = explode(",", $data['department']);
-
-                foreach ($departments as $value)
-                {
-                    $department = new Department();
-                    $department->cid = $customer->id;
-                    $department->name = trim($value);
-                    $department->creater = Auth::id();
+                // add departments
+                foreach ($departments as $value) {
+                    $department           = new Department();
+                    $department->cid      = $customer->id;
+                    $department->name     = trim($value);
+                    $department->creater  = Auth::id();
                     $department->modifier = Auth::id();
                     $department->save();
 
-                    if ($data['job_department'] == $department->name)
-                    {
+                    if ($data['job_department'] == $department->name) {
                         $job->did = $department->id;
                     }
                 }
 
-                if ($job->save())
-                {
-                    $project = new Project();
-
-                    $project->sn = Helper::generationSN('XM');
-                    $project->jid = $job->id;
-                    $project->cid = $customer->id;
-                    $project->creater = Auth::id();
+                if ($job->save()) {
+                    $project           = new Project();
+                    
+                    $project->sn       = Helper::generationSN('XM');
+                    $project->jid      = $job->id;
+                    $project->cid      = $customer->id;
+                    $project->creater  = Auth::id();
                     $project->modifier = Auth::id();
-                    if ($project->save())
-                    {
-                        return $project->id;
-                    }
-                    return 0;
+                    // add project
+                    $project->save();
+                    DB::commit();
+                    return $project->id;
                 }
+            } catch (Exception $e) {
+                DB::rollback();
+                return 0;
             }
         }
 
@@ -135,14 +134,13 @@ class ProjectController extends Controller
 
     public function edit(Request $request)
     {
-        $data = $request->input();
-        $id = $data['pk'];
-        $project = Project::find($id);
+        $data                     = $request->input();
+        $id                       = $data['pk'];
+        $project                  = Project::find($id);
         $project->{$data['name']} = $data['value'];
-        $project->modifier = Auth::id();
+        $project->modifier        = Auth::id();
 
-        if (!$project->save())
-        {
+        if (!$project->save()) {
             return '更新失败';
         }
     }
@@ -164,8 +162,7 @@ class ProjectController extends Controller
 
     public function search(Request $request, $type)
     {
-        if ('all' == $type)
-        {
+        if ('all' == $type) {
             $projects = Project::with('job')->with('company')->where(['show' => 1])->orderBy('status')->latest()->get(['id', 'sn', 'jid', 'cid', 'status']);
         }
         return Datatables::of($projects)->make();

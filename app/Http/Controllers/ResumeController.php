@@ -11,6 +11,7 @@ use App\Region;
 use App\Resume;
 use App\Station;
 use App\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
@@ -75,58 +76,53 @@ class ResumeController extends Controller
                 ]
             );
 
-            $data = $request->input();
-            $resume = new Resume();
-
-            $resume->sn = Helper::generationSN('JL');
-            $resume->name = $data['name'];
-            $resume->gender = $data['gender'];
-            $resume->mobile = $data['mobile'];
-            $resume->email = $data['email'];
-            $resume->degree = $data['degree'];
-            $resume->province = $data['province'];
-            $resume->city = $data['city'];
-            $resume->county = $data['county'];
-            $resume->birthdate = $data['birthdate'];
-            $resume->startworkdate = $data['startworkdate'];
-            $resume->industry = $data['industry'];
-            $resume->position = $data['position'];
-            $resume->salary = $data['salary'];
-            $resume->others = $data['others'];
-            $resume->creater = Auth::id();
-            $resume->modifier = Auth::id();
-
-            if ($resume->save()) {
-                //dd($resume);
-                $library = new MyLibrary();
-                $library->uid = Auth::id();
-                $library->rid = $resume->id;
-                $library->creater = Auth::id();
-
-                $library->save();
+            try {
+                DB::beginTransaction();
+                $data = $request->input();
+                // save resume
+                $resume                = new Resume();
+                $resume->sn            = Helper::generationSN('JL');
+                $resume->name          = $data['name'];
+                $resume->gender        = $data['gender'];
+                $resume->mobile        = $data['mobile'];
+                $resume->email         = $data['email'];
+                $resume->degree        = $data['degree'];
+                $resume->province      = $data['province'];
+                $resume->city          = $data['city'];
+                $resume->county        = $data['county'];
+                $resume->birthdate     = $data['birthdate'];
+                $resume->startworkdate = $data['startworkdate'];
+                $resume->industry      = $data['industry'];
+                $resume->position      = $data['position'];
+                $resume->salary        = $data['salary'];
+                $resume->others        = $data['others'];
+                $resume->creater       = Auth::id();
+                $resume->modifier      = Auth::id();
 
                 // add job library
                 if (isset($data['jid']) && !empty($data['jid'])) {
-                    $joblibrary = new JobLibrary();
-                    $joblibrary->uid = Auth::id();
-                    $joblibrary->rid = $resume->id;
-                    $joblibrary->jid = $data['jid'];
+                    $joblibrary          = new JobLibrary();
+                    $joblibrary->uid     = Auth::id();
+                    $joblibrary->rid     = $resume->id;
+                    $joblibrary->jid     = $data['jid'];
                     $joblibrary->creater = Auth::id();
                     $joblibrary->save();
-
-                    $station = new Station();
-                    $station->sn = Helper::generationSN('GZT');
-                    $station->lid = $joblibrary->line->id;
-                    $station->rid = $resume->id;
-                    $station->status = 1;
-                    $station->creater = Auth::id();
-                    $station->modifier = Auth::id();
+                    // add to station
+                    $station             = new Station();
+                    $station->sn         = Helper::generationSN('GZT');
+                    $station->lid        = $joblibrary->line->id;
+                    $station->rid        = $resume->id;
+                    $station->status     = 1;
+                    $station->creater    = Auth::id();
+                    $station->modifier   = Auth::id();
                     $station->save();
                 }
 
+                DB::commint();
                 return redirect('/resume/' . $resume->id);
-            } else {
-                return redirect()->back();
+            } catch (Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', '创建失败！（网络原因）');
             }
         }
 
@@ -153,7 +149,7 @@ class ResumeController extends Controller
             $date = $keys[0];
             if ($keys[0] == date("Y-m-d")) {
                 $date = '今天';
-            } else if ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
+            } elseif ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
                 $date = '昨天';
             }
 
@@ -172,7 +168,6 @@ class ResumeController extends Controller
 
     public function edit(Request $request)
     {
-
         $data = $request->input();
         $id = $data['pk'];
         $resume = Resume::find($id);
@@ -252,8 +247,8 @@ class ResumeController extends Controller
                     $lsx[] = $joblibrary->line->sn . '(' . $joblibrary->line->job->name . ')';
                 }
             }
-            $resumes[$key] = $resume;
-            $resumes[$key]['lsx'] = $lsx;
+            $resumes[$key]           = $resume;
+            $resumes[$key]['lsx']    = $lsx;
             $resumes[$key]['isMine'] = $resume->isMine;
         }
         return Datatables::of($resumes)->make();
@@ -265,9 +260,9 @@ class ResumeController extends Controller
         if (!empty($mylibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
         }
-        $mylibrary = new MyLibrary();
-        $mylibrary->rid = $id;
-        $mylibrary->uid = Auth::id();
+        $mylibrary          = new MyLibrary();
+        $mylibrary->rid     = $id;
+        $mylibrary->uid     = Auth::id();
         $mylibrary->creater = Auth::id();
         if ($mylibrary->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
@@ -286,17 +281,17 @@ class ResumeController extends Controller
             'rid' => '简历',
             'jid' => '职位流水线',
         ]);
-        $data = $request->input();
-        $rid = $data['rid'];
-        $jid = $data['jid'];
+        $data       = $request->input();
+        $rid        = $data['rid'];
+        $jid        = $data['jid'];
         $joblibrary = JobLibrary::where(['rid' => $rid, 'uid' => Auth::id()])->first();
         if (!empty($joblibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在该职位流水线中！']);
         }
-        $joblibrary = new JobLibrary();
-        $joblibrary->rid = $rid;
-        $joblibrary->jid = $jid;
-        $joblibrary->uid = Auth::id();
+        $joblibrary          = new JobLibrary();
+        $joblibrary->rid     = $rid;
+        $joblibrary->jid     = $jid;
+        $joblibrary->uid     = Auth::id();
         $joblibrary->creater = Auth::id();
         if ($joblibrary->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
@@ -308,9 +303,9 @@ class ResumeController extends Controller
     {
         if ($request->isMethod('GET')) {
             $resume = Resume::findOrFail($id);
-            $jids = array_pluck($resume->joblibraries, 'jid');
+            $jids   = array_pluck($resume->joblibraries, 'jid');
             //dd($jids);
-            $lines = [];
+            $lines  = [];
             if (Auth::user()->hasRole('admin')) {
                 $lines = Line::all();
             } else {
