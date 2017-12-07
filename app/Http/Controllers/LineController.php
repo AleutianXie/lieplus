@@ -36,9 +36,7 @@ class LineController extends Controller
 
     public function add(Request $request)
     {
-        if ($request->isMethod('POST'))
-        {
-
+        if ($request->isMethod('POST')) {
             $this->validate($request, [
                 'jid' => [
                     'required',
@@ -60,12 +58,9 @@ class LineController extends Controller
             $line->creater = Auth::id();
             $line->modifier = Auth::id();
 
-            if ($line->save())
-            {
+            if ($line->save()) {
                 return json_encode(['code' => 0, 'msg' => '操作成功！']);
-            }
-            else
-            {
+            } else {
                 return json_encode(['code' => 1, 'msg' => '操作失败！']);
             }
         }
@@ -81,7 +76,6 @@ class LineController extends Controller
         $lines = Line::where(['show' => 1])->get();
 
         return view('line.plan', ['lines' => $lines]);
-
     }
 
     public function detail(Request $request, $id)
@@ -97,8 +91,7 @@ class LineController extends Controller
     public function assign(Request $request, $lid)
     {
         $line = Line::findOrFail($lid);
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $data = $request->input();
             $uid = $data['uid'];
             $lid = $data['lid'];
@@ -107,8 +100,7 @@ class LineController extends Controller
                 'lid' => [
                     'required',
                     'integer',
-                    Rule::unique('assignlines')->where(function ($query) use ($uid)
-                    {
+                    Rule::unique('assignlines')->where(function ($query) use ($uid) {
                         $query->where('uid', $uid);
                     }),
                 ],
@@ -125,12 +117,9 @@ class LineController extends Controller
             $assignLine->creater = Auth::id();
             $assignLine->modifier = Auth::id();
 
-            if ($assignLine->save())
-            {
+            if ($assignLine->save()) {
                 return json_encode(['code' => 0, 'msg' => '操作成功！']);
-            }
-            else
-            {
+            } else {
                 return json_encode(['code' => 1, 'msg' => '操作失败！']);
             }
         }
@@ -145,15 +134,12 @@ class LineController extends Controller
     public function search(Request $request, $type)
     {
         $lines = [];
-        if ('my' == $type)
-        {
+        if ('my' == $type) {
             $assignLines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(['uid', 'lid']);
             $lines = array_pluck($assignLines, 'line');
-            foreach ($lines as $key => $value)
-            {
-                $value->customer = Helper::getUser($value->job->customer->creater)->name;
-                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v)
-                {
+            foreach ($lines as $key => $value) {
+                $value->customer = Helper::getUser($value->job->customer->assigned->adviser->id)->name;
+                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
                 }, array_pluck($value->assign, 'uid'));
                 $value->department = $value->job->department->name;
@@ -166,14 +152,11 @@ class LineController extends Controller
                 $lines[$key] = $value;
             }
         }
-        if ('all' == $type)
-        {
+        if ('all' == $type) {
             $lines = Line::with('job')->with('assign')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
-            foreach ($lines as $key => $value)
-            {
-                $value->customer = Helper::getUser($value->job->customer->creater)->name;
-                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v)
-                {
+            foreach ($lines as $key => $value) {
+                $value->customer = Helper::getUser($value->job->customer->assigned->adviser->id)->name;
+                $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
                 }, array_pluck($value->assign, 'uid'));
                 $value->department = $value->job->department->name;
@@ -186,23 +169,17 @@ class LineController extends Controller
                 $lines[$key] = $value;
             }
         }
-        if ('customer' == $type)
-        {
+        if ('customer' == $type) {
             $customers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get();
             $customers = array_pluck($customers, 'customer');
-            foreach ($customers as $customer)
-            {
-                if (isset($customer->jobs))
-                {
+            foreach ($customers as $customer) {
+                if (isset($customer->jobs)) {
                     $jobs = $customer->jobs;
-                    foreach ($jobs as $job)
-                    {
-                        if ($job->line)
-                        {
+                    foreach ($jobs as $job) {
+                        if ($job->line) {
                             $line = $job->line;
-                            $line->customer = Helper::getUser($line->job->customer->creater)->name;
-                            $line->advisers = empty($line->assign) ? $line->assign : array_map(function ($v)
-                            {
+                            $line->customer = Helper::getUser($line->job->customer->assigned->adviser->id)->name;
+                            $line->advisers = empty($line->assign) ? $line->assign : array_map(function ($v) {
                                 return Helper::getUser($v)->name;
                             }, array_pluck($line->assign, 'uid'));
                             $line->department = $line->job->department->name;
@@ -225,53 +202,41 @@ class LineController extends Controller
     {
         $line = Line::findOrFail($lid);
         $stations = [];
-        if (0 == $status)
-        {
+        if (0 == $status) {
             $stations = $line->joblibrary;
         }
-        if (1 == $status)
-        {
+        if (1 == $status) {
             $stations = $line->connection;
         }
-        if (2 == $status)
-        {
+        if (2 == $status) {
             $stations = $line->intention;
         }
-        if (3 == $status)
-        {
+        if (3 == $status) {
             $stations = $line->audit;
         }
-        if (4 == $status)
-        {
+        if (4 == $status) {
             $stations = $line->recommendation;
         }
-        if (5 == $status)
-        {
+        if (5 == $status) {
             $stations = $line->interview;
         }
-        if (6 == $status)
-        {
+        if (6 == $status) {
             $stations = $line->offer;
         }
-        if (7 == $status)
-        {
+        if (7 == $status) {
             $stations = $line->onboard;
         }
-        if (8 == $status)
-        {
+        if (8 == $status) {
             $stations = $line->closed;
         }
-        foreach ($stations as $key => $station)
-        {
+        foreach ($stations as $key => $station) {
             $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
             $stations[$key]['ismine'] = $station->modifier == Auth::id() ? 1 : 0;
             $stations[$key]['resume'] = $station->resume;
         }
-        if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status))
-        {
+        if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status)) {
             $stations = is_array($stations) ? $stations : $stations->toArray();
-            $stations = array_where($stations, function ($station)
-            {
+            $stations = array_where($stations, function ($station) {
                 return $station['ismine'] == 1;
             });
         }

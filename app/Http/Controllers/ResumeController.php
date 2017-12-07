@@ -49,28 +49,31 @@ class ResumeController extends Controller
     {
         $title = '新建简历';
 
-        if ($request->isMethod('POST'))
-        {
-
-            $this->validate($request, [
-                'name'          => 'required',
-                'gender'        => 'required',
-                'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
-                'email'         => 'required|email|unique:resumes',
-                'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
-                'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
-            ], [
-                'gender.required' => '请选择:attribute.',
-                'unique'          => ':attribute 已经存在.',
-                'before_or_equal' => ':attribute 必须早于或等于',
-                'after_or_equal'  => ':attribute 必须晚于或等于',
-            ], [
-                'gender'        => '性别',
-                'mobile'        => '手机',
-                'email'         => '邮箱',
-                'birthdate'     => '出生日期',
-                'startworkdate' => '开始工作日期',
-            ]);
+        if ($request->isMethod('POST')) {
+            $this->validate(
+                $request,
+                [
+                    'name'          => 'required',
+                    'gender'        => 'required',
+                    'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
+                    'email'         => 'required|email|unique:resumes',
+                    'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
+                    'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
+                ],
+                [
+                    'gender.required' => '请选择:attribute.',
+                    'unique'          => ':attribute 已经存在.',
+                    'before_or_equal' => ':attribute 必须早于或等于',
+                    'after_or_equal'  => ':attribute 必须晚于或等于',
+                ],
+                [
+                    'gender'        => '性别',
+                    'mobile'        => '手机',
+                    'email'         => '邮箱',
+                    'birthdate'     => '出生日期',
+                    'startworkdate' => '开始工作日期',
+                ]
+            );
 
             $data = $request->input();
             $resume = new Resume();
@@ -93,8 +96,7 @@ class ResumeController extends Controller
             $resume->creater = Auth::id();
             $resume->modifier = Auth::id();
 
-            if ($resume->save())
-            {
+            if ($resume->save()) {
                 //dd($resume);
                 $library = new MyLibrary();
                 $library->uid = Auth::id();
@@ -104,8 +106,7 @@ class ResumeController extends Controller
                 $library->save();
 
                 // add job library
-                if (isset($data['jid']) && !empty($data['jid']))
-                {
+                if (isset($data['jid']) && !empty($data['jid'])) {
                     $joblibrary = new JobLibrary();
                     $joblibrary->uid = Auth::id();
                     $joblibrary->rid = $resume->id;
@@ -124,9 +125,7 @@ class ResumeController extends Controller
                 }
 
                 return redirect('/resume/' . $resume->id);
-            }
-            else
-            {
+            } else {
                 return redirect()->back();
             }
         }
@@ -148,17 +147,13 @@ class ResumeController extends Controller
         $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         $feedbacks = array();
 
-        foreach ($feedbacks_obj as $fitem)
-        {
+        foreach ($feedbacks_obj as $fitem) {
             $keys = explode(' ', $fitem->created_at);
 
             $date = $keys[0];
-            if ($keys[0] == date("Y-m-d"))
-            {
+            if ($keys[0] == date("Y-m-d")) {
                 $date = '今天';
-            }
-            else if ($keys[0] == date("Y-m-d", strtotime("-1 day")))
-            {
+            } else if ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
                 $date = '昨天';
             }
 
@@ -184,8 +179,7 @@ class ResumeController extends Controller
         $resume->{$data['name']} = $data['value'];
         $resume->modifier = Auth::id();
 
-        if (!$resume->save())
-        {
+        if (!$resume->save()) {
             return '更新失败';
         }
     }
@@ -193,19 +187,13 @@ class ResumeController extends Controller
     public function mylibrary()
     {
         $title = '我的简历库';
-        if (Auth::user()->hasRole('admin'))
-        {
+        if (Auth::user()->hasRole('admin')) {
             $lines = Line::all();
-        }
-        else
-        {
+        } else {
             $assignlines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get();
-            if ($assignlines)
-            {
+            if ($assignlines) {
                 $lines = array_pluck($assignlines, 'line');
-            }
-            else
-            {
+            } else {
                 $lines = [];
             }
         }
@@ -215,19 +203,13 @@ class ResumeController extends Controller
     public function joblibrary()
     {
         $title = '我的职位简历库';
-        if (Auth::user()->hasRole('admin'))
-        {
+        if (Auth::user()->hasRole('admin')) {
             $lines = Line::all();
-        }
-        else
-        {
+        } else {
             $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-            if ($assignlines)
-            {
+            if ($assignlines) {
                 $lines = array_pluck($assignlines, 'line');
-            }
-            else
-            {
+            } else {
                 $lines = [];
             }
         }
@@ -237,19 +219,13 @@ class ResumeController extends Controller
     public function all()
     {
         $title = '猎加简历';
-        if (Auth::user()->hasRole('admin'))
-        {
+        if (Auth::user()->hasRole('admin')) {
             $lines = Line::all();
-        }
-        else
-        {
+        } else {
             $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-            if ($assignlines)
-            {
+            if ($assignlines) {
                 $lines = array_pluck($assignlines, 'line');
-            }
-            else
-            {
+            } else {
                 $lines = [];
             }
         }
@@ -259,26 +235,20 @@ class ResumeController extends Controller
     public function search(Request $request, $type)
     {
         $resumes = [];
-        if ('my' == $type)
-        {
+        if ('my' == $type) {
             $resumes = array_pluck(MyLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(), 'resume');
         }
-        if ('job' == $type)
-        {
+        if ('job' == $type) {
             $resumes = array_pluck(JobLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(), 'resume');
         }
-        if ('all' == $type)
-        {
+        if ('all' == $type) {
             $resumes = Resume::where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at']);
         }
-        foreach ($resumes as $key => $resume)
-        {
+        foreach ($resumes as $key => $resume) {
             $lsx = [];
             $joblibraries = $resume->with('joblibraries')->where(['id' => $resume->id])->first(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at'])->joblibraries;
-            foreach ($joblibraries as $joblibrary)
-            {
-                if (isset($joblibrary->line->sn) && isset($joblibrary->line->job->name))
-                {
+            foreach ($joblibraries as $joblibrary) {
+                if (isset($joblibrary->line->sn) && isset($joblibrary->line->job->name)) {
                     $lsx[] = $joblibrary->line->sn . '(' . $joblibrary->line->job->name . ')';
                 }
             }
@@ -292,16 +262,14 @@ class ResumeController extends Controller
     public function addmy(Request $request, $id)
     {
         $mylibrary = MyLibrary::where(['rid' => $id, 'uid' => Auth::id()])->first();
-        if (!empty($mylibrary))
-        {
+        if (!empty($mylibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
         }
         $mylibrary = new MyLibrary();
         $mylibrary->rid = $id;
         $mylibrary->uid = Auth::id();
         $mylibrary->creater = Auth::id();
-        if ($mylibrary->save())
-        {
+        if ($mylibrary->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 2, 'msg' => '操作失败！']);
@@ -322,8 +290,7 @@ class ResumeController extends Controller
         $rid = $data['rid'];
         $jid = $data['jid'];
         $joblibrary = JobLibrary::where(['rid' => $rid, 'uid' => Auth::id()])->first();
-        if (!empty($joblibrary))
-        {
+        if (!empty($joblibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在该职位流水线中！']);
         }
         $joblibrary = new JobLibrary();
@@ -331,8 +298,7 @@ class ResumeController extends Controller
         $joblibrary->jid = $jid;
         $joblibrary->uid = Auth::id();
         $joblibrary->creater = Auth::id();
-        if ($joblibrary->save())
-        {
+        if ($joblibrary->save()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 2, 'msg' => '操作失败！']);
@@ -340,34 +306,26 @@ class ResumeController extends Controller
 
     public function jobmodal(Request $request, $id)
     {
-        if ($request->isMethod('GET'))
-        {
+        if ($request->isMethod('GET')) {
             $resume = Resume::findOrFail($id);
             $jids = array_pluck($resume->joblibraries, 'jid');
             //dd($jids);
             $lines = [];
-            if (Auth::user()->hasRole('admin'))
-            {
+            if (Auth::user()->hasRole('admin')) {
                 $lines = Line::all();
-            }
-            else
-            {
+            } else {
                 $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-                if ($assignlines)
-                {
+                if ($assignlines) {
                     $lines = array_pluck($assignlines, 'line');
                 }
             }
-            foreach ($lines as $line)
-            {
+            foreach ($lines as $line) {
                 $line->isAssigned = 0;
-                if (in_array($line->job->id, $jids))
-                {
+                if (in_array($line->job->id, $jids)) {
                     $line->isAssigned = 1;
                 }
             }
         }
         return view('resume.modaljob', compact('lines', 'resume'));
     }
-
 }
