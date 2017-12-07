@@ -98,7 +98,7 @@ class ResumeController extends Controller
                 $resume->others        = $data['others'];
                 $resume->creater       = Auth::id();
                 $resume->modifier      = Auth::id();
-
+                $resume->save();
                 // add job library
                 if (isset($data['jid']) && !empty($data['jid'])) {
                     $joblibrary          = new JobLibrary();
@@ -118,7 +118,7 @@ class ResumeController extends Controller
                     $station->save();
                 }
 
-                DB::commint();
+                DB::commit();
                 return redirect('/resume/' . $resume->id);
             } catch (Exception $e) {
                 DB::rollBack();

@@ -79,20 +79,7 @@ class ProjectController extends Controller
                 $customer->creater   = Auth::id();
                 $customer->modifier  = Auth::id();
                 $customer->save();
-                // add job
-                $job              = new Job();
-                $job->sn          = Helper::generationSN('ZW');
-                $job->name        = $data['job_name'];
-                $job->requirement = $data['requirement'];
-                $job->workyears   = $data['workyears'];
-                $job->gender      = $data['gender'];
-                $job->majors      = $data['majors'];
-                $job->degree      = $data['degree'];
-                $job->unified     = isset($data['unified']) ? $data['unified'] : 0;
-                $job->salary      = $data['salary'];
-                $job->creater     = Auth::id();
-                $job->modifier    = Auth::id();
-                $job->cid         = $customer->id;
+
                 $departments      = explode(",", $data['department']);
 
                 // add departments
@@ -109,19 +96,33 @@ class ProjectController extends Controller
                     }
                 }
 
-                if ($job->save()) {
-                    $project           = new Project();
-                    
-                    $project->sn       = Helper::generationSN('XM');
-                    $project->jid      = $job->id;
-                    $project->cid      = $customer->id;
-                    $project->creater  = Auth::id();
-                    $project->modifier = Auth::id();
-                    // add project
-                    $project->save();
-                    DB::commit();
-                    return $project->id;
-                }
+                // add job
+                $job              = new Job();
+                $job->sn          = Helper::generationSN('ZW');
+                $job->name        = $data['job_name'];
+                $job->requirement = $data['requirement'];
+                $job->workyears   = $data['workyears'];
+                $job->gender      = $data['gender'];
+                $job->majors      = $data['majors'];
+                $job->degree      = $data['degree'];
+                $job->unified     = isset($data['unified']) ? $data['unified'] : 0;
+                $job->salary      = $data['salary'];
+                $job->creater     = Auth::id();
+                $job->modifier    = Auth::id();
+                $job->cid         = $customer->id;
+                $job->save();
+
+                // add project
+                $project           = new Project();
+                $project->sn       = Helper::generationSN('XM');
+                $project->jid      = $job->id;
+                $project->cid      = $customer->id;
+                $project->creater  = Auth::id();
+                $project->modifier = Auth::id();
+                // add project
+                $project->save();
+                DB::commit();
+                return $project->id;
             } catch (Exception $e) {
                 DB::rollback();
                 return 0;
