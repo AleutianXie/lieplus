@@ -82,6 +82,7 @@ class ProjectController extends Controller
 
                 $departments      = explode(",", $data['department']);
 
+                $job              = new Job();
                 // add departments
                 foreach ($departments as $value) {
                     $department           = new Department();
@@ -97,7 +98,6 @@ class ProjectController extends Controller
                 }
 
                 // add job
-                $job              = new Job();
                 $job->sn          = Helper::generationSN('ZW');
                 $job->name        = $data['job_name'];
                 $job->requirement = $data['requirement'];
