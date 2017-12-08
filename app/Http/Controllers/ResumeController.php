@@ -99,6 +99,14 @@ class ResumeController extends Controller
                 $resume->creater       = Auth::id();
                 $resume->modifier      = Auth::id();
                 $resume->save();
+
+                // add my library
+                $mylibrary = new MyLibrary();
+                $mylibrary->uid = Auth::id();
+                $mylibrary->rid = $resume->id;
+                $mylibrary->creater = Auth::id();
+                $mylibrary->save();
+
                 // add job library
                 if (isset($data['jid']) && !empty($data['jid'])) {
                     $joblibrary          = new JobLibrary();
@@ -284,7 +292,7 @@ class ResumeController extends Controller
         $data       = $request->input();
         $rid        = $data['rid'];
         $jid        = $data['jid'];
-        $joblibrary = JobLibrary::where(['rid' => $rid, 'uid' => Auth::id()])->first();
+        $joblibrary = JobLibrary::where(compact('rid', 'jid'))->first();
         if (!empty($joblibrary)) {
             return json_encode(['code' => 1, 'msg' => '简历已经在该职位流水线中！']);
         }
