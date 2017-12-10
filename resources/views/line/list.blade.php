@@ -106,7 +106,7 @@
                         return data.join('<br/>')
                     }
                 },
-                {data: 'exclusive', defaultContent: '否',},
+                {data: 'exclusive', defaultContent: '否'},
                 {data: 'priority'},
                 {data: 'job.name'},
                 {data: 'job.customer.name'},
