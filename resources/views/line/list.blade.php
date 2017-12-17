@@ -121,7 +121,6 @@
                 {
                     data: null,
                     render: function(data, type, row){
-                        console.log(row);
                         var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                               "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +

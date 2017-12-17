@@ -114,6 +114,14 @@
                 },
                 {
                     data: null,
+                    defaultContent: '否',
+                    render: function (data, type, row)
+                    {
+                        return row.line ? '是' : '否';
+                    }
+                },
+                {
+                    data: null,
                     render: function(data, type, row){
                         if('通过' === row.customer.project.status) {
                             var btnGHtml = "<div class='dropdown'>" +
@@ -275,6 +283,7 @@
                         <th>专业</th>
                         <th>学历</th>
                         <th>是否统招</th>
+                        <th>流水线</th>
                         <th>操作</th>
                     </tr>
                 </thead>
