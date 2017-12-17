@@ -76,7 +76,7 @@ class Line extends Model
 
     public function getisMineCustomerAttribute($value)
     {
-        return Auth::id() == $this->job->customer->assigned->uid;
+        return isset($this->job->customer->assigned->uid) ? Auth::id() == $this->job->customer->assigned->uid : false;
     }
 
     public function getisMineRecruitAttribute($value)
