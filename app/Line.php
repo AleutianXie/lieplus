@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Line extends Model
 {
-    protected $appends = ['is_mine'];
+    protected $appends = ['is_mine_recruit', 'is_mine_customer'];
     //
     public function stations()
     {
