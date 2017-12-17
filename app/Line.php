@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Line extends Model
 {
+    protected $appends = ['is_mine'];
     //
     public function stations()
     {
@@ -70,5 +72,10 @@ class Line extends Model
     public function assign()
     {
         return $this->hasMany('App\AssignLine', 'lid');
+    }
+
+    public function getisMineAttribute($value)
+    {
+        return in_array(Auth::id(), array_pluck($this->assign, 'uid'));
     }
 }

@@ -121,6 +121,7 @@
                 {
                     data: null,
                     render: function(data, type, row){
+                        console.log(row);
                         var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
                               "<i class='purple ace-icon fa fa-asterisk bigger-120'></i>" +
@@ -130,12 +131,21 @@
                                   "<a href='{{ asset('/line') }}/" + row.id + "'>"+
                                   "<i class='blue ace-icon fa fa-eye bigger-120'></i>查看 </a>" +
                               "</li>";
-                        @role('admin|manager|customer')
+                        @role('admin')
                         btnGHtml += "<li>" +
                         "<a href='/line/assign/" + row.id + "' data-toggle='modal' data-target='#optional-dialog'>" +
                         "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" +
                         "分配招聘顾问 </a>" +
                         "</li>";
+                        @endrole
+                        @role('customer')
+                        if (row.is_mine == 1) {
+                            btnGHtml += "<li>" +
+                            "<a href='/line/assign/" + row.id + "' data-toggle='modal' data-target='#optional-dialog'>" +
+                            "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" +
+                            "分配招聘顾问 </a>" +
+                            "</li>";
+                        }
                         @endrole
                         btnGHtml += "</ul></div>";
                         return btnGHtml;
