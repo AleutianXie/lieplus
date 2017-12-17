@@ -240,7 +240,7 @@ class LineController extends Controller
             if (0 != $status) {
                 $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
             } else {
-                $modifier = Station::where('disable', 0)->Library(['rid' => $station->rid, 'lid' => $station->line->id])->get()->modifier;
+                $modifier = Station::where('disable', 0)->Library(['rid' => $station->rid, 'lid' => $station->line->id])->first()->modifier;
                 $stations[$key]['recruiter'] = is_null($modifier) ? '' : User::find($modifier)->name;
             }
 
