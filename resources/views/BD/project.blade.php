@@ -342,6 +342,7 @@
 <script src="{{ asset('static/js/wizard.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('static/js/jquery.form.min.js') }}"></script>
+<script src="{{ asset('static/js/sweetalert2.all.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(function($) {
 
@@ -366,18 +367,20 @@ jQuery(function($) {
         }
 
         $('#customer-form').ajaxSubmit({
-            success:function(msg) {
+            success:function(response) {
 
-                if (msg >= 1) {
-                    $('.alert').removeClass('hide').addClass('alert-success').html(
-                        '<strong>' +
-                        '<i class="ace-icon fa fa-check"></i>创建成功!</strong>'+
-                        '点击 <a class="blue bolder" href="/project/' + msg + '">前往</a> 查看详情.<br>');
-                } else {
-                    $('.alert').removeClass('hide').addClass('alert-danger').html(
-                        '<strong>' +
-                        '<i class="ace-icon fa fa-times"></i>创建失败!</strong>' +
-                        '请检查信息重新提交，若再有问题请联系管理员。<br></div>');
+                var data = $.parseJSON(response);
+                var type = data['code'] == 0 ? 'success' : 'error';
+                swal({
+                    title: '分配客户顾问',
+                    text: data['msg'],
+                    type: type,
+                    allowOutsideClick: false,
+                });
+
+                if ($data['pid'] >= 1) 
+                {
+                    window.location.href = '/project/'+$data['pid'];
                 }
             }
         });

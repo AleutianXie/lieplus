@@ -122,10 +122,10 @@ class ProjectController extends Controller
                 // add project
                 $project->save();
                 DB::commit();
-                return $project->id;
+                return json_encode(['code' => 0, 'msg' => '创建成功！', 'pid' => $project->id]);
             } catch (Exception $e) {
                 DB::rollback();
-                return 0;
+                return json_encode(['code' => 1, 'msg' => '创建失败！']);
             }
         }
 
