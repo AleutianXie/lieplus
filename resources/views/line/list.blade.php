@@ -139,7 +139,7 @@
                         "</li>";
                         @endrole
                         @role('customer')
-                        if (row.is_mine == 1) {
+                        if (row.is_mine_customer == 1) {
                             btnGHtml += "<li>" +
                             "<a href='/line/assign/" + row.id + "' data-toggle='modal' data-target='#optional-dialog'>" +
                             "<i class='blue ace-icon fa fa-hand-pointer-o bigger-120'></i>" +

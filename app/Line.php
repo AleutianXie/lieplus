@@ -74,8 +74,13 @@ class Line extends Model
         return $this->hasMany('App\AssignLine', 'lid');
     }
 
-    public function getisMineAttribute($value)
+    public function getisMineCustomerAttribute($value)
     {
         return in_array(Auth::id(), array_pluck($this->job->customer->assigned, 'uid'));
+    }
+
+    public function getisMineRecruitAttribute($value)
+    {
+        return in_array(Auth::id(), array_pluck($this->assign, 'uid'));
     }
 }

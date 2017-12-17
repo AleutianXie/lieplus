@@ -139,11 +139,11 @@ class LineController extends Controller
             $lines = array_pluck($assignLines, 'line');
             foreach ($lines as $key => $value) {
                 $value->customer = empty($value->job->customer->assigned) ? $value->job->customer->assigned : Helper::getUser($value->job->customer->assigned->adviser->id)->name;
-                $value->isMineCustomer   = empty($value->job->customer->assigned) ? 0 : Auth::id() == $value->job->customer->assigned->adviser->id;
+                //$value->isMineCustomer   = empty($value->job->customer->assigned) ? 0 : Auth::id() == $value->job->customer->assigned->adviser->id;
                 $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
                 }, array_pluck($value->assign, 'uid'));
-                $value->isMineRecruit  = empty($value->assign) ? 0 : in_array(Auth::id(), array_pluck($value->assign, 'uid'));
+                //$value->isMineRecruit  = empty($value->assign) ? 0 : in_array(Auth::id(), array_pluck($value->assign, 'uid'));
                 $value->department     = $value->job->department->name;
                 $value->connection     = count($value->connection);
                 $value->intention      = count($value->intention);
@@ -158,11 +158,11 @@ class LineController extends Controller
             $lines = Line::with('job')->with('assign')->where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'exclusive', 'priority', 'jid']);
             foreach ($lines as $key => $value) {
                 $value->customer = empty($value->job->customer->assigned) ? $value->job->customer->assigned : Helper::getUser($value->job->customer->assigned->adviser->id)->name;
-                $value->isMineCustomer   = empty($value->job->customer->assigned) ? 0 : Auth::id() == $value->job->customer->assigned->adviser->id;
+                //$value->isMineCustomer   = empty($value->job->customer->assigned) ? 0 : Auth::id() == $value->job->customer->assigned->adviser->id;
                 $value->advisers = empty($value->assign) ? $value->assign : array_map(function ($v) {
                     return Helper::getUser($v)->name;
                 }, array_pluck($value->assign, 'uid'));
-                $value->isMineRecruit  = empty($value->assign) ? 0 : in_array(Auth::id(), array_pluck($value->assign, 'uid'));
+                //$value->isMineRecruit  = empty($value->assign) ? 0 : in_array(Auth::id(), array_pluck($value->assign, 'uid'));
                 $value->department     = $value->job->department->name;
                 $value->connection     = count($value->connection);
                 $value->intention      = count($value->intention);
@@ -183,11 +183,11 @@ class LineController extends Controller
                         if ($job->line) {
                             $line           = $job->line;
                             $line->customer = empty($line->job->customer->assigned) ? $line->job->customer->assigned : Helper::getUser($line->job->customer->assigned->adviser->id)->name;
-                            $line->isMineCustomer = empty($line->job->customer->assigned) ? 0 : Auth::id() == $line->job->customer->assigned->adviser->id;
+                            //$line->isMineCustomer = empty($line->job->customer->assigned) ? 0 : Auth::id() == $line->job->customer->assigned->adviser->id;
                             $line->advisers = empty($line->assign) ? $line->assign : array_map(function ($v) {
                                 return Helper::getUser($v)->name;
                             }, array_pluck($line->assign, 'uid'));
-                            $line->isMineRecruit  = empty($line->assign) ? 0 : in_array(Auth::id(), array_pluck($line->assign, 'uid'));
+                            //$line->isMineRecruit  = empty($line->assign) ? 0 : in_array(Auth::id(), array_pluck($line->assign, 'uid'));
                             $line->department     = $line->job->department->name;
                             $line->connection     = count($line->connection);
                             $line->intention      = count($line->intention);
