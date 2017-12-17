@@ -26,7 +26,7 @@ class StationController extends Controller
 
     public function abandon(Request $request, $lid, $rid)
     {
-        $station = Station::where(['lid' => $lid, 'rid' => $rid])->first();
+        $station = Station::where(['lid' => $lid, 'rid' => $rid, 'disable' => 0])->first();
         if ($station->abandon()) {
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
