@@ -464,14 +464,16 @@
                                         }
                                     @else
                                         @role('recruiter')
-                                        if(row.ismine == 1){
+                                        if(row.ismine == 1) {
                                             btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
                                             "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
 
+                                            if (row.status == 3) {
                                             btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
                                                 "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
                                                     " 放弃 </a>" +
                                                 "</li>";
+                                            }
                                         }
                                         @endrole
                                     @endrole
