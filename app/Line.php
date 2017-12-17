@@ -56,7 +56,7 @@ class Line extends Model
 
     public function job()
     {
-        return $this->hasOne('App\Job', 'id', 'jid')->latest()->orderByDesc('id')->with('customer');
+        return $this->hasOne('App\Job', 'id', 'jid')->with('customer');
     }
 
     public function joblibrary()
@@ -76,7 +76,7 @@ class Line extends Model
 
     public function getisMineCustomerAttribute($value)
     {
-        return in_array(Auth::id(), array_pluck($this->job->customer->assigned, 'uid'));
+        return Auth::id() == $this->job->customer->assigned->uid;
     }
 
     public function getisMineRecruitAttribute($value)
