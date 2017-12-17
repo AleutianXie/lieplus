@@ -55,4 +55,9 @@ class Station extends Model
     {
         return $query->where(['rid' => $option['rid'], 'lid' => $option['lid']]);
     }
+
+    public function line()
+    {
+        return $this->hasOne('App\Line', 'id', 'lid');
+    }
 }

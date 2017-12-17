@@ -449,7 +449,7 @@
                                 if (status == 3 || status == 4 || status == 5 || status == 6)
                                 {
                                     @role('admin|customer|manager')
-                                        if(row.ismine == 1){
+                                        if(row.line.is_mine_customer == 1){
                                             btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
                                             "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
                                             btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "'>" +
@@ -466,6 +466,11 @@
                                         if(row.ismine == 1){
                                             btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
                                             "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
+
+                                            btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
+                                                "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                    " 放弃 </a>" +
+                                                "</li>";
                                         }
                                         @endrole
                                     @endrole
@@ -479,6 +484,10 @@
                                             "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
                                                 " 放弃 </a>" +
                                             "</li>";
+                                        btnGHtml += "<li><a href='#' id='abandon-" + row.resume.id + "'>" +
+                                                "<i class='blue ace-icon fa fa-remove bigger-120'></i>" +
+                                                    " 放弃 </a>" +
+                                                "</li>";
                                     @else
                                         @role('recruiter')
                                         if(row.ismine == 1){
