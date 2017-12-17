@@ -372,15 +372,15 @@ jQuery(function($) {
                 var data = $.parseJSON(response);
                 var type = data['code'] == 0 ? 'success' : 'error';
                 swal({
-                    title: '分配客户顾问',
+                    title: '创建项目启动书',
                     text: data['msg'],
                     type: type,
                     allowOutsideClick: false,
                 });
 
-                if ($data['pid'] >= 1) 
+                if (data['pid'] >= 1) 
                 {
-                    window.location.href = '/project/'+$data['pid'];
+                    window.location.href = '/project/' + data['pid'];
                 }
             }
         });
