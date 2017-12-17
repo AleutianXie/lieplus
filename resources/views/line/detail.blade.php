@@ -413,6 +413,7 @@
                     {
                         data: null,
                         render: function(data, type, row){
+                            console.log(row);
                             @if ($line->job->closed == 0)
                             var btnGHtml = "<div class='dropdown'>" +
                             "<a data-toggle='dropdown' class='dropdown-toggle' href='#' aria-expanded='false'>" +
@@ -449,7 +450,7 @@
                                 if (status == 3 || status == 4 || status == 5 || status == 6)
                                 {
                                     @role('admin|customer|manager')
-                                        if(row.line != null && row.line.is_mine_customer == 1){
+                                        if(row.line != '' && row.line.is_mine_customer == 1){
                                             btnGHtml += "<li><a href='{{ asset('/resume/') }}/" + row.resume.id + "#resume-tab-4') }}'>" +
                                             "<i class='blue ace-icon fa fa-bell-o bigger-120'></i> 提醒 </a></li>";
                                             btnGHtml += "<li><a href='#' id='next-" + row.resume.id + "'>" +

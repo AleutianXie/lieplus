@@ -246,6 +246,7 @@ class LineController extends Controller
 
             $stations[$key]['ismine']    = $station->modifier == Auth::id() ? 1 : 0;
             $stations[$key]['resume']    = $station->resume;
+            $stations[$key]['line']      = isset($station->line) ? $station->line : '';
         }
         if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status)) {
             $stations = is_array($stations) ? $stations : $stations->toArray();
