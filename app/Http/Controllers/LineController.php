@@ -6,6 +6,7 @@ use App\AssignCustomer;
 use App\AssignLine;
 use App\Helper;
 use App\Line;
+use App\Station;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -236,7 +237,13 @@ class LineController extends Controller
             $stations = $line->closed;
         }
         foreach ($stations as $key => $station) {
-            $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
+            if (0 != $status) {
+                $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
+            } else {
+                $modifier = Station::Library(['rid' => $station->rid, $station->line->id])->get()->modifier;
+                $stations[$key]['recruiter'] = is_null($modifier) ? '' : User::find($modifier)->name;
+            }
+
             $stations[$key]['ismine']    = $station->modifier == Auth::id() ? 1 : 0;
             $stations[$key]['resume']    = $station->resume;
         }

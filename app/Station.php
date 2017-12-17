@@ -50,4 +50,9 @@ class Station extends Model
         $this->disable = 1;
         return $this->save();
     }
+
+    public function scopeLibrary($query, $option)
+    {
+        return $query->where(['rid' => $option['rid'], 'lid' => $option['lid']]);
+    }
 }
