@@ -241,7 +241,7 @@ class LineController extends Controller
                 $stations[$key]['recruiter'] = is_null($station->modifier) ? '' : User::find($station->modifier)->name;
             } else {
                 $station = Station::where('disable', 0)->Library(['rid' => $station->rid, 'lid' => $station->line->id])->first();
-                $stations[$key]['recruiter'] = isset($station->modifier) ? '' : User::find($station->modifier)->name;
+                $stations[$key]['recruiter'] = isset($station) ? '' : User::find($station->modifier)->name;
             }
 
             $stations[$key]['ismine']    = $station->modifier == Auth::id() ? 1 : 0;
