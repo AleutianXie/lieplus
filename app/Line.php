@@ -76,6 +76,6 @@ class Line extends Model
 
     public function getisMineAttribute($value)
     {
-        return in_array(Auth::id(), array_pluck($this->assign, 'uid'));
+        return in_array(Auth::id(), array_pluck($this->job->customer->assigned, 'uid'));
     }
 }
