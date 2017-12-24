@@ -163,7 +163,7 @@ class ResumeController extends Controller
 
             $feedbacks[$date][] = array(
                 'text'    => $fitem->text,
-                'creater' => User::find($resume->creater)->name,
+                'creater' => getUser($fitem->creater)->name,
                 'ctime'   => $keys[1]);
         }
 
