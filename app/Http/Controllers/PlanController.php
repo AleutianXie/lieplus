@@ -120,14 +120,15 @@ class PlanController extends Controller
             }
             foreach ($stations as $station)
             {
-                $data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'closed' => $line->job->closed, 'resume' => $station->resume, 'recruiter' => User::find($station->modifier)->name, 'line' => $line, 'isMine' => $station->modifier == Auth::id() ? 1 : 0];
+                $data[] = ['lid' => $line->id, 'name' => $line->sn . ' - ' . $line->job->name, 'closed' => $line->job->closed, 'resume' => $station->resume, 'recruiter' => User::find($station->modifier)->name, 'line' => $line, 'ismine' => $station->modifier == Auth::id() ? 1 : 0];
             }
 
             if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status)) {
-                $stations = is_array($stations) ? $stations : $stations->toArray();
-                $stations = array_where($stations, function ($station) {
-                    return $station['ismine'] == 1;
-                });
+                if (count($data) >=1 ) {
+                    $data = array_where($data, function ($station) {
+                        return $data['ismine'] == 1;
+                    });
+                }
             }
         }
         return Datatables::of($data)->make();
