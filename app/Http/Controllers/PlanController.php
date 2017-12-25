@@ -126,7 +126,7 @@ class PlanController extends Controller
             if (!Auth::user()->hasRole('admin') && (1 == $status || 2 == $status)) {
                 if (count($data) >=1 ) {
                     $data = array_where($data, function ($station) {
-                        return $data['ismine'] == 1;
+                        return $station['ismine'] == 1;
                     });
                 }
             }
