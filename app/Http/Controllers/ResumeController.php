@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AssignLine;
 use App\Helper;
+use App\Http\Requests\StoreResumePost;
 use App\JobLibrary;
 use App\Line;
 use App\MyLibrary;
@@ -46,36 +47,11 @@ class ResumeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function add(Request $request)
+    public function add(StoreResumePost $request)
     {
         $title = '新建简历';
 
         if ($request->isMethod('POST')) {
-            $this->validate(
-                $request,
-                [
-                    'name'          => 'required',
-                    'gender'        => 'required',
-                    'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
-                    'email'         => 'required|email|unique:resumes',
-                    'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
-                    'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
-                ],
-                [
-                    'gender.required' => '请选择:attribute.',
-                    'unique'          => ':attribute 已经存在.',
-                    'before_or_equal' => ':attribute 必须早于或等于',
-                    'after_or_equal'  => ':attribute 必须晚于或等于',
-                ],
-                [
-                    'gender'        => '性别',
-                    'mobile'        => '手机',
-                    'email'         => '邮箱',
-                    'birthdate'     => '出生日期',
-                    'startworkdate' => '开始工作日期',
-                ]
-            );
-
             try {
                 DB::beginTransaction();
                 $data = $request->input();
