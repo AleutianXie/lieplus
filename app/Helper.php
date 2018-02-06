@@ -19,9 +19,4 @@ class Helper
     {
         return strtoupper($prefix) . date('YmdHis', time()) . sprintf('%04d', mt_rand(0, 9999));
     }
-
-    public static function getUser($uid)
-    {
-        return User::find($uid);
-    }
 }

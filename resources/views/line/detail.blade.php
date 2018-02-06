@@ -60,11 +60,11 @@
                 <div class="col-xs-12 col-sm-12">
                     <a href="#" class="btn btn-default btn-app radius-4">
                         <i class="ace-icon fa fa-user bigger-230"></i>
-                        {{ App\Helper::getUser($line->job->customer->creater)->name }}
+                        {{ Auth::user($line->job->customer->creater)->name }}
                     </a>
                     <a href="#" class="btn btn-app btn-primary no-radius">
                         <i class="ace-icon fa fa-low-vision bigger-230"></i>
-                        {{ empty($line->exclusive) ? '公共' : '专属：App\Helper::getUser($line->exclusive)->name' }}
+                        {{ empty($line->exclusive) ? '公共' : '专属：Auth::user($line->exclusive)->name' }}
                     </a>
                     <a href="#" class="btn btn-app btn-success">
                         <i class="ace-icon fa fa-lightbulb-o bigger-230"></i>

@@ -48,7 +48,7 @@
                 简历原件
             </h4>
 
-            <h6 class="pull-right">{{ $resume->publisher->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
+            <h6 class="pull-right">{{ Auth::user($resume->creater)->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
 
             <div class="space-8"></div>
 
