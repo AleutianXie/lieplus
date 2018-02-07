@@ -57,8 +57,8 @@
                 <td>{{ $resume->name }}</td>
                 <td>{{ $alert->description }}</td>
                 <td>{{ $alert->alert_at }}</td>
-                <td>{{ APP\User::find($alert->operator)->name }}</td>
-                <td>{{ APP\User::find($alert->creater)->name }}</td>
+                <td>{{ Auth::user($alert->operator)->name }}</td>
+                <td>{{ Auth::user($alert->creater)->name }}</td>
                 <td>
                     <div class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
