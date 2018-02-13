@@ -1,9 +1,10 @@
 <?php
 namespace Cici\Lieplus\Models;
 
+use Cici\Lieplus\Exceptions\EmailAlreadyExists;
+use Cici\Lieplus\Exceptions\MobileAlreadyExists;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Cici\Lieplus\Exceptions\MobileAlreadyExists;
 
 /**
  * Resume model instance
