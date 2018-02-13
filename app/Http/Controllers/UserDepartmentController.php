@@ -13,7 +13,7 @@ class UserDepartmentController extends Controller
     public function __construct()
     {
         //$this->middleware('auth:api', ['except' => 'login']);
-        $this->middleware('auth');
+        //$this->middleware('auth');
         //Region::Address();
     }
 

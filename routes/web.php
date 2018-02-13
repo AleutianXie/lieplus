@@ -15,15 +15,26 @@
 {
 return view('welcome');
 });*/
-Route::get('/', 'ResumeController@mylibrary')->name('front');
+//Route::get('/', 'ResumeController@mylibrary')->name('front');
 
 Auth::routes();
 
-Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+/* 首页 */
+Route::get('/', [
+    'middleware' => ['auth'],
+    'uses'       => function () {
+        if (Auth::user()) {
+            return redirect('/resume');
+        }
+    },
+    'as'         => 'home'
+]);
+
+//Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 Route::get('/getuser', ['as' => 'home.get', 'uses' => 'HomeController@getuser']);
 
-Route::group(['prefix' => 'resume'], function ()
+Route::group(['prefix' => 'resume',  'middleware' => ['auth']], function ()
 {
     Route::get('/', ['as' => 'resume', 'uses' => 'ResumeController@index']);
     Route::get('/index', 'ResumeController@index');
@@ -40,7 +51,7 @@ Route::group(['prefix' => 'resume'], function ()
     Route::post('/feedback', 'FeedbackController@add');
 });
 
-Route::group(['prefix' => 'alert'], function ()
+Route::group(['prefix' => 'alert',  'middleware' => ['auth']], function ()
 {
     //Route::get('/', 'CustomerController@index');
     //Route::get('/index', 'CustomerController@index');
@@ -49,7 +60,7 @@ Route::group(['prefix' => 'alert'], function ()
     Route::match(['get', 'post'], '/save', 'AlertController@save');
 });
 
-Route::group(['prefix' => 'customer'], function ()
+Route::group(['prefix' => 'customer', 'middleware' => ['auth']], function ()
 {
     Route::get('/', 'CustomerController@index')->name('customer');
     Route::get('/index', 'CustomerController@index')->name('customer.index');
@@ -67,7 +78,7 @@ Route::group(['prefix' => 'customer'], function ()
 
 });
 
-Route::group(['prefix' => 'job'], function ()
+Route::group(['prefix' => 'job', 'middleware' => ['auth']], function ()
 {
     Route::get('/', 'JobController@index')->name('job');
     Route::get('/index', 'JobController@index')->name('job.index');
@@ -81,7 +92,7 @@ Route::group(['prefix' => 'job'], function ()
     Route::post('/open/{jid}', 'JobController@open')->where('id', '[0-9]+')->name('job.open');
 });
 
-Route::group(['prefix' => 'line'], function ()
+Route::group(['prefix' => 'line', 'middleware' => ['auth']], function ()
 {
     Route::get('/', 'LineController@index')->name('line');
     Route::get('/index', 'LineController@index')->name('line.index');
@@ -97,7 +108,7 @@ Route::group(['prefix' => 'line'], function ()
     Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-8]?'])->name('line.detail.stations');
 });
 
-Route::group(['prefix' => 'project'], function ()
+Route::group(['prefix' => 'project', 'middleware' => ['auth']], function ()
 {
     Route::match(['get', 'post'], '/', 'ProjectController@index')->name('project');
     Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project.index');
@@ -107,7 +118,7 @@ Route::group(['prefix' => 'project'], function ()
     Route::get('/search/{type}', 'ProjectController@search')->where(['type' => 'all'])->name('project.search');
 });
 
-Route::group(['prefix' => 'station'], function ()
+Route::group(['prefix' => 'station', 'middleware' => ['auth']], function ()
 {
     Route::post('/next/{lid}/{rid}', 'StationController@next')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.next');
     Route::post('/abandon/{lid}/{rid}', 'StationController@abandon')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.abandon');
@@ -115,7 +126,7 @@ Route::group(['prefix' => 'station'], function ()
     Route::post('/create/{lid}/{rid}', 'StationController@create')->where(['lid' => '[0-9]+', 'rid' => '[0-9]+'])->name('station.create');
 });
 
-Route::group(['prefix' => 'plan'], function ()
+Route::group(['prefix' => 'plan', 'middleware' => ['auth']], function ()
 {
     Route::get('/', 'PlanController@index')->name('line.plan');
     Route::post('/add', 'PlanController@add')->name('line.plan.add');

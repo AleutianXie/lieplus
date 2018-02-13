@@ -24,7 +24,7 @@
     <!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li @if(Request::fullUrl() == route('front')) class="active" @endif>
+        <li @if(Request::fullUrl() == route('home')) class="active" @endif>
             <a href="/">
                 <i class="menu-icon fa fa-home"></i>
                 <span class="menu-text"> 首页 </span>

@@ -14,13 +14,13 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(RegionsTableSeeder::class);
-        if (config('app.debug'))
-        {
-            $this->call(ResumesTableSeeder::class);
-            $this->call(JobsTableSeeder::class);
-            $this->call(AssignCustomerTableSeeder::class);
-            $this->call(LinesTableSeeder::class);
-            $this->call(AssignLineTableSeeder::class);
-        }
+        // if (config('app.debug'))
+        // {
+        //     $this->call(ResumesTableSeeder::class);
+        //     $this->call(JobsTableSeeder::class);
+        //     $this->call(AssignCustomerTableSeeder::class);
+        //     $this->call(LinesTableSeeder::class);
+        //     $this->call(AssignLineTableSeeder::class);
+        // }
     }
 }

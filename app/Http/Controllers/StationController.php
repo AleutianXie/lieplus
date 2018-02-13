@@ -12,7 +12,7 @@ class StationController extends Controller
     //
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     public function next(Request $request, $lid, $rid)

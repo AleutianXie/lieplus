@@ -1,0 +1,13 @@
+{
+    "name": "cici/lieplus",
+    "description": "lie plus system",
+    "type": "composer-plugin",
+    "authors": [
+        {
+            "name": "Aleutian Xie",
+            "email": "aleutian.xie@cicisoft.cn"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

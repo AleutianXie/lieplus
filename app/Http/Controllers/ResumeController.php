@@ -9,21 +9,22 @@ use App\JobLibrary;
 use App\Line;
 use App\MyLibrary;
 use App\Region;
-use App\Resume;
+//use App\Resume;
 use App\Station;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
+use Cici\Lieplus\Models\Resume as CiciResume;
 
 class ResumeController extends Controller
 {
     public function __construct()
     {
         //$this->middleware('auth:api', ['except' => 'login']);
-        $this->middleware('auth');
-        Region::Address();
+        //$this->middleware('auth');
+        //Region::Address();
     }
 
     /**
@@ -37,6 +38,27 @@ class ResumeController extends Controller
         //dd(URL::previous());
         //Region::Address();
         //dd(config('lieplus'));
+        $attributes = [
+            'name' => '谢',
+            'mobile' => '1234',
+            'email' => '1234',
+            'gender' => 1,
+            'birthdate' => '1984-08-11',
+            'startworkdate' => '2000-04-19',
+            'degree' => 2,
+            'servicestatus' => 1,
+            'province' => '100100',
+            'city' => '100100',
+            'county' => '100101',
+            'position' => 'SDEII',
+            'industry' => 'InterNet',
+            'salary' => 2,
+            'others' => 'kdka kfkda fkdsaj fkdskjf askfa',
+            'creater' => 1,
+            'modifier' => 1,
+        ];
+        dd(\Cici\Lieplus\Models\Resume::findOrFail(3), CiciResume::create($attributes));
+        return view('Lieplus::resume.create');
         return view('resume.index', [
             'title' => '简历',
         ]);

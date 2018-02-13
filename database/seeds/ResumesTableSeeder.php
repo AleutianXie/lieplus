@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Resume;
+use Faker\Factory;
 
 class ResumesTableSeeder extends Seeder
 {
@@ -15,6 +16,8 @@ class ResumesTableSeeder extends Seeder
         //
         for ($i = 0; $i < 20; $i++)
         {
+            $faker = Factory::create('zh_CN');
+            dd($faker->name, $faker->phoneNumber, $faker->realText);
             $mobile = '159014356' . sprintf('%02d', $i);
             DB::table('resumes')->insert([[
                 'sn' => 'JL' . date('Ymdhis', time()) . sprintf('%04d', mt_rand(0, 9999)),
