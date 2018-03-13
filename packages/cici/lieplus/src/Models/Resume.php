@@ -94,6 +94,17 @@ class Resume extends Model
     }
 
     /**
+     * A resume can be applied to roles.
+     */
+    public function feedbacks(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            config('permission.models.role'),
+            config('permission.table_names.role_has_permissions')
+        );
+    }
+
+    /**
      * Get the current cached resume.
      */
     protected static function getResumes(): Collection

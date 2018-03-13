@@ -14,6 +14,8 @@ class LieplusServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // load migrations
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // load views template
         $this->loadViewsFrom(__DIR__ . '/views', 'Lieplus');
 

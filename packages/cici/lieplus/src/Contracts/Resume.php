@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 interface Resume
 {
     /**
-     * A permission can be applied to roles.
+     * A resume may be given various feedback.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles(): BelongsToMany;
+    public function feedbacks(): BelongsToMany;
 
     /**
      * Find a permission by its name.
