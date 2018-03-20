@@ -19,8 +19,15 @@ class LieplusServiceProvider extends ServiceProvider
         // load views template
         $this->loadViewsFrom(__DIR__ . '/views', 'Lieplus');
 
+        // $this->publishes([
+        //     __DIR__ . '/views' => resource_path('views/vendor/cici/lieplus'),
+        // ]);
+
         $this->publishes([
-            __DIR__ . '/views' => base_path('resources/views/vendor/cici/lieplus'),
+            __DIR__.'/../database/data/' => database_path('data/vendor/cici/lieplus'),
+        ]);
+        $this->publishes([
+            __DIR__.'/../database/seeds/' => database_path('seeds'),
         ]);
     }
 
