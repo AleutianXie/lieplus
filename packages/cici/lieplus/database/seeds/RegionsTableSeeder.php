@@ -18,24 +18,50 @@ class RegionsTableSeeder extends Seeder
             return Str::endsWith($key, 'adcode');
         }, ARRAY_FILTER_USE_KEY);
 
-        $bar = $this->command->getOutput()->createProgressBar(count($adcodes));
+        $bar = $this->command->getOutput()->createProgressBar(count($adcodes) - 1);
         foreach ($provinces as $province) {
-            // insert dd($region);
-            $bar->advance();
+            // province
+            $regions = [];
+
+            $regions[] = [
+                'citycode'   => empty($province['citycode']) ? '000' : $province['citycode'],
+                'adcode'     => $province['adcode'],
+                'name'       => $province['name'],
+                'center'     => $province['center'],
+                'level'      => 1,
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ];
+
             if (!empty($province['districts'])) {
-                // insert
-                $bar->advance();
+                // city
                 foreach ($province['districts'] as $city) {
-                    // insert
-                    $bar->advance();
+                    $regions[] = [
+                        'citycode' => empty($city['citycode']) ? '000' : $city['citycode'],
+                        'adcode'   => $city['adcode'],
+                        'name'     => $city['name'],
+                        'center'   => $city['center'],
+                        'level'    => 2,
+                        'created_at' => date('Y-m-d H:i:s', time()),
+                        'updated_at' => date('Y-m-d H:i:s', time())
+                    ];
+                    // county
                     foreach ($city['districts'] as $county) {
-                        // insert
-                        $bar->advance();
+                        $regions[] = [
+                            'citycode' => $county['citycode'],
+                            'adcode'   => $county['adcode'],
+                            'name'     => $county['name'],
+                            'center'   => $county['center'],
+                            'level'    => 3,
+                            'created_at' => date('Y-m-d H:i:s', time()),
+                            'updated_at' => date('Y-m-d H:i:s', time())
+                        ];
                     }
                 }
+                DB::table('regions')->insert($regions);
+                $bar->advance(count($regions));
             }
         }
         $bar->finish();
-        //DB::table('regions')->insert(['code' => '110000', 'name' => '北京', 'type' =>1, 'created_at' => date('Y-m-d H:i:s', time()), 'updated_at' => date('Y-m-d H:i:s', time())]);
     }
 }

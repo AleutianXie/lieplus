@@ -83,15 +83,11 @@ class CreateLieplusTables extends Migration
         // regions table
         Schema::create('regions', function (Blueprint $table) {
             $table->increments('id');
-            $table->char('citycode', 6)->index()->nullable();
+            $table->char('citycode', 6)->index();
             $table->char('adcode', 6)->index();
             $table->string('name', 60);
             $table->string('center', 30);
             $table->tinyInteger('level')->default(0);
-            $table->unsignedInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedInteger('updated_by');
-            $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
