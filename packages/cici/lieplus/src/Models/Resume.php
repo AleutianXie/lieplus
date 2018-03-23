@@ -3,13 +3,12 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
  * Resume model instance
  */
-class Resume extends Model
+class Resume extends Base
 {
     public function __construct(array $attributes = [])
     {
@@ -22,23 +21,23 @@ class Resume extends Model
 
     public static function create(array $attributes)
     {
-        $sn            = 'JL0000000001';
-        $name          = $attributes['name'];
-        $gender        = $attributes['gender'];
-        $mobile        = $attributes['mobile'];
-        $email         = $attributes['email'];
-        $degree        = $attributes['degree'];
-        $province      = $attributes['province'];
-        $city          = $attributes['city'];
-        $county        = $attributes['county'];
-        $birthdate     = $attributes['birthdate'];
-        $startworkdate = $attributes['startworkdate'];
-        $industry      = $attributes['industry'];
-        $position      = $attributes['position'];
-        $salary        = $attributes['salary'];
-        $others        = $attributes['others'];
-        $creater       = $attributes['creater'];
-        $modifier      = $attributes['modifier'];
+        $name            = $attributes['name'];
+        $mobile          = $attributes['mobile'];
+        $email           = $attributes['email'];
+        $gender          = $attributes['gender'];
+        $birthdate       = $attributes['birthdate'];
+        $start_work_date = $attributes['start_work_date'];
+        $degree          = $attributes['degree'];
+        $service_status  = $attributes['service_status'];
+        $province        = $attributes['province'];
+        $city            = $attributes['city'];
+        $county          = $attributes['county'];
+        $position        = $attributes['position'];
+        $industry        = $attributes['industry'];
+        $salary          = $attributes['salary'];
+        $others          = $attributes['others'];
+        $created_by      = $attributes['created_by'];
+        $updated_by      = $attributes['updated_by'];
 
         if (static::getResumes()->where('mobile', $mobile)->first()) {
             throw MobileAlreadyExists::create($mobile);
@@ -47,50 +46,24 @@ class Resume extends Model
             throw EmailAlreadyExists::create($email);
         }
         static::query()->create(compact(
-            'sn',
             'name',
-            'gender',
             'mobile',
             'email',
+            'gender',
+            'birthdate',
+            'start_work_date',
             'degree',
+            'service_status',
             'province',
             'city',
             'county',
-            'birthdate',
-            'startworkdate',
-            'industry',
             'position',
+            'industry',
             'salary',
             'others',
-            'creater',
-            'modifier'
+            'created_by',
+            'updated_by'
         ));
-        dd('OK');
-        // add my library
-                // $mylibrary = new MyLibrary();
-                // $mylibrary->uid = Auth::id();
-                // $mylibrary->rid = $resume->id;
-                // $mylibrary->creater = Auth::id();
-                // $mylibrary->save();
-
-                // // add job library
-                // if (isset($data['jid']) && !empty($data['jid'])) {
-                //     $joblibrary          = new JobLibrary();
-                //     $joblibrary->uid     = Auth::id();
-                //     $joblibrary->rid     = $resume->id;
-                //     $joblibrary->jid     = $data['jid'];
-                //     $joblibrary->creater = Auth::id();
-                //     $joblibrary->save();
-                //     // add to station
-                //     $station             = new Station();
-                //     $station->sn         = Helper::generationSN('GZT');
-                //     $station->lid        = $joblibrary->line->id;
-                //     $station->rid        = $resume->id;
-                //     $station->status     = 1;
-                //     $station->creater    = Auth::id();
-                //     $station->modifier   = Auth::id();
-                //     $station->save();
-                // }
     }
 
     /**
