@@ -18,7 +18,9 @@ class RegionsTableSeeder extends Seeder
             return Str::endsWith($key, 'adcode');
         }, ARRAY_FILTER_USE_KEY);
 
-        $bar = $this->command->getOutput()->createProgressBar(count($adcodes) - 1);
+        $total = count($adcodes) - 1;
+        $this->command->line('插入全国'.$total.'省市县信息...'.PHP_EOL);
+        $bar = $this->command->getOutput()->createProgressBar($total);
         foreach ($provinces as $province) {
             // province
             $regions = [];
@@ -63,5 +65,6 @@ class RegionsTableSeeder extends Seeder
             }
         }
         $bar->finish();
+        $this->command->line('完成！'.PHP_EOL);
     }
 }
