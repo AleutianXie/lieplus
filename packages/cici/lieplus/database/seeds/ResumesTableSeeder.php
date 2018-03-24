@@ -14,7 +14,7 @@ class ResumesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        // 随机生成100份简历
         $faker = Factory::create('zh_CN');
         $positions = [
             '人事部经理',
@@ -101,8 +101,8 @@ class ResumesTableSeeder extends Seeder
                 'province' => '110000',
                 'city' => '110100',
                 'county' => '110105',
-                'position' => $faker->randomElements($positions, $count = 1)[0],
-                'industry' => $faker->randomElements($industries, $count = 1)[0],
+                'position' => $faker->randomElements($positions, 1)[0],
+                'industry' => $faker->randomElements($industries, 1)[0],
                 'salary' => $faker->numberBetween(1, 5),
                 'others' => addslashes($faker->randomHtml()),
                 'created_by' => 1,
@@ -112,6 +112,6 @@ class ResumesTableSeeder extends Seeder
             $bar->advance();
         }
         $bar->finish();
-        $this->command->line('完成！'.PHP_EOL);
+        $this->command->line(PHP_EOL.'完成！'.PHP_EOL);
     }
 }

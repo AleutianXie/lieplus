@@ -45,7 +45,7 @@ class Resume extends Base
         if (static::getResumes()->where('email', $email)->first()) {
             throw EmailAlreadyExists::create($email);
         }
-        static::query()->create(compact(
+        return static::query()->create(compact(
             'name',
             'mobile',
             'email',

@@ -65,6 +65,6 @@ class RegionsTableSeeder extends Seeder
             }
         }
         $bar->finish();
-        $this->command->line('完成！'.PHP_EOL);
+        $this->command->line(PHP_EOL.'完成！'.PHP_EOL);
     }
 }

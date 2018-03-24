@@ -110,8 +110,6 @@ class CreateLieplusTables extends Migration
         // jobs table
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('customer_id');
-            $table->foreign('customer_id')->references('id')->on('customers');
             $table->unsignedInteger('department_id');
             $table->foreign('department_id')->references('id')->on('departments');
             $table->string('name', 60);
