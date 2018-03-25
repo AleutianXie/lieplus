@@ -136,8 +136,6 @@ class CreateLieplusTables extends Migration
             $table->increments('id');
             $table->unsignedInteger('job_id');
             $table->foreign('job_id')->references('id')->on('jobs');
-            $table->unsignedInteger('customer_id');
-            $table->foreign('customer_id')->references('id')->on('customers');
             $table->unsignedTinyInteger('status')->default(0);
             $table->unsignedInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');

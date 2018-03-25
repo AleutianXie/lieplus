@@ -21,7 +21,6 @@ class Project extends Base
     public static function create(array $attributes)
     {
         $job_id          = $attributes['job_id'];
-        $customer_id     = $attributes['customer_id'];
         $status          = $attributes['status'];
         $created_by      = $attributes['created_by'];
         $updated_by      = $attributes['updated_by'];
@@ -32,7 +31,6 @@ class Project extends Base
 
         return static::query()->create(compact(
             'job_id',
-            'customer_id',
             'status',
             'created_by',
             'updated_by'
