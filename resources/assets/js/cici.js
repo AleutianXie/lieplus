@@ -15,9 +15,6 @@ require('./bootstrap');
 require('./ace');
 require('./ace-elements');
 
-Vue.component('ResumeList', require('./components/ResumeList.vue'));
-Vue.component('ResumeAdd', require('./components/ResumeAdd.vue'));
-
 const cici = new Vue({
     el: '#cici'
 });

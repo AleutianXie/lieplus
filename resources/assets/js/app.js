@@ -15,8 +15,6 @@ require('./bootstrap');
 
 
 Vue.component('example', require('./components/Example.vue'));
-Vue.component('hvue', require('./components/Test.vue'));
-Vue.component('ResumeList', require('./components/ResumeList.vue'));
 
 const app = new Vue({
     el: '#app'

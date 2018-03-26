@@ -1,9 +1,3 @@
-/*!
- * Ace v1.4.0
- */
-
-if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires jQuery') }
-
 /**
  <b>Ace custom scroller</b>. It is not as feature-rich as plugins such as NiceScroll but it's good enough for most cases.
 */
@@ -689,7 +683,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 	});
 	*/
 
-})(window.jQuery);;/**
+})(window.jQuery);
+
+/**
  <b>Custom color picker element</b>. Converts html select elements to a dropdown color picker.
 */
 (function($ , undefined) {
@@ -804,7 +800,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 		'auto_pos': true
 	}
 	
-})(window.jQuery);;/**
+})(window.jQuery);
+
+/**
  <b>Ace file input element</b>. Custom, simple file input element to style browser's default file input.
 */
 (function($ , undefined) {
@@ -1456,346 +1454,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 
 
 })(window.jQuery);
-;/**
-  <b>Bootstrap 2 typeahead plugin.</b> With Bootstrap <u>3</u> it's been dropped in favor of a more advanced separate plugin.
-  Pretty good for simple cases such as autocomplete feature of the search box and required for <u class="text-danger">Tag input</u> plugin.
-*/
 
-/* =============================================================
- * bootstrap-typeahead.js v2.3.2
- * http://twitter.github.com/bootstrap/javascript.html#typeahead
- * =============================================================
- * Copyright 2012 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ============================================================ */
 
-
-!function($){
-
-  "use strict"; // jshint ;_;
-
-
- /* TYPEAHEAD PUBLIC CLASS DEFINITION
-  * ================================= */
-
-  var Typeahead = function (element, options) {
-    this.$element = $(element)
-    this.options = $.extend({}, $.fn.bs_typeahead.defaults, options)
-    this.matcher = this.options.matcher || this.matcher
-    this.sorter = this.options.sorter || this.sorter
-    this.highlighter = this.options.highlighter || this.highlighter
-    this.updater = this.options.updater || this.updater
-    this.source = this.options.source
-    this.$menu = $(this.options.menu)
-    this.shown = false
-    this.listen()
-  }
-
-  Typeahead.prototype = {
-
-    constructor: Typeahead
-
-  , select: function () {
-      var val = this.$menu.find('.active').attr('data-value')
-      this.$element
-        .val(this.updater(val))
-        .change()
-      return this.hide()
-    }
-
-  , updater: function (item) {
-      return item
-    }
-
-  , show: function () {
-      var pos = $.extend({}, this.$element.position(), {
-        height: this.$element[0].offsetHeight
-      })
-
-      this.$menu
-        .insertAfter(this.$element)
-        .css({
-          top: pos.top + pos.height
-        , left: pos.left
-        })
-        .show()
-
-      this.shown = true
-      return this
-    }
-
-  , hide: function () {
-      this.$menu.hide()
-      this.shown = false
-      return this
-    }
-
-  , lookup: function (event) {
-      var items
-
-      this.query = this.$element.val()
-
-      if (!this.query || this.query.length < this.options.minLength) {
-        return this.shown ? this.hide() : this
-      }
-
-      items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
-
-      return items ? this.process(items) : this
-    }
-
-  , process: function (items) {
-      var that = this
-
-      items = $.grep(items, function (item) {
-        return that.matcher(item)
-      })
-
-      items = this.sorter(items)
-
-      if (!items.length) {
-        return this.shown ? this.hide() : this
-      }
-
-      return this.render(items.slice(0, this.options.items)).show()
-    }
-
-  , matcher: function (item) {
-      return ~item.toLowerCase().indexOf(this.query.toLowerCase())
-    }
-
-  , sorter: function (items) {
-      var beginswith = []
-        , caseSensitive = []
-        , caseInsensitive = []
-        , item
-
-      while (item = items.shift()) {
-        if (!item.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
-        else if (~item.indexOf(this.query)) caseSensitive.push(item)
-        else caseInsensitive.push(item)
-      }
-
-      return beginswith.concat(caseSensitive, caseInsensitive)
-    }
-
-  , highlighter: function (item) {
-      var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
-      return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
-        return '<strong>' + match + '</strong>'
-      })
-    }
-
-  , render: function (items) {
-      var that = this
-
-      items = $(items).map(function (i, item) {
-        i = $(that.options.item).attr('data-value', item)
-        i.find('a').html(that.highlighter(item))
-        return i[0]
-      })
-
-      items.first().addClass('active')
-      this.$menu.html(items)
-      return this
-    }
-
-  , next: function (event) {
-      var active = this.$menu.find('.active').removeClass('active')
-        , next = active.next()
-
-      if (!next.length) {
-        next = $(this.$menu.find('li')[0])
-      }
-
-      next.addClass('active')
-    }
-
-  , prev: function (event) {
-      var active = this.$menu.find('.active').removeClass('active')
-        , prev = active.prev()
-
-      if (!prev.length) {
-        prev = this.$menu.find('li').last()
-      }
-
-      prev.addClass('active')
-    }
-
-  , listen: function () {
-      this.$element
-        .on('focus',    $.proxy(this.focus, this))
-        .on('blur',     $.proxy(this.blur, this))
-        .on('keypress', $.proxy(this.keypress, this))
-        .on('keyup',    $.proxy(this.keyup, this))
-
-      if (this.eventSupported('keydown')) {
-        this.$element.on('keydown', $.proxy(this.keydown, this))
-      }
-
-      this.$menu
-        .on('click', $.proxy(this.click, this))
-        .on('mouseenter', 'li', $.proxy(this.mouseenter, this))
-        .on('mouseleave', 'li', $.proxy(this.mouseleave, this))
-    }
-
-  , eventSupported: function(eventName) {
-      var isSupported = eventName in this.$element
-      if (!isSupported) {
-        this.$element.setAttribute(eventName, 'return;')
-        isSupported = typeof this.$element[eventName] === 'function'
-      }
-      return isSupported
-    }
-
-  , move: function (e) {
-      if (!this.shown) return
-
-      switch(e.keyCode) {
-        case 9: // tab
-        case 13: // enter
-        case 27: // escape
-          e.preventDefault()
-          break
-
-        case 38: // up arrow
-          e.preventDefault()
-          this.prev()
-          break
-
-        case 40: // down arrow
-          e.preventDefault()
-          this.next()
-          break
-      }
-
-      e.stopPropagation()
-    }
-
-  , keydown: function (e) {
-      this.suppressKeyPressRepeat = ~$.inArray(e.keyCode, [40,38,9,13,27])
-      this.move(e)
-    }
-
-  , keypress: function (e) {
-      if (this.suppressKeyPressRepeat) return
-      this.move(e)
-    }
-
-  , keyup: function (e) {
-      switch(e.keyCode) {
-        case 40: // down arrow
-        case 38: // up arrow
-        case 16: // shift
-        case 17: // ctrl
-        case 18: // alt
-          break
-
-        case 9: // tab
-        case 13: // enter
-          if (!this.shown) return
-          this.select()
-          break
-
-        case 27: // escape
-          if (!this.shown) return
-          this.hide()
-          break
-
-        default:
-          this.lookup()
-      }
-
-      e.stopPropagation()
-      e.preventDefault()
-  }
-
-  , focus: function (e) {
-      this.focused = true
-    }
-
-  , blur: function (e) {
-      this.focused = false
-      if (!this.mousedover && this.shown) this.hide()
-    }
-
-  , click: function (e) {
-      e.stopPropagation()
-      e.preventDefault()
-      this.select()
-      this.$element.focus()
-    }
-
-  , mouseenter: function (e) {
-      this.mousedover = true
-      this.$menu.find('.active').removeClass('active')
-      $(e.currentTarget).addClass('active')
-    }
-
-  , mouseleave: function (e) {
-      this.mousedover = false
-      if (!this.focused && this.shown) this.hide()
-    }
-
-  }
-
-
-  /* TYPEAHEAD PLUGIN DEFINITION
-   * =========================== */
-
-  var old = $.fn.bs_typeahead
-
-  $.fn.bs_typeahead = function (option) {
-    return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('bs_typeahead')
-        , options = typeof option == 'object' && option
-      if (!data) $this.data('bs_typeahead', (data = new Typeahead(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.bs_typeahead.defaults = {
-    source: []
-  , items: 8
-  , menu: '<ul class="typeahead dropdown-menu"></ul>'
-  , item: '<li><a href="#"></a></li>'
-  , minLength: 1
-  }
-
-  $.fn.bs_typeahead.Constructor = Typeahead
-
-
- /* TYPEAHEAD NO CONFLICT
-  * =================== */
-
-  $.fn.bs_typeahead.noConflict = function () {
-    $.fn.bs_typeahead = old
-    return this
-  }
-
-
- /* TYPEAHEAD DATA-API
-  * ================== */
-
-  $(document).on('focus.bs_typeahead.data-api', '[data-provide="bs_typeahead"]', function (e) {
-    var $this = $(this)
-    if ($this.data('bs_typeahead')) return
-    $this.bs_typeahead($this.data())
-  })
-
-}(window.jQuery);;/**
+/**
  <b>Wysiwyg</b>. A wrapper for Bootstrap wyswiwyg plugin.
  It's just a wrapper so you still need to include Bootstrap wysiwyg script first.
 */
@@ -2120,176 +1781,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 
 })(window.jQuery);
 
-;/**
- <b>Spinner</b>. A wrapper for FuelUX spinner element.
- It's just a wrapper so you still need to include FuelUX spinner script first.
-*/
-(function($ , undefined) {
-	//a wrapper for fuelux spinner
-	function Ace_Spinner(element , _options) {
-		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_spinner.defaults);
-		var options = $.extend({}, $.fn.ace_spinner.defaults, _options, attrib_values);
-	
-		var max = options.max
-		max = (''+max).length
-		var width = parseInt(Math.max((max * 20 + 40) , 90))
-
-		var $element = $(element);
-		
-		var btn_class = 'btn-sm';//default
-		var sizing = 2;
-		if($element.hasClass('input-sm')) {
-			btn_class = 'btn-xs';
-			sizing = 1;
-		}
-		else if($element.hasClass('input-lg')) {
-			btn_class = 'btn-lg';
-			sizing = 3;
-		}
-		
-		if(sizing == 2) width += 25;
-		else if(sizing == 3) width += 50;
-		
-		$element.addClass('spinbox-input form-control text-center').wrap('<div class="ace-spinner middle">')
-
-		var $parent_div = $element.closest('.ace-spinner').spinbox(options).wrapInner("<div class='input-group'></div>")
-		var $spinner = $parent_div.data('fu.spinbox');
-		
-		if(options.on_sides)
-		{
-			$element
-			.before('<div class="spinbox-buttons input-group-btn">\
-					<button type="button" class="btn spinbox-down '+btn_class+' '+options.btn_down_class+'">\
-						<i class="icon-only '+ ace.vars['icon'] + options.icon_down+'"></i>\
-					</button>\
-				</div>')
-			.after('<div class="spinbox-buttons input-group-btn">\
-					<button type="button" class="btn spinbox-up '+btn_class+' '+options.btn_up_class+'">\
-						<i class="icon-only '+ ace.vars['icon'] + options.icon_up+'"></i>\
-					</button>\
-				</div>');
-
-			$parent_div.addClass('touch-spinner')
-			$parent_div.css('width' , width+'px')
-		}
-		else {
-			 $element
-			 .after('<div class="spinbox-buttons input-group-btn">\
-					<button type="button" class="btn spinbox-up '+btn_class+' '+options.btn_up_class+'">\
-						<i class="icon-only '+ ace.vars['icon'] + options.icon_up+'"></i>\
-					</button>\
-					<button type="button" class="btn spinbox-down '+btn_class+' '+options.btn_down_class+'">\
-						<i class="icon-only '+ ace.vars['icon'] + options.icon_down+'"></i>\
-					</button>\
-				</div>')
-
-			if(ace.vars['touch'] || options.touch_spinner) {
-				$parent_div.addClass('touch-spinner')
-				$parent_div.css('width' , width+'px')
-			}
-			else {
-				$element.next().addClass('btn-group-vertical');
-				$parent_div.css('width' , width+'px')
-			}
-		}
-
-		$parent_div.on('changed', function(){
-			$element.trigger('change')//trigger the input's change event
-		});
-
-		this._call = function(name, arg) {
-			$spinner[name](arg);
-		}
-	}
 
 
-	$.fn.ace_spinner = function(option, value) {
-		var retval;
-
-		var $set = this.each(function() {
-			var $this = $(this);
-			var data = $this.data('ace_spinner');
-			var options = typeof option === 'object' && option;
-
-			if (!data) {
-				options = $.extend({}, $.fn.ace_spinner.defaults, option);
-				$this.data('ace_spinner', (data = new Ace_Spinner(this, options)));
-			}
-			if (typeof option === 'string') retval = data._call(option, value);
-		});
-
-		return (retval === undefined) ? $set : retval;
-	}
-	
-	$.fn.ace_spinner.defaults = {
-		'icon_up' : 'fa fa-chevron-up',
-		'icon_down': 'fa fa-chevron-down',
-		
-		'on_sides': false,		
-		'btn_up_class': '',
-		'btn_down_class' : '',
-		
-		'max' : 999,
-		'touch_spinner': false
-     }
-
-
-})(window.jQuery);
-;/**
- <b>Treeview</b>. A wrapper for FuelUX treeview element.
- It's just a wrapper so you still need to include FuelUX treeview script first.
-*/
-(function($ , undefined) {
-
-	$.fn.aceTree = $.fn.ace_tree = function(options) {
-		var $defaults = {
-			'open-icon' : ace.vars['icon'] + 'fa fa-folder-open',
-			'close-icon' : ace.vars['icon'] + 'fa fa-folder',
-			'toggle-icon': ace.vars['icon'] + 'fa fa-play',
-			'selected-icon' : ace.vars['icon'] + 'fa fa-check',
-			'unselected-icon' : ace.vars['icon'] + 'fa fa-times',
-			'base-icon' : ace.vars['icon'] + 'fa',
-			'folder-open-icon' : 'fa fa-plus-square-o',
-			'folder-close-icon' : 'fa fa-plus-minus-o',
-			'loadingHTML': 'Loading...'
-		}
-
-		this.each(function() {
-		
-			var attrib_values = ace.helper.getAttrSettings(this, $defaults);
-			var $options = $.extend({}, $defaults, options, attrib_values);
-
-			var $this = $(this);
-			$this.addClass('tree').attr('role', 'tree');
-			$this.html(
-			'<li class="tree-branch hide" data-template="treebranch" role="treeitem" aria-expanded="false">\
-				'+($options['folderSelect'] ? '<i class="icon-caret '+$options['folder-open-icon']+'"></i>&nbsp;' : '')+'\
-				<div class="tree-branch-header">\
-					<span class="tree-branch-name">\
-						<i class="icon-folder '+$options['close-icon']+'"></i>\
-						<span class="tree-label"></span>\
-					</span>\
-				</div>\
-				<ul class="tree-branch-children" role="group"></ul>\
-				<div class="tree-loader" role="alert">'+$options['loadingHTML']+'</div>\
-			</li>\
-			<li class="tree-item hide" data-template="treeitem" role="treeitem">\
-				<span class="tree-item-name">\
-				  '+($options['unselected-icon'] == null ? '' : '<i class="icon-item '+$options['unselected-icon']+'"></i>')+'\
-				  <span class="tree-label"></span>\
-				</span>\
-			</li>');
-			
-			$this.addClass($options['selectable'] == true ? 'tree-selectable' : 'tree-unselectable');
-			
-			$this.tree($options);
-		});
-
-		return this;
-	}
-
-})(window.jQuery);
-;/**
+/**
  <b>Wizard</b>. A wrapper for FuelUX wizard element.
  It's just a wrapper so you still need to include FuelUX wizard script first.
 */
@@ -2326,7 +1820,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
 	}
 
 })(window.jQuery);
-;/**
+
+
+/**
  <b>Content Slider</b>. with custom content and elements based on Bootstrap modals.
 */
 (function($ , undefined) {
@@ -2610,3 +2106,4 @@ if (typeof jQuery === 'undefined') { throw new Error('Ace\'s JavaScript requires
      }
 
 })(window.jQuery);
+
