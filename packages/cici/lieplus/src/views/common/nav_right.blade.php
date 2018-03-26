@@ -1,3 +1,4 @@
+@if (Auth::check())
 <div class="navbar-buttons navbar-header pull-right" role="navigation">
     <ul class="nav ace-nav">
         <li class="light-blue dropdown-modal">
@@ -51,3 +52,4 @@
         </li>
     </ul>
 </div>
+@endif

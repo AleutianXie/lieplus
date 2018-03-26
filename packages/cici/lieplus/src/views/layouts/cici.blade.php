@@ -26,12 +26,14 @@
         @show
 
         <div class="main-content">
+            @if (Auth::check())
             <div class="breadcrumbs">
             <!-- breadcrumbs goes here -->
             @section('breadcrumbs')
             {!! Breadcrumbs::render('home') !!}
             @show
             </div>
+            @endif
 
             <div class="page-content">
             <!-- setting box goes here if needed -->

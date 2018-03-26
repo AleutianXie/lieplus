@@ -23,7 +23,7 @@
         <!-- optional menu & form inside navbar -->
         </nav>
         <!-- /.navbar-menu -->
-        @include('common.nav_right')
+        @include('Lieplus::common.nav_right')
     </div>
     <!-- /.navbar-container -->
 </div>
