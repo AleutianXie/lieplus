@@ -25,6 +25,4 @@ mix.webpackConfig({
   }
 })
   .js('resources/assets/js/cici.js', 'public/static/js')
-  .js('resources/assets/js/app.js', 'public/js')
-  .sass('resources/assets/sass/cici.scss', 'public/static/css')
-  .sass('resources/assets/sass/app.scss', 'public/css');
+  .sass('resources/assets/sass/cici.scss', 'public/static/css');

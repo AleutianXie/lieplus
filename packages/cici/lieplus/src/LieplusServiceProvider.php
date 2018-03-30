@@ -15,9 +15,11 @@ class LieplusServiceProvider extends ServiceProvider
     public function boot()
     {
         // load migrations
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // load views template
         $this->loadViewsFrom(__DIR__ . '/views', 'Lieplus');
+        // load routes
+        $this->loadRoutesFrom(__DIR__. '/routes/web.php');
 
         // $this->publishes([
         //     __DIR__ . '/views' => resource_path('views/vendor/cici/lieplus'),

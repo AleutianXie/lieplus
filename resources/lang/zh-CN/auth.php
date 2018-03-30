@@ -24,7 +24,7 @@ return [
     'forget' => '忘记密码',
     'reset' => '重置密码',
     'send' => '发送重置密码链接',
-    'confrim' => '确认密码',
+    'confirm' => '确认密码',
     'logout' => '登出',
 
 ];

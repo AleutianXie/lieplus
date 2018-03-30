@@ -1,6 +1,3 @@
-// Fonts
-//@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
-
 // Variables
 @import "variables";
 
@@ -10,7 +7,11 @@
 // font-awesome
 @import "node_modules/font-awesome/scss/font-awesome";
 
-// lieplus logo font-awesome
-//@import "../css/fn-lieplus/style.css";
-
+// Ace 1.4.0
 @import "../css/ace.css";
+
+// Select2
+@import "node_modules/select2/dist/css/select2";
+
+// wysiwyg
+@import "node_modules/bootstrap-wysiwyg/css/style";

@@ -189,6 +189,7 @@ return [
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Stevenyangecho\UEditor\UEditorServiceProvider::class,
     ],
 
     /*
@@ -240,6 +241,7 @@ return [
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
         'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'UEditor'=>Stevenyangecho\UEditor\UEditorServiceProvider::class,
 
     ],
 

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 47);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,7 +74,7 @@
 
 
 var bind = __webpack_require__(7);
-var isBuffer = __webpack_require__(29);
+var isBuffer = __webpack_require__(35);
 
 /*global toString:true*/
 
@@ -411,7 +411,7 @@ module.exports = g;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(24);
+var normalizeHeaderName = __webpack_require__(27);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -501,7 +501,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 3 */
@@ -511,12 +511,12 @@ module.exports = defaults;
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(16);
-var buildURL = __webpack_require__(19);
-var parseHeaders = __webpack_require__(25);
-var isURLSameOrigin = __webpack_require__(23);
+var settle = __webpack_require__(19);
+var buildURL = __webpack_require__(22);
+var parseHeaders = __webpack_require__(28);
+var isURLSameOrigin = __webpack_require__(26);
 var createError = __webpack_require__(6);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(18);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(21);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -613,7 +613,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(21);
+      var cookies = __webpack_require__(24);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -735,7 +735,7 @@ module.exports = function isCancel(value) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(15);
+var enhanceError = __webpack_require__(18);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -773,3503 +773,6 @@ module.exports = function bind(fn, thisArg) {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(10);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var bind = __webpack_require__(7);
-var Axios = __webpack_require__(12);
-var defaults = __webpack_require__(2);
-
-/**
- * Create an instance of Axios
- *
- * @param {Object} defaultConfig The default config for the instance
- * @return {Axios} A new instance of Axios
- */
-function createInstance(defaultConfig) {
-  var context = new Axios(defaultConfig);
-  var instance = bind(Axios.prototype.request, context);
-
-  // Copy axios.prototype to instance
-  utils.extend(instance, Axios.prototype, context);
-
-  // Copy context to instance
-  utils.extend(instance, context);
-
-  return instance;
-}
-
-// Create the default instance to be exported
-var axios = createInstance(defaults);
-
-// Expose Axios class to allow class inheritance
-axios.Axios = Axios;
-
-// Factory for creating new instances
-axios.create = function create(instanceConfig) {
-  return createInstance(utils.merge(defaults, instanceConfig));
-};
-
-// Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(4);
-axios.CancelToken = __webpack_require__(11);
-axios.isCancel = __webpack_require__(5);
-
-// Expose all/spread
-axios.all = function all(promises) {
-  return Promise.all(promises);
-};
-axios.spread = __webpack_require__(26);
-
-module.exports = axios;
-
-// Allow use of default import syntax in TypeScript
-module.exports.default = axios;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Cancel = __webpack_require__(4);
-
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @class
- * @param {Function} executor The executor function.
- */
-function CancelToken(executor) {
-  if (typeof executor !== 'function') {
-    throw new TypeError('executor must be a function.');
-  }
-
-  var resolvePromise;
-  this.promise = new Promise(function promiseExecutor(resolve) {
-    resolvePromise = resolve;
-  });
-
-  var token = this;
-  executor(function cancel(message) {
-    if (token.reason) {
-      // Cancellation has already been requested
-      return;
-    }
-
-    token.reason = new Cancel(message);
-    resolvePromise(token.reason);
-  });
-}
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-  if (this.reason) {
-    throw this.reason;
-  }
-};
-
-/**
- * Returns an object that contains a new `CancelToken` and a function that, when called,
- * cancels the `CancelToken`.
- */
-CancelToken.source = function source() {
-  var cancel;
-  var token = new CancelToken(function executor(c) {
-    cancel = c;
-  });
-  return {
-    token: token,
-    cancel: cancel
-  };
-};
-
-module.exports = CancelToken;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var defaults = __webpack_require__(2);
-var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(13);
-var dispatchRequest = __webpack_require__(14);
-var isAbsoluteURL = __webpack_require__(22);
-var combineURLs = __webpack_require__(20);
-
-/**
- * Create a new instance of Axios
- *
- * @param {Object} instanceConfig The default config for the instance
- */
-function Axios(instanceConfig) {
-  this.defaults = instanceConfig;
-  this.interceptors = {
-    request: new InterceptorManager(),
-    response: new InterceptorManager()
-  };
-}
-
-/**
- * Dispatch a request
- *
- * @param {Object} config The config specific for this request (merged with this.defaults)
- */
-Axios.prototype.request = function request(config) {
-  /*eslint no-param-reassign:0*/
-  // Allow for axios('example/url'[, config]) a la fetch API
-  if (typeof config === 'string') {
-    config = utils.merge({
-      url: arguments[0]
-    }, arguments[1]);
-  }
-
-  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
-  config.method = config.method.toLowerCase();
-
-  // Support baseURL config
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
-
-  // Hook up interceptors middleware
-  var chain = [dispatchRequest, undefined];
-  var promise = Promise.resolve(config);
-
-  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-    chain.unshift(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-    chain.push(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  while (chain.length) {
-    promise = promise.then(chain.shift(), chain.shift());
-  }
-
-  return promise;
-};
-
-// Provide aliases for supported request methods
-utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url
-    }));
-  };
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url,
-      data: data
-    }));
-  };
-});
-
-module.exports = Axios;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function InterceptorManager() {
-  this.handlers = [];
-}
-
-/**
- * Add a new interceptor to the stack
- *
- * @param {Function} fulfilled The function to handle `then` for a `Promise`
- * @param {Function} rejected The function to handle `reject` for a `Promise`
- *
- * @return {Number} An ID used to remove interceptor later
- */
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
-  this.handlers.push({
-    fulfilled: fulfilled,
-    rejected: rejected
-  });
-  return this.handlers.length - 1;
-};
-
-/**
- * Remove an interceptor from the stack
- *
- * @param {Number} id The ID that was returned by `use`
- */
-InterceptorManager.prototype.eject = function eject(id) {
-  if (this.handlers[id]) {
-    this.handlers[id] = null;
-  }
-};
-
-/**
- * Iterate over all the registered interceptors
- *
- * This method is particularly useful for skipping over any
- * interceptors that may have become `null` calling `eject`.
- *
- * @param {Function} fn The function to call for each interceptor
- */
-InterceptorManager.prototype.forEach = function forEach(fn) {
-  utils.forEach(this.handlers, function forEachHandler(h) {
-    if (h !== null) {
-      fn(h);
-    }
-  });
-};
-
-module.exports = InterceptorManager;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var transformData = __webpack_require__(17);
-var isCancel = __webpack_require__(5);
-var defaults = __webpack_require__(2);
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-function throwIfCancellationRequested(config) {
-  if (config.cancelToken) {
-    config.cancelToken.throwIfRequested();
-  }
-}
-
-/**
- * Dispatch a request to the server using the configured adapter.
- *
- * @param {object} config The config that is to be used for the request
- * @returns {Promise} The Promise to be fulfilled
- */
-module.exports = function dispatchRequest(config) {
-  throwIfCancellationRequested(config);
-
-  // Ensure headers exist
-  config.headers = config.headers || {};
-
-  // Transform request data
-  config.data = transformData(
-    config.data,
-    config.headers,
-    config.transformRequest
-  );
-
-  // Flatten headers
-  config.headers = utils.merge(
-    config.headers.common || {},
-    config.headers[config.method] || {},
-    config.headers || {}
-  );
-
-  utils.forEach(
-    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-    function cleanHeaderConfig(method) {
-      delete config.headers[method];
-    }
-  );
-
-  var adapter = config.adapter || defaults.adapter;
-
-  return adapter(config).then(function onAdapterResolution(response) {
-    throwIfCancellationRequested(config);
-
-    // Transform response data
-    response.data = transformData(
-      response.data,
-      response.headers,
-      config.transformResponse
-    );
-
-    return response;
-  }, function onAdapterRejection(reason) {
-    if (!isCancel(reason)) {
-      throwIfCancellationRequested(config);
-
-      // Transform response data
-      if (reason && reason.response) {
-        reason.response.data = transformData(
-          reason.response.data,
-          reason.response.headers,
-          config.transformResponse
-        );
-      }
-    }
-
-    return Promise.reject(reason);
-  });
-};
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Update an Error with the specified config, error code, and response.
- *
- * @param {Error} error The error to update.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The error.
- */
-module.exports = function enhanceError(error, config, code, request, response) {
-  error.config = config;
-  if (code) {
-    error.code = code;
-  }
-  error.request = request;
-  error.response = response;
-  return error;
-};
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var createError = __webpack_require__(6);
-
-/**
- * Resolve or reject a Promise based on response status.
- *
- * @param {Function} resolve A function that resolves the promise.
- * @param {Function} reject A function that rejects the promise.
- * @param {object} response The response.
- */
-module.exports = function settle(resolve, reject, response) {
-  var validateStatus = response.config.validateStatus;
-  // Note: status is not exposed by XDomainRequest
-  if (!response.status || !validateStatus || validateStatus(response.status)) {
-    resolve(response);
-  } else {
-    reject(createError(
-      'Request failed with status code ' + response.status,
-      response.config,
-      null,
-      response.request,
-      response
-    ));
-  }
-};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-/**
- * Transform the data for a request or a response
- *
- * @param {Object|String} data The data to be transformed
- * @param {Array} headers The headers for the request or response
- * @param {Array|Function} fns A single function or Array of functions
- * @returns {*} The resulting transformed data
- */
-module.exports = function transformData(data, headers, fns) {
-  /*eslint no-param-reassign:0*/
-  utils.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
-  });
-
-  return data;
-};
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
-
-var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-function E() {
-  this.message = 'String contains an invalid character';
-}
-E.prototype = new Error;
-E.prototype.code = 5;
-E.prototype.name = 'InvalidCharacterError';
-
-function btoa(input) {
-  var str = String(input);
-  var output = '';
-  for (
-    // initialize result and counter
-    var block, charCode, idx = 0, map = chars;
-    // if the next str index does not exist:
-    //   change the mapping table to "="
-    //   check if d has no fractional digits
-    str.charAt(idx | 0) || (map = '=', idx % 1);
-    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
-    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
-  ) {
-    charCode = str.charCodeAt(idx += 3 / 4);
-    if (charCode > 0xFF) {
-      throw new E();
-    }
-    block = block << 8 | charCode;
-  }
-  return output;
-}
-
-module.exports = btoa;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function encode(val) {
-  return encodeURIComponent(val).
-    replace(/%40/gi, '@').
-    replace(/%3A/gi, ':').
-    replace(/%24/g, '$').
-    replace(/%2C/gi, ',').
-    replace(/%20/g, '+').
-    replace(/%5B/gi, '[').
-    replace(/%5D/gi, ']');
-}
-
-/**
- * Build a URL by appending params to the end
- *
- * @param {string} url The base of the url (e.g., http://www.google.com)
- * @param {object} [params] The params to be appended
- * @returns {string} The formatted url
- */
-module.exports = function buildURL(url, params, paramsSerializer) {
-  /*eslint no-param-reassign:0*/
-  if (!params) {
-    return url;
-  }
-
-  var serializedParams;
-  if (paramsSerializer) {
-    serializedParams = paramsSerializer(params);
-  } else if (utils.isURLSearchParams(params)) {
-    serializedParams = params.toString();
-  } else {
-    var parts = [];
-
-    utils.forEach(params, function serialize(val, key) {
-      if (val === null || typeof val === 'undefined') {
-        return;
-      }
-
-      if (utils.isArray(val)) {
-        key = key + '[]';
-      }
-
-      if (!utils.isArray(val)) {
-        val = [val];
-      }
-
-      utils.forEach(val, function parseValue(v) {
-        if (utils.isDate(v)) {
-          v = v.toISOString();
-        } else if (utils.isObject(v)) {
-          v = JSON.stringify(v);
-        }
-        parts.push(encode(key) + '=' + encode(v));
-      });
-    });
-
-    serializedParams = parts.join('&');
-  }
-
-  if (serializedParams) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-
-  return url;
-};
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Creates a new URL by combining the specified URLs
- *
- * @param {string} baseURL The base URL
- * @param {string} relativeURL The relative URL
- * @returns {string} The combined URL
- */
-module.exports = function combineURLs(baseURL, relativeURL) {
-  return relativeURL
-    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : baseURL;
-};
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs support document.cookie
-  (function standardBrowserEnv() {
-    return {
-      write: function write(name, value, expires, path, domain, secure) {
-        var cookie = [];
-        cookie.push(name + '=' + encodeURIComponent(value));
-
-        if (utils.isNumber(expires)) {
-          cookie.push('expires=' + new Date(expires).toGMTString());
-        }
-
-        if (utils.isString(path)) {
-          cookie.push('path=' + path);
-        }
-
-        if (utils.isString(domain)) {
-          cookie.push('domain=' + domain);
-        }
-
-        if (secure === true) {
-          cookie.push('secure');
-        }
-
-        document.cookie = cookie.join('; ');
-      },
-
-      read: function read(name) {
-        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-        return (match ? decodeURIComponent(match[3]) : null);
-      },
-
-      remove: function remove(name) {
-        this.write(name, '', Date.now() - 86400000);
-      }
-    };
-  })() :
-
-  // Non standard browser env (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return {
-      write: function write() {},
-      read: function read() { return null; },
-      remove: function remove() {}
-    };
-  })()
-);
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Determines whether the specified URL is absolute
- *
- * @param {string} url The URL to test
- * @returns {boolean} True if the specified URL is absolute, otherwise false
- */
-module.exports = function isAbsoluteURL(url) {
-  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  // by any combination of letters, digits, plus, period, or hyphen.
-  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
-};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs have full support of the APIs needed to test
-  // whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    var msie = /(msie|trident)/i.test(navigator.userAgent);
-    var urlParsingNode = document.createElement('a');
-    var originURL;
-
-    /**
-    * Parse a URL to discover it's components
-    *
-    * @param {String} url The URL to be parsed
-    * @returns {Object}
-    */
-    function resolveURL(url) {
-      var href = url;
-
-      if (msie) {
-        // IE needs attribute set twice to normalize properties
-        urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
-      }
-
-      urlParsingNode.setAttribute('href', href);
-
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                  urlParsingNode.pathname :
-                  '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
-    * Determine if a URL shares the same origin as the current location
-    *
-    * @param {String} requestURL The URL to test
-    * @returns {boolean} True if URL shares the same origin, otherwise false
-    */
-    return function isURLSameOrigin(requestURL) {
-      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
-            parsed.host === originURL.host);
-    };
-  })() :
-
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })()
-);
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = function normalizeHeaderName(headers, normalizedName) {
-  utils.forEach(headers, function processHeader(value, name) {
-    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
-      headers[normalizedName] = value;
-      delete headers[name];
-    }
-  });
-};
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-/**
- * Parse headers into an object
- *
- * ```
- * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
- * Connection: keep-alive
- * Transfer-Encoding: chunked
- * ```
- *
- * @param {String} headers Headers needing to be parsed
- * @returns {Object} Headers parsed into an object
- */
-module.exports = function parseHeaders(headers) {
-  var parsed = {};
-  var key;
-  var val;
-  var i;
-
-  if (!headers) { return parsed; }
-
-  utils.forEach(headers.split('\n'), function parser(line) {
-    i = line.indexOf(':');
-    key = utils.trim(line.substr(0, i)).toLowerCase();
-    val = utils.trim(line.substr(i + 1));
-
-    if (key) {
-      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-    }
-  });
-
-  return parsed;
-};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Syntactic sugar for invoking a function and expanding an array for arguments.
- *
- * Common use case would be to use `Function.prototype.apply`.
- *
- *  ```js
- *  function f(x, y, z) {}
- *  var args = [1, 2, 3];
- *  f.apply(null, args);
- *  ```
- *
- * With `spread` this example can be re-written.
- *
- *  ```js
- *  spread(function(x, y, z) {})([1, 2, 3]);
- *  ```
- *
- * @param {Function} callback
- * @returns {Function}
- */
-module.exports = function spread(callback) {
-  return function wrap(arr) {
-    return callback.apply(null, arr);
-  };
-};
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-window._ = __webpack_require__(31);
-
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
-
-window.$ = window.jQuery = __webpack_require__(30);
-
-__webpack_require__(28);
-
-/**
- * Vue is a modern JavaScript library for building interactive web interfaces
- * using reactive data binding and reusable components. Vue's API is clean
- * and simple, leaving you to focus on building your next great project.
- */
-
-window.Vue = __webpack_require__(34);
-
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
-window.axios = __webpack_require__(9);
-
-window.axios.defaults.headers.common = {
-  'X-Requested-With': 'XMLHttpRequest'
-};
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from "laravel-echo"
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: 'your-pusher-key'
-// });
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-/*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under the MIT license
- */
-
-if (typeof jQuery === 'undefined') {
-  throw new Error('Bootstrap\'s JavaScript requires jQuery')
-}
-
-+function ($) {
-  'use strict';
-  var version = $.fn.jquery.split(' ')[0].split('.')
-  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 3)) {
-    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4')
-  }
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: transition.js v3.3.7
- * http://getbootstrap.com/javascript/#transitions
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
-  // ============================================================
-
-  function transitionEnd() {
-    var el = document.createElement('bootstrap')
-
-    var transEndEventNames = {
-      WebkitTransition : 'webkitTransitionEnd',
-      MozTransition    : 'transitionend',
-      OTransition      : 'oTransitionEnd otransitionend',
-      transition       : 'transitionend'
-    }
-
-    for (var name in transEndEventNames) {
-      if (el.style[name] !== undefined) {
-        return { end: transEndEventNames[name] }
-      }
-    }
-
-    return false // explicit for ie8 (  ._.)
-  }
-
-  // http://blog.alexmaccaw.com/css-transitions
-  $.fn.emulateTransitionEnd = function (duration) {
-    var called = false
-    var $el = this
-    $(this).one('bsTransitionEnd', function () { called = true })
-    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
-    setTimeout(callback, duration)
-    return this
-  }
-
-  $(function () {
-    $.support.transition = transitionEnd()
-
-    if (!$.support.transition) return
-
-    $.event.special.bsTransitionEnd = {
-      bindType: $.support.transition.end,
-      delegateType: $.support.transition.end,
-      handle: function (e) {
-        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
-      }
-    }
-  })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: alert.js v3.3.7
- * http://getbootstrap.com/javascript/#alerts
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // ALERT CLASS DEFINITION
-  // ======================
-
-  var dismiss = '[data-dismiss="alert"]'
-  var Alert   = function (el) {
-    $(el).on('click', dismiss, this.close)
-  }
-
-  Alert.VERSION = '3.3.7'
-
-  Alert.TRANSITION_DURATION = 150
-
-  Alert.prototype.close = function (e) {
-    var $this    = $(this)
-    var selector = $this.attr('data-target')
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-    }
-
-    var $parent = $(selector === '#' ? [] : selector)
-
-    if (e) e.preventDefault()
-
-    if (!$parent.length) {
-      $parent = $this.closest('.alert')
-    }
-
-    $parent.trigger(e = $.Event('close.bs.alert'))
-
-    if (e.isDefaultPrevented()) return
-
-    $parent.removeClass('in')
-
-    function removeElement() {
-      // detach from parent, fire event then clean up data
-      $parent.detach().trigger('closed.bs.alert').remove()
-    }
-
-    $.support.transition && $parent.hasClass('fade') ?
-      $parent
-        .one('bsTransitionEnd', removeElement)
-        .emulateTransitionEnd(Alert.TRANSITION_DURATION) :
-      removeElement()
-  }
-
-
-  // ALERT PLUGIN DEFINITION
-  // =======================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this = $(this)
-      var data  = $this.data('bs.alert')
-
-      if (!data) $this.data('bs.alert', (data = new Alert(this)))
-      if (typeof option == 'string') data[option].call($this)
-    })
-  }
-
-  var old = $.fn.alert
-
-  $.fn.alert             = Plugin
-  $.fn.alert.Constructor = Alert
-
-
-  // ALERT NO CONFLICT
-  // =================
-
-  $.fn.alert.noConflict = function () {
-    $.fn.alert = old
-    return this
-  }
-
-
-  // ALERT DATA-API
-  // ==============
-
-  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: button.js v3.3.7
- * http://getbootstrap.com/javascript/#buttons
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // BUTTON PUBLIC CLASS DEFINITION
-  // ==============================
-
-  var Button = function (element, options) {
-    this.$element  = $(element)
-    this.options   = $.extend({}, Button.DEFAULTS, options)
-    this.isLoading = false
-  }
-
-  Button.VERSION  = '3.3.7'
-
-  Button.DEFAULTS = {
-    loadingText: 'loading...'
-  }
-
-  Button.prototype.setState = function (state) {
-    var d    = 'disabled'
-    var $el  = this.$element
-    var val  = $el.is('input') ? 'val' : 'html'
-    var data = $el.data()
-
-    state += 'Text'
-
-    if (data.resetText == null) $el.data('resetText', $el[val]())
-
-    // push to event loop to allow forms to submit
-    setTimeout($.proxy(function () {
-      $el[val](data[state] == null ? this.options[state] : data[state])
-
-      if (state == 'loadingText') {
-        this.isLoading = true
-        $el.addClass(d).attr(d, d).prop(d, true)
-      } else if (this.isLoading) {
-        this.isLoading = false
-        $el.removeClass(d).removeAttr(d).prop(d, false)
-      }
-    }, this), 0)
-  }
-
-  Button.prototype.toggle = function () {
-    var changed = true
-    var $parent = this.$element.closest('[data-toggle="buttons"]')
-
-    if ($parent.length) {
-      var $input = this.$element.find('input')
-      if ($input.prop('type') == 'radio') {
-        if ($input.prop('checked')) changed = false
-        $parent.find('.active').removeClass('active')
-        this.$element.addClass('active')
-      } else if ($input.prop('type') == 'checkbox') {
-        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
-        this.$element.toggleClass('active')
-      }
-      $input.prop('checked', this.$element.hasClass('active'))
-      if (changed) $input.trigger('change')
-    } else {
-      this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
-      this.$element.toggleClass('active')
-    }
-  }
-
-
-  // BUTTON PLUGIN DEFINITION
-  // ========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.button')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.button', (data = new Button(this, options)))
-
-      if (option == 'toggle') data.toggle()
-      else if (option) data.setState(option)
-    })
-  }
-
-  var old = $.fn.button
-
-  $.fn.button             = Plugin
-  $.fn.button.Constructor = Button
-
-
-  // BUTTON NO CONFLICT
-  // ==================
-
-  $.fn.button.noConflict = function () {
-    $.fn.button = old
-    return this
-  }
-
-
-  // BUTTON DATA-API
-  // ===============
-
-  $(document)
-    .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
-      var $btn = $(e.target).closest('.btn')
-      Plugin.call($btn, 'toggle')
-      if (!($(e.target).is('input[type="radio"], input[type="checkbox"]'))) {
-        // Prevent double click on radios, and the double selections (so cancellation) on checkboxes
-        e.preventDefault()
-        // The target component still receive the focus
-        if ($btn.is('input,button')) $btn.trigger('focus')
-        else $btn.find('input:visible,button:visible').first().trigger('focus')
-      }
-    })
-    .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
-      $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
-    })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: carousel.js v3.3.7
- * http://getbootstrap.com/javascript/#carousel
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // CAROUSEL CLASS DEFINITION
-  // =========================
-
-  var Carousel = function (element, options) {
-    this.$element    = $(element)
-    this.$indicators = this.$element.find('.carousel-indicators')
-    this.options     = options
-    this.paused      = null
-    this.sliding     = null
-    this.interval    = null
-    this.$active     = null
-    this.$items      = null
-
-    this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
-
-    this.options.pause == 'hover' && !('ontouchstart' in document.documentElement) && this.$element
-      .on('mouseenter.bs.carousel', $.proxy(this.pause, this))
-      .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
-  }
-
-  Carousel.VERSION  = '3.3.7'
-
-  Carousel.TRANSITION_DURATION = 600
-
-  Carousel.DEFAULTS = {
-    interval: 5000,
-    pause: 'hover',
-    wrap: true,
-    keyboard: true
-  }
-
-  Carousel.prototype.keydown = function (e) {
-    if (/input|textarea/i.test(e.target.tagName)) return
-    switch (e.which) {
-      case 37: this.prev(); break
-      case 39: this.next(); break
-      default: return
-    }
-
-    e.preventDefault()
-  }
-
-  Carousel.prototype.cycle = function (e) {
-    e || (this.paused = false)
-
-    this.interval && clearInterval(this.interval)
-
-    this.options.interval
-      && !this.paused
-      && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
-
-    return this
-  }
-
-  Carousel.prototype.getItemIndex = function (item) {
-    this.$items = item.parent().children('.item')
-    return this.$items.index(item || this.$active)
-  }
-
-  Carousel.prototype.getItemForDirection = function (direction, active) {
-    var activeIndex = this.getItemIndex(active)
-    var willWrap = (direction == 'prev' && activeIndex === 0)
-                || (direction == 'next' && activeIndex == (this.$items.length - 1))
-    if (willWrap && !this.options.wrap) return active
-    var delta = direction == 'prev' ? -1 : 1
-    var itemIndex = (activeIndex + delta) % this.$items.length
-    return this.$items.eq(itemIndex)
-  }
-
-  Carousel.prototype.to = function (pos) {
-    var that        = this
-    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
-
-    if (pos > (this.$items.length - 1) || pos < 0) return
-
-    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
-    if (activeIndex == pos) return this.pause().cycle()
-
-    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
-  }
-
-  Carousel.prototype.pause = function (e) {
-    e || (this.paused = true)
-
-    if (this.$element.find('.next, .prev').length && $.support.transition) {
-      this.$element.trigger($.support.transition.end)
-      this.cycle(true)
-    }
-
-    this.interval = clearInterval(this.interval)
-
-    return this
-  }
-
-  Carousel.prototype.next = function () {
-    if (this.sliding) return
-    return this.slide('next')
-  }
-
-  Carousel.prototype.prev = function () {
-    if (this.sliding) return
-    return this.slide('prev')
-  }
-
-  Carousel.prototype.slide = function (type, next) {
-    var $active   = this.$element.find('.item.active')
-    var $next     = next || this.getItemForDirection(type, $active)
-    var isCycling = this.interval
-    var direction = type == 'next' ? 'left' : 'right'
-    var that      = this
-
-    if ($next.hasClass('active')) return (this.sliding = false)
-
-    var relatedTarget = $next[0]
-    var slideEvent = $.Event('slide.bs.carousel', {
-      relatedTarget: relatedTarget,
-      direction: direction
-    })
-    this.$element.trigger(slideEvent)
-    if (slideEvent.isDefaultPrevented()) return
-
-    this.sliding = true
-
-    isCycling && this.pause()
-
-    if (this.$indicators.length) {
-      this.$indicators.find('.active').removeClass('active')
-      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
-      $nextIndicator && $nextIndicator.addClass('active')
-    }
-
-    var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
-    if ($.support.transition && this.$element.hasClass('slide')) {
-      $next.addClass(type)
-      $next[0].offsetWidth // force reflow
-      $active.addClass(direction)
-      $next.addClass(direction)
-      $active
-        .one('bsTransitionEnd', function () {
-          $next.removeClass([type, direction].join(' ')).addClass('active')
-          $active.removeClass(['active', direction].join(' '))
-          that.sliding = false
-          setTimeout(function () {
-            that.$element.trigger(slidEvent)
-          }, 0)
-        })
-        .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
-    } else {
-      $active.removeClass('active')
-      $next.addClass('active')
-      this.sliding = false
-      this.$element.trigger(slidEvent)
-    }
-
-    isCycling && this.cycle()
-
-    return this
-  }
-
-
-  // CAROUSEL PLUGIN DEFINITION
-  // ==========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.carousel')
-      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
-      var action  = typeof option == 'string' ? option : options.slide
-
-      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
-      if (typeof option == 'number') data.to(option)
-      else if (action) data[action]()
-      else if (options.interval) data.pause().cycle()
-    })
-  }
-
-  var old = $.fn.carousel
-
-  $.fn.carousel             = Plugin
-  $.fn.carousel.Constructor = Carousel
-
-
-  // CAROUSEL NO CONFLICT
-  // ====================
-
-  $.fn.carousel.noConflict = function () {
-    $.fn.carousel = old
-    return this
-  }
-
-
-  // CAROUSEL DATA-API
-  // =================
-
-  var clickHandler = function (e) {
-    var href
-    var $this   = $(this)
-    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
-    if (!$target.hasClass('carousel')) return
-    var options = $.extend({}, $target.data(), $this.data())
-    var slideIndex = $this.attr('data-slide-to')
-    if (slideIndex) options.interval = false
-
-    Plugin.call($target, options)
-
-    if (slideIndex) {
-      $target.data('bs.carousel').to(slideIndex)
-    }
-
-    e.preventDefault()
-  }
-
-  $(document)
-    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
-    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
-
-  $(window).on('load', function () {
-    $('[data-ride="carousel"]').each(function () {
-      var $carousel = $(this)
-      Plugin.call($carousel, $carousel.data())
-    })
-  })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: collapse.js v3.3.7
- * http://getbootstrap.com/javascript/#collapse
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-/* jshint latedef: false */
-
-+function ($) {
-  'use strict';
-
-  // COLLAPSE PUBLIC CLASS DEFINITION
-  // ================================
-
-  var Collapse = function (element, options) {
-    this.$element      = $(element)
-    this.options       = $.extend({}, Collapse.DEFAULTS, options)
-    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
-                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
-    this.transitioning = null
-
-    if (this.options.parent) {
-      this.$parent = this.getParent()
-    } else {
-      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
-    }
-
-    if (this.options.toggle) this.toggle()
-  }
-
-  Collapse.VERSION  = '3.3.7'
-
-  Collapse.TRANSITION_DURATION = 350
-
-  Collapse.DEFAULTS = {
-    toggle: true
-  }
-
-  Collapse.prototype.dimension = function () {
-    var hasWidth = this.$element.hasClass('width')
-    return hasWidth ? 'width' : 'height'
-  }
-
-  Collapse.prototype.show = function () {
-    if (this.transitioning || this.$element.hasClass('in')) return
-
-    var activesData
-    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
-
-    if (actives && actives.length) {
-      activesData = actives.data('bs.collapse')
-      if (activesData && activesData.transitioning) return
-    }
-
-    var startEvent = $.Event('show.bs.collapse')
-    this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
-
-    if (actives && actives.length) {
-      Plugin.call(actives, 'hide')
-      activesData || actives.data('bs.collapse', null)
-    }
-
-    var dimension = this.dimension()
-
-    this.$element
-      .removeClass('collapse')
-      .addClass('collapsing')[dimension](0)
-      .attr('aria-expanded', true)
-
-    this.$trigger
-      .removeClass('collapsed')
-      .attr('aria-expanded', true)
-
-    this.transitioning = 1
-
-    var complete = function () {
-      this.$element
-        .removeClass('collapsing')
-        .addClass('collapse in')[dimension]('')
-      this.transitioning = 0
-      this.$element
-        .trigger('shown.bs.collapse')
-    }
-
-    if (!$.support.transition) return complete.call(this)
-
-    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
-
-    this.$element
-      .one('bsTransitionEnd', $.proxy(complete, this))
-      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
-  }
-
-  Collapse.prototype.hide = function () {
-    if (this.transitioning || !this.$element.hasClass('in')) return
-
-    var startEvent = $.Event('hide.bs.collapse')
-    this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
-
-    var dimension = this.dimension()
-
-    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
-
-    this.$element
-      .addClass('collapsing')
-      .removeClass('collapse in')
-      .attr('aria-expanded', false)
-
-    this.$trigger
-      .addClass('collapsed')
-      .attr('aria-expanded', false)
-
-    this.transitioning = 1
-
-    var complete = function () {
-      this.transitioning = 0
-      this.$element
-        .removeClass('collapsing')
-        .addClass('collapse')
-        .trigger('hidden.bs.collapse')
-    }
-
-    if (!$.support.transition) return complete.call(this)
-
-    this.$element
-      [dimension](0)
-      .one('bsTransitionEnd', $.proxy(complete, this))
-      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
-  }
-
-  Collapse.prototype.toggle = function () {
-    this[this.$element.hasClass('in') ? 'hide' : 'show']()
-  }
-
-  Collapse.prototype.getParent = function () {
-    return $(this.options.parent)
-      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
-      .each($.proxy(function (i, element) {
-        var $element = $(element)
-        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
-      }, this))
-      .end()
-  }
-
-  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
-    var isOpen = $element.hasClass('in')
-
-    $element.attr('aria-expanded', isOpen)
-    $trigger
-      .toggleClass('collapsed', !isOpen)
-      .attr('aria-expanded', isOpen)
-  }
-
-  function getTargetFromTrigger($trigger) {
-    var href
-    var target = $trigger.attr('data-target')
-      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
-
-    return $(target)
-  }
-
-
-  // COLLAPSE PLUGIN DEFINITION
-  // ==========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.collapse')
-      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
-
-      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
-      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.collapse
-
-  $.fn.collapse             = Plugin
-  $.fn.collapse.Constructor = Collapse
-
-
-  // COLLAPSE NO CONFLICT
-  // ====================
-
-  $.fn.collapse.noConflict = function () {
-    $.fn.collapse = old
-    return this
-  }
-
-
-  // COLLAPSE DATA-API
-  // =================
-
-  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
-    var $this   = $(this)
-
-    if (!$this.attr('data-target')) e.preventDefault()
-
-    var $target = getTargetFromTrigger($this)
-    var data    = $target.data('bs.collapse')
-    var option  = data ? 'toggle' : $this.data()
-
-    Plugin.call($target, option)
-  })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: dropdown.js v3.3.7
- * http://getbootstrap.com/javascript/#dropdowns
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // DROPDOWN CLASS DEFINITION
-  // =========================
-
-  var backdrop = '.dropdown-backdrop'
-  var toggle   = '[data-toggle="dropdown"]'
-  var Dropdown = function (element) {
-    $(element).on('click.bs.dropdown', this.toggle)
-  }
-
-  Dropdown.VERSION = '3.3.7'
-
-  function getParent($this) {
-    var selector = $this.attr('data-target')
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-    }
-
-    var $parent = selector && $(selector)
-
-    return $parent && $parent.length ? $parent : $this.parent()
-  }
-
-  function clearMenus(e) {
-    if (e && e.which === 3) return
-    $(backdrop).remove()
-    $(toggle).each(function () {
-      var $this         = $(this)
-      var $parent       = getParent($this)
-      var relatedTarget = { relatedTarget: this }
-
-      if (!$parent.hasClass('open')) return
-
-      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
-
-      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
-
-      if (e.isDefaultPrevented()) return
-
-      $this.attr('aria-expanded', 'false')
-      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
-    })
-  }
-
-  Dropdown.prototype.toggle = function (e) {
-    var $this = $(this)
-
-    if ($this.is('.disabled, :disabled')) return
-
-    var $parent  = getParent($this)
-    var isActive = $parent.hasClass('open')
-
-    clearMenus()
-
-    if (!isActive) {
-      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
-        // if mobile we use a backdrop because click events don't delegate
-        $(document.createElement('div'))
-          .addClass('dropdown-backdrop')
-          .insertAfter($(this))
-          .on('click', clearMenus)
-      }
-
-      var relatedTarget = { relatedTarget: this }
-      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
-
-      if (e.isDefaultPrevented()) return
-
-      $this
-        .trigger('focus')
-        .attr('aria-expanded', 'true')
-
-      $parent
-        .toggleClass('open')
-        .trigger($.Event('shown.bs.dropdown', relatedTarget))
-    }
-
-    return false
-  }
-
-  Dropdown.prototype.keydown = function (e) {
-    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
-
-    var $this = $(this)
-
-    e.preventDefault()
-    e.stopPropagation()
-
-    if ($this.is('.disabled, :disabled')) return
-
-    var $parent  = getParent($this)
-    var isActive = $parent.hasClass('open')
-
-    if (!isActive && e.which != 27 || isActive && e.which == 27) {
-      if (e.which == 27) $parent.find(toggle).trigger('focus')
-      return $this.trigger('click')
-    }
-
-    var desc = ' li:not(.disabled):visible a'
-    var $items = $parent.find('.dropdown-menu' + desc)
-
-    if (!$items.length) return
-
-    var index = $items.index(e.target)
-
-    if (e.which == 38 && index > 0)                 index--         // up
-    if (e.which == 40 && index < $items.length - 1) index++         // down
-    if (!~index)                                    index = 0
-
-    $items.eq(index).trigger('focus')
-  }
-
-
-  // DROPDOWN PLUGIN DEFINITION
-  // ==========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this = $(this)
-      var data  = $this.data('bs.dropdown')
-
-      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
-      if (typeof option == 'string') data[option].call($this)
-    })
-  }
-
-  var old = $.fn.dropdown
-
-  $.fn.dropdown             = Plugin
-  $.fn.dropdown.Constructor = Dropdown
-
-
-  // DROPDOWN NO CONFLICT
-  // ====================
-
-  $.fn.dropdown.noConflict = function () {
-    $.fn.dropdown = old
-    return this
-  }
-
-
-  // APPLY TO STANDARD DROPDOWN ELEMENTS
-  // ===================================
-
-  $(document)
-    .on('click.bs.dropdown.data-api', clearMenus)
-    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
-    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: modal.js v3.3.7
- * http://getbootstrap.com/javascript/#modals
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // MODAL CLASS DEFINITION
-  // ======================
-
-  var Modal = function (element, options) {
-    this.options             = options
-    this.$body               = $(document.body)
-    this.$element            = $(element)
-    this.$dialog             = this.$element.find('.modal-dialog')
-    this.$backdrop           = null
-    this.isShown             = null
-    this.originalBodyPad     = null
-    this.scrollbarWidth      = 0
-    this.ignoreBackdropClick = false
-
-    if (this.options.remote) {
-      this.$element
-        .find('.modal-content')
-        .load(this.options.remote, $.proxy(function () {
-          this.$element.trigger('loaded.bs.modal')
-        }, this))
-    }
-  }
-
-  Modal.VERSION  = '3.3.7'
-
-  Modal.TRANSITION_DURATION = 300
-  Modal.BACKDROP_TRANSITION_DURATION = 150
-
-  Modal.DEFAULTS = {
-    backdrop: true,
-    keyboard: true,
-    show: true
-  }
-
-  Modal.prototype.toggle = function (_relatedTarget) {
-    return this.isShown ? this.hide() : this.show(_relatedTarget)
-  }
-
-  Modal.prototype.show = function (_relatedTarget) {
-    var that = this
-    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
-
-    this.$element.trigger(e)
-
-    if (this.isShown || e.isDefaultPrevented()) return
-
-    this.isShown = true
-
-    this.checkScrollbar()
-    this.setScrollbar()
-    this.$body.addClass('modal-open')
-
-    this.escape()
-    this.resize()
-
-    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
-
-    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
-      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
-        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
-      })
-    })
-
-    this.backdrop(function () {
-      var transition = $.support.transition && that.$element.hasClass('fade')
-
-      if (!that.$element.parent().length) {
-        that.$element.appendTo(that.$body) // don't move modals dom position
-      }
-
-      that.$element
-        .show()
-        .scrollTop(0)
-
-      that.adjustDialog()
-
-      if (transition) {
-        that.$element[0].offsetWidth // force reflow
-      }
-
-      that.$element.addClass('in')
-
-      that.enforceFocus()
-
-      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
-
-      transition ?
-        that.$dialog // wait for modal to slide in
-          .one('bsTransitionEnd', function () {
-            that.$element.trigger('focus').trigger(e)
-          })
-          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-        that.$element.trigger('focus').trigger(e)
-    })
-  }
-
-  Modal.prototype.hide = function (e) {
-    if (e) e.preventDefault()
-
-    e = $.Event('hide.bs.modal')
-
-    this.$element.trigger(e)
-
-    if (!this.isShown || e.isDefaultPrevented()) return
-
-    this.isShown = false
-
-    this.escape()
-    this.resize()
-
-    $(document).off('focusin.bs.modal')
-
-    this.$element
-      .removeClass('in')
-      .off('click.dismiss.bs.modal')
-      .off('mouseup.dismiss.bs.modal')
-
-    this.$dialog.off('mousedown.dismiss.bs.modal')
-
-    $.support.transition && this.$element.hasClass('fade') ?
-      this.$element
-        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
-        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-      this.hideModal()
-  }
-
-  Modal.prototype.enforceFocus = function () {
-    $(document)
-      .off('focusin.bs.modal') // guard against infinite focus loop
-      .on('focusin.bs.modal', $.proxy(function (e) {
-        if (document !== e.target &&
-            this.$element[0] !== e.target &&
-            !this.$element.has(e.target).length) {
-          this.$element.trigger('focus')
-        }
-      }, this))
-  }
-
-  Modal.prototype.escape = function () {
-    if (this.isShown && this.options.keyboard) {
-      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
-        e.which == 27 && this.hide()
-      }, this))
-    } else if (!this.isShown) {
-      this.$element.off('keydown.dismiss.bs.modal')
-    }
-  }
-
-  Modal.prototype.resize = function () {
-    if (this.isShown) {
-      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
-    } else {
-      $(window).off('resize.bs.modal')
-    }
-  }
-
-  Modal.prototype.hideModal = function () {
-    var that = this
-    this.$element.hide()
-    this.backdrop(function () {
-      that.$body.removeClass('modal-open')
-      that.resetAdjustments()
-      that.resetScrollbar()
-      that.$element.trigger('hidden.bs.modal')
-    })
-  }
-
-  Modal.prototype.removeBackdrop = function () {
-    this.$backdrop && this.$backdrop.remove()
-    this.$backdrop = null
-  }
-
-  Modal.prototype.backdrop = function (callback) {
-    var that = this
-    var animate = this.$element.hasClass('fade') ? 'fade' : ''
-
-    if (this.isShown && this.options.backdrop) {
-      var doAnimate = $.support.transition && animate
-
-      this.$backdrop = $(document.createElement('div'))
-        .addClass('modal-backdrop ' + animate)
-        .appendTo(this.$body)
-
-      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
-        if (this.ignoreBackdropClick) {
-          this.ignoreBackdropClick = false
-          return
-        }
-        if (e.target !== e.currentTarget) return
-        this.options.backdrop == 'static'
-          ? this.$element[0].focus()
-          : this.hide()
-      }, this))
-
-      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
-
-      this.$backdrop.addClass('in')
-
-      if (!callback) return
-
-      doAnimate ?
-        this.$backdrop
-          .one('bsTransitionEnd', callback)
-          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-        callback()
-
-    } else if (!this.isShown && this.$backdrop) {
-      this.$backdrop.removeClass('in')
-
-      var callbackRemove = function () {
-        that.removeBackdrop()
-        callback && callback()
-      }
-      $.support.transition && this.$element.hasClass('fade') ?
-        this.$backdrop
-          .one('bsTransitionEnd', callbackRemove)
-          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-        callbackRemove()
-
-    } else if (callback) {
-      callback()
-    }
-  }
-
-  // these following methods are used to handle overflowing modals
-
-  Modal.prototype.handleUpdate = function () {
-    this.adjustDialog()
-  }
-
-  Modal.prototype.adjustDialog = function () {
-    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
-
-    this.$element.css({
-      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
-      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
-    })
-  }
-
-  Modal.prototype.resetAdjustments = function () {
-    this.$element.css({
-      paddingLeft: '',
-      paddingRight: ''
-    })
-  }
-
-  Modal.prototype.checkScrollbar = function () {
-    var fullWindowWidth = window.innerWidth
-    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
-      var documentElementRect = document.documentElement.getBoundingClientRect()
-      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
-    }
-    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
-    this.scrollbarWidth = this.measureScrollbar()
-  }
-
-  Modal.prototype.setScrollbar = function () {
-    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
-    this.originalBodyPad = document.body.style.paddingRight || ''
-    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
-  }
-
-  Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', this.originalBodyPad)
-  }
-
-  Modal.prototype.measureScrollbar = function () { // thx walsh
-    var scrollDiv = document.createElement('div')
-    scrollDiv.className = 'modal-scrollbar-measure'
-    this.$body.append(scrollDiv)
-    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
-    this.$body[0].removeChild(scrollDiv)
-    return scrollbarWidth
-  }
-
-
-  // MODAL PLUGIN DEFINITION
-  // =======================
-
-  function Plugin(option, _relatedTarget) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.modal')
-      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
-
-      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
-      if (typeof option == 'string') data[option](_relatedTarget)
-      else if (options.show) data.show(_relatedTarget)
-    })
-  }
-
-  var old = $.fn.modal
-
-  $.fn.modal             = Plugin
-  $.fn.modal.Constructor = Modal
-
-
-  // MODAL NO CONFLICT
-  // =================
-
-  $.fn.modal.noConflict = function () {
-    $.fn.modal = old
-    return this
-  }
-
-
-  // MODAL DATA-API
-  // ==============
-
-  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
-    var $this   = $(this)
-    var href    = $this.attr('href')
-    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
-    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
-
-    if ($this.is('a')) e.preventDefault()
-
-    $target.one('show.bs.modal', function (showEvent) {
-      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
-      $target.one('hidden.bs.modal', function () {
-        $this.is(':visible') && $this.trigger('focus')
-      })
-    })
-    Plugin.call($target, option, this)
-  })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: tooltip.js v3.3.7
- * http://getbootstrap.com/javascript/#tooltip
- * Inspired by the original jQuery.tipsy by Jason Frame
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // TOOLTIP PUBLIC CLASS DEFINITION
-  // ===============================
-
-  var Tooltip = function (element, options) {
-    this.type       = null
-    this.options    = null
-    this.enabled    = null
-    this.timeout    = null
-    this.hoverState = null
-    this.$element   = null
-    this.inState    = null
-
-    this.init('tooltip', element, options)
-  }
-
-  Tooltip.VERSION  = '3.3.7'
-
-  Tooltip.TRANSITION_DURATION = 150
-
-  Tooltip.DEFAULTS = {
-    animation: true,
-    placement: 'top',
-    selector: false,
-    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-    trigger: 'hover focus',
-    title: '',
-    delay: 0,
-    html: false,
-    container: false,
-    viewport: {
-      selector: 'body',
-      padding: 0
-    }
-  }
-
-  Tooltip.prototype.init = function (type, element, options) {
-    this.enabled   = true
-    this.type      = type
-    this.$element  = $(element)
-    this.options   = this.getOptions(options)
-    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
-    this.inState   = { click: false, hover: false, focus: false }
-
-    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
-      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
-    }
-
-    var triggers = this.options.trigger.split(' ')
-
-    for (var i = triggers.length; i--;) {
-      var trigger = triggers[i]
-
-      if (trigger == 'click') {
-        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
-      } else if (trigger != 'manual') {
-        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
-        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
-
-        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
-      }
-    }
-
-    this.options.selector ?
-      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
-      this.fixTitle()
-  }
-
-  Tooltip.prototype.getDefaults = function () {
-    return Tooltip.DEFAULTS
-  }
-
-  Tooltip.prototype.getOptions = function (options) {
-    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
-
-    if (options.delay && typeof options.delay == 'number') {
-      options.delay = {
-        show: options.delay,
-        hide: options.delay
-      }
-    }
-
-    return options
-  }
-
-  Tooltip.prototype.getDelegateOptions = function () {
-    var options  = {}
-    var defaults = this.getDefaults()
-
-    this._options && $.each(this._options, function (key, value) {
-      if (defaults[key] != value) options[key] = value
-    })
-
-    return options
-  }
-
-  Tooltip.prototype.enter = function (obj) {
-    var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget).data('bs.' + this.type)
-
-    if (!self) {
-      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-      $(obj.currentTarget).data('bs.' + this.type, self)
-    }
-
-    if (obj instanceof $.Event) {
-      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
-    }
-
-    if (self.tip().hasClass('in') || self.hoverState == 'in') {
-      self.hoverState = 'in'
-      return
-    }
-
-    clearTimeout(self.timeout)
-
-    self.hoverState = 'in'
-
-    if (!self.options.delay || !self.options.delay.show) return self.show()
-
-    self.timeout = setTimeout(function () {
-      if (self.hoverState == 'in') self.show()
-    }, self.options.delay.show)
-  }
-
-  Tooltip.prototype.isInStateTrue = function () {
-    for (var key in this.inState) {
-      if (this.inState[key]) return true
-    }
-
-    return false
-  }
-
-  Tooltip.prototype.leave = function (obj) {
-    var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget).data('bs.' + this.type)
-
-    if (!self) {
-      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-      $(obj.currentTarget).data('bs.' + this.type, self)
-    }
-
-    if (obj instanceof $.Event) {
-      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
-    }
-
-    if (self.isInStateTrue()) return
-
-    clearTimeout(self.timeout)
-
-    self.hoverState = 'out'
-
-    if (!self.options.delay || !self.options.delay.hide) return self.hide()
-
-    self.timeout = setTimeout(function () {
-      if (self.hoverState == 'out') self.hide()
-    }, self.options.delay.hide)
-  }
-
-  Tooltip.prototype.show = function () {
-    var e = $.Event('show.bs.' + this.type)
-
-    if (this.hasContent() && this.enabled) {
-      this.$element.trigger(e)
-
-      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
-      if (e.isDefaultPrevented() || !inDom) return
-      var that = this
-
-      var $tip = this.tip()
-
-      var tipId = this.getUID(this.type)
-
-      this.setContent()
-      $tip.attr('id', tipId)
-      this.$element.attr('aria-describedby', tipId)
-
-      if (this.options.animation) $tip.addClass('fade')
-
-      var placement = typeof this.options.placement == 'function' ?
-        this.options.placement.call(this, $tip[0], this.$element[0]) :
-        this.options.placement
-
-      var autoToken = /\s?auto?\s?/i
-      var autoPlace = autoToken.test(placement)
-      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
-
-      $tip
-        .detach()
-        .css({ top: 0, left: 0, display: 'block' })
-        .addClass(placement)
-        .data('bs.' + this.type, this)
-
-      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
-      this.$element.trigger('inserted.bs.' + this.type)
-
-      var pos          = this.getPosition()
-      var actualWidth  = $tip[0].offsetWidth
-      var actualHeight = $tip[0].offsetHeight
-
-      if (autoPlace) {
-        var orgPlacement = placement
-        var viewportDim = this.getPosition(this.$viewport)
-
-        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
-                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
-                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
-                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
-                    placement
-
-        $tip
-          .removeClass(orgPlacement)
-          .addClass(placement)
-      }
-
-      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
-
-      this.applyPlacement(calculatedOffset, placement)
-
-      var complete = function () {
-        var prevHoverState = that.hoverState
-        that.$element.trigger('shown.bs.' + that.type)
-        that.hoverState = null
-
-        if (prevHoverState == 'out') that.leave(that)
-      }
-
-      $.support.transition && this.$tip.hasClass('fade') ?
-        $tip
-          .one('bsTransitionEnd', complete)
-          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-        complete()
-    }
-  }
-
-  Tooltip.prototype.applyPlacement = function (offset, placement) {
-    var $tip   = this.tip()
-    var width  = $tip[0].offsetWidth
-    var height = $tip[0].offsetHeight
-
-    // manually read margins because getBoundingClientRect includes difference
-    var marginTop = parseInt($tip.css('margin-top'), 10)
-    var marginLeft = parseInt($tip.css('margin-left'), 10)
-
-    // we must check for NaN for ie 8/9
-    if (isNaN(marginTop))  marginTop  = 0
-    if (isNaN(marginLeft)) marginLeft = 0
-
-    offset.top  += marginTop
-    offset.left += marginLeft
-
-    // $.fn.offset doesn't round pixel values
-    // so we use setOffset directly with our own function B-0
-    $.offset.setOffset($tip[0], $.extend({
-      using: function (props) {
-        $tip.css({
-          top: Math.round(props.top),
-          left: Math.round(props.left)
-        })
-      }
-    }, offset), 0)
-
-    $tip.addClass('in')
-
-    // check to see if placing tip in new offset caused the tip to resize itself
-    var actualWidth  = $tip[0].offsetWidth
-    var actualHeight = $tip[0].offsetHeight
-
-    if (placement == 'top' && actualHeight != height) {
-      offset.top = offset.top + height - actualHeight
-    }
-
-    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
-
-    if (delta.left) offset.left += delta.left
-    else offset.top += delta.top
-
-    var isVertical          = /top|bottom/.test(placement)
-    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
-    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
-
-    $tip.offset(offset)
-    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
-  }
-
-  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
-    this.arrow()
-      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-      .css(isVertical ? 'top' : 'left', '')
-  }
-
-  Tooltip.prototype.setContent = function () {
-    var $tip  = this.tip()
-    var title = this.getTitle()
-
-    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
-    $tip.removeClass('fade in top bottom left right')
-  }
-
-  Tooltip.prototype.hide = function (callback) {
-    var that = this
-    var $tip = $(this.$tip)
-    var e    = $.Event('hide.bs.' + this.type)
-
-    function complete() {
-      if (that.hoverState != 'in') $tip.detach()
-      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
-        that.$element
-          .removeAttr('aria-describedby')
-          .trigger('hidden.bs.' + that.type)
-      }
-      callback && callback()
-    }
-
-    this.$element.trigger(e)
-
-    if (e.isDefaultPrevented()) return
-
-    $tip.removeClass('in')
-
-    $.support.transition && $tip.hasClass('fade') ?
-      $tip
-        .one('bsTransitionEnd', complete)
-        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-      complete()
-
-    this.hoverState = null
-
-    return this
-  }
-
-  Tooltip.prototype.fixTitle = function () {
-    var $e = this.$element
-    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
-      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
-    }
-  }
-
-  Tooltip.prototype.hasContent = function () {
-    return this.getTitle()
-  }
-
-  Tooltip.prototype.getPosition = function ($element) {
-    $element   = $element || this.$element
-
-    var el     = $element[0]
-    var isBody = el.tagName == 'BODY'
-
-    var elRect    = el.getBoundingClientRect()
-    if (elRect.width == null) {
-      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
-      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
-    }
-    var isSvg = window.SVGElement && el instanceof window.SVGElement
-    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
-    // See https://github.com/twbs/bootstrap/issues/20280
-    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
-    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
-    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
-
-    return $.extend({}, elRect, scroll, outerDims, elOffset)
-  }
-
-  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
-    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
-           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
-           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
-
-  }
-
-  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
-    var delta = { top: 0, left: 0 }
-    if (!this.$viewport) return delta
-
-    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
-    var viewportDimensions = this.getPosition(this.$viewport)
-
-    if (/right|left/.test(placement)) {
-      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
-      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
-      if (topEdgeOffset < viewportDimensions.top) { // top overflow
-        delta.top = viewportDimensions.top - topEdgeOffset
-      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
-        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
-      }
-    } else {
-      var leftEdgeOffset  = pos.left - viewportPadding
-      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
-      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
-        delta.left = viewportDimensions.left - leftEdgeOffset
-      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
-        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
-      }
-    }
-
-    return delta
-  }
-
-  Tooltip.prototype.getTitle = function () {
-    var title
-    var $e = this.$element
-    var o  = this.options
-
-    title = $e.attr('data-original-title')
-      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
-
-    return title
-  }
-
-  Tooltip.prototype.getUID = function (prefix) {
-    do prefix += ~~(Math.random() * 1000000)
-    while (document.getElementById(prefix))
-    return prefix
-  }
-
-  Tooltip.prototype.tip = function () {
-    if (!this.$tip) {
-      this.$tip = $(this.options.template)
-      if (this.$tip.length != 1) {
-        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
-      }
-    }
-    return this.$tip
-  }
-
-  Tooltip.prototype.arrow = function () {
-    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
-  }
-
-  Tooltip.prototype.enable = function () {
-    this.enabled = true
-  }
-
-  Tooltip.prototype.disable = function () {
-    this.enabled = false
-  }
-
-  Tooltip.prototype.toggleEnabled = function () {
-    this.enabled = !this.enabled
-  }
-
-  Tooltip.prototype.toggle = function (e) {
-    var self = this
-    if (e) {
-      self = $(e.currentTarget).data('bs.' + this.type)
-      if (!self) {
-        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
-        $(e.currentTarget).data('bs.' + this.type, self)
-      }
-    }
-
-    if (e) {
-      self.inState.click = !self.inState.click
-      if (self.isInStateTrue()) self.enter(self)
-      else self.leave(self)
-    } else {
-      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
-    }
-  }
-
-  Tooltip.prototype.destroy = function () {
-    var that = this
-    clearTimeout(this.timeout)
-    this.hide(function () {
-      that.$element.off('.' + that.type).removeData('bs.' + that.type)
-      if (that.$tip) {
-        that.$tip.detach()
-      }
-      that.$tip = null
-      that.$arrow = null
-      that.$viewport = null
-      that.$element = null
-    })
-  }
-
-
-  // TOOLTIP PLUGIN DEFINITION
-  // =========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.tooltip')
-      var options = typeof option == 'object' && option
-
-      if (!data && /destroy|hide/.test(option)) return
-      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.tooltip
-
-  $.fn.tooltip             = Plugin
-  $.fn.tooltip.Constructor = Tooltip
-
-
-  // TOOLTIP NO CONFLICT
-  // ===================
-
-  $.fn.tooltip.noConflict = function () {
-    $.fn.tooltip = old
-    return this
-  }
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: popover.js v3.3.7
- * http://getbootstrap.com/javascript/#popovers
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // POPOVER PUBLIC CLASS DEFINITION
-  // ===============================
-
-  var Popover = function (element, options) {
-    this.init('popover', element, options)
-  }
-
-  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
-
-  Popover.VERSION  = '3.3.7'
-
-  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
-    placement: 'right',
-    trigger: 'click',
-    content: '',
-    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
-  })
-
-
-  // NOTE: POPOVER EXTENDS tooltip.js
-  // ================================
-
-  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
-
-  Popover.prototype.constructor = Popover
-
-  Popover.prototype.getDefaults = function () {
-    return Popover.DEFAULTS
-  }
-
-  Popover.prototype.setContent = function () {
-    var $tip    = this.tip()
-    var title   = this.getTitle()
-    var content = this.getContent()
-
-    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
-    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
-      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
-    ](content)
-
-    $tip.removeClass('fade top bottom left right in')
-
-    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
-    // this manually by checking the contents.
-    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
-  }
-
-  Popover.prototype.hasContent = function () {
-    return this.getTitle() || this.getContent()
-  }
-
-  Popover.prototype.getContent = function () {
-    var $e = this.$element
-    var o  = this.options
-
-    return $e.attr('data-content')
-      || (typeof o.content == 'function' ?
-            o.content.call($e[0]) :
-            o.content)
-  }
-
-  Popover.prototype.arrow = function () {
-    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
-  }
-
-
-  // POPOVER PLUGIN DEFINITION
-  // =========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.popover')
-      var options = typeof option == 'object' && option
-
-      if (!data && /destroy|hide/.test(option)) return
-      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.popover
-
-  $.fn.popover             = Plugin
-  $.fn.popover.Constructor = Popover
-
-
-  // POPOVER NO CONFLICT
-  // ===================
-
-  $.fn.popover.noConflict = function () {
-    $.fn.popover = old
-    return this
-  }
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: scrollspy.js v3.3.7
- * http://getbootstrap.com/javascript/#scrollspy
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // SCROLLSPY CLASS DEFINITION
-  // ==========================
-
-  function ScrollSpy(element, options) {
-    this.$body          = $(document.body)
-    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
-    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
-    this.selector       = (this.options.target || '') + ' .nav li > a'
-    this.offsets        = []
-    this.targets        = []
-    this.activeTarget   = null
-    this.scrollHeight   = 0
-
-    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
-    this.refresh()
-    this.process()
-  }
-
-  ScrollSpy.VERSION  = '3.3.7'
-
-  ScrollSpy.DEFAULTS = {
-    offset: 10
-  }
-
-  ScrollSpy.prototype.getScrollHeight = function () {
-    return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
-  }
-
-  ScrollSpy.prototype.refresh = function () {
-    var that          = this
-    var offsetMethod  = 'offset'
-    var offsetBase    = 0
-
-    this.offsets      = []
-    this.targets      = []
-    this.scrollHeight = this.getScrollHeight()
-
-    if (!$.isWindow(this.$scrollElement[0])) {
-      offsetMethod = 'position'
-      offsetBase   = this.$scrollElement.scrollTop()
-    }
-
-    this.$body
-      .find(this.selector)
-      .map(function () {
-        var $el   = $(this)
-        var href  = $el.data('target') || $el.attr('href')
-        var $href = /^#./.test(href) && $(href)
-
-        return ($href
-          && $href.length
-          && $href.is(':visible')
-          && [[$href[offsetMethod]().top + offsetBase, href]]) || null
-      })
-      .sort(function (a, b) { return a[0] - b[0] })
-      .each(function () {
-        that.offsets.push(this[0])
-        that.targets.push(this[1])
-      })
-  }
-
-  ScrollSpy.prototype.process = function () {
-    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
-    var scrollHeight = this.getScrollHeight()
-    var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
-    var offsets      = this.offsets
-    var targets      = this.targets
-    var activeTarget = this.activeTarget
-    var i
-
-    if (this.scrollHeight != scrollHeight) {
-      this.refresh()
-    }
-
-    if (scrollTop >= maxScroll) {
-      return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
-    }
-
-    if (activeTarget && scrollTop < offsets[0]) {
-      this.activeTarget = null
-      return this.clear()
-    }
-
-    for (i = offsets.length; i--;) {
-      activeTarget != targets[i]
-        && scrollTop >= offsets[i]
-        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
-        && this.activate(targets[i])
-    }
-  }
-
-  ScrollSpy.prototype.activate = function (target) {
-    this.activeTarget = target
-
-    this.clear()
-
-    var selector = this.selector +
-      '[data-target="' + target + '"],' +
-      this.selector + '[href="' + target + '"]'
-
-    var active = $(selector)
-      .parents('li')
-      .addClass('active')
-
-    if (active.parent('.dropdown-menu').length) {
-      active = active
-        .closest('li.dropdown')
-        .addClass('active')
-    }
-
-    active.trigger('activate.bs.scrollspy')
-  }
-
-  ScrollSpy.prototype.clear = function () {
-    $(this.selector)
-      .parentsUntil(this.options.target, '.active')
-      .removeClass('active')
-  }
-
-
-  // SCROLLSPY PLUGIN DEFINITION
-  // ===========================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.scrollspy')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.scrollspy
-
-  $.fn.scrollspy             = Plugin
-  $.fn.scrollspy.Constructor = ScrollSpy
-
-
-  // SCROLLSPY NO CONFLICT
-  // =====================
-
-  $.fn.scrollspy.noConflict = function () {
-    $.fn.scrollspy = old
-    return this
-  }
-
-
-  // SCROLLSPY DATA-API
-  // ==================
-
-  $(window).on('load.bs.scrollspy.data-api', function () {
-    $('[data-spy="scroll"]').each(function () {
-      var $spy = $(this)
-      Plugin.call($spy, $spy.data())
-    })
-  })
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: tab.js v3.3.7
- * http://getbootstrap.com/javascript/#tabs
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // TAB CLASS DEFINITION
-  // ====================
-
-  var Tab = function (element) {
-    // jscs:disable requireDollarBeforejQueryAssignment
-    this.element = $(element)
-    // jscs:enable requireDollarBeforejQueryAssignment
-  }
-
-  Tab.VERSION = '3.3.7'
-
-  Tab.TRANSITION_DURATION = 150
-
-  Tab.prototype.show = function () {
-    var $this    = this.element
-    var $ul      = $this.closest('ul:not(.dropdown-menu)')
-    var selector = $this.data('target')
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-    }
-
-    if ($this.parent('li').hasClass('active')) return
-
-    var $previous = $ul.find('.active:last a')
-    var hideEvent = $.Event('hide.bs.tab', {
-      relatedTarget: $this[0]
-    })
-    var showEvent = $.Event('show.bs.tab', {
-      relatedTarget: $previous[0]
-    })
-
-    $previous.trigger(hideEvent)
-    $this.trigger(showEvent)
-
-    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
-
-    var $target = $(selector)
-
-    this.activate($this.closest('li'), $ul)
-    this.activate($target, $target.parent(), function () {
-      $previous.trigger({
-        type: 'hidden.bs.tab',
-        relatedTarget: $this[0]
-      })
-      $this.trigger({
-        type: 'shown.bs.tab',
-        relatedTarget: $previous[0]
-      })
-    })
-  }
-
-  Tab.prototype.activate = function (element, container, callback) {
-    var $active    = container.find('> .active')
-    var transition = callback
-      && $.support.transition
-      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
-
-    function next() {
-      $active
-        .removeClass('active')
-        .find('> .dropdown-menu > .active')
-          .removeClass('active')
-        .end()
-        .find('[data-toggle="tab"]')
-          .attr('aria-expanded', false)
-
-      element
-        .addClass('active')
-        .find('[data-toggle="tab"]')
-          .attr('aria-expanded', true)
-
-      if (transition) {
-        element[0].offsetWidth // reflow for transition
-        element.addClass('in')
-      } else {
-        element.removeClass('fade')
-      }
-
-      if (element.parent('.dropdown-menu').length) {
-        element
-          .closest('li.dropdown')
-            .addClass('active')
-          .end()
-          .find('[data-toggle="tab"]')
-            .attr('aria-expanded', true)
-      }
-
-      callback && callback()
-    }
-
-    $active.length && transition ?
-      $active
-        .one('bsTransitionEnd', next)
-        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
-      next()
-
-    $active.removeClass('in')
-  }
-
-
-  // TAB PLUGIN DEFINITION
-  // =====================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this = $(this)
-      var data  = $this.data('bs.tab')
-
-      if (!data) $this.data('bs.tab', (data = new Tab(this)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.tab
-
-  $.fn.tab             = Plugin
-  $.fn.tab.Constructor = Tab
-
-
-  // TAB NO CONFLICT
-  // ===============
-
-  $.fn.tab.noConflict = function () {
-    $.fn.tab = old
-    return this
-  }
-
-
-  // TAB DATA-API
-  // ============
-
-  var clickHandler = function (e) {
-    e.preventDefault()
-    Plugin.call($(this), 'show')
-  }
-
-  $(document)
-    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
-    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: affix.js v3.3.7
- * http://getbootstrap.com/javascript/#affix
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // AFFIX CLASS DEFINITION
-  // ======================
-
-  var Affix = function (element, options) {
-    this.options = $.extend({}, Affix.DEFAULTS, options)
-
-    this.$target = $(this.options.target)
-      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
-
-    this.$element     = $(element)
-    this.affixed      = null
-    this.unpin        = null
-    this.pinnedOffset = null
-
-    this.checkPosition()
-  }
-
-  Affix.VERSION  = '3.3.7'
-
-  Affix.RESET    = 'affix affix-top affix-bottom'
-
-  Affix.DEFAULTS = {
-    offset: 0,
-    target: window
-  }
-
-  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
-    var scrollTop    = this.$target.scrollTop()
-    var position     = this.$element.offset()
-    var targetHeight = this.$target.height()
-
-    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
-
-    if (this.affixed == 'bottom') {
-      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
-      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
-    }
-
-    var initializing   = this.affixed == null
-    var colliderTop    = initializing ? scrollTop : position.top
-    var colliderHeight = initializing ? targetHeight : height
-
-    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
-    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
-
-    return false
-  }
-
-  Affix.prototype.getPinnedOffset = function () {
-    if (this.pinnedOffset) return this.pinnedOffset
-    this.$element.removeClass(Affix.RESET).addClass('affix')
-    var scrollTop = this.$target.scrollTop()
-    var position  = this.$element.offset()
-    return (this.pinnedOffset = position.top - scrollTop)
-  }
-
-  Affix.prototype.checkPositionWithEventLoop = function () {
-    setTimeout($.proxy(this.checkPosition, this), 1)
-  }
-
-  Affix.prototype.checkPosition = function () {
-    if (!this.$element.is(':visible')) return
-
-    var height       = this.$element.height()
-    var offset       = this.options.offset
-    var offsetTop    = offset.top
-    var offsetBottom = offset.bottom
-    var scrollHeight = Math.max($(document).height(), $(document.body).height())
-
-    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
-    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
-    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
-
-    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
-
-    if (this.affixed != affix) {
-      if (this.unpin != null) this.$element.css('top', '')
-
-      var affixType = 'affix' + (affix ? '-' + affix : '')
-      var e         = $.Event(affixType + '.bs.affix')
-
-      this.$element.trigger(e)
-
-      if (e.isDefaultPrevented()) return
-
-      this.affixed = affix
-      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
-
-      this.$element
-        .removeClass(Affix.RESET)
-        .addClass(affixType)
-        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
-    }
-
-    if (affix == 'bottom') {
-      this.$element.offset({
-        top: scrollHeight - height - offsetBottom
-      })
-    }
-  }
-
-
-  // AFFIX PLUGIN DEFINITION
-  // =======================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.affix')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.affix
-
-  $.fn.affix             = Plugin
-  $.fn.affix.Constructor = Affix
-
-
-  // AFFIX NO CONFLICT
-  // =================
-
-  $.fn.affix.noConflict = function () {
-    $.fn.affix = old
-    return this
-  }
-
-
-  // AFFIX DATA-API
-  // ==============
-
-  $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
-      var $spy = $(this)
-      var data = $spy.data()
-
-      data.offset = data.offset || {}
-
-      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
-      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
-
-      Plugin.call($spy, data)
-    })
-  })
-
-}(jQuery);
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
-}
-
-
-/***/ }),
-/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -14640,7 +11143,8843 @@ return jQuery;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * include Vue and Vue Resource. This gives a great starting point for
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+__webpack_require__(32);
+
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+__webpack_require__(37);
+__webpack_require__(34);
+__webpack_require__(31);
+__webpack_require__(30);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(13);
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var bind = __webpack_require__(7);
+var Axios = __webpack_require__(15);
+var defaults = __webpack_require__(2);
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = __webpack_require__(4);
+axios.CancelToken = __webpack_require__(14);
+axios.isCancel = __webpack_require__(5);
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = __webpack_require__(29);
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(4);
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var defaults = __webpack_require__(2);
+var utils = __webpack_require__(0);
+var InterceptorManager = __webpack_require__(16);
+var dispatchRequest = __webpack_require__(17);
+var isAbsoluteURL = __webpack_require__(25);
+var combineURLs = __webpack_require__(23);
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = utils.merge({
+      url: arguments[0]
+    }, arguments[1]);
+  }
+
+  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+  config.method = config.method.toLowerCase();
+
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var transformData = __webpack_require__(20);
+var isCancel = __webpack_require__(5);
+var defaults = __webpack_require__(2);
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.request = request;
+  error.response = response;
+  return error;
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var createError = __webpack_require__(6);
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+function E() {
+  this.message = 'String contains an invalid character';
+}
+E.prototype = new Error;
+E.prototype.code = 5;
+E.prototype.name = 'InvalidCharacterError';
+
+function btoa(input) {
+  var str = String(input);
+  var output = '';
+  for (
+    // initialize result and counter
+    var block, charCode, idx = 0, map = chars;
+    // if the next str index does not exist:
+    //   change the mapping table to "="
+    //   check if d has no fractional digits
+    str.charAt(idx | 0) || (map = '=', idx % 1);
+    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
+  ) {
+    charCode = str.charCodeAt(idx += 3 / 4);
+    if (charCode > 0xFF) {
+      throw new E();
+    }
+    block = block << 8 | charCode;
+  }
+  return output;
+}
+
+module.exports = btoa;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      }
+
+      if (!utils.isArray(val)) {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+  (function standardBrowserEnv() {
+    return {
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + '=' + encodeURIComponent(value));
+
+        if (utils.isNumber(expires)) {
+          cookie.push('expires=' + new Date(expires).toGMTString());
+        }
+
+        if (utils.isString(path)) {
+          cookie.push('path=' + path);
+        }
+
+        if (utils.isString(domain)) {
+          cookie.push('domain=' + domain);
+        }
+
+        if (secure === true) {
+          cookie.push('secure');
+        }
+
+        document.cookie = cookie.join('; ');
+      },
+
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+        return (match ? decodeURIComponent(match[3]) : null);
+      },
+
+      remove: function remove(name) {
+        this.write(name, '', Date.now() - 86400000);
+      }
+    };
+  })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return {
+      write: function write() {},
+      read: function read() { return null; },
+      remove: function remove() {}
+    };
+  })()
+);
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+  (function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement('a');
+    var originURL;
+
+    /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+    function resolveURL(url) {
+      var href = url;
+
+      if (msie) {
+        // IE needs attribute set twice to normalize properties
+        urlParsingNode.setAttribute('href', href);
+        href = urlParsingNode.href;
+      }
+
+      urlParsingNode.setAttribute('href', href);
+
+      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+                  urlParsingNode.pathname :
+                  '/' + urlParsingNode.pathname
+      };
+    }
+
+    originURL = resolveURL(window.location.href);
+
+    /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+    return function isURLSameOrigin(requestURL) {
+      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+      return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+    };
+  })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return function isURLSameOrigin() {
+      return true;
+    };
+  })()
+);
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+    }
+  });
+
+  return parsed;
+};
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/**
+ <b>Ace custom scroller</b>. It is not as feature-rich as plugins such as NiceScroll but it's good enough for most cases.
+*/
+(function ($, undefined) {
+	var Ace_Scroll = function Ace_Scroll(element, _settings) {
+		var self = this;
+
+		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_scroll.defaults);
+		var settings = $.extend({}, $.fn.ace_scroll.defaults, _settings, attrib_values);
+
+		this.size = 0;
+		this.lock = false;
+		this.lock_anyway = false;
+
+		this.$element = $(element);
+		this.element = element;
+
+		var vertical = true;
+
+		var disabled = false;
+		var active = false;
+		var created = false;
+
+		var $content_wrap = null,
+		    content_wrap = null;
+		var $track = null,
+		    $bar = null,
+		    track = null,
+		    bar = null;
+		var bar_style = null;
+
+		var bar_size = 0,
+		    bar_pos = 0,
+		    bar_max_pos = 0,
+		    bar_size_2 = 0,
+		    move_bar = true;
+		var reset_once = false;
+
+		var styleClass = '';
+		var trackFlip = false; //vertical on left or horizontal on top
+		var trackSize = 0;
+
+		var css_pos, css_size, max_css_size, client_size, scroll_direction, scroll_size;
+
+		var ratio = 1;
+		var inline_style = false;
+		var mouse_track = false;
+		var mouse_release_target = 'onmouseup' in window ? window : 'html';
+		var dragEvent = settings.dragEvent || false;
+
+		var trigger_scroll = _settings.scrollEvent || false;
+
+		var detached = settings.detached || false; //when detached, hideOnIdle as well?
+		var updatePos = settings.updatePos || false; //default is true
+
+		var hideOnIdle = settings.hideOnIdle || false;
+		var hideDelay = settings.hideDelay || 1500;
+		var insideTrack = false; //used to hide scroll track when mouse is up and outside of track
+		var observeContent = settings.observeContent || false;
+		var prevContentSize = 0;
+
+		var is_dirty = true; //to prevent consecutive 'reset' calls
+
+		this.ref = function () {
+			return this;
+		};
+
+		this.create = function (_settings) {
+			if (created) return;
+
+			if (_settings) settings = $.extend({}, $.fn.ace_scroll.defaults, _settings);
+
+			this.size = parseInt(this.$element.attr('data-size')) || settings.size || 200;
+			vertical = !settings['horizontal'];
+
+			css_pos = vertical ? 'top' : 'left'; //'left' for horizontal
+			css_size = vertical ? 'height' : 'width'; //'width' for horizontal
+			max_css_size = vertical ? 'maxHeight' : 'maxWidth';
+
+			client_size = vertical ? 'clientHeight' : 'clientWidth';
+			scroll_direction = vertical ? 'scrollTop' : 'scrollLeft';
+			scroll_size = vertical ? 'scrollHeight' : 'scrollWidth';
+
+			this.$element.addClass('ace-scroll');
+			if (this.$element.css('position') == 'static') {
+				inline_style = this.element.style.position;
+				this.element.style.position = 'relative';
+			} else inline_style = false;
+
+			var scroll_bar = null;
+			if (!detached) {
+				this.$element.wrapInner('<div class="scroll-content" />');
+				this.$element.prepend('<div class="scroll-track"><div class="scroll-bar"></div></div>');
+			} else {
+				scroll_bar = $('<div class="scroll-track scroll-detached"><div class="scroll-bar"></div></div>').appendTo('body');
+			}
+
+			$content_wrap = this.$element;
+			if (!detached) $content_wrap = this.$element.find('.scroll-content').eq(0);
+
+			if (!vertical) $content_wrap.wrapInner('<div />');
+
+			content_wrap = $content_wrap.get(0);
+			if (detached) {
+				//set position for detached scrollbar
+				$track = scroll_bar;
+				setTrackPos();
+			} else $track = this.$element.find('.scroll-track').eq(0);
+
+			$bar = $track.find('.scroll-bar').eq(0);
+			track = $track.get(0);
+			bar = $bar.get(0);
+			bar_style = bar.style;
+
+			//add styling classes and horizontalness
+			if (!vertical) $track.addClass('scroll-hz');
+			if (settings.styleClass) {
+				styleClass = settings.styleClass;
+				$track.addClass(styleClass);
+				trackFlip = !!styleClass.match(/scroll\-left|scroll\-top/);
+			}
+
+			//calculate size of track!
+			if (trackSize == 0) {
+				$track.show();
+				getTrackSize();
+			}
+
+			$track.hide();
+
+			//if(!touchDrag) {
+			$track.on('mousedown', mouse_down_track);
+			$bar.on('mousedown', mouse_down_bar);
+			//}
+
+			$content_wrap.on('scroll', function () {
+				if (move_bar) {
+					bar_pos = parseInt(Math.round(this[scroll_direction] * ratio));
+					bar_style[css_pos] = bar_pos + 'px';
+				}
+				move_bar = false;
+				if (trigger_scroll) this.$element.trigger('scroll', [content_wrap]);
+			});
+
+			if (settings.mouseWheel) {
+				this.lock = settings.mouseWheelLock;
+				this.lock_anyway = settings.lockAnyway;
+
+				//mousewheel library available?
+				this.$element.on(!!$.event.special.mousewheel ? 'mousewheel.ace_scroll' : 'mousewheel.ace_scroll DOMMouseScroll.ace_scroll', function (event) {
+					if (disabled) return;
+					checkContentChanges(true);
+
+					if (!active) return !self.lock_anyway;
+
+					if (mouse_track) {
+						mouse_track = false;
+						$('html').off('.ace_scroll');
+						$(mouse_release_target).off('.ace_scroll');
+						if (dragEvent) self.$element.trigger('drag.end');
+					}
+
+					event.deltaY = event.deltaY || 0;
+					var delta = event.deltaY > 0 || event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1;
+					var scrollEnd = false; //have we reached the end of scrolling?
+
+					var clientSize = content_wrap[client_size],
+					    scrollAmount = content_wrap[scroll_direction];
+					if (!self.lock) {
+						if (delta == -1) scrollEnd = content_wrap[scroll_size] <= scrollAmount + clientSize;else scrollEnd = scrollAmount == 0;
+					}
+
+					self.move_bar(true);
+
+					//var step = parseInt( Math.min(Math.max(parseInt(clientSize / 8) , 80) , self.size) ) + 1;
+					var step = parseInt(clientSize / 8);
+					if (step < 80) step = 80;
+					if (step > self.size) step = self.size;
+					step += 1;
+
+					content_wrap[scroll_direction] = scrollAmount - delta * step;
+
+					return scrollEnd && !self.lock_anyway;
+				});
+			}
+
+			//swipe not available yet
+			var touchDrag = ace.vars['touch'] && 'ace_drag' in $.event.special && settings.touchDrag; //&& !settings.touchSwipe;
+			//add drag event for touch devices to scroll
+			if (touchDrag /** || ($.fn.swipe && settings.touchSwipe)*/) {
+					var dir = '',
+					    event_name = touchDrag ? 'ace_drag' : 'swipe';
+					this.$element.on(event_name + '.ace_scroll', function (event) {
+						if (disabled) {
+							event.retval.cancel = true;
+							return;
+						}
+						checkContentChanges(true);
+
+						if (!active) {
+							event.retval.cancel = this.lock_anyway;
+							return;
+						}
+
+						dir = event.direction;
+						if (vertical && (dir == 'up' || dir == 'down') || !vertical && (dir == 'left' || dir == 'right')) {
+							var distance = vertical ? event.dy : event.dx;
+
+							if (distance != 0) {
+								if (Math.abs(distance) > 20 && touchDrag) distance = distance * 2;
+
+								self.move_bar(true);
+								content_wrap[scroll_direction] = content_wrap[scroll_direction] + distance;
+							}
+						}
+					});
+				}
+
+			/////////////////////////////////
+
+			if (hideOnIdle) {
+				$track.addClass('idle-hide');
+			}
+			if (observeContent) {
+				$track.on('mouseenter.ace_scroll', function () {
+					insideTrack = true;
+					checkContentChanges(false);
+				}).on('mouseleave.ace_scroll', function () {
+					insideTrack = false;
+					if (mouse_track == false) hideScrollbars();
+				});
+			}
+
+			//some mobile browsers don't have mouseenter
+			this.$element.on('mouseenter.ace_scroll touchstart.ace_scroll', function (e) {
+				is_dirty = true;
+				if (observeContent) checkContentChanges(true);else if (settings.hoverReset) self.reset(true);
+
+				$track.addClass('scroll-hover');
+			}).on('mouseleave.ace_scroll touchend.ace_scroll', function () {
+				$track.removeClass('scroll-hover');
+			});
+			//
+
+			if (!vertical) $content_wrap.children(0).css(css_size, this.size); //the extra wrapper
+			$content_wrap.css(max_css_size, this.size);
+
+			disabled = false;
+			created = true;
+		};
+		this.is_active = function () {
+			return active;
+		};
+		this.is_enabled = function () {
+			return !disabled;
+		};
+		this.move_bar = function ($move) {
+			move_bar = $move;
+		};
+
+		this.get_track = function () {
+			return track;
+		};
+
+		this.reset = function (innert_call) {
+			if (disabled) return; // this;
+			if (!created) this.create();
+			/////////////////////
+			var size = this.size;
+
+			if (innert_call && !is_dirty) {
+				return;
+			}
+			is_dirty = false;
+
+			if (detached) {
+				var border_size = parseInt(Math.round((parseInt($content_wrap.css('border-top-width')) + parseInt($content_wrap.css('border-bottom-width'))) / 2.5)); //(2.5 from trial?!)
+				size -= border_size; //only if detached
+			}
+
+			var content_size = vertical ? content_wrap[scroll_size] : size;
+			if (vertical && content_size == 0 || !vertical && this.element.scrollWidth == 0) {
+				//element is hidden
+				//this.$element.addClass('scroll-hidden');
+				$track.removeClass('scroll-active');
+				return; // this;
+			}
+
+			var available_space = vertical ? size : content_wrap.clientWidth;
+
+			if (!vertical) $content_wrap.children(0).css(css_size, size); //the extra wrapper
+			$content_wrap.css(max_css_size, this.size);
+
+			if (content_size > available_space) {
+				active = true;
+				$track.css(css_size, available_space).show();
+
+				ratio = parseFloat((available_space / content_size).toFixed(5));
+
+				bar_size = parseInt(Math.round(available_space * ratio));
+				bar_size_2 = parseInt(Math.round(bar_size / 2));
+
+				bar_max_pos = available_space - bar_size;
+				bar_pos = parseInt(Math.round(content_wrap[scroll_direction] * ratio));
+
+				bar_style[css_size] = bar_size + 'px';
+				bar_style[css_pos] = bar_pos + 'px';
+
+				$track.addClass('scroll-active');
+
+				if (trackSize == 0) {
+					getTrackSize();
+				}
+
+				if (!reset_once) {
+					//this.$element.removeClass('scroll-hidden');
+					if (settings.reset) {
+						//reset scrollbar to zero position at first							
+						content_wrap[scroll_direction] = 0;
+						bar_style[css_pos] = 0;
+					}
+					reset_once = true;
+				}
+
+				if (detached) setTrackPos();
+			} else {
+				active = false;
+				$track.hide();
+				$track.removeClass('scroll-active');
+				$content_wrap.css(max_css_size, '');
+			}
+
+			return; // this;
+		};
+		this.disable = function () {
+			content_wrap[scroll_direction] = 0;
+			bar_style[css_pos] = 0;
+
+			disabled = true;
+			active = false;
+			$track.hide();
+
+			this.$element.addClass('scroll-disabled');
+
+			$track.removeClass('scroll-active');
+			$content_wrap.css(max_css_size, '');
+		};
+		this.enable = function () {
+			disabled = false;
+			this.$element.removeClass('scroll-disabled');
+		};
+		this.destroy = function () {
+			active = false;
+			disabled = false;
+			created = false;
+
+			this.$element.removeClass('ace-scroll scroll-disabled scroll-active');
+			this.$element.off('.ace_scroll');
+
+			if (!detached) {
+				if (!vertical) {
+					//remove the extra wrapping div
+					$content_wrap.find('> div').children().unwrap();
+				}
+				$content_wrap.children().unwrap();
+				$content_wrap.remove();
+			}
+
+			$track.remove();
+
+			if (inline_style !== false) this.element.style.position = inline_style;
+
+			if (idleTimer != null) {
+				clearTimeout(idleTimer);
+				idleTimer = null;
+			}
+		};
+		this.modify = function (_settings) {
+			if (_settings) settings = $.extend({}, settings, _settings);
+
+			this.destroy();
+			this.create();
+			is_dirty = true;
+			this.reset(true);
+		};
+		this.update = function (_settings) {
+			if (_settings) settings = $.extend({}, settings, _settings);
+
+			this.size = settings.size || this.size;
+
+			this.lock = settings.mouseWheelLock || this.lock;
+			this.lock_anyway = settings.lockAnyway || this.lock_anyway;
+
+			hideOnIdle = settings.hideOnIdle || hideOnIdle;
+			hideDelay = settings.hideDelay || hideDelay;
+			observeContent = settings.observeContent || false;
+
+			dragEvent = settings.dragEvent || false;
+
+			if (typeof _settings.styleClass !== 'undefined') {
+				if (styleClass) $track.removeClass(styleClass);
+				styleClass = _settings.styleClass;
+				if (styleClass) $track.addClass(styleClass);
+				trackFlip = !!styleClass.match(/scroll\-left|scroll\-top/);
+			}
+		};
+
+		this.start = function () {
+			content_wrap[scroll_direction] = 0;
+		};
+		this.end = function () {
+			content_wrap[scroll_direction] = content_wrap[scroll_size];
+		};
+
+		this.hide = function () {
+			$track.hide();
+		};
+		this.show = function () {
+			$track.show();
+		};
+
+		this.update_scroll = function () {
+			move_bar = false;
+			bar_style[css_pos] = bar_pos + 'px';
+			content_wrap[scroll_direction] = parseInt(Math.round(bar_pos / ratio));
+		};
+
+		function mouse_down_track(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			var track_offset = $track.offset();
+			var track_pos = track_offset[css_pos]; //top for vertical, left for horizontal
+			var mouse_pos = vertical ? e.pageY : e.pageX;
+
+			if (mouse_pos > track_pos + bar_pos) {
+				bar_pos = mouse_pos - track_pos - bar_size + bar_size_2;
+				if (bar_pos > bar_max_pos) {
+					bar_pos = bar_max_pos;
+				}
+			} else {
+				bar_pos = mouse_pos - track_pos - bar_size_2;
+				if (bar_pos < 0) bar_pos = 0;
+			}
+
+			self.update_scroll();
+		}
+
+		var mouse_pos1 = -1,
+		    mouse_pos2 = -1;
+		function mouse_down_bar(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (vertical) {
+				mouse_pos2 = mouse_pos1 = e.pageY;
+			} else {
+				mouse_pos2 = mouse_pos1 = e.pageX;
+			}
+
+			mouse_track = true;
+			$('html').off('mousemove.ace_scroll').on('mousemove.ace_scroll', mouse_move_bar);
+			$(mouse_release_target).off('mouseup.ace_scroll').on('mouseup.ace_scroll', mouse_up_bar);
+
+			$track.addClass('active');
+			if (dragEvent) self.$element.trigger('drag.start');
+		}
+		function mouse_move_bar(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (vertical) {
+				mouse_pos2 = e.pageY;
+			} else {
+				mouse_pos2 = e.pageX;
+			}
+
+			if (mouse_pos2 - mouse_pos1 + bar_pos > bar_max_pos) {
+				mouse_pos2 = mouse_pos1 + bar_max_pos - bar_pos;
+			} else if (mouse_pos2 - mouse_pos1 + bar_pos < 0) {
+				mouse_pos2 = mouse_pos1 - bar_pos;
+			}
+			bar_pos = bar_pos + (mouse_pos2 - mouse_pos1);
+
+			mouse_pos1 = mouse_pos2;
+
+			if (bar_pos < 0) {
+				bar_pos = 0;
+			} else if (bar_pos > bar_max_pos) {
+				bar_pos = bar_max_pos;
+			}
+
+			self.update_scroll();
+		}
+		function mouse_up_bar(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			mouse_track = false;
+			$('html').off('.ace_scroll');
+			$(mouse_release_target).off('.ace_scroll');
+
+			$track.removeClass('active');
+			if (dragEvent) self.$element.trigger('drag.end');
+
+			if (active && hideOnIdle && !insideTrack) hideScrollbars();
+		}
+
+		var idleTimer = null;
+		var prevCheckTime = 0;
+		function checkContentChanges(hideSoon) {
+			//check if content size has been modified since last time?
+			//and with at least 1s delay
+			var newCheck = +new Date();
+			if (observeContent && newCheck - prevCheckTime > 1000) {
+				var newSize = content_wrap[scroll_size];
+				if (prevContentSize != newSize) {
+					prevContentSize = newSize;
+					is_dirty = true;
+					self.reset(true);
+				}
+				prevCheckTime = newCheck;
+			}
+
+			//show scrollbars when not idle anymore i.e. triggered by mousewheel, dragging, etc
+			if (active && hideOnIdle) {
+				if (idleTimer != null) {
+					clearTimeout(idleTimer);
+					idleTimer = null;
+				}
+				$track.addClass('not-idle');
+
+				if (!insideTrack && hideSoon == true) {
+					//hideSoon is false when mouse enters track
+					hideScrollbars();
+				}
+			}
+		}
+
+		function hideScrollbars() {
+			if (idleTimer != null) {
+				clearTimeout(idleTimer);
+				idleTimer = null;
+			}
+			idleTimer = setTimeout(function () {
+				idleTimer = null;
+				$track.removeClass('not-idle');
+			}, hideDelay);
+		}
+
+		//for detached scrollbars
+		function getTrackSize() {
+			$track.css('visibility', 'hidden').addClass('scroll-hover');
+			if (vertical) trackSize = parseInt($track.outerWidth()) || 0;else trackSize = parseInt($track.outerHeight()) || 0;
+			$track.css('visibility', '').removeClass('scroll-hover');
+		}
+		this.track_size = function () {
+			if (trackSize == 0) getTrackSize();
+			return trackSize;
+		};
+
+		//for detached scrollbars
+		function setTrackPos() {
+			if (updatePos === false) return;
+
+			var off = $content_wrap.offset(); //because we want it relative to parent not document
+			var left = off.left;
+			var top = off.top;
+
+			if (vertical) {
+				if (!trackFlip) {
+					left += $content_wrap.outerWidth() - trackSize;
+				}
+			} else {
+				if (!trackFlip) {
+					top += $content_wrap.outerHeight() - trackSize;
+				}
+			}
+
+			if (updatePos === true) $track.css({ top: parseInt(top), left: parseInt(left) });else if (updatePos === 'left') $track.css('left', parseInt(left));else if (updatePos === 'top') $track.css('top', parseInt(top));
+		}
+
+		this.create();
+		is_dirty = true;
+		this.reset(true);
+		prevContentSize = content_wrap[scroll_size];
+
+		return this;
+	};
+
+	$.fn.ace_scroll = function (option, value) {
+		var retval;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_scroll');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_scroll', data = new Ace_Scroll(this, options));
+			//else if(typeof options == 'object') data['modify'](options);
+			if (typeof option === 'string') retval = data[option](value);
+		});
+
+		return retval === undefined ? $set : retval;
+	};
+
+	$.fn.ace_scroll.defaults = {
+		'size': 200,
+		'horizontal': false,
+		'mouseWheel': true,
+		'mouseWheelLock': false,
+		'lockAnyway': false,
+		'styleClass': false,
+
+		'observeContent': false,
+		'hideOnIdle': false,
+		'hideDelay': 1500,
+
+		'hoverReset': true //reset scrollbar sizes on mouse hover because of possible sizing changes
+
+		, 'reset': false //true= set scrollTop = 0
+
+		, 'dragEvent': false,
+
+		'touchDrag': true,
+
+		'touchSwipe': false,
+
+		'scrollEvent': false //trigger scroll event
+
+
+		, 'detached': false,
+
+		'updatePos': true
+		/**
+  ,		
+  'track' : true,
+  'show' : false,
+  'dark': false,
+  'alwaysVisible': false,
+  'margin': false,
+  'thin': false,
+  'position': 'right'
+  */
+
+
+		/**
+  $(document).on('ace.settings.ace_scroll', function(e, name) {
+  	if(name == 'sidebar_collapsed') $('.ace-scroll').scroller('reset');
+  });
+  $(window).on('resize.ace_scroll', function() {
+  	$('.ace-scroll').scroller('reset');
+  });
+  */
+
+	};
+})(window.jQuery);
+
+/**
+ <b>Custom color picker element</b>. Converts html select elements to a dropdown color picker.
+*/
+(function ($, undefined) {
+	var Ace_Colorpicker = function Ace_Colorpicker(element, _options) {
+
+		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_colorpicker.defaults);
+		var options = $.extend({}, $.fn.ace_colorpicker.defaults, _options, attrib_values);
+
+		var $element = $(element);
+		var color_list = '';
+		var color_selected = '';
+		var selection = null;
+		var color_array = [];
+
+		$element.addClass('hide').find('option').each(function () {
+			var $class = 'colorpick-btn';
+			var color = this.value.replace(/[^\w\s,#\(\)\.]/g, '');
+			if (color.indexOf('number') >= 0) return; //ng
+			if (this.value != color) this.value = color;
+			if (this.selected) {
+				$class += ' selected';
+				color_selected = color;
+			}
+			color_array.push(color);
+			color_list += '<li><a class="' + $class + '" style="background-color:' + color + ';" data-color="' + color + '"></a></li>';
+		}).end().on('change.color', function () {
+			$element.next().find('.btn-colorpicker').css('background-color', this.value);
+		}).after('<div class="dropdown dropdown-colorpicker">\
+		<a data-toggle="dropdown" class="dropdown-toggle" ' + (options.auto_pos ? 'data-position="auto"' : '') + '><span class="btn-colorpicker" style="background-color:' + color_selected + '"></span></a><ul class="dropdown-menu' + (options.caret ? ' dropdown-caret' : '') + (options.pull_right ? ' dropdown-menu-right' : '') + '">' + color_list + '</ul></div>');
+
+		var dropdown = $element.next().find('.dropdown-menu');
+		dropdown.on(ace.click_event, function (e, inner_call) {
+			var a = $(e.target);
+			if (!a.is('.colorpick-btn')) return false;
+
+			if (selection) selection.removeClass('selected');
+			selection = a;
+			selection.addClass('selected');
+			var color = selection.data('color');
+
+			if (inner_call !== true) $element.val(color).trigger('change');
+			$element.next().find('.btn-colorpicker').css('background-color', color);
+
+			e.preventDefault();
+			return true; //to hide dropdown
+		});
+		selection = $element.next().find('a.selected');
+
+		this.pick = function (index, insert) {
+			if (typeof index === 'number') {
+				if (index >= color_array.length) return;
+				element.selectedIndex = index;
+				dropdown.find('a:eq(' + index + ')').trigger(ace.click_event, [true]);
+			} else if (typeof index === 'string') {
+				var color = index.replace(/[^\w\s,#\(\)\.]/g, '');
+				index = color_array.indexOf(color);
+
+				//add this color if it doesn't exist
+				if (index == -1 && insert === true) {
+					color_array.push(color);
+
+					$('<option />').appendTo($element).val(color);
+
+					$('<li><a class="colorpick-btn"></a></li>').appendTo(dropdown).find('a').css('background-color', color).data('color', color);
+
+					index = color_array.length - 1;
+				}
+
+				if (index == -1) return;
+				dropdown.find('a:eq(' + index + ')').trigger(ace.click_event, [true]);
+			}
+		};
+
+		this.destroy = function () {
+			$element.removeClass('hide') //.off('change.color')
+			.next().remove();
+			color_array = [];
+		};
+	};
+
+	$.fn.ace_colorpicker = function (option, value) {
+		var retval;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_colorpicker');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_colorpicker', data = new Ace_Colorpicker(this, options));
+			if (typeof option === 'string') retval = data[option](value);
+		});
+
+		return retval === undefined ? $set : retval;
+	};
+
+	$.fn.ace_colorpicker.defaults = {
+		'pull_right': false,
+		'caret': true,
+		'auto_pos': true
+	};
+})(window.jQuery);
+
+/**
+ <b>Ace file input element</b>. Custom, simple file input element to style browser's default file input.
+*/
+(function ($, undefined) {
+	var multiplible = 'multiple' in document.createElement('INPUT');
+	var hasFileList = 'FileList' in window; //file list enabled in modern browsers
+	var hasFileReader = 'FileReader' in window;
+	var hasFile = 'File' in window;
+
+	var Ace_File_Input = function Ace_File_Input(element, settings) {
+		var self = this;
+
+		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_file_input.defaults);
+		this.settings = $.extend({}, $.fn.ace_file_input.defaults, settings, attrib_values);
+
+		this.$element = $(element);
+		this.element = element;
+		this.disabled = false;
+		this.can_reset = true;
+
+		this.$element.off('change.ace_inner_call').on('change.ace_inner_call', function (e, ace_inner_call) {
+			if (self.disabled) return;
+
+			if (ace_inner_call === true) return; //this change event is called from above drop event and extra checkings are taken care of there
+			return handle_on_change.call(self);
+			//if(ret === false) e.preventDefault();
+		});
+
+		var parent_label = this.$element.closest('label').css({ 'display': 'block' });
+		var tagName = parent_label.length == 0 ? 'label' : 'span'; //if not inside a "LABEL" tag, use "LABEL" tag, otherwise use "SPAN"
+		this.$element.wrap('<' + tagName + ' class="ace-file-input" />');
+
+		this.apply_settings();
+		this.reset_input_field(); //for firefox as it keeps selected file after refresh
+	};
+	Ace_File_Input.error = {
+		'FILE_LOAD_FAILED': 1,
+		'IMAGE_LOAD_FAILED': 2,
+		'THUMBNAIL_FAILED': 3
+	};
+
+	Ace_File_Input.prototype.apply_settings = function () {
+		var self = this;
+
+		this.multi = this.$element.attr('multiple') && multiplible;
+		this.well_style = this.settings.style == 'well';
+
+		if (this.well_style) {
+			if (!this.settings.thumbnail) this.settings.thumbnail = 'small';
+			this.$element.parent().addClass('ace-file-multiple');
+		} else {
+			this.$element.parent().removeClass('ace-file-multiple');
+		}
+
+		this.$element.parent().find(':not(input[type=file])').remove(); //remove all except our input, good for when changing settings
+		this.$element.after('<span class="ace-file-container" data-title="' + this.settings.btn_choose + '"><span class="ace-file-name" data-title="' + this.settings.no_file + '">' + (this.settings.no_icon ? '<i class="' + ace.vars['icon'] + this.settings.no_icon + '"></i>' : '') + '</span></span>');
+		this.$label = this.$element.next();
+		this.$container = this.$element.closest('.ace-file-input');
+
+		var remove_btn = !!this.settings.icon_remove;
+		if (remove_btn) {
+			var btn = $('<a class="remove" href="#"><i class="' + ace.vars['icon'] + this.settings.icon_remove + '"></i></a>').appendTo(this.$element.parent());
+
+			btn.on(ace.click_event, function (e) {
+				e.preventDefault();
+				if (!self.can_reset) return false;
+
+				var ret = true;
+				if (self.settings.before_remove) ret = self.settings.before_remove.call(self.element);
+				if (!ret) return false;
+
+				var r = self.reset_input();
+				return false;
+			});
+		}
+
+		if (this.settings.droppable && hasFileList) {
+			enable_drop_functionality.call(this);
+		}
+	};
+
+	Ace_File_Input.prototype.show_file_list = function ($files, inner_call) {
+		var files = typeof $files === "undefined" ? this.$element.data('ace_input_files') : $files;
+		if (!files || files.length == 0) return;
+
+		//////////////////////////////////////////////////////////////////
+
+		if (this.well_style) {
+			this.$label.find('.ace-file-name').remove();
+			if (!this.settings.btn_change) this.$label.addClass('hide-placeholder');
+		}
+		this.$label.attr('data-title', this.settings.btn_change).addClass('selected');
+
+		for (var i = 0; i < files.length; i++) {
+			var filename = '',
+			    format = false;
+			if (typeof files[i] === "string") filename = files[i];else if (hasFile && files[i] instanceof File) filename = $.trim(files[i].name);else if (files[i] instanceof Object && files[i].hasOwnProperty('name')) {
+				//format & name specified by user (pre-displaying name, etc)
+				filename = files[i].name;
+				if (files[i].hasOwnProperty('type')) format = files[i].type;
+				if (!files[i].hasOwnProperty('path')) files[i].path = files[i].name;
+			} else continue;
+
+			var index = filename.lastIndexOf("\\") + 1;
+			if (index == 0) index = filename.lastIndexOf("/") + 1;
+			filename = filename.substr(index);
+
+			if (format == false) {
+				if (/\.(jpe?g|png|gif|svg|bmp|tiff?)$/i.test(filename)) {
+					format = 'image';
+				} else if (/\.(mpe?g|flv|mov|avi|swf|mp4|mkv|webm|wmv|3gp)$/i.test(filename)) {
+					format = 'video';
+				} else if (/\.(mp3|ogg|wav|wma|amr|aac)$/i.test(filename)) {
+					format = 'audio';
+				} else format = 'file';
+			}
+
+			var fileIcons = {
+				'file': 'fa fa-file',
+				'image': 'fa fa-picture-o file-image',
+				'video': 'fa fa-film file-video',
+				'audio': 'fa fa-music file-audio'
+			};
+			var fileIcon = fileIcons[format];
+
+			if (!this.well_style) this.$label.find('.ace-file-name').attr({ 'data-title': filename }).find(ace.vars['.icon']).attr('class', ace.vars['icon'] + fileIcon);else {
+				this.$label.append('<span class="ace-file-name" data-title="' + filename + '"><i class="' + ace.vars['icon'] + fileIcon + '"></i></span>');
+				var type = inner_call === true && hasFile && files[i] instanceof File ? $.trim(files[i].type) : '';
+				var can_preview = hasFileReader && this.settings.thumbnail && (type.length > 0 && type.match('image') || type.length == 0 && format == 'image'); //the second one is for older Android's default browser which gives an empty text for file.type
+				if (can_preview) {
+					var self = this;
+					$.when(preview_image.call(this, files[i])).fail(function (result) {
+						//called on failure to load preview
+						if (self.settings.preview_error) self.settings.preview_error.call(self, filename, result.code);
+					});
+				}
+			}
+		}
+
+		return true;
+	};
+
+	Ace_File_Input.prototype.reset_input = function () {
+		this.reset_input_ui();
+		this.reset_input_field();
+	};
+
+	Ace_File_Input.prototype.reset_input_ui = function () {
+		this.$label.attr({ 'data-title': this.settings.btn_choose, 'class': 'ace-file-container' }).find('.ace-file-name:first').attr({ 'data-title': this.settings.no_file, 'class': 'ace-file-name' }).find(ace.vars['.icon']).attr('class', ace.vars['icon'] + this.settings.no_icon).prev('img').remove();
+		if (!this.settings.no_icon) this.$label.find(ace.vars['.icon']).remove();
+
+		this.$label.find('.ace-file-name').not(':first').remove();
+
+		this.reset_input_data();
+
+		//if(ace.vars['old_ie']) ace.helper.redraw(this.$container[0]);
+	};
+	Ace_File_Input.prototype.reset_input_field = function () {
+		//http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery/13351234#13351234
+		this.$element.wrap('<form>').parent().get(0).reset();
+		this.$element.unwrap();
+
+		//strangely when reset is called on this temporary inner form
+		//only **IE9/10** trigger 'reset' on the outer form as well
+		//and as we have mentioned to reset input on outer form reset
+		//it causes infinite recusrsion by coming back to reset_input_field
+		//thus calling reset again and again and again
+		//so because when "reset" button of outer form is hit, file input is automatically reset
+		//we just reset_input_ui to avoid recursion
+	};
+	Ace_File_Input.prototype.reset_input_data = function () {
+		if (this.$element.data('ace_input_files')) {
+			this.$element.removeData('ace_input_files');
+			this.$element.removeData('ace_input_method');
+		}
+	};
+
+	Ace_File_Input.prototype.enable_reset = function (can_reset) {
+		this.can_reset = can_reset;
+	};
+
+	Ace_File_Input.prototype.disable = function () {
+		this.disabled = true;
+		this.$element.attr('disabled', 'disabled').addClass('disabled');
+	};
+	Ace_File_Input.prototype.enable = function () {
+		this.disabled = false;
+		this.$element.removeAttr('disabled').removeClass('disabled');
+	};
+
+	Ace_File_Input.prototype.files = function () {
+		return $(this).data('ace_input_files') || null;
+	};
+	Ace_File_Input.prototype.method = function () {
+		return $(this).data('ace_input_method') || '';
+	};
+
+	Ace_File_Input.prototype.update_settings = function (new_settings) {
+		this.settings = $.extend({}, this.settings, new_settings);
+		this.apply_settings();
+	};
+
+	Ace_File_Input.prototype.loading = function (is_loading) {
+		if (is_loading === false) {
+			this.$container.find('.ace-file-overlay').remove();
+			this.element.removeAttribute('readonly');
+		} else {
+			var inside = typeof is_loading === 'string' ? is_loading : '<i class="overlay-content fa fa-spin fa-spinner orange2 fa-2x"></i>';
+			var loader = this.$container.find('.ace-file-overlay');
+			if (loader.length == 0) {
+				loader = $('<div class="ace-file-overlay"></div>').appendTo(this.$container);
+				loader.on('click tap', function (e) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+					return false;
+				});
+
+				this.element.setAttribute('readonly', 'true'); //for IE
+			}
+			loader.empty().append(inside);
+		}
+	};
+
+	var enable_drop_functionality = function enable_drop_functionality() {
+		var self = this;
+
+		var dropbox = this.$element.parent();
+		dropbox.off('dragenter').on('dragenter', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}).off('dragover').on('dragover', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}).off('drop').on('drop', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (self.disabled) return;
+
+			var dt = e.originalEvent.dataTransfer;
+			var file_list = dt.files;
+			if (!self.multi && file_list.length > 1) {
+				//single file upload, but dragged multiple files
+				var tmpfiles = [];
+				tmpfiles.push(file_list[0]);
+				file_list = tmpfiles; //keep only first file
+			}
+
+			file_list = processFiles.call(self, file_list, true); //true means files have been selected, not dropped
+			if (file_list === false) return false;
+
+			self.$element.data('ace_input_method', 'drop');
+			self.$element.data('ace_input_files', file_list); //save files data to be used later by user
+
+			self.show_file_list(file_list, true);
+
+			self.$element.triggerHandler('change', [true]); //true means ace_inner_call
+			return true;
+		});
+	};
+
+	var handle_on_change = function handle_on_change() {
+		var file_list = this.element.files || [this.element.value]; /** make it an array */
+
+		file_list = processFiles.call(this, file_list, false); //false means files have been selected, not dropped
+		if (file_list === false) return false;
+
+		this.$element.data('ace_input_method', 'select');
+		this.$element.data('ace_input_files', file_list);
+
+		this.show_file_list(file_list, true);
+
+		return true;
+	};
+
+	var preview_image = function preview_image(file) {
+		var self = this;
+		var $span = self.$label.find('.ace-file-name:last'); //it should be out of onload, otherwise all onloads may target the same span because of delays
+
+		var deferred = new $.Deferred();
+
+		var getImage = function getImage(src, $file) {
+			$span.prepend("<img class='middle' style='display:none;' />");
+			var img = $span.find('img:last').get(0);
+
+			$(img).one('load', function () {
+				imgLoaded.call(null, img, $file);
+			}).one('error', function () {
+				imgFailed.call(null, img);
+			});
+
+			img.src = src;
+		};
+		var imgLoaded = function imgLoaded(img, $file) {
+			//if image loaded successfully
+
+			var size = self.settings['previewSize'];
+
+			if (!size) {
+				if (self.settings['previewWidth'] || self.settings['previewHeight']) {
+					size = { previewWidth: self.settings['previewWidth'], previewHeight: self.settings['previewHeight'] };
+				} else {
+					size = 50;
+					if (self.settings.thumbnail == 'large') size = 150;
+				}
+			}
+			if (self.settings.thumbnail == 'fit') size = $span.width();else if (typeof size == 'number') size = parseInt(Math.min(size, $span.width()));
+
+			var thumb = get_thumbnail(img, size /**, file.type*/);
+			if (thumb == null) {
+				//if making thumbnail fails
+				$(this).remove();
+				deferred.reject({ code: Ace_File_Input.error['THUMBNAIL_FAILED'] });
+				return;
+			}
+
+			var showPreview = true;
+			//add width/height info to "file" and trigger preview finished event for each image!
+			if ($file && $file instanceof File) {
+				$file.width = thumb.width;
+				$file.height = thumb.height;
+				self.$element.trigger('file.preview.ace', { 'file': $file });
+
+				var event;
+				self.$element.trigger(event = new $.Event('file.preview.ace'), { 'file': $file });
+				if (event.isDefaultPrevented()) showPreview = false;
+			}
+
+			if (showPreview) {
+				var w = thumb.previewWidth,
+				    h = thumb.previewHeight;
+				if (self.settings.thumbnail == 'small') {
+					w = h = parseInt(Math.max(w, h));
+				} else $span.addClass('large');
+
+				$(img).css({ 'background-image': 'url(' + thumb.src + ')', width: w, height: h }).data('thumb', thumb.src).attr({ src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==' }).show();
+			}
+
+			///////////////////
+			deferred.resolve();
+		};
+		var imgFailed = function imgFailed(img) {
+			//for example when a file has image extenstion, but format is something else
+			$span.find('img').remove();
+			deferred.reject({ code: Ace_File_Input.error['IMAGE_LOAD_FAILED'] });
+		};
+
+		if (hasFile && file instanceof File) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				getImage(e.target.result, file);
+			};
+			reader.onerror = function (e) {
+				deferred.reject({ code: Ace_File_Input.error['FILE_LOAD_FAILED'] });
+			};
+			reader.readAsDataURL(file);
+		} else {
+			if (file instanceof Object && file.hasOwnProperty('path')) {
+				getImage(file.path, null); //file is a file name (path) --- this is used to pre-show user-selected image
+			}
+		}
+
+		return deferred.promise();
+	};
+
+	var get_thumbnail = function get_thumbnail(img, size, type) {
+		var imgWidth = img.width,
+		    imgHeight = img.height;
+
+		//**IE10** is not giving correct width using img.width so we use $(img).width()
+		imgWidth = imgWidth > 0 ? imgWidth : $(img).width();
+		imgHeight = imgHeight > 0 ? imgHeight : $(img).height();
+
+		var previewSize = false,
+		    previewHeight = false,
+		    previewWidth = false;
+		if (typeof size == 'number') previewSize = size;else if (size instanceof Object) {
+			if (size['previewWidth'] && !size['previewHeight']) previewWidth = size['previewWidth'];else if (size['previewHeight'] && !size['previewWidth']) previewHeight = size['previewHeight'];else if (size['previewWidth'] && size['previewHeight']) {
+				previewWidth = size['previewWidth'];
+				previewHeight = size['previewHeight'];
+			}
+		}
+
+		if (previewSize) {
+			if (imgWidth > imgHeight) {
+				previewWidth = previewSize;
+				previewHeight = parseInt(imgHeight / imgWidth * previewWidth);
+			} else {
+				previewHeight = previewSize;
+				previewWidth = parseInt(imgWidth / imgHeight * previewHeight);
+			}
+		} else {
+			if (!previewHeight && previewWidth) {
+				previewHeight = parseInt(imgHeight / imgWidth * previewWidth);
+			} else if (previewHeight && !previewWidth) {
+				previewWidth = parseInt(imgWidth / imgHeight * previewHeight);
+			}
+		}
+
+		var dataURL;
+		try {
+			var canvas = document.createElement('canvas');
+			canvas.width = previewWidth;canvas.height = previewHeight;
+			var context = canvas.getContext('2d');
+			context.drawImage(img, 0, 0, imgWidth, imgHeight, 0, 0, previewWidth, previewHeight);
+			dataURL = canvas.toDataURL();
+		} catch (e) {
+			dataURL = null;
+		}
+		if (!dataURL) return null;
+
+		//there was only one image that failed in firefox completely randomly! so let's double check things
+		if (!/^data\:image\/(png|jpe?g|gif);base64,[0-9A-Za-z\+\/\=]+$/.test(dataURL)) dataURL = null;
+		if (!dataURL) return null;
+
+		return { src: dataURL, previewWidth: previewWidth, previewHeight: previewHeight, width: imgWidth, height: imgHeight };
+	};
+
+	var processFiles = function processFiles(file_list, dropped) {
+		var ret = checkFileList.call(this, file_list, dropped);
+		if (ret === -1) {
+			this.reset_input();
+			return false;
+		}
+		if (!ret || ret.length == 0) {
+			if (!this.$element.data('ace_input_files')) this.reset_input();
+			//if nothing selected before, reset because of the newly unacceptable (ret=false||length=0) selection
+			//otherwise leave the previous selection intact?!!!
+			return false;
+		}
+		if (ret instanceof Array || hasFileList && ret instanceof FileList) file_list = ret;
+
+		ret = true;
+		if (this.settings.before_change) ret = this.settings.before_change.call(this.element, file_list, dropped);
+		if (ret === -1) {
+			this.reset_input();
+			return false;
+		}
+		if (!ret || ret.length == 0) {
+			if (!this.$element.data('ace_input_files')) this.reset_input();
+			return false;
+		}
+
+		//inside before_change you can return a modified File Array as result
+		if (ret instanceof Array || hasFileList && ret instanceof FileList) file_list = ret;
+
+		return file_list;
+	};
+
+	var getExtRegex = function getExtRegex(ext) {
+		if (!ext) return null;
+		if (typeof ext === 'string') ext = [ext];
+		if (ext.length == 0) return null;
+		return new RegExp("\.(?:" + ext.join('|') + ")$", "i");
+	};
+	var getMimeRegex = function getMimeRegex(mime) {
+		if (!mime) return null;
+		if (typeof mime === 'string') mime = [mime];
+		if (mime.length == 0) return null;
+		return new RegExp("^(?:" + mime.join('|').replace(/\//g, "\\/") + ")$", "i");
+	};
+	var checkFileList = function checkFileList(files, dropped) {
+		var allowExt = getExtRegex(this.settings.allowExt);
+
+		var denyExt = getExtRegex(this.settings.denyExt);
+
+		var allowMime = getMimeRegex(this.settings.allowMime);
+
+		var denyMime = getMimeRegex(this.settings.denyMime);
+
+		var maxSize = this.settings.maxSize || false;
+
+		if (!(allowExt || denyExt || allowMime || denyMime || maxSize)) return true; //no checking required
+
+
+		var safe_files = [];
+		var error_list = {};
+		for (var f = 0; f < files.length; f++) {
+			var file = files[f];
+
+			//file is either a string(file name) or a File object
+			var filename = !hasFile ? file : file.name;
+			if (allowExt && !allowExt.test(filename)) {
+				//extension not matching whitelist, so drop it
+				if (!('ext' in error_list)) error_list['ext'] = [];
+				error_list['ext'].push(filename);
+
+				continue;
+			} else if (denyExt && denyExt.test(filename)) {
+				//extension is matching blacklist, so drop it
+				if (!('ext' in error_list)) error_list['ext'] = [];
+				error_list['ext'].push(filename);
+
+				continue;
+			}
+
+			var type;
+			if (!hasFile) {
+				//in browsers that don't support FileReader API
+				safe_files.push(file);
+				continue;
+			} else if ((type = $.trim(file.type)).length > 0) {
+				//there is a mimetype for file so let's check against are rules
+				if (allowMime && !allowMime.test(type)) {
+					//mimeType is not matching whitelist, so drop it
+					if (!('mime' in error_list)) error_list['mime'] = [];
+					error_list['mime'].push(filename);
+					continue;
+				} else if (denyMime && denyMime.test(type)) {
+					//mimeType is matching blacklist, so drop it
+					if (!('mime' in error_list)) error_list['mime'] = [];
+					error_list['mime'].push(filename);
+					continue;
+				}
+			}
+
+			if (maxSize && file.size > maxSize) {
+				//file size is not acceptable
+				if (!('size' in error_list)) error_list['size'] = [];
+				error_list['size'].push(filename);
+				continue;
+			}
+
+			safe_files.push(file);
+		}
+
+		if (safe_files.length == files.length) return files; //return original file list if all are valid
+
+		/////////
+		var error_count = { 'ext': 0, 'mime': 0, 'size': 0 };
+		if ('ext' in error_list) error_count['ext'] = error_list['ext'].length;
+		if ('mime' in error_list) error_count['mime'] = error_list['mime'].length;
+		if ('size' in error_list) error_count['size'] = error_list['size'].length;
+
+		var event;
+		this.$element.trigger(event = new $.Event('file.error.ace'), {
+			'file_count': files.length,
+			'invalid_count': files.length - safe_files.length,
+			'error_list': error_list,
+			'error_count': error_count,
+			'dropped': dropped
+		});
+		if (event.isDefaultPrevented()) return -1; //it will reset input
+		//////////
+
+		return safe_files; //return safe_files
+	};
+
+	///////////////////////////////////////////
+	$.fn.aceFileInput = $.fn.ace_file_input = function (option, value) {
+		var retval;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_file_input');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_file_input', data = new Ace_File_Input(this, options));
+			if (typeof option === 'string') retval = data[option](value);
+		});
+
+		return retval === undefined ? $set : retval;
+	};
+
+	$.fn.ace_file_input.defaults = {
+		style: false,
+		no_file: 'No File ...',
+		no_icon: 'fa fa-upload',
+		btn_choose: 'Choose',
+		btn_change: 'Change',
+		icon_remove: 'fa fa-times',
+		droppable: false,
+		thumbnail: false, //large, fit, small
+
+		allowExt: null,
+		denyExt: null,
+		allowMime: null,
+		denyMime: null,
+		maxSize: false,
+
+		previewSize: false,
+		previewWidth: false,
+		previewHeight: false,
+
+		//callbacks
+		before_change: null,
+		before_remove: null,
+		preview_error: null
+	};
+})(window.jQuery);
+
+/**
+ <b>Wysiwyg</b>. A wrapper for Bootstrap wyswiwyg plugin.
+ It's just a wrapper so you still need to include Bootstrap wysiwyg script first.
+*/
+(function ($, undefined) {
+	$.fn.ace_wysiwyg = function ($options, undefined) {
+		var options = $.extend({
+			speech_button: true,
+			wysiwyg: {}
+		}, $options);
+
+		var color_values = ['#ac725e', '#d06b64', '#f83a22', '#fa573c', '#ff7537', '#ffad46', '#42d692', '#16a765', '#7bd148', '#b3dc6c', '#fbe983', '#fad165', '#92e1c0', '#9fe1e7', '#9fc6e7', '#4986e7', '#9a9cff', '#b99aff', '#c2c2c2', '#cabdbf', '#cca6ac', '#f691b2', '#cd74e6', '#a47ae2', '#444444'];
+
+		var button_defaults = {
+			'font': {
+				values: ['Arial', 'Courier', 'Comic Sans MS', 'Helvetica', 'Open Sans', 'Tahoma', 'Verdana'],
+				icon: 'fa fa-font',
+				title: 'Font'
+			},
+			'fontSize': {
+				values: { 5: 'Huge', 3: 'Normal', 1: 'Small' },
+				icon: 'fa fa-text-height',
+				title: 'Font Size'
+			},
+			'bold': {
+				icon: 'fa fa-bold',
+				title: 'Bold (Ctrl/Cmd+B)'
+			},
+			'italic': {
+				icon: 'fa fa-italic',
+				title: 'Italic (Ctrl/Cmd+I)'
+			},
+			'strikethrough': {
+				icon: 'fa fa-strikethrough',
+				title: 'Strikethrough'
+			},
+			'underline': {
+				icon: 'fa fa-underline',
+				title: 'Underline'
+			},
+			'insertunorderedlist': {
+				icon: 'fa fa-list-ul',
+				title: 'Bullet list'
+			},
+			'insertorderedlist': {
+				icon: 'fa fa-list-ol',
+				title: 'Number list'
+			},
+			'outdent': {
+				icon: 'fa fa-outdent',
+				title: 'Reduce indent (Shift+Tab)'
+			},
+			'indent': {
+				icon: 'fa fa-indent',
+				title: 'Indent (Tab)'
+			},
+			'justifyleft': {
+				icon: 'fa fa-align-left',
+				title: 'Align Left (Ctrl/Cmd+L)'
+			},
+			'justifycenter': {
+				icon: 'fa fa-align-center',
+				title: 'Center (Ctrl/Cmd+E)'
+			},
+			'justifyright': {
+				icon: 'fa fa-align-right',
+				title: 'Align Right (Ctrl/Cmd+R)'
+			},
+			'justifyfull': {
+				icon: 'fa fa-align-justify',
+				title: 'Justify (Ctrl/Cmd+J)'
+			},
+			'createLink': {
+				icon: 'fa fa-link',
+				title: 'Hyperlink',
+				button_text: 'Add',
+				placeholder: 'URL',
+				button_class: 'btn-primary'
+			},
+			'unlink': {
+				icon: 'fa fa-chain-broken',
+				title: 'Remove Hyperlink'
+			},
+			'insertImage': {
+				icon: 'fa fa-picture-o',
+				title: 'Insert picture',
+				button_text: '<i class="' + ace.vars['icon'] + 'fa fa-file"></i> Choose Image &hellip;',
+				placeholder: 'Image URL',
+				button_insert: 'Insert',
+				button_class: 'btn-success',
+				button_insert_class: 'btn-primary',
+				choose_file: true //show the choose file button?
+			},
+			'foreColor': {
+				values: color_values,
+				title: 'Change Color'
+			},
+			'backColor': {
+				values: color_values,
+				title: 'Change Background Color'
+			},
+			'undo': {
+				icon: 'fa fa-undo',
+				title: 'Undo (Ctrl/Cmd+Z)'
+			},
+			'redo': {
+				icon: 'fa fa-repeat',
+				title: 'Redo (Ctrl/Cmd+Y)'
+			},
+			'viewSource': {
+				icon: 'fa fa-code',
+				title: 'View Source'
+			}
+		};
+
+		var toolbar_buttons = options.toolbar || ['font', null, 'fontSize', null, 'bold', 'italic', 'strikethrough', 'underline', null, 'insertunorderedlist', 'insertorderedlist', 'outdent', 'indent', null, 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', null, 'createLink', 'unlink', null, 'insertImage', null, 'foreColor', null, 'undo', 'redo', null, 'viewSource'];
+
+		this.each(function () {
+			var toolbar = ' <div class="wysiwyg-toolbar btn-toolbar center"> <div class="btn-group"> ';
+
+			for (var tb in toolbar_buttons) {
+				if (toolbar_buttons.hasOwnProperty(tb)) {
+					var button = toolbar_buttons[tb];
+					if (button === null) {
+						toolbar += ' </div> <div class="btn-group"> ';
+						continue;
+					}
+
+					if (typeof button == "string" && button in button_defaults) {
+						button = button_defaults[button];
+						button.name = toolbar_buttons[tb];
+					} else if ((typeof button === 'undefined' ? 'undefined' : _typeof(button)) == "object" && button.name in button_defaults) {
+						button = $.extend(button_defaults[button.name], button);
+					} else continue;
+
+					var className = "className" in button ? button.className : 'btn-default';
+					switch (button.name) {
+						case 'font':
+							toolbar += ' <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i><i class="' + ace.vars['icon'] + 'fa fa-angle-down icon-on-right"></i></a> ';
+							toolbar += ' <ul class="dropdown-menu dropdown-light dropdown-caret">';
+							for (var font in button.values) {
+								if (button.values.hasOwnProperty(font)) toolbar += ' <li><a data-edit="fontName ' + button.values[font] + '" style="font-family:\'' + button.values[font] + '\'">' + button.values[font] + '</a></li> ';
+							}toolbar += ' </ul>';
+							break;
+
+						case 'fontSize':
+							toolbar += ' <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i>&nbsp;<i class="' + ace.vars['icon'] + 'fa fa-angle-down icon-on-right"></i></a> ';
+							toolbar += ' <ul class="dropdown-menu dropdown-light dropdown-caret"> ';
+							for (var size in button.values) {
+								if (button.values.hasOwnProperty(size)) toolbar += ' <li><a data-edit="fontSize ' + size + '"><font size="' + size + '">' + button.values[size] + '</font></a></li> ';
+							}toolbar += ' </ul> ';
+							break;
+
+						case 'createLink':
+							toolbar += ' <div class="btn-group"> <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
+							toolbar += ' <div class="dropdown-menu dropdown-caret dropdown-menu-right">\
+							 <div class="input-group">\
+								<input class="form-control" placeholder="' + button.placeholder + '" type="text" data-edit="' + button.name + '" />\
+								<span class="input-group-btn">\
+									<button class="btn btn-sm ' + button.button_class + '" type="button">' + button.button_text + '</button>\
+								</span>\
+							 </div>\
+						</div> </div>';
+							break;
+
+						case 'insertImage':
+							toolbar += ' <div class="btn-group"> <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
+							toolbar += ' <div class="dropdown-menu dropdown-caret dropdown-menu-right">\
+							 <div class="input-group">\
+								<input class="form-control" placeholder="' + button.placeholder + '" type="text" data-edit="' + button.name + '" />\
+								<span class="input-group-btn">\
+									<button class="btn btn-sm ' + button.button_insert_class + '" type="button">' + button.button_insert + '</button>\
+								</span>\
+							 </div>';
+							if (button.choose_file && 'FileReader' in window) toolbar += '<div class="space-2"></div>\
+							 <label class="center block no-margin-bottom">\
+								<button class="btn btn-sm ' + button.button_class + ' wysiwyg-choose-file" type="button">' + button.button_text + '</button>\
+								<input type="file" data-edit="' + button.name + '" />\
+							  </label>';
+							toolbar += ' </div> </div>';
+							break;
+
+						case 'foreColor':
+						case 'backColor':
+							toolbar += ' <select class="hide wysiwyg_colorpicker" title="' + button.title + '"> ';
+							$.each(button.values, function (_, color) {
+								toolbar += ' <option value="' + color + '">' + color + '</option> ';
+							});
+							toolbar += ' </select> ';
+							toolbar += ' <input style="display:none;" disabled class="hide" type="text" data-edit="' + button.name + '" /> ';
+							break;
+
+						case 'viewSource':
+							toolbar += ' <a class="btn btn-sm ' + className + '" data-view="source" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
+							break;
+						default:
+							toolbar += ' <a class="btn btn-sm ' + className + '" data-edit="' + button.name + '" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
+							break;
+					}
+				}
+			}toolbar += ' </div> ';
+			////////////
+			var speech_input;
+			if (options.speech_button && 'onwebkitspeechchange' in (speech_input = document.createElement('input'))) {
+				toolbar += ' <input class="wysiwyg-speech-input" type="text" data-edit="inserttext" x-webkit-speech />';
+			}
+			speech_input = null;
+			////////////
+			toolbar += ' </div> ';
+
+			//if we have a function to decide where to put the toolbar, then call that
+			if (options.toolbar_place) toolbar = options.toolbar_place.call(this, toolbar);
+			//otherwise put it just before our DIV
+			else toolbar = $(this).before(toolbar).prev();
+
+			if ($.fn.tooltip) toolbar.find('a[title]').tooltip({ animation: false, container: 'body' });
+
+			toolbar.find('.dropdown-menu input[type=text]').on('click', function () {
+				return false;
+			}).on('change', function () {
+				$(this).closest('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');
+			}).on('keydown', function (e) {
+				if (e.which == 27) {
+					this.value = '';
+					$(this).change();
+				} else if (e.which == 13) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).change();
+				}
+			});
+
+			toolbar.find('input[type=file]').prev().on(ace.click_event, function (e) {
+				$(this).next().click();
+			});
+			toolbar.find('.wysiwyg_colorpicker').each(function () {
+				var el = $(this).ace_colorpicker({ pull_right: true }).change(function () {
+					$(this).nextAll('input').eq(0).val(this.value).change();
+				}).next().find('.btn-colorpicker');
+
+				if ($.fn.tooltip) el.tooltip({ title: this.title, animation: false, container: 'body' });
+			});
+
+			var self = $(this);
+			//view source
+			var view_source = false;
+			toolbar.find('a[data-view=source]').on('click', function (e) {
+				e.preventDefault();
+
+				if (!view_source) {
+					$('<textarea />').css({ 'width': self.outerWidth(), 'height': self.outerHeight() }).val(self.html()).insertAfter(self);
+					self.hide();
+
+					$(this).addClass('active');
+				} else {
+					var textarea = self.next();
+					self.html(textarea.val()).show();
+					textarea.remove();
+
+					$(this).removeClass('active');
+				}
+
+				view_source = !view_source;
+			});
+
+			var $options = $.extend({}, { activeToolbarClass: 'active', toolbarSelector: toolbar }, options.wysiwyg || {});
+			$(this).wysiwyg($options);
+		});
+
+		return this;
+	};
+})(window.jQuery);
+
+/**
+ <b>Wizard</b>. A wrapper for FuelUX wizard element.
+ It's just a wrapper so you still need to include FuelUX wizard script first.
+*/
+(function ($, undefined) {
+	$.fn.aceWizard = $.fn.ace_wizard = function (options) {
+
+		this.each(function () {
+			var $this = $(this);
+			$this.wizard();
+
+			if (ace.vars['old_ie']) $this.find('ul.steps > li').last().addClass('last-child');
+
+			var buttons = options && options['buttons'] ? $(options['buttons']) : $this.siblings('.wizard-actions').eq(0);
+			var $wizard = $this.data('fu.wizard');
+			$wizard.$prevBtn.remove();
+			$wizard.$nextBtn.remove();
+
+			$wizard.$prevBtn = buttons.find('.btn-prev').eq(0).on(ace.click_event, function () {
+				$wizard.previous();
+			}).attr('disabled', 'disabled');
+			$wizard.$nextBtn = buttons.find('.btn-next').eq(0).on(ace.click_event, function () {
+				$wizard.next();
+			}).removeAttr('disabled');
+			$wizard.nextText = $wizard.$nextBtn.text();
+
+			var step = options && (options.selectedItem && options.selectedItem.step || options.step);
+			if (step) {
+				$wizard.currentStep = step;
+				$wizard.setState();
+			}
+		});
+
+		return this;
+	};
+})(window.jQuery);
+
+/**
+ <b>Content Slider</b>. with custom content and elements based on Bootstrap modals.
+*/
+(function ($, undefined) {
+	var $window = $(window);
+
+	function Aside(modal, settings) {
+		var self = this;
+
+		var $modal = $(modal);
+		var placement = 'right',
+		    vertical = false;
+		var hasFade = $modal.hasClass('fade'); //Bootstrap enables transition only when modal is ".fade"
+
+		var attrib_values = ace.helper.getAttrSettings(modal, $.fn.ace_aside.defaults);
+		this.settings = $.extend({}, $.fn.ace_aside.defaults, settings, attrib_values);
+
+		//if no scroll style specified and modal has dark background, let's make scrollbars 'white'
+		if (this.settings.background && !settings.scroll_style && !attrib_values.scroll_style) {
+			this.settings.scroll_style = 'scroll-white no-track';
+		}
+
+		this.container = this.settings.container;
+		if (this.container) {
+			try {
+				if ($(this.container).get(0) == document.body) this.container = null;
+			} catch (e) {}
+		}
+		if (this.container) {
+			this.settings.backdrop = false; //no backdrop when inside another element?
+			$modal.addClass('aside-contained');
+		}
+
+		var dialog = $modal.find('.modal-dialog');
+		var content = $modal.find('.modal-content');
+		var delay = 300;
+
+		this.initiate = function () {
+			modal.className = modal.className.replace(/(\s|^)aside\-(right|top|left|bottom)(\s|$)/ig, '$1$3');
+
+			placement = this.settings.placement;
+			if (placement) placement = $.trim(placement.toLowerCase());
+			if (!placement || !/right|top|left|bottom/.test(placement)) placement = 'right';
+
+			$modal.attr('data-placement', placement);
+			$modal.addClass('aside-' + placement);
+
+			if (/right|left/.test(placement)) {
+				vertical = true;
+				$modal.addClass('aside-vc'); //vertical
+			} else $modal.addClass('aside-hz'); //horizontal
+
+			if (this.settings.fixed) $modal.addClass('aside-fixed');
+			if (this.settings.background) $modal.addClass('aside-dark');
+			if (this.settings.offset) $modal.addClass('navbar-offset');
+
+			if (!this.settings.transition) $modal.addClass('transition-off');
+
+			$modal.addClass('aside-hidden');
+
+			this.insideContainer();
+
+			/////////////////////////////
+
+			dialog = $modal.find('.modal-dialog');
+			content = $modal.find('.modal-content');
+
+			if (!this.settings.body_scroll) {
+				//don't allow body scroll when modal is open
+				$modal.on('mousewheel.aside DOMMouseScroll.aside touchmove.aside pointermove.aside', function (e) {
+					if (!$.contains(content[0], e.target)) {
+						e.preventDefault();
+						return false;
+					}
+				});
+			}
+
+			if (this.settings.backdrop == false) {
+				$modal.addClass('no-backdrop');
+			}
+		};
+
+		this.show = function () {
+			if (this.settings.backdrop == false) {
+				try {
+					$modal.data('bs.modal').$backdrop.remove();
+				} catch (e) {}
+			}
+
+			if (this.container) $(this.container).addClass('overflow-hidden');else $modal.css('position', 'fixed');
+
+			$modal.removeClass('aside-hidden');
+		};
+
+		this.hide = function () {
+			if (this.container) {
+				this.container.addClass('overflow-hidden');
+
+				if (ace.vars['firefox']) {
+					//firefox needs a bit of forcing re-calculation
+					modal.offsetHeight;
+				}
+			}
+
+			toggleButton();
+
+			if (ace.vars['transition'] && !hasFade) {
+				$modal.one('bsTransitionEnd', function () {
+					$modal.addClass('aside-hidden');
+					$modal.css('position', '');
+
+					if (self.container) self.container.removeClass('overflow-hidden');
+				}).emulateTransitionEnd(delay);
+			}
+		};
+
+		this.shown = function () {
+			toggleButton();
+			$('body').removeClass('modal-open').css('padding-right', '');
+
+			if (this.settings.backdrop == 'invisible') {
+				try {
+					$modal.data('bs.modal').$backdrop.css('opacity', 0);
+				} catch (e) {}
+			}
+
+			var size = !vertical ? dialog.height() : content.height();
+			if (!ace.vars['touch']) {
+				if (!content.hasClass('ace-scroll')) {
+					content.ace_scroll({
+						size: size,
+						reset: true,
+						mouseWheelLock: true,
+						lockAnyway: !this.settings.body_scroll,
+						styleClass: this.settings.scroll_style,
+						'observeContent': true,
+						'hideOnIdle': !ace.vars['old_ie'],
+						'hideDelay': 1500
+					});
+				}
+			} else {
+				content.addClass('overflow-scroll').css('max-height', size + 'px');
+			}
+
+			$window.off('resize.modal.aside').on('resize.modal.aside', function () {
+				if (!ace.vars['touch']) {
+					content.ace_scroll('disable'); //to get correct size when going from small window size to large size
+					var size = !vertical ? dialog.height() : content.height();
+					content.ace_scroll('update', { 'size': size }).ace_scroll('enable').ace_scroll('reset');
+				} else content.css('max-height', (!vertical ? dialog.height() : content.height()) + 'px');
+			}).triggerHandler('resize.modal.aside');
+
+			///////////////////////////////////////////////////////////////////////////
+			if (self.container && ace.vars['transition'] && !hasFade) {
+				$modal.one('bsTransitionEnd', function () {
+					self.container.removeClass('overflow-hidden');
+				}).emulateTransitionEnd(delay);
+			}
+		};
+
+		this.hidden = function () {
+			$window.off('.aside');
+			//$modal.off('.aside')
+			//			
+			if (!ace.vars['transition'] || hasFade) {
+				$modal.addClass('aside-hidden');
+				$modal.css('position', '');
+			}
+		};
+
+		this.insideContainer = function () {
+			var container = $('.main-container');
+
+			var dialog = $modal.find('.modal-dialog');
+			dialog.css({ 'right': '', 'left': '' });
+			if (container.hasClass('container')) {
+				var flag = false;
+				if (vertical == true) {
+					dialog.css(placement, parseInt(($window.width() - container.width()) / 2));
+					flag = true;
+				}
+
+				//strange firefox issue, not redrawing properly on window resize (zoom in/out)!!!!
+				//--- firefix is still having issue!
+				if (flag && ace.vars['firefox']) {
+					ace.helper.redraw(container[0]);
+				}
+			}
+		};
+
+		this.flip = function () {
+			var flipSides = { right: 'left', left: 'right', top: 'bottom', bottom: 'top' };
+			$modal.removeClass('aside-' + placement).addClass('aside-' + flipSides[placement]);
+			placement = flipSides[placement];
+		};
+
+		var toggleButton = function toggleButton() {
+			var btn = $modal.find('.aside-trigger');
+			if (btn.length == 0) return;
+			btn.toggleClass('open');
+
+			var icon = btn.find(ace.vars['.icon']);
+			if (icon.length == 0) return;
+			icon.toggleClass(icon.attr('data-icon1') + " " + icon.attr('data-icon2'));
+		};
+
+		this.initiate();
+
+		if (this.container) this.container = $(this.container);
+		$modal.appendTo(this.container || 'body');
+	}
+
+	$(document).on('show.bs.modal', '.modal.aside', function (e) {
+		$('.aside.in').modal('hide'); //??? hide previous open ones?
+		$(this).ace_aside('show');
+	}).on('hide.bs.modal', '.modal.aside', function (e) {
+		$(this).ace_aside('hide');
+	}).on('shown.bs.modal', '.modal.aside', function (e) {
+		$(this).ace_aside('shown');
+	}).on('hidden.bs.modal', '.modal.aside', function (e) {
+		$(this).ace_aside('hidden');
+	});
+
+	$(window).on('resize.aside_container', function () {
+		$('.modal.aside').ace_aside('insideContainer');
+	});
+	$(document).on('settings.ace.aside', function (e, event_name) {
+		if (event_name == 'main_container_fixed') $('.modal.aside').ace_aside('insideContainer');
+	});
+
+	$.fn.aceAside = $.fn.ace_aside = function (option, value) {
+		var method_call;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_aside');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_aside', data = new Aside(this, options));
+			if (typeof option === 'string' && typeof data[option] === 'function') {
+				if (value instanceof Array) method_call = data[option].apply(data, value);else method_call = data[option](value);
+			}
+		});
+
+		return method_call === undefined ? $set : method_call;
+	};
+
+	$.fn.ace_aside.defaults = {
+		fixed: false,
+		background: false,
+		offset: false,
+		body_scroll: false,
+		transition: true,
+		scroll_style: 'scroll-dark no-track',
+		container: null,
+		backdrop: false,
+		placement: 'right'
+	};
+})(window.jQuery);
+
+/***/ }),
 /* 31 */
+/***/ (function(module, exports) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*!
+ * Ace v1.4.0
+ */
+
+if (typeof jQuery === 'undefined') {
+	throw new Error('Ace\'s JavaScript requires jQuery');
+}
+
+/**
+ Required. Ace's Basic File to Initiliaze Different Parts and Some Variables.
+*/
+
+//some basic variables
+(function (undefined) {
+	if (!('ace' in window)) window['ace'] = {};
+	if (!('helper' in window['ace'])) window['ace'].helper = {};
+	if (!('vars' in window['ace'])) window['ace'].vars = {};
+	window['ace'].vars['icon'] = ' ace-icon ';
+	window['ace'].vars['.icon'] = '.ace-icon';
+
+	ace.vars['touch'] = 'ontouchstart' in window; //(('ontouchstart' in document.documentElement) || (window.DocumentTouch && document instanceof DocumentTouch));
+
+	//sometimes the only good way to work around browser's pecularities is to detect them using user-agents
+	//though it's not accurate
+	var agent = navigator.userAgent;
+	ace.vars['webkit'] = !!agent.match(/AppleWebKit/i);
+	ace.vars['safari'] = !!agent.match(/Safari/i) && !agent.match(/Chrome/i);
+	ace.vars['android'] = ace.vars['safari'] && !!agent.match(/Android/i);
+	ace.vars['ios_safari'] = !!agent.match(/OS ([4-9])(_\d)+ like Mac OS X/i) && !agent.match(/CriOS/i);
+
+	ace.vars['ie'] = window.navigator.msPointerEnabled || document.all && document.querySelector; //8-11
+	ace.vars['old_ie'] = document.all && !document.addEventListener; //8 and below
+	ace.vars['very_old_ie'] = document.all && !document.querySelector; //7 and below
+	ace.vars['firefox'] = 'MozAppearance' in document.documentElement.style;
+
+	ace.vars['non_auto_fixed'] = ace.vars['android'] || ace.vars['ios_safari'];
+
+	//sometimes we try to use 'tap' event instead of 'click' if jquery mobile plugin is available
+	ace['click_event'] = ace.vars['touch'] && jQuery.fn.tap ? 'tap' : 'click';
+})();
+
+//some ace helper functions
+(function ($$, undefined) {
+	//$$ is ace.helper
+	$$.unCamelCase = function (str) {
+		return str.replace(/([a-z])([A-Z])/g, function (match, c1, c2) {
+			return c1 + '-' + c2.toLowerCase();
+		});
+	};
+	$$.strToVal = function (str) {
+		var res = str.match(/^(?:(true)|(false)|(null)|(\-?[\d]+(?:\.[\d]+)?)|(\[.*\]|\{.*\}))$/i);
+
+		var val = str;
+		if (res) {
+			if (res[1]) val = true;else if (res[2]) val = false;else if (res[3]) val = null;else if (res[4]) val = parseFloat(str);else if (res[5]) {
+				try {
+					val = JSON.parse(str);
+				} catch (err) {}
+			}
+		}
+
+		return val;
+	};
+	$$.getAttrSettings = function (elem, attr_list, prefix) {
+		if (!elem) return;
+		var list_type = attr_list instanceof Array ? 1 : 2;
+		//attr_list can be Array or Object(key/value)
+		var prefix = prefix ? prefix.replace(/([^\-])$/, '$1-') : '';
+		prefix = 'data-' + prefix;
+
+		var settings = {};
+		for (var li in attr_list) {
+			if (attr_list.hasOwnProperty(li)) {
+				var name = list_type == 1 ? attr_list[li] : li;
+				var attr_val,
+				    attr_name = $$.unCamelCase(name.replace(/[^A-Za-z0-9]{1,}/g, '-')).toLowerCase();
+
+				if (!(attr_val = elem.getAttribute(prefix + attr_name))) continue;
+				settings[name] = $$.strToVal(attr_val);
+			}
+		}return settings;
+	};
+
+	$$.scrollTop = function () {
+		return document.scrollTop || document.documentElement.scrollTop || document.body.scrollTop;
+	};
+	$$.winHeight = function () {
+		return window.innerHeight || document.documentElement.clientHeight;
+	};
+	$$.redraw = function (elem, force) {
+		if (!elem) return;
+		var saved_val = elem.style['display'];
+		elem.style.display = 'none';
+		elem.offsetHeight;
+		if (force !== true) {
+			elem.style.display = saved_val;
+		} else {
+			//force redraw for example in old IE
+			setTimeout(function () {
+				elem.style.display = saved_val;
+			}, 10);
+		}
+	};
+})(ace.helper);; /**
+                 <b>Ace demo functions</b>. Calls sidebar functions, demo ajax, some fixes, etc
+                 */
+
+//document ready function
+jQuery(function ($) {
+	try {
+		ace.demo.init();
+	} catch (e) {}
+});
+
+(function ($, undefined) {
+
+	ace.demo = {
+		functions: {},
+
+		init: function init(initAnyway) {
+			//initAnyway used to make sure the call is from our RequireJS app and not a document ready event!
+			var initAnyway = !!initAnyway && true;
+			if (typeof requirejs !== "undefined" && !initAnyway) return;
+
+			for (var func in ace.demo.functions) {
+				if (ace.demo.functions.hasOwnProperty(func)) {
+					ace.demo.functions[func]();
+				}
+			}
+		}
+	};
+
+	ace.demo.functions.basics = function () {
+		// for android and ios we don't use "top:auto" when breadcrumbs is fixed
+		if (ace.vars['non_auto_fixed']) {
+			$('body').addClass('mob-safari');
+		}
+
+		ace.vars['transition'] = ace.vars['animation'] || !!$.support.transition;
+	};
+
+	ace.demo.functions.enableSidebar = function () {
+		//initiate sidebar function
+		var $sidebar = $('.sidebar');
+		if ($.fn.ace_sidebar) $sidebar.ace_sidebar();
+		if ($.fn.ace_sidebar_scroll) $sidebar.ace_sidebar_scroll({
+			//for other options please see documentation
+			'include_toggle': false || ace.vars['safari'] || ace.vars['ios_safari'] //true = include toggle button in the scrollbars
+		});
+		if ($.fn.ace_sidebar_hover) $sidebar.ace_sidebar_hover({
+			'sub_hover_delay': 750,
+			'sub_scroll_style': 'no-track scroll-thin scroll-margin scroll-visible'
+		});
+	};
+
+	//Load content via ajax
+	ace.demo.functions.enableDemoAjax = function () {
+		if (!$.fn.ace_ajax) return;
+
+		if (window.Pace) {
+			window.paceOptions = {
+				ajax: true,
+				document: true,
+				eventLag: false // disabled
+				//elements: {selectors: ['.page-content-area']}
+			};
+		}
+
+		var demo_ajax_options = {
+			'close_active': true,
+
+			close_mobile_menu: '#sidebar',
+			close_dropdowns: true,
+
+			'default_url': 'page/index', //default hash
+			'content_url': function content_url(hash) {
+				//***NOTE***
+				//this is for Ace demo only, you should change it to return a valid URL
+				//please refer to documentation for more info
+
+				if (!hash.match(/^page\//)) return false;
+				var path = document.location.pathname;
+
+				//for example in Ace HTML demo version we convert /ajax/index.html#page/gallery to > /ajax/content/gallery.html and load it
+				if (path.match(/(\/ajax\/)(index\.html)?/)) return path.replace(/(\/ajax\/)(index\.html)?/, '/ajax/content/' + hash.replace(/^page\//, '') + '.html');
+
+				//for example in Ace PHP demo version we convert "ajax.php#page/dashboard" to "ajax.php?page=dashboard" and load it
+				return path + "?" + hash.replace(/\//, "=");
+			}
+
+			//for IE9 and below we exclude PACE loader (using conditional IE comments)
+			//for other browsers we use the following extra ajax loader options
+			//if(window.Pace) {
+		};demo_ajax_options['loading_overlay'] = 'body'; //the opaque overlay is applied to 'body'
+		//}
+
+		//initiate ajax loading on this element( which is .page-content-area[data-ajax-content=true] in Ace's demo)
+		$('[data-ajax-content=true]').ace_ajax(demo_ajax_options);
+
+		//if general error happens and ajax is working, let's stop loading icon & PACE
+		$(window).on('error.ace_ajax', function () {
+			$('[data-ajax-content=true]').each(function () {
+				var $this = $(this);
+				if ($this.ace_ajax('working')) {
+					if (window.Pace && Pace.running) Pace.stop();
+					$this.ace_ajax('stopLoading', true);
+				}
+			});
+		});
+	};
+
+	/////////////////////////////
+
+	ace.demo.functions.handleScrollbars = function () {
+		//add scrollbars for navbar dropdowns
+		var has_scroll = !!$.fn.ace_scroll;
+		if (has_scroll) $('.dropdown-content').ace_scroll({ reset: false, mouseWheelLock: true });
+
+		//reset scrolls bars on window resize
+		if (has_scroll && !ace.vars['old_ie']) {
+			//IE has an issue with widget fullscreen on ajax?!!!
+			$(window).on('resize.reset_scroll', function () {
+				$('.ace-scroll:not(.scroll-disabled)').not(':hidden').ace_scroll('reset');
+			});
+			if (has_scroll) $(document).on('settings.ace.reset_scroll', function (e, name) {
+				if (name == 'sidebar_collapsed') $('.ace-scroll:not(.scroll-disabled)').not(':hidden').ace_scroll('reset');
+			});
+		}
+	};
+
+	ace.demo.functions.dropdownAutoPos = function () {
+		//change a dropdown to "dropup" depending on its position
+		$(document).on('click.dropdown.pos', '.dropdown-toggle[data-position="auto"]', function () {
+			var offset = $(this).offset();
+			var parent = $(this.parentNode);
+
+			if (parseInt(offset.top + $(this).height()) + 50 > ace.helper.scrollTop() + ace.helper.winHeight() - parent.find('.dropdown-menu').eq(0).height()) parent.addClass('dropup');else parent.removeClass('dropup');
+		});
+	};
+
+	ace.demo.functions.navbarHelpers = function () {
+		//prevent dropdowns from hiding when a from is clicked
+		/**$(document).on('click', '.dropdown-navbar form', function(e){
+  	e.stopPropagation();
+  });*/
+
+		//disable navbar icon animation upon click
+		$('.ace-nav [class*="icon-animated-"]').closest('a').one('click', function () {
+			var icon = $(this).find('[class*="icon-animated-"]').eq(0);
+			var $match = icon.attr('class').match(/icon\-animated\-([\d\w]+)/);
+			icon.removeClass($match[0]);
+		});
+
+		//prevent dropdowns from hiding when a tab is selected
+		$(document).on('click', '.dropdown-navbar .nav-tabs', function (e) {
+			e.stopPropagation();
+			var $this, href;
+			var that = e.target;
+			if (($this = $(e.target).closest('[data-toggle=tab]')) && $this.length > 0) {
+				$this.tab('show');
+				e.preventDefault();
+				$(window).triggerHandler('resize.navbar.dropdown');
+			}
+		});
+	};
+
+	ace.demo.functions.sidebarTooltips = function () {
+		//tooltip in sidebar items
+		$('.sidebar .nav-list .badge[title],.sidebar .nav-list .badge[title]').each(function () {
+			var tooltip_class = $(this).attr('class').match(/tooltip\-(?:\w+)/);
+			tooltip_class = tooltip_class ? tooltip_class[0] : 'tooltip-error';
+			$(this).tooltip({
+				'placement': function placement(context, source) {
+					var offset = $(source).offset();
+
+					if (parseInt(offset.left) < parseInt(document.body.scrollWidth / 2)) return 'right';
+					return 'left';
+				},
+				container: 'body',
+				template: '<div class="tooltip ' + tooltip_class + '"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+			});
+		});
+
+		//or something like this if items are dynamically inserted
+		/**
+  $('.sidebar').tooltip({
+  	'placement': function (context, source) {
+  		var offset = $(source).offset();
+  			if( parseInt(offset.left) < parseInt(document.body.scrollWidth / 2) ) return 'right';
+  		return 'left';
+  	},
+  	selector: '.nav-list .badge[title],.nav-list .label[title]',
+  	container: 'body',
+  	template: '<div class="tooltip tooltip-error"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+  });
+  */
+	};
+
+	ace.demo.functions.someBrowserFix = function () {
+		//chrome and webkit have a problem here when resizing from 479px to more
+		//we should force them redraw the navbar!
+		if (ace.vars['webkit']) {
+			var ace_nav = $('.ace-nav').get(0);
+			if (ace_nav) $(window).on('resize.webkit_fix', function () {
+				ace.helper.redraw(ace_nav);
+			});
+		}
+
+		//fix an issue with ios safari, when an element is fixed and an input receives focus
+		if (ace.vars['ios_safari']) {
+			$(document).on('ace.settings.ios_fix', function (e, event_name, event_val) {
+				if (event_name != 'navbar_fixed') return;
+
+				$(document).off('focus.ios_fix blur.ios_fix', 'input,textarea,.wysiwyg-editor');
+				if (event_val == true) {
+					$(document).on('focus.ios_fix', 'input,textarea,.wysiwyg-editor', function () {
+						$(window).on('scroll.ios_fix', function () {
+							var navbar = $('#navbar').get(0);
+							if (navbar) ace.helper.redraw(navbar);
+						});
+					}).on('blur.ios_fix', 'input,textarea,.wysiwyg-editor', function () {
+						$(window).off('scroll.ios_fix');
+					});
+				}
+			}).triggerHandler('ace.settings.ios_fix', ['navbar_fixed', $('#navbar').css('position') == 'fixed']);
+		}
+	};
+
+	ace.demo.functions.bsCollapseToggle = function () {
+		//bootstrap collapse component icon toggle
+		$(document).on('hide.bs.collapse show.bs.collapse', function (ev) {
+			var panel_id = ev.target.getAttribute('id');
+			var panel = $('a[href*="#' + panel_id + '"]');
+			if (panel.length == 0) panel = $('a[data-target*="#' + panel_id + '"]');
+			if (panel.length == 0) return;
+
+			panel.find(ace.vars['.icon']).each(function () {
+				var $icon = $(this);
+
+				var $match;
+				var $icon_down = null;
+				var $icon_up = null;
+				if ($icon_down = $icon.attr('data-icon-show')) {
+					$icon_up = $icon.attr('data-icon-hide');
+				} else if ($match = $icon.attr('class').match(/fa\-(.*)\-(up|down)/)) {
+					$icon_down = 'fa-' + $match[1] + '-down';
+					$icon_up = 'fa-' + $match[1] + '-up';
+				}
+
+				if ($icon_down) {
+					if (ev.type == 'show') $icon.removeClass($icon_down).addClass($icon_up);else $icon.removeClass($icon_up).addClass($icon_down);
+
+					return false; //ignore other icons that match, one is enough
+				}
+			});
+		});
+	};
+
+	//in small devices display navbar dropdowns like modal boxes
+	ace.demo.functions.smallDeviceDropdowns = function () {
+		if (ace.vars['old_ie']) return;
+
+		$(document).on('shown.bs.dropdown.navbar', '.ace-nav > li.dropdown-modal', function (e) {
+			adjustNavbarDropdown.call(this);
+			var self = this;
+			$(window).on('resize.navbar.dropdown', function () {
+				adjustNavbarDropdown.call(self);
+			});
+		}).on('hidden.bs.dropdown.navbar', '.ace-nav > li.dropdown-modal', function (e) {
+			$(window).off('resize.navbar.dropdown');
+			resetNavbarDropdown.call(this);
+		});
+
+		function adjustNavbarDropdown() {
+			var $sub = $(this).find('> .dropdown-menu');
+
+			if ($sub.css('position') == 'fixed') {
+				var win_width = parseInt($(window).width());
+				var offset_w = win_width > 320 ? 60 : win_width > 240 ? 40 : 30;
+				var avail_width = parseInt(win_width) - offset_w;
+				var avail_height = parseInt($(window).height()) - 30;
+
+				var width = parseInt(Math.min(avail_width, 320));
+				//we set 'width' here for text wrappings and spacings to take effect before calculating scrollHeight
+				$sub.css('width', width);
+
+				var tabbed = false;
+				var extra_parts = 0;
+				var dropdown_content = $sub.find('.tab-pane.active .dropdown-content.ace-scroll');
+				if (dropdown_content.length == 0) dropdown_content = $sub.find('.dropdown-content.ace-scroll');else tabbed = true;
+
+				var parent_menu = dropdown_content.closest('.dropdown-menu');
+				var scrollHeight = $sub[0].scrollHeight;
+				if (dropdown_content.length == 1) {
+					//sometimes there's no scroll-content, for example in detached scrollbars
+					var content = dropdown_content.find('.scroll-content')[0];
+					if (content) {
+						scrollHeight = content.scrollHeight;
+					}
+
+					extra_parts += parent_menu.find('.dropdown-header').outerHeight();
+					extra_parts += parent_menu.find('.dropdown-footer').outerHeight();
+
+					var tab_content = parent_menu.closest('.tab-content');
+					if (tab_content.length != 0) {
+						extra_parts += tab_content.siblings('.nav-tabs').eq(0).height();
+					}
+				}
+
+				var height = parseInt(Math.min(avail_height, 480, scrollHeight + extra_parts));
+				var left = parseInt(Math.abs((avail_width + offset_w - width) / 2));
+				var top = parseInt(Math.abs((avail_height + 30 - height) / 2));
+
+				var zindex = parseInt($sub.css('z-index')) || 0;
+
+				$sub.css({ 'height': height, 'left': left, 'right': 'auto', 'top': top - (!tabbed ? 1 : 3) });
+				if (dropdown_content.length == 1) {
+					if (!ace.vars['touch']) {
+						dropdown_content.ace_scroll('update', { size: height - extra_parts }).ace_scroll('enable').ace_scroll('reset');
+					} else {
+						dropdown_content.ace_scroll('disable').css('max-height', height - extra_parts).addClass('overflow-scroll');
+					}
+				}
+				$sub.css('height', height + (!tabbed ? 2 : 7)); //for bottom border adjustment and tab content paddings
+
+
+				if ($sub.hasClass('user-menu')) {
+					$sub.css('height', ''); //because of user-info hiding/showing at different widths, which changes above 'scrollHeight', so we remove it!
+
+					//user menu is re-positioned in small widths
+					//but we need to re-position again in small heights as well (modal mode)
+					var user_info = $(this).find('.user-info');
+					if (user_info.length == 1 && user_info.css('position') == 'fixed') {
+						user_info.css({ 'left': left, 'right': 'auto', 'top': top, 'width': width - 2, 'max-width': width - 2, 'z-index': zindex + 1 });
+					} else user_info.css({ 'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': '' });
+				}
+
+				//dropdown's z-index is limited by parent .navbar's z-index (which doesn't make sense because dropdowns are fixed!)
+				//so for example when in 'content-slider' page, fixed modal toggle buttons go above are dropdowns
+				//so we increase navbar's z-index to fix this!
+				$(this).closest('.navbar.navbar-fixed-top').css('z-index', zindex);
+			} else {
+				if ($sub.length != 0) resetNavbarDropdown.call(this, $sub);
+			}
+		}
+
+		//reset scrollbars and user menu
+		function resetNavbarDropdown($sub) {
+			$sub = $sub || $(this).find('> .dropdown-menu');
+
+			if ($sub.length > 0) {
+				$sub.css({ 'width': '', 'height': '', 'left': '', 'right': '', 'top': '' }).find('.dropdown-content').each(function () {
+					if (ace.vars['touch']) {
+						$(this).css('max-height', '').removeClass('overflow-scroll');
+					}
+
+					var size = parseInt($(this).attr('data-size') || 0) || $.fn.ace_scroll.defaults.size;
+					$(this).ace_scroll('update', { size: size }).ace_scroll('enable').ace_scroll('reset');
+				});
+
+				if ($sub.hasClass('user-menu')) {
+					var user_info = $(this).find('.user-info').css({ 'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': '' });
+				}
+			}
+
+			$(this).closest('.navbar').css('z-index', '');
+		}
+	};
+})(jQuery);; /**
+             <b>Scroll to top button</b>.
+             */
+(function ($, undefined) {
+
+	//the scroll to top button
+	var scroll_btn = $('.btn-scroll-up');
+	if (scroll_btn.length > 0) {
+		var is_visible = false;
+		$(window).on('scroll.scroll_btn', function () {
+			var scroll = ace.helper.scrollTop();
+			var h = ace.helper.winHeight();
+			var body_sH = document.body.scrollHeight;
+			if (scroll > parseInt(h / 4) || scroll > 0 && body_sH >= h && h + scroll >= body_sH - 1) {
+				//|| for smaller pages, when reached end of page
+				if (!is_visible) {
+					scroll_btn.addClass('display');
+					is_visible = true;
+				}
+			} else {
+				if (is_visible) {
+					scroll_btn.removeClass('display');
+					is_visible = false;
+				}
+			}
+		}).triggerHandler('scroll.scroll_btn');
+
+		scroll_btn.on(ace.click_event, function () {
+			var duration = Math.min(500, Math.max(100, parseInt(ace.helper.scrollTop() / 3)));
+			$('html,body').animate({ scrollTop: 0 }, duration);
+			return false;
+		});
+	}
+})(window.jQuery);; /**
+                    <b>Load content via Ajax </b>. For more information please refer to documentation #basics/ajax
+                    */
+
+(function ($, undefined) {
+	var ajax_loaded_scripts = {};
+
+	function AceAjax(contentArea, settings) {
+		var $contentArea = $(contentArea);
+		var self = this;
+		$contentArea.attr('data-ajax-content', 'true');
+
+		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
+		var attrib_values = ace.helper.getAttrSettings(contentArea, $.fn.ace_ajax.defaults);
+		this.settings = $.extend({}, $.fn.ace_ajax.defaults, settings, attrib_values);
+
+		var working = false;
+		var $overlay = $(); //empty set
+
+		this.force_reload = false; //set jQuery ajax's cache option to 'false' to reload content
+		this.loadUrl = function (hash, cache, manual_trigger) {
+			var url = false;
+			hash = hash.replace(/^(\#\!)?\#/, '');
+
+			this.force_reload = cache === false;
+
+			if (typeof this.settings.content_url === 'function') url = this.settings.content_url(hash);
+			if (typeof url === 'string') this.getUrl(url, hash, manual_trigger);
+		};
+
+		this.loadAddr = function (url, hash, cache) {
+			this.force_reload = cache === false;
+			this.getUrl(url, hash, false);
+		};
+
+		this.reload = function () {
+			var hash = $.trim(window.location.hash);
+			if (!hash && this.settings.default_url) hash = this.settings.default_url;
+
+			this.loadUrl(hash, false);
+		};
+		this.post = function (url, data, updateView, extraParams) {
+			var url = url || $.trim(location.href.replace(location.hash, ''));
+			if (!url) return;
+			var data = data || {};
+			var updateView = updateView || false;
+			this.getUrl(url, null, false, 'POST', data, updateView, extraParams);
+		};
+
+		this.getUrl = function (url, hash, manual_trigger, method, data, updateView, extraParams) {
+			if (working) {
+				return;
+			}
+
+			var method = method || 'GET';
+			var updateView = method == 'GET' || method == 'POST' && updateView == true;
+			var data = data || null;
+
+			var event;
+			$contentArea.trigger(event = $.Event('ajaxloadstart'), { url: url, hash: hash, method: method, data: data });
+			if (event.isDefaultPrevented()) return;
+
+			self.startLoading();
+
+			var ajax_params = method == 'GET' ? { 'url': url, 'cache': !this.force_reload } : { 'url': url, 'method': 'POST', 'data': data };
+			if (method == 'POST' && (typeof extraParams === 'undefined' ? 'undefined' : _typeof(extraParams)) == 'object') ajax_params = $.extend({}, ajax_params, extraParams);
+
+			$.ajax(ajax_params).error(function () {
+				$contentArea.trigger('ajaxloaderror', { url: url, hash: hash, method: method, data: data });
+
+				self.stopLoading(true);
+			}).done(function (result) {
+				$contentArea.trigger('ajaxloaddone', { url: url, hash: hash, method: method, data: data });
+				if (method == 'POST') {
+					var event;
+					$contentArea.trigger(event = $.Event('ajaxpostdone', { url: url, data: data, result: result }));
+					if (event.isDefaultPrevented()) updateView = false;
+				}
+
+				var link_element = null,
+				    link_text = '';
+				if (typeof self.settings.update_active === 'function') {
+					link_element = self.settings.update_active.call(null, hash, url, method, updateView);
+				} else if (self.settings.update_active === true && hash) {
+					link_element = $('a[data-url="' + hash + '"]');
+					if (link_element.length > 0) {
+						var nav = link_element.closest('.nav');
+						if (nav.length > 0) {
+							nav.find('.active').each(function () {
+								var $class = 'active';
+								if ($(this).hasClass('hover') || self.settings.close_active) $class += ' open';
+
+								$(this).removeClass($class);
+								if (self.settings.close_active) {
+									$(this).find(' > .submenu').css('display', '');
+								}
+							});
+
+							var active_li = link_element.closest('li').addClass('active').parents('.nav li').addClass('active open');
+							nav.closest('.sidebar[data-sidebar-scroll=true]').each(function () {
+								var $this = $(this);
+								$this.ace_sidebar_scroll('reset');
+								if (manual_trigger == true) $this.ace_sidebar_scroll('scroll_to_active'); //first time only
+							});
+						}
+					}
+				}
+
+				/////////
+				if (typeof self.settings.update_breadcrumbs === 'function') {
+					link_text = self.settings.update_breadcrumbs.call(null, hash, url, link_element, method, updateView);
+				} else if (self.settings.update_breadcrumbs === true && link_element != null && link_element.length > 0) {
+					link_text = updateBreadcrumbs(link_element);
+				}
+				/////////
+
+				$overlay.addClass('content-loaded').detach();
+				if (updateView) {
+					//convert "title" and "link" tags to "div" tags for later processing
+					result = String(result).replace(/<(title|link)([\s\>])/gi, '<div class="hidden ajax-append-$1"$2').replace(/<\/(title|link)\>/gi, '</div>');
+					$contentArea.empty().html(result);
+				}
+
+				$(self.settings.loading_overlay || $contentArea).append($overlay);
+
+				//remove previous stylesheets inserted via ajax
+				if (updateView) setTimeout(function () {
+					$('head').find('link.ace-ajax-stylesheet').remove();
+
+					var main_selectors = ['link.ace-main-stylesheet', 'link#main-ace-style', 'link[href*="/ace.min.css"]', 'link[href*="/ace.css"]'];
+					var ace_style = [];
+					for (var m = 0; m < main_selectors.length; m++) {
+						ace_style = $('head').find(main_selectors[m]).first();
+						if (ace_style.length > 0) break;
+					}
+
+					$contentArea.find('.ajax-append-link').each(function (e) {
+						var $link = $(this);
+						if ($link.attr('href')) {
+							var new_link = jQuery('<link />', { type: 'text/css', rel: 'stylesheet', 'class': 'ace-ajax-stylesheet' });
+							if (ace_style.length > 0) new_link.insertBefore(ace_style);else new_link.appendTo('head');
+							new_link.attr('href', $link.attr('href')); //we set "href" after insertion, for IE to work
+						}
+						$link.remove();
+					});
+				}, 10);
+
+				//////////////////////
+
+				if (typeof self.settings.update_title === 'function') {
+					self.settings.update_title.call(null, hash, url, link_text, method, updateView);
+				} else if (self.settings.update_title === true && method == 'GET') {
+					updateTitle(link_text);
+				}
+
+				if (!manual_trigger && updateView) {
+					$('html,body').animate({ scrollTop: 0 }, 250);
+				}
+
+				//////////////////////
+				$contentArea.trigger('ajaxloadcomplete', { url: url, hash: hash, method: method, data: data });
+				//////////////////////
+
+
+				//if result contains call to "loadScripts" then don't stopLoading now
+				var re = /\.(?:\s*)ace(?:_a|A)jax(?:\s*)\((?:\s*)(?:\'|\")loadScripts(?:\'|\")/;
+				if (result.match(re)) self.stopLoading();else self.stopLoading(true);
+			});
+		};
+
+		///////////////////////
+		var fixPos = false;
+		var loadTimer = null;
+		this.startLoading = function () {
+			if (working) return;
+			working = true;
+
+			if (!this.settings.loading_overlay && $contentArea.css('position') == 'static') {
+				$contentArea.css('position', 'relative'); //for correct icon positioning
+				fixPos = true;
+			}
+
+			$overlay.remove();
+			$overlay = $('<div class="ajax-loading-overlay"><i class="ajax-loading-icon ' + (this.settings.loading_icon || '') + '"></i> ' + this.settings.loading_text + '</div>');
+
+			if (this.settings.loading_overlay == 'body') $('body').append($overlay.addClass('ajax-overlay-body'));else if (this.settings.loading_overlay) $(this.settings.loading_overlay).append($overlay);else $contentArea.append($overlay);
+
+			if (this.settings.max_load_wait !== false) loadTimer = setTimeout(function () {
+				loadTimer = null;
+				if (!working) return;
+
+				var event;
+				$contentArea.trigger(event = $.Event('ajaxloadlong'));
+				if (event.isDefaultPrevented()) return;
+
+				self.stopLoading(true);
+			}, this.settings.max_load_wait * 1000);
+		};
+
+		this.stopLoading = function (stopNow) {
+			if (stopNow === true) {
+				working = false;
+
+				$overlay.remove();
+				if (fixPos) {
+					$contentArea.css('position', ''); //restore previous 'position' value
+					fixPos = false;
+				}
+
+				if (loadTimer != null) {
+					clearTimeout(loadTimer);
+					loadTimer = null;
+				}
+			} else {
+				$overlay.addClass('almost-loaded');
+
+				$contentArea.one('ajaxscriptsloaded.inner_call', function () {
+					self.stopLoading(true);
+					/**
+     if(window.Pace && Pace.running == true) {
+     	Pace.off('done');
+     	Pace.once('done', function() { self.stopLoading(true) })
+     }
+     else self.stopLoading(true);
+     */
+				});
+			}
+		};
+
+		this.working = function () {
+			return working;
+		};
+		///////////////////////
+
+
+		function updateBreadcrumbs(link_element) {
+			var link_text = '';
+
+			//update breadcrumbs
+			var breadcrumbs = $('.breadcrumb');
+			if (breadcrumbs.length > 0 && breadcrumbs.is(':visible')) {
+				breadcrumbs.find('> li:not(:first-child)').remove();
+
+				var i = 0;
+				link_element.parents('.nav li').each(function () {
+					var link = $(this).find('> a');
+
+					var link_clone = link.clone();
+					link_clone.find('i,.fa,.glyphicon,.ace-icon,.menu-icon,.badge,.label').remove();
+					var text = link_clone.text();
+					link_clone.remove();
+
+					var href = link.attr('href');
+
+					if (i == 0) {
+						var li = $('<li class="active"></li>').appendTo(breadcrumbs);
+						li.text(text);
+						link_text = text;
+					} else {
+						var li = $('<li><a /></li>').insertAfter(breadcrumbs.find('> li:first-child'));
+						li.find('a').attr('href', href).text(text);
+					}
+					i++;
+				});
+			}
+
+			return link_text;
+		}
+
+		function updateTitle(link_text) {
+			var $title = $contentArea.find('.ajax-append-title');
+			if ($title.length > 0) {
+				document.title = $title.text();
+				$title.remove();
+			} else if (link_text.length > 0) {
+				var extra = $.trim(String(document.title).replace(/^(.*)[\-]/, '')); //for example like " - Ace Admin"
+				if (extra) extra = ' - ' + extra;
+				link_text = $.trim(link_text) + extra;
+			}
+		}
+
+		this.loadScripts = function (scripts, callback) {
+			var scripts = scripts || [];
+			$.ajaxPrefilter('script', function (opts) {
+				opts.cache = true;
+			});
+			setTimeout(function () {
+				//let's keep a list of loaded scripts so that we don't load them more than once!
+
+				function finishLoading() {
+					if (typeof callback === 'function') callback();
+					$('.btn-group[data-toggle="buttons"] > .btn').button();
+
+					$contentArea.trigger('ajaxscriptsloaded');
+				}
+
+				//var deferreds = [];
+				var deferred_count = 0; //deferreds count
+				var resolved = 0;
+				for (var i = 0; i < scripts.length; i++) {
+					if (scripts[i]) {
+						(function () {
+							var script_name = "js-" + scripts[i].replace(/[^\w\d\-]/g, '-').replace(/\-\-/g, '-');
+							if (ajax_loaded_scripts[script_name] !== true) deferred_count++;
+						})();
+					}
+				}function nextScript(index) {
+					index += 1;
+					if (index < scripts.length) loadScript(index);else {
+						finishLoading();
+					}
+				}
+
+				function loadScript(index) {
+					index = index || 0;
+					if (!scripts[index]) {
+						//could be null sometimes
+						return nextScript(index);
+					}
+
+					var script_name = "js-" + scripts[index].replace(/[^\w\d\-]/g, '-').replace(/\-\-/g, '-');
+					//only load scripts that are not loaded yet!
+					if (ajax_loaded_scripts[script_name] !== true) {
+						$.getScript(scripts[index]).done(function () {
+							ajax_loaded_scripts[script_name] = true;
+						})
+						//.fail(function() {
+						//})
+						.complete(function () {
+							resolved++;
+							if (resolved >= deferred_count && working) {
+								finishLoading();
+							} else {
+								nextScript(index);
+							}
+						});
+					} else {
+						//script previoisly loaded
+						nextScript(index);
+					}
+				}
+
+				if (deferred_count > 0) {
+					loadScript();
+				} else {
+					finishLoading();
+				}
+			}, 10);
+		};
+
+		/////////////////
+		$(window).off('hashchange.ace_ajax').on('hashchange.ace_ajax', function (e, manual_trigger) {
+			var hash = $.trim(window.location.hash);
+			if (!hash || hash.length == 0) return;
+
+			if (self.settings.close_mobile_menu) {
+				try {
+					$(self.settings.close_mobile_menu).ace_sidebar('mobileHide');
+				} catch (e) {}
+			}
+			if (self.settings.close_dropdowns) {
+				$('.dropdown.open .dropdown-toggle').dropdown('toggle');
+			}
+
+			self.loadUrl(hash, null, manual_trigger);
+		}).trigger('hashchange.ace_ajax', [true]);
+
+		var hash = $.trim(window.location.hash);
+		if (!hash && this.settings.default_url) window.location.hash = this.settings.default_url;
+	} //AceAjax
+
+
+	$.fn.aceAjax = $.fn.ace_ajax = function (option, value, value2, value3, value4) {
+		var method_call;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_ajax');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_ajax', data = new AceAjax(this, options));
+			if (typeof option === 'string' && typeof data[option] === 'function') {
+				if (value4 !== undefined) method_call = data[option](value, value2, value3, value4);else if (value3 !== undefined) method_call = data[option](value, value2, value3);else if (value2 !== undefined) method_call = data[option](value, value2);else method_call = data[option](value);
+			}
+		});
+
+		return method_call === undefined ? $set : method_call;
+	};
+
+	$.fn.aceAjax.defaults = $.fn.ace_ajax.defaults = {
+		content_url: false,
+		default_url: false,
+		loading_icon: 'fa fa-spin fa-spinner fa-2x orange',
+		loading_text: '',
+		loading_overlay: null,
+		update_breadcrumbs: true,
+		update_title: true,
+		update_active: true,
+		close_active: false,
+		max_load_wait: false,
+		close_mobile_menu: false,
+		close_dropdowns: false
+	};
+})(window.jQuery);
+
+; /**
+  <b>Custom drag event for touch devices</b> used in scrollbars.
+  For better touch event handling and extra options a more advanced solution such as <u>Hammer.js</u> is recommended.
+  */
+
+//based on but not dependent on jQuery mobile
+/*
+* jQuery Mobile v1.3.2
+* http://jquerymobile.com
+*
+* Copyright 2010, 2013 jQuery Foundation, Inc. and other contributors
+* Released under the MIT license.
+* http://jquery.org/license
+*
+*/
+(function ($, undefined) {
+
+	if (!ace.vars['touch']) return;
+
+	var touchStartEvent = "touchstart MSPointerDown pointerdown",
+	    // : "mousedown",
+	touchStopEvent = "touchend touchcancel MSPointerUp MSPointerCancel pointerup pointercancel",
+	    // : "mouseup",
+	touchMoveEvent = "touchmove MSPointerMove MSPointerHover pointermove"; // : "mousemove";
+
+
+	$.event.special.ace_drag = {
+		setup: function setup() {
+			var min_threshold = 0;
+
+			var $this = $(this);
+			$this.on(touchStartEvent, function (event) {
+				var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event,
+				    start = {
+					//time: Date.now(),
+					coords: [data.pageX, data.pageY],
+					origin: $(event.target)
+				},
+				    stop;
+				//start.origin.trigger({'type' : 'ace_dragStart', 'start':(start || [-1,-1])});
+
+				var direction = false,
+				    dx = 0,
+				    dy = 0;
+
+				function moveHandler(event) {
+					if (!start) {
+						return;
+					}
+					var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
+					stop = {
+						coords: [data.pageX, data.pageY]
+					};
+
+					// prevent scrolling
+					//if ( Math.abs(start.coords[1] - stop.coords[1]) > 0 || Math.abs(start.coords[0] - stop.coords[01]) > 0 ) {
+					//event.preventDefault();
+					//}
+
+
+					if (start && stop) {
+						dx = 0;
+						dy = 0;
+
+						direction = Math.abs(dy = start.coords[1] - stop.coords[1]) > min_threshold && Math.abs(dx = start.coords[0] - stop.coords[0]) <= Math.abs(dy) ? dy > 0 ? 'up' : 'down' : Math.abs(dx = start.coords[0] - stop.coords[0]) > min_threshold && Math.abs(dy) <= Math.abs(dx) ? dx > 0 ? 'left' : 'right' : false;
+
+						if (direction !== false) {
+							var retval = { cancel: false };
+							start.origin.trigger({
+								'type': 'ace_drag',
+								//'start': start.coords,
+								//'stop': stop.coords,
+								'direction': direction,
+								'dx': dx,
+								'dy': dy,
+								'retval': retval
+							});
+
+							// prevent document scrolling unless retval.cancel == true
+							if (retval.cancel == false) event.preventDefault();
+						}
+					}
+					start.coords[0] = stop.coords[0];
+					start.coords[1] = stop.coords[1];
+				}
+
+				$this.on(touchMoveEvent, moveHandler).one(touchStopEvent, function (event) {
+					$this.off(touchMoveEvent, moveHandler);
+					//start.origin.trigger({'type' : 'ace_dragEnd', 'stop':(stop || [-1,-1])});
+
+					start = stop = undefined;
+				});
+			});
+		}
+	};
+})(window.jQuery);; /**
+                    <b>Sidebar functions</b>. Collapsing/expanding, toggling mobile view menu and other sidebar functions.
+                    */
+
+(function ($, undefined) {
+	var sidebar_count = 0;
+
+	function Sidebar(sidebar, settings) {
+		var self = this;
+		this.$sidebar = $(sidebar);
+		this.$sidebar.attr('data-sidebar', 'true');
+		if (!this.$sidebar.attr('id')) this.$sidebar.attr('id', 'id-sidebar-' + ++sidebar_count);
+
+		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
+		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar.defaults, 'sidebar-');
+		this.settings = $.extend({}, $.fn.ace_sidebar.defaults, settings, attrib_values);
+
+		//some vars
+		this.minimized = false; //will be initialized later
+		this.collapsible = false; //...
+		this.horizontal = false; //...
+		this.mobile_view = false; //
+
+
+		//return an array containing sidebar state variables
+		this.vars = function () {
+			return { 'minimized': this.minimized, 'collapsible': this.collapsible, 'horizontal': this.horizontal, 'mobile_view': this.mobile_view };
+		};
+		this.get = function (name) {
+			if (this.hasOwnProperty(name)) return this[name];
+		};
+		this.set = function (name, value) {
+			if (this.hasOwnProperty(name)) this[name] = value;
+		};
+
+		//return a reference to self (sidebar instance)
+		this.ref = function () {
+			return this;
+		};
+
+		//toggle icon for sidebar collapse/expand button
+		var toggleIcon = function toggleIcon(minimized, save) {
+			var icon = $(this).find(ace.vars['.icon']),
+			    icon1,
+			    icon2;
+			if (icon.length > 0) {
+				icon1 = icon.attr('data-icon1'); //the icon for expanded state
+				icon2 = icon.attr('data-icon2'); //the icon for collapsed state
+
+				if (typeof minimized !== "undefined") {
+					if (minimized) icon.removeClass(icon1).addClass(icon2);else icon.removeClass(icon2).addClass(icon1);
+				} else {
+					icon.toggleClass(icon1).toggleClass(icon2);
+				}
+
+				try {
+					if (save !== false) ace.settings.saveState(icon.get(0));
+				} catch (e) {}
+			}
+		};
+
+		//if not specified, find the toggle button related to this sidebar
+		var findToggleBtn = function findToggleBtn() {
+			var toggle_btn = self.$sidebar.find('.sidebar-collapse');
+			if (toggle_btn.length == 0) toggle_btn = $('.sidebar-collapse[data-target="#' + (self.$sidebar.attr('id') || '') + '"]');
+			if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
+
+			return toggle_btn;
+		};
+
+		//collapse/expand sidebar
+		this.toggleMenu = function (toggle_btn, save) {
+			if (this.collapsible) return false;
+
+			this.minimized = !this.minimized;
+			var save = !(toggle_btn === false || save === false);
+
+			if (this.minimized) this.$sidebar.addClass('menu-min');else this.$sidebar.removeClass('menu-min');
+
+			try {
+				if (save) ace.settings.saveState(sidebar, 'class', 'menu-min', this.minimized);
+			} catch (e) {}
+
+			if (!toggle_btn) {
+				toggle_btn = findToggleBtn();
+			}
+			if (toggle_btn) {
+				toggleIcon.call(toggle_btn, this.minimized, save);
+			}
+
+			//force redraw for ie8
+			if (ace.vars['old_ie']) ace.helper.redraw(sidebar);
+
+			$(document).trigger('settings.ace', ['sidebar_collapsed', this.minimized, sidebar, save]);
+
+			if (this.minimized) this.$sidebar.trigger($.Event('collapse.ace.sidebar'));else this.$sidebar.trigger($.Event('expand.ace.sidebar'));
+
+			return true;
+		};
+		this.collapse = function (toggle_btn, save) {
+			if (this.collapsible) return;
+
+			this.minimized = false;
+			this.toggleMenu(toggle_btn, save);
+		};
+		this.expand = function (toggle_btn, save) {
+			if (this.collapsible) return;
+
+			this.minimized = true;
+			this.toggleMenu(toggle_btn, save);
+		};
+
+		this.showResponsive = function () {
+			this.$sidebar.removeClass(responsive_min_class).removeClass(responsive_max_class);
+		};
+
+		//collapse/expand in 2nd mobile style
+		this.toggleResponsive = function (toggle_btn, showMenu) {
+			if (!this.mobile_view || this.mobile_style != 3) return;
+
+			if (this.$sidebar.hasClass('menu-min')) {
+				//remove menu-min because it interferes with responsive-max
+				this.$sidebar.removeClass('menu-min');
+				var btn = findToggleBtn();
+				if (btn) toggleIcon.call(btn);
+			}
+
+			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : this.$sidebar.hasClass(responsive_min_class);
+
+			if (showMenu) {
+				this.$sidebar.addClass(responsive_max_class).removeClass(responsive_min_class);
+			} else {
+				this.$sidebar.removeClass(responsive_max_class).addClass(responsive_min_class);
+			}
+			this.minimized = !showMenu;
+
+			if (!toggle_btn || (typeof toggle_btn === 'undefined' ? 'undefined' : _typeof(toggle_btn)) !== 'object') {
+				toggle_btn = this.$sidebar.find('.sidebar-expand');
+				if (toggle_btn.length == 0) toggle_btn = $('.sidebar-expand[data-target="#' + (this.$sidebar.attr('id') || '') + '"]');
+				if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
+			}
+
+			if (toggle_btn) {
+				var icon = $(toggle_btn).find(ace.vars['.icon']),
+				    icon1,
+				    icon2;
+				if (icon.length > 0) {
+					icon1 = icon.attr('data-icon1'); //the icon for expanded state
+					icon2 = icon.attr('data-icon2'); //the icon for collapsed state
+
+					if (!showMenu) icon.removeClass(icon2).addClass(icon1);else icon.removeClass(icon1).addClass(icon2);
+				}
+			}
+
+			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
+
+			$(document).triggerHandler('settings.ace', ['sidebar_collapsed', this.minimized]);
+		};
+
+		//some helper functions
+
+		//determine if we have 4th mobile style responsive sidebar and we are in mobile view
+		this.is_collapsible = function () {
+			var toggle;
+			return this.$sidebar.hasClass('navbar-collapse') && (toggle = $('.navbar-toggle[data-target="#' + (this.$sidebar.attr('id') || '') + '"]').get(0)) != null && toggle.scrollHeight > 0;
+			//sidebar is collapsible and collapse button is visible?
+		};
+		//determine if we are in mobile view
+		this.is_mobile_view = function () {
+			var toggle;
+			return (toggle = $('.menu-toggler[data-target="#' + (this.$sidebar.attr('id') || '') + '"]').get(0)) != null && toggle.scrollHeight > 0;
+		};
+
+		var submenu_working = false;
+		//show submenu
+		this.show = function (sub, $duration, shouldWait) {
+			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
+			shouldWait = shouldWait !== false;
+			if (shouldWait && submenu_working) return false;
+
+			var $sub = $(sub);
+			var event;
+			$sub.trigger(event = $.Event('show.ace.submenu'));
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			if (shouldWait) submenu_working = true;
+
+			$duration = typeof $duration !== 'undefined' ? $duration : this.settings.duration;
+
+			$sub.css({
+				height: 0,
+				overflow: 'hidden',
+				display: 'block'
+			}).removeClass('nav-hide').addClass('nav-show') //only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
+			.parent().addClass('open');
+
+			sub.scrollTop = 0; //this is for submenu_hover when sidebar is minimized and a submenu is scrollTop'ed using scrollbars ...
+
+
+			var complete = function complete(ev, trigger) {
+				ev && ev.stopPropagation();
+				$sub.css({ 'transition-property': '', 'transition-duration': '', overflow: '', height: '' });
+				//if(ace.vars['webkit']) ace.helper.redraw(sub);//little Chrome issue, force redraw ;)
+
+				if (trigger !== false) $sub.trigger($.Event('shown.ace.submenu'));
+
+				if (shouldWait) submenu_working = false;
+			};
+
+			var finalHeight = sub.scrollHeight;
+
+			if ($duration == 0 || finalHeight == 0 || !$.support.transition.end) {
+				//(if duration is zero || element is hidden (scrollHeight == 0) || CSS3 transitions are not available)
+				complete();
+			} else {
+				$sub.css({
+					'height': finalHeight,
+					'transition-property': 'height',
+					'transition-duration': $duration / 1000 + 's'
+				}).one($.support.transition.end, complete);
+
+				//there is sometimes a glitch, so maybe retry
+				if (ace.vars['android']) {
+					setTimeout(function () {
+						complete(null, false);
+						ace.helper.redraw(sub);
+					}, $duration + 20);
+				}
+			}
+
+			return true;
+		};
+
+		//hide submenu
+		this.hide = function (sub, $duration, shouldWait) {
+			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
+			shouldWait = shouldWait !== false;
+			if (shouldWait && submenu_working) return false;
+
+			var $sub = $(sub);
+			var event;
+			$sub.trigger(event = $.Event('hide.ace.submenu'));
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			if (shouldWait) submenu_working = true;
+
+			$duration = typeof $duration !== 'undefined' ? $duration : this.settings.duration;
+
+			var initialHeight = sub.scrollHeight;
+			$sub.css({
+				height: initialHeight,
+				overflow: 'hidden',
+				display: 'block'
+			}).parent().removeClass('open');
+
+			sub.offsetHeight;
+			//forces the "sub" to re-consider the new 'height' before transition
+
+
+			var complete = function complete(ev, trigger) {
+				ev && ev.stopPropagation();
+				$sub.css({ display: 'none', overflow: '', height: '', 'transition-property': '', 'transition-duration': '' }).removeClass('nav-show').addClass('nav-hide'); //only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
+
+				if (trigger !== false) $sub.trigger($.Event('hidden.ace.submenu'));
+
+				if (shouldWait) submenu_working = false;
+			};
+
+			if ($duration == 0 || initialHeight == 0 || !$.support.transition.end) {
+				//(if duration is zero || element is hidden (scrollHeight == 0) || CSS3 transitions are not available)
+				complete();
+			} else {
+				$sub.css({
+					'height': 0,
+					'transition-property': 'height',
+					'transition-duration': $duration / 1000 + 's'
+				}).one($.support.transition.end, complete);
+
+				//there is sometimes a glitch, so maybe retry
+				if (ace.vars['android']) {
+					setTimeout(function () {
+						complete(null, false);
+						ace.helper.redraw(sub);
+					}, $duration + 20);
+				}
+			}
+
+			return true;
+		};
+
+		//toggle submenu
+		this.toggle = function (sub, $duration) {
+			$duration = $duration || self.settings.duration;
+
+			if (sub.scrollHeight == 0) {
+				//if an element is hidden scrollHeight becomes 0
+				if (this.show(sub, $duration)) return 1;
+			} else {
+				if (this.hide(sub, $duration)) return -1;
+			}
+			return 0;
+		};
+
+		//toggle mobile menu
+		this.mobileToggle = function (showMenu) {
+			if (this.mobile_view) {
+				if (this.mobile_style == 1 || this.mobile_style == 2) {
+					this.toggleMobile((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
+				} else if (this.mobile_style == 3) {
+					this.toggleResponsive((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
+				}
+				//return true;
+			} else if (this.collapsible) {
+				this.toggleCollapsible((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
+				//return true;
+			}
+
+			//return true;
+		};
+		this.mobileShow = function () {
+			this.mobileToggle(true);
+		};
+		this.mobileHide = function () {
+			this.mobileToggle(false);
+		};
+
+		this.toggleMobile = function (toggle_btn, showMenu) {
+			if (!(this.mobile_style == 1 || this.mobile_style == 2)) return;
+
+			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : !this.$sidebar.hasClass('display');
+
+			if (!toggle_btn || (typeof toggle_btn === 'undefined' ? 'undefined' : _typeof(toggle_btn)) !== 'object') {
+				toggle_btn = $('.menu-toggler[data-target="#' + (this.$sidebar.attr('id') || '') + '"]');
+				if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
+			}
+			if (showMenu) {
+				this.$sidebar.addClass('display');
+				if (toggle_btn) $(toggle_btn).addClass('display');
+			} else {
+				this.$sidebar.removeClass('display');
+				if (toggle_btn) $(toggle_btn).removeClass('display');
+			}
+
+			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
+		};
+
+		this.toggleCollapsible = function (toggle_btn, showMenu) {
+			if (this.mobile_style != 4) return;
+
+			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : !this.$sidebar.hasClass('in');
+			if (showMenu) {
+				this.$sidebar.collapse('show');
+			} else {
+				this.$sidebar.removeClass('display');
+				this.$sidebar.collapse('hide');
+			}
+
+			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
+		};
+
+		////////////////
+		//private functions
+		//sidebar vars
+		var minimized_menu_class = 'menu-min';
+		var responsive_min_class = 'responsive-min';
+		var responsive_max_class = 'responsive-max';
+		var horizontal_menu_class = 'h-sidebar';
+
+		var sidebar_mobile_style = function sidebar_mobile_style() {
+			//differnet mobile menu styles
+			this.mobile_style = 1; //default responsive mode with toggle button inside navbar
+			if (this.$sidebar.hasClass('responsive') && !$('.menu-toggler[data-target="#' + this.$sidebar.attr('id') + '"]').hasClass('navbar-toggle')) this.mobile_style = 2; //toggle button behind sidebar
+			else if (this.$sidebar.hasClass(responsive_min_class)) this.mobile_style = 3; //minimized menu
+				else if (this.$sidebar.hasClass('navbar-collapse')) this.mobile_style = 4; //collapsible (bootstrap style)
+		};
+		sidebar_mobile_style.call(self);
+
+		function update_vars() {
+			this.mobile_view = this.mobile_style < 4 && this.is_mobile_view();
+			this.collapsible = !this.mobile_view && this.is_collapsible();
+
+			this.minimized = !this.collapsible && this.$sidebar.hasClass(minimized_menu_class) || this.mobile_style == 3 && this.mobile_view && this.$sidebar.hasClass(responsive_min_class);
+
+			this.horizontal = !(this.mobile_view || this.collapsible) && this.$sidebar.hasClass(horizontal_menu_class);
+		}
+
+		//update some basic variables
+		$(window).on('resize.sidebar.vars', function () {
+			update_vars.call(self);
+		}).triggerHandler('resize.sidebar.vars');
+
+		//toggling (show/hide) submenu elements
+		this.$sidebar.on(ace.click_event + '.ace.submenu', '.nav-list', function (ev) {
+			var nav_list = this;
+
+			//check to see if we have clicked on an element which is inside a .dropdown-toggle element?!
+			//if so, it means we should toggle a submenu
+			var link_element = $(ev.target).closest('a');
+			if (!link_element || link_element.length == 0) return; //return if not clicked inside a link element
+
+			var minimized = self.minimized && !self.collapsible;
+			//if .sidebar is .navbar-collapse and in small device mode, then let minimized be uneffective
+
+			if (!link_element.hasClass('dropdown-toggle')) {
+				//it doesn't have a submenu return
+				//just one thing before we return
+				//if sidebar is collapsed(minimized) and we click on a first level menu item
+				//and the click is on the icon, not on the menu text then let's cancel event and cancel navigation
+				//Good for touch devices, that when the icon is tapped to see the menu text, navigation is cancelled
+				//navigation is only done when menu text is tapped
+
+				if (ace.click_event == 'tap' && minimized && link_element.get(0).parentNode.parentNode == nav_list) //only level-1 links
+					{
+						var text = link_element.find('.menu-text').get(0);
+						if (text != null && ev.target != text && !$.contains(text, ev.target)) {
+							//not clicking on the text or its children
+							ev.preventDefault();
+							return false;
+						}
+					}
+
+				//ios safari only has a bit of a problem not navigating to link address when scrolling down
+				//specify data-link attribute to ignore this
+				if (ace.vars['ios_safari'] && link_element.attr('data-link') !== 'false') {
+					//only ios safari has a bit of a problem not navigating to link address when scrolling down
+					//please see issues section in documentation
+					document.location = link_element.attr('href');
+					ev.preventDefault();
+					return false;
+				}
+
+				return;
+			}
+
+			ev.preventDefault();
+
+			var sub = link_element.siblings('.submenu').get(0);
+			if (!sub) return false;
+			var $sub = $(sub);
+
+			var height_change = 0; //the amount of height change in .nav-list
+
+			var parent_ul = sub.parentNode.parentNode;
+			if (minimized && parent_ul == nav_list || $sub.parent().hasClass('hover') && $sub.css('position') == 'absolute' && !self.collapsible) {
+				return false;
+			}
+
+			var sub_hidden = sub.scrollHeight == 0;
+
+			//if not open and visible, let's open it and make it visible
+			if (sub_hidden && self.settings.hide_open_subs) {
+				//being shown now
+				$(parent_ul).find('> .open > .submenu').each(function () {
+					//close all other open submenus except for the active one
+					if (this != sub && !$(this.parentNode).hasClass('active')) {
+						height_change -= this.scrollHeight;
+						self.hide(this, self.settings.duration, false);
+					}
+				});
+			}
+
+			if (sub_hidden) {
+				//being shown now
+				self.show(sub, self.settings.duration);
+				//if a submenu is being shown and another one previously started to hide, then we may need to update/hide scrollbars
+				//but if no previous submenu is being hidden, then no need to check if we need to hide the scrollbars in advance
+				if (height_change != 0) height_change += sub.scrollHeight; //we need new updated 'scrollHeight' here
+			} else {
+				self.hide(sub, self.settings.duration);
+				height_change -= sub.scrollHeight;
+				//== -1 means submenu is being hidden
+			}
+
+			//hide scrollbars if content is going to be small enough that scrollbars is not needed anymore
+			//do this almost before submenu hiding begins
+			//but when minimized submenu's toggle should have no effect
+			if (height_change != 0) {
+				if (self.$sidebar.attr('data-sidebar-scroll') == 'true' && !self.minimized) self.$sidebar.ace_sidebar_scroll('prehide', height_change);
+			}
+
+			return false;
+		});
+	} //end of Sidebar
+
+
+	//sidebar events
+
+	//menu-toggler
+	$(document).on(ace.click_event + '.ace.menu', '.menu-toggler', function (e) {
+		var btn = $(this);
+		var sidebar = $(btn.attr('data-target'));
+		if (sidebar.length == 0) return;
+
+		e.preventDefault();
+
+		//sidebar.toggleClass('display');
+		//btn.toggleClass('display');
+
+		sidebar.ace_sidebar('mobileToggle', this);
+
+		var click_event = ace.click_event + '.ace.autohide';
+		var auto_hide = sidebar.attr('data-auto-hide') === 'true';
+
+		if (btn.hasClass('display')) {
+			//hide menu if clicked outside of it!
+			if (auto_hide) {
+				$(document).on(click_event, function (ev) {
+					if (sidebar.get(0) == ev.target || $.contains(sidebar.get(0), ev.target)) {
+						ev.stopPropagation();
+						return;
+					}
+
+					sidebar.ace_sidebar('mobileToggle', this, false);
+					$(document).off(click_event);
+				});
+			}
+
+			if (sidebar.attr('data-sidebar-scroll') == 'true') sidebar.ace_sidebar_scroll('reset');
+		} else {
+			if (auto_hide) $(document).off(click_event);
+		}
+
+		return false;
+	})
+	//sidebar collapse/expand button
+	.on(ace.click_event + '.ace.menu', '.sidebar-collapse', function (e) {
+
+		var target = $(this).attr('data-target'),
+		    $sidebar = null;
+		if (target) $sidebar = $(target);
+		if ($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
+		if ($sidebar.length == 0) return;
+
+		e.preventDefault();
+		$sidebar.ace_sidebar('toggleMenu', this);
+	})
+	//this button is used in `mobile_style = 3` responsive menu style to expand minimized sidebar
+	.on(ace.click_event + '.ace.menu', '.sidebar-expand', function (e) {
+		var target = $(this).attr('data-target'),
+		    $sidebar = null;
+		if (target) $sidebar = $(target);
+		if ($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
+		if ($sidebar.length == 0) return;
+
+		var btn = this;
+		e.preventDefault();
+		$sidebar.ace_sidebar('toggleResponsive', this);
+
+		var click_event = ace.click_event + '.ace.autohide';
+		if ($sidebar.attr('data-auto-hide') === 'true') {
+			if ($sidebar.hasClass(responsive_max_class)) {
+				$(document).on(click_event, function (ev) {
+					if ($sidebar.get(0) == ev.target || $.contains($sidebar.get(0), ev.target)) {
+						ev.stopPropagation();
+						return;
+					}
+
+					$sidebar.ace_sidebar('toggleResponsive', btn);
+					$(document).off(click_event);
+				});
+			} else {
+				$(document).off(click_event);
+			}
+		}
+	});
+
+	$.fn.ace_sidebar = function (option, value, value2) {
+		var method_call;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_sidebar');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_sidebar', data = new Sidebar(this, options));
+			if (typeof option === 'string' && typeof data[option] === 'function') {
+				if (value instanceof Array) method_call = data[option].apply(data, value);else if (value2 !== undefined) method_call = data[option](value, value2);else method_call = data[option](value);
+			}
+		});
+
+		return method_call === undefined ? $set : method_call;
+	};
+
+	$.fn.ace_sidebar.defaults = {
+		'duration': 300,
+		'hide_open_subs': true
+	};
+})(window.jQuery);
+; /**
+  <b>Scrollbars for sidebar</b>. This approach can <span class="text-danger">only</span> be used on <u>fixed</u> sidebar.
+  It doesn't use <u>"overflow:hidden"</u> CSS property and therefore can be used with <u>.hover</u> submenus and minimized sidebar.
+  Except when in mobile view and menu toggle button is not in the navbar.
+  */
+
+(function ($, undefined) {
+	//if( !$.fn.ace_scroll ) return;
+
+	var old_safari = ace.vars['safari'] && navigator.userAgent.match(/version\/[1-5]/i);
+	//NOTE
+	//Safari on windows has not been updated for a long time.
+	//And it has a problem when sidebar is fixed & scrollable and there is a CSS3 animation inside page content.
+	//Very probably windows users of safari have migrated to another browser by now!
+
+	var is_element_pos = 'getComputedStyle' in window ?
+	//el.offsetHeight is used to force redraw and recalculate 'el.style.position' esp. for webkit!
+	function (el, pos) {
+		el.offsetHeight;return window.getComputedStyle(el).position == pos;
+	} : function (el, pos) {
+		el.offsetHeight;return $(el).css('position') == pos;
+	};
+
+	function Sidebar_Scroll(sidebar, settings) {
+		var self = this;
+
+		var $window = $(window);
+
+		var $sidebar = $(sidebar),
+		    $nav,
+		    nav,
+		    $toggle,
+		    $shortcuts;
+		$nav = $sidebar.find('.nav-list');
+		nav = $nav.get(0);
+		if (!nav) return;
+
+		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_scroll.defaults);
+		this.settings = $.extend({}, $.fn.ace_sidebar_scroll.defaults, settings, attrib_values);
+		var scroll_to_active = self.settings.scroll_to_active;
+
+		var ace_sidebar = $sidebar.ace_sidebar('ref');
+		$sidebar.attr('data-sidebar-scroll', 'true');
+
+		var scroll_div = null,
+		    scroll_content = null,
+		    scroll_content_div = null,
+		    bar = null,
+		    track = null,
+		    ace_scroll = null;
+
+		this.is_scrolling = false;
+		var _initiated = false;
+		this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
+
+		var $avail_height, $content_height;
+
+		var available_height = function available_height() {
+			//available window space
+			var offset = $nav.parent().offset(); //because `$nav.offset()` considers the "scrolled top" amount as well
+			if (self.sidebar_fixed) offset.top -= ace.helper.scrollTop();
+
+			return $window.innerHeight() - offset.top - (self.settings.include_toggle ? 0 : $toggle.outerHeight()) + 1;
+		};
+		var content_height = function content_height() {
+			return nav.clientHeight; //we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
+		};
+
+		var initiate = function initiate(on_page_load) {
+			if (_initiated) return;
+			if (!self.sidebar_fixed) return; //eligible??
+			//return if we want scrollbars only on "fixed" sidebar and sidebar is not "fixed" yet!
+
+
+			$nav = $sidebar.find('.nav-list');
+			$toggle = $sidebar.find('.sidebar-toggle').eq(0);
+			$shortcuts = $sidebar.find('.sidebar-shortcuts').eq(0);
+			nav = $nav.get(0);
+
+			if (!nav) return;
+
+			//initiate once
+			$nav.wrap('<div class="nav-wrap-up pos-rel" />');
+			$nav.after('<div><div></div></div>');
+
+			$nav.wrap('<div class="nav-wrap" />');
+
+			if (!self.settings.include_toggle) $toggle.css({ 'z-index': 1 });
+			if (!self.settings.include_shortcuts) $shortcuts.css({ 'z-index': 99 });
+
+			scroll_div = $nav.parent().next().ace_scroll({
+				size: available_height(),
+				//reset: true,
+				mouseWheelLock: true,
+				hoverReset: false,
+				dragEvent: true,
+				styleClass: self.settings.scroll_style,
+				touchDrag: false //disable touch drag event on scrollbars, we'll add a custom one later
+			}).closest('.ace-scroll').addClass('nav-scroll');
+
+			ace_scroll = scroll_div.data('ace_scroll');
+
+			scroll_content = scroll_div.find('.scroll-content').eq(0);
+			scroll_content_div = scroll_content.find(' > div').eq(0);
+
+			track = $(ace_scroll.get_track());
+			bar = track.find('.scroll-bar').eq(0);
+
+			if (self.settings.include_shortcuts && $shortcuts.length != 0) {
+				$nav.parent().prepend($shortcuts).wrapInner('<div />');
+				$nav = $nav.parent();
+			}
+			if (self.settings.include_toggle && $toggle.length != 0) {
+				$nav.append($toggle);
+				$nav.closest('.nav-wrap').addClass('nav-wrap-t'); //it just helps to remove toggle button's top border and restore li:last-child's bottom border
+			}
+
+			$nav.css({ position: 'relative' });
+			if (self.settings.scroll_outside == true) scroll_div.addClass('scrollout');
+
+			nav = $nav.get(0);
+			nav.style.top = 0;
+			scroll_content.on('scroll.nav', function () {
+				nav.style.top = -1 * this.scrollTop + 'px';
+			});
+
+			//mousewheel library available?
+			$nav.on(!!$.event.special.mousewheel ? 'mousewheel.ace_scroll' : 'mousewheel.ace_scroll DOMMouseScroll.ace_scroll', function (event) {
+				if (!self.is_scrolling || !ace_scroll.is_active()) {
+					return !self.settings.lock_anyway;
+				}
+				//transfer $nav's mousewheel event to scrollbars
+				return scroll_div.trigger(event);
+			});
+
+			$nav.on('mouseenter.ace_scroll', function () {
+				track.addClass('scroll-hover');
+			}).on('mouseleave.ace_scroll', function () {
+				track.removeClass('scroll-hover');
+			});
+
+			/**
+   $(document.body).on('touchmove.nav', function(event) {
+   	if( self.is_scrolling && $.contains(sidebar, event.target) ) {
+   		event.preventDefault();
+   		return false;
+   	}
+   })
+   */
+
+			//you can also use swipe event in a similar way //swipe.nav
+			var content = scroll_content.get(0);
+			$nav.on('ace_drag.nav', function (event) {
+				if (!self.is_scrolling || !ace_scroll.is_active()) {
+					event.retval.cancel = true;
+					return;
+				}
+
+				//if submenu hover is being scrolled let's cancel sidebar scroll!
+				if ($(event.target).closest('.can-scroll').length != 0) {
+					event.retval.cancel = true;
+					return;
+				}
+
+				if (event.direction == 'up' || event.direction == 'down') {
+
+					ace_scroll.move_bar(true);
+
+					var distance = event.dy;
+
+					distance = parseInt(Math.min($avail_height, distance));
+					if (Math.abs(distance) > 2) distance = distance * 2;
+
+					if (distance != 0) {
+						content.scrollTop = content.scrollTop + distance;
+						nav.style.top = -1 * content.scrollTop + 'px';
+					}
+				}
+			});
+
+			//for drag only
+			if (self.settings.smooth_scroll) {
+				$nav.on('touchstart.nav MSPointerDown.nav pointerdown.nav', function (event) {
+					$nav.css('transition-property', 'none');
+					bar.css('transition-property', 'none');
+				}).on('touchend.nav touchcancel.nav MSPointerUp.nav MSPointerCancel.nav pointerup.nav pointercancel.nav', function (event) {
+					$nav.css('transition-property', 'top');
+					bar.css('transition-property', 'top');
+				});
+			}
+
+			if (old_safari && !self.settings.include_toggle) {
+				var toggle = $toggle.get(0);
+				if (toggle) scroll_content.on('scroll.safari', function () {
+					ace.helper.redraw(toggle);
+				});
+			}
+
+			_initiated = true;
+
+			//if the active item is not visible, scroll down so that it becomes visible
+			//only the first time, on page load
+			if (on_page_load == true) {
+				self.reset(); //try resetting at first
+
+				if (scroll_to_active) {
+					self.scroll_to_active();
+				}
+				scroll_to_active = false;
+			}
+
+			if (typeof self.settings.smooth_scroll === 'number' && self.settings.smooth_scroll > 0) {
+				$nav.css({ 'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1000).toFixed(2) + 's' });
+				bar.css({ 'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1500).toFixed(2) + 's' });
+
+				scroll_div.on('drag.start', function (e) {
+					e.stopPropagation();
+					$nav.css('transition-property', 'none');
+				}).on('drag.end', function (e) {
+					e.stopPropagation();
+					$nav.css('transition-property', 'top');
+				});
+			}
+
+			if (ace.vars['android']) {
+				//force hide address bar, because its changes don't trigger window resize and become kinda ugly
+				var val = ace.helper.scrollTop();
+				if (val < 2) {
+					window.scrollTo(val, 0);
+					setTimeout(function () {
+						self.reset();
+					}, 20);
+				}
+
+				var last_height = ace.helper.winHeight(),
+				    new_height;
+				$(window).on('scroll.ace_scroll', function () {
+					if (self.is_scrolling && ace_scroll.is_active()) {
+						new_height = ace.helper.winHeight();
+						if (new_height != last_height) {
+							last_height = new_height;
+							self.reset();
+						}
+					}
+				});
+			}
+		};
+
+		this.scroll_to_active = function () {
+			if (!ace_scroll || !ace_scroll.is_active()) return;
+			try {
+				//sometimes there's no active item or not 'offsetTop' property
+				var $active;
+
+				var vars = ace_sidebar['vars']();
+
+				var nav_list = $sidebar.find('.nav-list');
+				if (vars['minimized'] && !vars['collapsible']) {
+					$active = nav_list.find('> .active');
+				} else {
+					$active = $nav.find('> .active.hover');
+					if ($active.length == 0) $active = $nav.find('.active:not(.open)');
+				}
+
+				var top = $active.outerHeight();
+				nav_list = nav_list.get(0);
+				var active = $active.get(0);
+				while (active != nav_list) {
+					top += active.offsetTop;
+					active = active.parentNode;
+				}
+
+				var scroll_amount = top - scroll_div.height();
+				if (scroll_amount > 0) {
+					nav.style.top = -scroll_amount + 'px';
+					scroll_content.scrollTop(scroll_amount);
+				}
+			} catch (e) {}
+		};
+
+		this.reset = function (recalc) {
+			if (recalc === true) {
+				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
+			}
+
+			if (!this.sidebar_fixed) {
+				this.disable();
+				return; //eligible??
+			}
+
+			//return if we want scrollbars only on "fixed" sidebar and sidebar is not "fixed" yet!
+
+			if (!_initiated) initiate();
+			//initiate scrollbars if not yet
+
+			var vars = ace_sidebar['vars']();
+
+			//enable if:
+			//menu is not collapsible mode (responsive navbar-collapse mode which has default browser scrollbar)
+			//menu is not horizontal or horizontal but mobile view (which is not navbar-collapse)
+			//and available height is less than nav's height
+
+
+			var enable_scroll = !vars['collapsible'] && !vars['horizontal'] && ($avail_height = available_height()) < ($content_height = nav.clientHeight);
+			//we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
+
+
+			this.is_scrolling = true;
+			if (enable_scroll) {
+				scroll_content_div.css({ height: $content_height, width: 8 });
+				scroll_div.prev().css({ 'max-height': $avail_height });
+				ace_scroll.update({ size: $avail_height });
+				ace_scroll.enable();
+				ace_scroll.reset();
+			}
+			if (!enable_scroll || !ace_scroll.is_active()) {
+				if (this.is_scrolling) this.disable();
+			} else {
+				$sidebar.addClass('sidebar-scroll');
+			}
+
+			//return this.is_scrolling;
+		};
+
+		this.disable = function () {
+			this.is_scrolling = false;
+			if (scroll_div) {
+				scroll_div.css({ 'height': '', 'max-height': '' });
+				scroll_content_div.css({ height: '', width: '' }); //otherwise it will have height and takes up some space even when invisible
+				scroll_div.prev().css({ 'max-height': '' });
+				ace_scroll.disable();
+			}
+
+			if (parseInt(nav.style.top) < 0 && self.settings.smooth_scroll && $.support.transition.end) {
+				$nav.one($.support.transition.end, function () {
+					$sidebar.removeClass('sidebar-scroll');
+					$nav.off('.trans');
+				});
+			} else {
+				$sidebar.removeClass('sidebar-scroll');
+			}
+
+			nav.style.top = 0;
+		};
+
+		this.prehide = function (height_change) {
+			if (!this.is_scrolling || ace_sidebar.get('minimized')) return; //when minimized submenu's toggle should have no effect
+
+			if (content_height() + height_change < available_height()) {
+				this.disable();
+			} else if (height_change < 0) {
+				//if content height is decreasing
+				//let's move nav down while a submenu is being hidden
+				var scroll_top = scroll_content.scrollTop() + height_change;
+				if (scroll_top < 0) return;
+
+				nav.style.top = -1 * scroll_top + 'px';
+			}
+		};
+
+		this._reset = function (recalc) {
+			if (recalc === true) {
+				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
+			}
+
+			if (ace.vars['webkit']) setTimeout(function () {
+				self.reset();
+			}, 0);else this.reset();
+		};
+
+		this.set_hover = function () {
+			if (track) track.addClass('scroll-hover');
+		};
+
+		this.get = function (name) {
+			if (this.hasOwnProperty(name)) return this[name];
+		};
+		this.set = function (name, value) {
+			if (this.hasOwnProperty(name)) this[name] = value;
+		};
+		this.ref = function () {
+			//return a reference to self
+			return this;
+		};
+
+		this.updateStyle = function (styleClass) {
+			if (ace_scroll == null) return;
+			ace_scroll.update({ styleClass: styleClass });
+		};
+
+		//change scrollbar size after a submenu is hidden/shown
+		//but don't change if sidebar is minimized
+		$sidebar.on('hidden.ace.submenu.sidebar_scroll shown.ace.submenu.sidebar_scroll', '.submenu', function (e) {
+			e.stopPropagation();
+
+			if (!ace_sidebar.get('minimized')) {
+				//webkit has a little bit of a glitch!!!
+				self._reset();
+				if (e.type == 'shown') self.set_hover();
+			}
+		});
+
+		initiate(true); //true = on_page_load
+	}
+
+	//reset on document and window changes
+	$(document).on('settings.ace.sidebar_scroll', function (ev, event_name, event_val) {
+		$('.sidebar[data-sidebar-scroll=true]').each(function () {
+			var $this = $(this);
+			var sidebar_scroll = $this.ace_sidebar_scroll('ref');
+
+			if (event_name == 'sidebar_collapsed' && is_element_pos(this, 'fixed')) {
+				if ($this.attr('data-sidebar-hover') == 'true') $this.ace_sidebar_hover('reset');
+				sidebar_scroll._reset();
+			} else if (event_name === 'sidebar_fixed' || event_name === 'navbar_fixed') {
+				var is_scrolling = sidebar_scroll.get('is_scrolling');
+				var sidebar_fixed = is_element_pos(this, 'fixed');
+				sidebar_scroll.set('sidebar_fixed', sidebar_fixed);
+
+				if (sidebar_fixed && !is_scrolling) {
+					sidebar_scroll._reset();
+				} else if (!sidebar_fixed) {
+					sidebar_scroll.disable();
+				}
+			}
+		});
+	});
+
+	$(window).on('resize.ace.sidebar_scroll', function () {
+		$('.sidebar[data-sidebar-scroll=true]').each(function () {
+			var $this = $(this);
+			if ($this.attr('data-sidebar-hover') == 'true') $this.ace_sidebar_hover('reset');
+			/////////////
+			var sidebar_scroll = $(this).ace_sidebar_scroll('ref');
+
+			var sidebar_fixed = is_element_pos(this, 'fixed');
+			sidebar_scroll.set('sidebar_fixed', sidebar_fixed);
+			sidebar_scroll._reset();
+		});
+	});
+
+	/////////////////////////////////////////////
+	if (!$.fn.ace_sidebar_scroll) {
+
+		$.fn.ace_sidebar_scroll = function (option, value) {
+			var method_call;
+
+			var $set = this.each(function () {
+				var $this = $(this);
+				var data = $this.data('ace_sidebar_scroll');
+				var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+				if (!data) $this.data('ace_sidebar_scroll', data = new Sidebar_Scroll(this, options));
+				if (typeof option === 'string' && typeof data[option] === 'function') {
+					method_call = data[option](value);
+				}
+			});
+
+			return method_call === undefined ? $set : method_call;
+		};
+
+		$.fn.ace_sidebar_scroll.defaults = {
+			'scroll_to_active': true,
+			'include_shortcuts': true,
+			'include_toggle': false,
+			'smooth_scroll': 150,
+			'scroll_outside': false,
+			'scroll_style': '',
+			'lock_anyway': false
+		};
+	}
+})(window.jQuery);; /**
+                    <b>Submenu hover adjustment</b>. Automatically move up a submenu to fit into screen when some part of it goes beneath window.
+                    Pass a "true" value as an argument and submenu will have native browser scrollbars when necessary.
+                    */
+
+(function ($, undefined) {
+
+	if (ace.vars['very_old_ie']) return;
+	//ignore IE7 & below
+
+	var hasTouch = ace.vars['touch'];
+	var nativeScroll = ace.vars['old_ie'] || hasTouch;
+
+	var is_element_pos = 'getComputedStyle' in window ?
+	//el.offsetHeight is used to force redraw and recalculate 'el.style.position' esp. for webkit!
+	function (el, pos) {
+		el.offsetHeight;return window.getComputedStyle(el).position == pos;
+	} : function (el, pos) {
+		el.offsetHeight;return $(el).css('position') == pos;
+	};
+
+	$(window).on('resize.sidebar.ace_hover', function () {
+		$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('update_vars').ace_sidebar_hover('reset');
+	});
+
+	$(document).on('settings.ace.ace_hover', function (e, event_name, event_val) {
+		if (event_name == 'sidebar_collapsed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset');else if (event_name == 'navbar_fixed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('update_vars');
+	});
+
+	var sidebars = [];
+
+	function Sidebar_Hover(sidebar, settings) {
+		var self = this,
+		    that = this;
+
+		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_hover.defaults);
+		this.settings = $.extend({}, $.fn.ace_sidebar_hover.defaults, settings, attrib_values);
+
+		var $sidebar = $(sidebar),
+		    nav_list = $sidebar.find('.nav-list').get(0);
+		$sidebar.attr('data-sidebar-hover', 'true');
+
+		sidebars.push($sidebar);
+
+		var sidebar_vars = {};
+		var old_ie = ace.vars['old_ie'];
+
+		var scroll_right = false;
+		//scroll style class
+		var hasHoverDelay = self.settings.sub_hover_delay || false;
+
+		if (hasTouch && hasHoverDelay) self.settings.sub_hover_delay = parseInt(Math.max(self.settings.sub_hover_delay, 2500)); //for touch device, delay is at least 2.5sec
+
+		var $window = $(window);
+		//navbar used for adding extra offset from top when adjusting submenu
+		var $navbar = $('.navbar').eq(0);
+		var navbar_fixed = $navbar.css('position') == 'fixed';
+		this.update_vars = function () {
+			navbar_fixed = $navbar.css('position') == 'fixed';
+		};
+
+		self.dirty = false;
+		//on window resize or sidebar expand/collapse a previously "pulled up" submenu should be reset back to its default position
+		//for example if "pulled up" in "responsive-min" mode, in "fullmode" should not remain "pulled up"
+		this.reset = function () {
+			if (self.dirty == false) return;
+			self.dirty = false; //so don't reset is not called multiple times in a row!
+
+			$sidebar.find('.submenu').each(function () {
+				var $sub = $(this),
+				    li = $sub.parent();
+				$sub.css({ 'top': '', 'bottom': '', 'max-height': '' });
+
+				if ($sub.hasClass('ace-scroll')) {
+					$sub.ace_scroll('disable');
+				} else {
+					$sub.removeClass('sub-scroll');
+				}
+
+				if (is_element_pos(this, 'absolute')) $sub.addClass('can-scroll');else $sub.removeClass('can-scroll');
+
+				li.removeClass('pull_up').find('.menu-text:first').css('margin-top', '');
+			});
+
+			$sidebar.find('.hover-show').removeClass('hover-show hover-shown hover-flip');
+		};
+
+		this.updateStyle = function (newStyle) {
+			sub_scroll_style = newStyle;
+			$sidebar.find('.submenu.ace-scroll').ace_scroll('update', { styleClass: newStyle });
+		};
+		this.changeDir = function (dir) {
+			scroll_right = dir === 'right';
+		};
+
+		//update submenu scrollbars on submenu hide & show
+
+		var lastScrollHeight = -1;
+		//hide scrollbars if it's going to be not needed anymore!
+		if (!nativeScroll) $sidebar.on('hide.ace.submenu.sidebar_hover', '.submenu', function (e) {
+			if (lastScrollHeight < 1) return;
+
+			e.stopPropagation();
+			var $sub = $(this).closest('.ace-scroll.can-scroll');
+			if ($sub.length == 0 || !is_element_pos($sub[0], 'absolute')) return;
+
+			if ($sub[0].scrollHeight - this.scrollHeight < lastScrollHeight) {
+				$sub.ace_scroll('disable');
+			}
+		});
+
+		//reset scrollbars 
+		if (!nativeScroll) $sidebar.on('shown.ace.submenu.sidebar_hover hidden.ace.submenu.sidebar_hover', '.submenu', function (e) {
+			if (lastScrollHeight < 1) return;
+
+			var $sub = $(this).closest('.ace-scroll.can-scroll');
+			if ($sub.length == 0 || !is_element_pos($sub[0], 'absolute')) return;
+
+			var sub_h = $sub[0].scrollHeight;
+
+			if (lastScrollHeight > 14 && sub_h - lastScrollHeight > 4) {
+				$sub.ace_scroll('enable').ace_scroll('reset'); //don't update track position
+			} else {
+				$sub.ace_scroll('disable');
+			}
+		});
+
+		///////////////////////
+
+
+		var currentScroll = -1;
+
+		//some mobile browsers don't have mouseenter
+		var event_1 = !hasTouch ? 'mouseenter.sub_hover' : 'touchstart.sub_hover'; // pointerdown.sub_hover';
+		var event_2 = !hasTouch ? 'mouseleave.sub_hover' : 'touchend.sub_hover touchcancel.sub_hover'; // pointerup.sub_hover pointercancel.sub_hover';
+
+		$sidebar.on(event_1, '.nav-list li, .sidebar-shortcuts', function (e) {
+			sidebar_vars = $sidebar.ace_sidebar('vars');
+
+			//ignore if collapsible mode (mobile view .navbar-collapse) so it doesn't trigger submenu movements
+			//or return if horizontal but not mobile_view (style 1&3)
+			if (sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/) return;
+
+			var $this = $(this);
+
+			var shortcuts = false;
+			var has_hover = $this.hasClass('hover');
+
+			var sub = $this.find('> .submenu').get(0);
+			if (!(sub || this.parentNode == nav_list || has_hover || (shortcuts = $this.hasClass('sidebar-shortcuts')))) {
+				if (sub) $(sub).removeClass('can-scroll');
+				return; //include .compact and .hover state as well?
+			}
+
+			var target_element = sub,
+			    is_abs = false;
+			if (!target_element && this.parentNode == nav_list) target_element = $this.find('> a > .menu-text').get(0);
+			if (!target_element && shortcuts) target_element = $this.find('.sidebar-shortcuts-large').get(0);
+			if ((!target_element || !(is_abs = is_element_pos(target_element, 'absolute'))) && !has_hover) {
+				if (sub) $(sub).removeClass('can-scroll');
+				return;
+			}
+
+			var sub_hide = hasHoverDelay ? getSubHide(this) : null;
+			//var show_sub = false;
+
+			if (sub) {
+				if (is_abs) {
+					self.dirty = true;
+
+					var newScroll = ace.helper.scrollTop();
+					//if submenu is becoming visible for first time or document has been scrolled, then adjust menu
+					if (hasHoverDelay && !sub_hide.is_visible() || !hasTouch && newScroll != currentScroll || old_ie) {
+						//try to move/adjust submenu if the parent is a li.hover or if submenu is minimized
+						//if( is_element_pos(sub, 'absolute') ) {//for example in small device .hover > .submenu may not be absolute anymore!
+						$(sub).addClass('can-scroll');
+						//show_sub = true;
+						if (!old_ie && !hasTouch) adjust_submenu.call(this, sub);else {
+							//because ie8 needs some time for submenu to be displayed and real value of sub.scrollHeight be kicked in
+							var that = this;
+							setTimeout(function () {
+								adjust_submenu.call(that, sub);
+							}, 0);
+						}
+						//}
+						//else $(sub).removeClass('can-scroll');
+					}
+					currentScroll = newScroll;
+				} else {
+					$(sub).removeClass('can-scroll');
+				}
+			}
+			//if(show_sub) 
+			hasHoverDelay && sub_hide.show();
+		}).on(event_2, '.nav-list li, .sidebar-shortcuts', function (e) {
+			sidebar_vars = $sidebar.ace_sidebar('vars');
+
+			if (sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/) return;
+
+			if (!$(this).hasClass('hover-show')) return;
+
+			hasHoverDelay && getSubHide(this).hideDelay();
+		});
+
+		function subHide(li_sub) {
+			var self = li_sub,
+			    $self = $(self);
+			var timer = null;
+			var visible = false;
+
+			this.show = function () {
+				if (timer != null) clearTimeout(timer);
+				timer = null;
+
+				$self.addClass('hover-show hover-shown');
+				visible = true;
+
+				//let's hide .hover-show elements that are not .hover-shown anymore (i.e. marked for hiding in hideDelay)
+				for (var i = 0; i < sidebars.length; i++) {
+					sidebars[i].find('.hover-show').not('.hover-shown').each(function () {
+						getSubHide(this).hide();
+					});
+				}
+			};
+
+			this.hide = function () {
+				visible = false;
+
+				$self.removeClass('hover-show hover-shown hover-flip');
+
+				if (timer != null) clearTimeout(timer);
+				timer = null;
+
+				var sub = $self.find('> .submenu').get(0);
+				if (sub) getSubScroll(sub, 'hide');
+			};
+
+			this.hideDelay = function (callback) {
+				if (timer != null) clearTimeout(timer);
+
+				$self.removeClass('hover-shown'); //somehow marked for hiding
+
+				timer = setTimeout(function () {
+					visible = false;
+					$self.removeClass('hover-show hover-flip');
+					timer = null;
+
+					var sub = $self.find('> .submenu').get(0);
+					if (sub) getSubScroll(sub, 'hide');
+
+					if (typeof callback === 'function') callback.call(this);
+				}, that.settings.sub_hover_delay);
+			};
+
+			this.is_visible = function () {
+				return visible;
+			};
+		}
+		function getSubHide(el) {
+			var sub_hide = $(el).data('subHide');
+			if (!sub_hide) $(el).data('subHide', sub_hide = new subHide(el));
+			return sub_hide;
+		}
+
+		function getSubScroll(el, func) {
+			var sub_scroll = $(el).data('ace_scroll');
+			if (!sub_scroll) return false;
+			if (typeof func === 'string') {
+				sub_scroll[func]();
+				return true;
+			}
+			return sub_scroll;
+		}
+
+		function adjust_submenu(sub) {
+			var $li = $(this);
+			var $sub = $(sub);
+			sub.style.top = '';
+			sub.style.bottom = '';
+
+			var menu_text = null;
+			if (sidebar_vars['minimized'] && (menu_text = $li.find('.menu-text').get(0))) {
+				//2nd level items don't have .menu-text
+				menu_text.style.marginTop = '';
+			}
+
+			var scroll = ace.helper.scrollTop();
+			var navbar_height = 0;
+
+			var $scroll = scroll;
+
+			if (navbar_fixed) {
+				navbar_height = sidebar.offsetTop; //$navbar.height();
+				$scroll += navbar_height + 1;
+				//let's avoid our submenu from going below navbar
+				//because of chrome z-index stacking issue and firefox's normal .submenu over fixed .navbar flicker issue
+			}
+
+			var off = $li.offset();
+			off.top = parseInt(off.top);
+
+			var extra = 0,
+			    parent_height;
+
+			sub.style.maxHeight = ''; //otherwise scrollHeight won't be consistent in consecutive calls!?
+			var sub_h = sub.scrollHeight;
+			var parent_height = $li.height();
+			if (menu_text) {
+				extra = parent_height;
+				off.top += extra;
+			}
+			var sub_bottom = parseInt(off.top + sub_h);
+
+			var move_up = 0;
+			var winh = $window.height();
+
+			//if the bottom of menu is going to go below visible window
+
+			var top_space = parseInt(off.top - $scroll - extra); //available space on top
+			var win_space = winh; //available window space
+
+			var horizontal = sidebar_vars['horizontal'],
+			    horizontal_sub = false;
+			if (horizontal && this.parentNode == nav_list) {
+				move_up = 0; //don't move up first level submenu in horizontal mode
+				off.top += $li.height();
+				horizontal_sub = true; //first level submenu
+			}
+
+			if (!horizontal_sub && (move_up = sub_bottom - (winh + scroll)) >= 0) {
+				//don't move up more than available space
+				move_up = move_up < top_space ? move_up : top_space;
+
+				//move it up a bit more if there's empty space
+				if (move_up == 0) move_up = 20;
+				if (top_space - move_up > 10) {
+					move_up += parseInt(Math.min(25, top_space - move_up));
+				}
+
+				//move it down if submenu's bottom is going above parent LI
+				if (off.top + (parent_height - extra) > sub_bottom - move_up) {
+					move_up -= off.top + (parent_height - extra) - (sub_bottom - move_up);
+				}
+
+				if (move_up > 0) {
+					sub.style.top = -move_up + 'px';
+					if (menu_text) {
+						menu_text.style.marginTop = -move_up + 'px';
+					}
+				}
+			}
+			if (move_up < 0) move_up = 0; //when it goes below
+
+			var pull_up = move_up > 0 && move_up > parent_height - 20;
+			if (pull_up) {
+				$li.addClass('pull_up');
+			} else $li.removeClass('pull_up');
+
+			//flip submenu if out of window width
+			if (horizontal) {
+				if ($li.parent().parent().hasClass('hover-flip')) $li.addClass('hover-flip'); //if a parent is already flipped, flip it then!
+				else {
+						var sub_off = $sub.offset();
+						var sub_w = $sub.width();
+						var win_w = $window.width();
+						if (sub_off.left + sub_w > win_w) {
+							$li.addClass('hover-flip');
+						}
+					}
+			}
+
+			//don't add scrollbars if it contains .hover menus
+			var has_hover = $li.hasClass('hover') && !sidebar_vars['mobile_view'];
+			if (has_hover && $sub.find('> li > .submenu').length > 0) return;
+
+			//if(  ) {
+			var scroll_height = win_space - (off.top - scroll) + move_up;
+			//if after scroll, the submenu is above parent LI, then move it down
+			var tmp = move_up - scroll_height;
+			if (tmp > 0 && tmp < parent_height) scroll_height += parseInt(Math.max(parent_height, parent_height - tmp));
+
+			scroll_height -= 5;
+
+			if (scroll_height < 90) {
+				return;
+			}
+
+			var ace_scroll = false;
+			if (!nativeScroll) {
+				ace_scroll = getSubScroll(sub);
+				if (ace_scroll == false) {
+					$sub.ace_scroll({
+						//hideOnIdle: true,
+						observeContent: true,
+						detached: true,
+						updatePos: false,
+						reset: true,
+						mouseWheelLock: true,
+						styleClass: self.settings.sub_scroll_style
+					});
+					ace_scroll = getSubScroll(sub);
+
+					var track = ace_scroll.get_track();
+					if (track) {
+						//detach it from body and insert it after submenu for better and cosistent positioning
+						$sub.after(track);
+					}
+				}
+
+				ace_scroll.update({ size: scroll_height });
+			} else {
+				$sub.addClass('sub-scroll').css('max-height', scroll_height + 'px');
+			}
+
+			lastScrollHeight = scroll_height;
+			if (!nativeScroll && ace_scroll) {
+				if (scroll_height > 14 && sub_h - scroll_height > 4) {
+					ace_scroll.enable();
+					ace_scroll.reset();
+				} else {
+					ace_scroll.disable();
+				}
+
+				//////////////////////////////////
+				var track = ace_scroll.get_track();
+				if (track) {
+					track.style.top = -(move_up - extra - 1) + 'px';
+
+					var off = $sub.position();
+					var left = off.left;
+					if (!scroll_right) {
+						left += $sub.outerWidth() - ace_scroll.track_size();
+					} else {
+						left += 2;
+					}
+					track.style.left = parseInt(left) + 'px';
+
+					if (horizontal_sub) {
+						//first level submenu
+						track.style.left = parseInt(left - 2) + 'px';
+						track.style.top = parseInt(off.top) + (menu_text ? extra - 2 : 0) + 'px';
+					}
+				}
+			}
+			//}
+
+
+			//again force redraw for safari!
+			if (ace.vars['safari']) {
+				ace.helper.redraw(sub);
+			}
+		}
+	}
+
+	/////////////////////////////////////////////
+	$.fn.ace_sidebar_hover = function (option, value) {
+		var method_call;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('ace_sidebar_hover');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('ace_sidebar_hover', data = new Sidebar_Hover(this, options));
+			if (typeof option === 'string' && typeof data[option] === 'function') {
+				method_call = data[option](value);
+			}
+		});
+
+		return method_call === undefined ? $set : method_call;
+	};
+
+	$.fn.ace_sidebar_hover.defaults = {
+		'sub_hover_delay': 750,
+		'sub_scroll_style': 'no-track scroll-thin'
+	};
+})(window.jQuery);
+
+; /**
+  <b>Widget boxes</b>
+  */
+(function ($, undefined) {
+
+	var Widget_Box = function Widget_Box(box, options) {
+		this.$box = $(box);
+		var that = this;
+		//this.options = $.extend({}, $.fn.widget_box.defaults, options);
+
+		this.reload = function () {
+			var $box = this.$box;
+			var $remove_position = false;
+			if ($box.css('position') == 'static') {
+				$remove_position = true;
+				$box.addClass('position-relative');
+			}
+			$box.append('<div class="widget-box-overlay"><i class="' + ace.vars['icon'] + 'loading-icon fa fa-spinner fa-spin fa-2x white"></i></div>');
+
+			$box.one('reloaded.ace.widget', function () {
+				$box.find('.widget-box-overlay').remove();
+				if ($remove_position) $box.removeClass('position-relative');
+			});
+		};
+
+		this.closeFast = function () {
+			this.close(0);
+		};
+		this.close = function (closeSpeed) {
+			var $box = this.$box;
+			var closeSpeed = typeof closeSpeed === 'undefined' ? 300 : closeSpeed;
+			$box.fadeOut(closeSpeed, function () {
+				$box.trigger('closed.ace.widget');
+				$box.remove();
+			});
+		};
+
+		this.toggleFast = function () {
+			this.toggle(null, null, 0, 0);
+		};
+
+		this.toggle = function (type, button, expandSpeed, collapseSpeed) {
+			var $box = this.$box;
+			var $body = $box.find('.widget-body').eq(0);
+			var $icon = null;
+
+			var event_name = type || ($box.hasClass('collapsed') ? 'show' : 'hide');
+			var event_complete_name = event_name == 'show' ? 'shown' : 'hidden';
+
+			if (!button) {
+				button = $box.find('> .widget-header a[data-action=collapse]').eq(0);
+				if (button.length == 0) button = null;
+			}
+
+			if (button) {
+
+				$icon = button.find(ace.vars['.icon']).eq(0);
+
+				var $match;
+				var $icon_down = null;
+				var $icon_up = null;
+				if ($icon_down = $icon.attr('data-icon-show')) {
+					$icon_up = $icon.attr('data-icon-hide');
+				} else if ($match = $icon.attr('class').match(/fa\-(.*)\-(up|down)/)) {
+					$icon_down = 'fa-' + $match[1] + '-down';
+					$icon_up = 'fa-' + $match[1] + '-up';
+				}
+			}
+
+			var expandSpeed = typeof expandSpeed === 'undefined' ? 250 : expandSpeed;
+			var collapseSpeed = typeof collapseSpeed === 'undefined' ? 200 : collapseSpeed;
+
+			if (event_name == 'show') {
+				if ($icon) $icon.removeClass($icon_down).addClass($icon_up);
+
+				$body.hide();
+				$box.removeClass('collapsed');
+				$body.slideDown(expandSpeed, function () {
+					$box.trigger(event_complete_name + '.ace.widget');
+				});
+			} else {
+				if ($icon) $icon.removeClass($icon_up).addClass($icon_down);
+				$body.slideUp(collapseSpeed, function () {
+					$box.addClass('collapsed');
+					$box.trigger(event_complete_name + '.ace.widget');
+				});
+			}
+
+			$box.trigger('toggled.ace.widget', [event_name]);
+		};
+
+		this.hide = function () {
+			this.toggle('hide');
+		};
+		this.show = function () {
+			this.toggle('show');
+		};
+
+		this.hideFast = function () {
+			this.toggle('hide', null, 0, 0);
+		};
+		this.showFast = function () {
+			this.toggle('show', null, 0, 0);
+		};
+
+		this.fullscreen = function (makeFullscreen) {
+			var $icon = this.$box.find('> .widget-header a[data-action=fullscreen]').find(ace.vars['.icon']).eq(0);
+			var $icon_expand = null;
+			var $icon_compress = null;
+			if ($icon_expand = $icon.attr('data-icon1')) {
+				$icon_compress = $icon.attr('data-icon2');
+			} else {
+				$icon_expand = 'fa-expand';
+				$icon_compress = 'fa-compress';
+			}
+
+			var isAlreadyFull = this.$box.hasClass('fullscreen');
+			var noMakeFullscreenParam = makeFullscreen !== true && makeFullscreen !== false; //no true/false arguement provided for this function, so decide based on widget box classnames
+
+			//make it fullscreen if:
+			//1)we want to go full screen anyway
+			//2)it is not fullscreen already
+			if (makeFullscreen === true || noMakeFullscreenParam && !isAlreadyFull) {
+				$icon.removeClass($icon_expand).addClass($icon_compress);
+				this.$box.addClass('fullscreen');
+
+				applyScrollbars(this.$box, true);
+			} else if (makeFullscreen === false || noMakeFullscreenParam && isAlreadyFull) {
+				$icon.addClass($icon_expand).removeClass($icon_compress);
+				this.$box.removeClass('fullscreen');
+
+				applyScrollbars(this.$box, false);
+			}
+
+			this.$box.trigger('fullscreened.ace.widget');
+		};
+	};
+
+	$.fn.widget_box = function (option, value) {
+		var method_call;
+
+		var $set = this.each(function () {
+			var $this = $(this);
+			var data = $this.data('widget_box');
+			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+			if (!data) $this.data('widget_box', data = new Widget_Box(this, options));
+			if (typeof option === 'string') method_call = data[option](value);
+		});
+
+		return method_call === undefined ? $set : method_call;
+	};
+
+	$(document).on(ace['click_event'] + '.ace.widget', '.widget-header a[data-action]', function (ev) {
+		ev.preventDefault();
+
+		var $this = $(this);
+		var $box = $this.closest('.widget-box');
+		if ($box.length == 0 || $box.hasClass('ui-sortable-helper')) return;
+
+		var $widget_box = $box.data('widget_box');
+		if (!$widget_box) {
+			$box.data('widget_box', $widget_box = new Widget_Box($box.get(0)));
+		}
+
+		var $action = $this.data('action');
+		if ($action == 'collapse') {
+			var event_name = $box.hasClass('collapsed') ? 'show' : 'hide';
+
+			var event;
+			$box.trigger(event = $.Event(event_name + '.ace.widget'));
+			if (event.isDefaultPrevented()) return;
+
+			$box.trigger(event = $.Event('toggle.ace.widget'), [event_name]);
+
+			$widget_box.toggle(event_name, $this);
+		} else if ($action == 'close') {
+			var event;
+			$box.trigger(event = $.Event('close.ace.widget'));
+			if (event.isDefaultPrevented()) return;
+
+			$widget_box.close();
+		} else if ($action == 'reload') {
+			$this.blur();
+			var event;
+			$box.trigger(event = $.Event('reload.ace.widget'));
+			if (event.isDefaultPrevented()) return;
+
+			$widget_box.reload();
+		} else if ($action == 'fullscreen') {
+			var event;
+			$box.trigger(event = $.Event('fullscreen.ace.widget'));
+			if (event.isDefaultPrevented()) return;
+
+			$widget_box.fullscreen();
+		} else if ($action == 'settings') {
+			$box.trigger('setting.ace.widget');
+		}
+	});
+
+	function applyScrollbars($widget, enable) {
+		var $main = $widget.find('.widget-main').eq(0);
+		$(window).off('resize.widget.scroll');
+
+		//IE8 has an unresolvable issue!!! re-scrollbaring with unknown values?!
+		var nativeScrollbars = ace.vars['old_ie'] || ace.vars['touch'];
+
+		if (enable) {
+			var ace_scroll = $main.data('ace_scroll');
+			if (ace_scroll) {
+				$main.data('save_scroll', { size: ace_scroll['size'], lock: ace_scroll['lock'], lock_anyway: ace_scroll['lock_anyway'] });
+			}
+
+			var size = $widget.height() - $widget.find('.widget-header').height() - 10; //extra paddings
+			size = parseInt(size);
+
+			$main.css('min-height', size);
+			if (!nativeScrollbars) {
+				if (ace_scroll) {
+					$main.ace_scroll('update', { 'size': size, 'mouseWheelLock': true, 'lockAnyway': true });
+				} else {
+					$main.ace_scroll({ 'size': size, 'mouseWheelLock': true, 'lockAnyway': true });
+				}
+				$main.ace_scroll('enable').ace_scroll('reset');
+			} else {
+				if (ace_scroll) $main.ace_scroll('disable');
+				$main.css('max-height', size).addClass('overflow-scroll');
+			}
+
+			$(window).on('resize.widget.scroll', function () {
+				var size = $widget.height() - $widget.find('.widget-header').height() - 10; //extra paddings
+				size = parseInt(size);
+
+				$main.css('min-height', size);
+				if (!nativeScrollbars) {
+					$main.ace_scroll('update', { 'size': size }).ace_scroll('reset');
+				} else {
+					$main.css('max-height', size).addClass('overflow-scroll');
+				}
+			});
+		} else {
+			$main.css('min-height', '');
+			var saved_scroll = $main.data('save_scroll');
+			if (saved_scroll) {
+				$main.ace_scroll('update', { 'size': saved_scroll['size'], 'mouseWheelLock': saved_scroll['lock'], 'lockAnyway': saved_scroll['lock_anyway'] }).ace_scroll('enable').ace_scroll('reset');
+			}
+
+			if (!nativeScrollbars) {
+				if (!saved_scroll) $main.ace_scroll('disable');
+			} else {
+				$main.css('max-height', '').removeClass('overflow-scroll');
+			}
+		}
+	}
+})(window.jQuery);; /**
+                    <b>Settings box</b>. It's good for demo only. You don't need this.
+                    */
+(function ($, undefined) {
+
+	$('#ace-settings-btn').on(ace.click_event, function (e) {
+		e.preventDefault();
+
+		$(this).toggleClass('open');
+		$('#ace-settings-box').toggleClass('open');
+	});
+
+	$('#ace-settings-navbar').on('click', function () {
+		ace.settingFunction.navbar_fixed(null, this.checked);
+	});
+
+	$('#ace-settings-sidebar').on('click', function () {
+		ace.settingFunction.sidebar_fixed(null, this.checked);
+	});
+
+	$('#ace-settings-breadcrumbs').on('click', function () {
+		ace.settingFunction.breadcrumbs_fixed(null, this.checked);
+	});
+
+	$('#ace-settings-add-container').on('click', function () {
+		ace.settingFunction.main_container_fixed(null, this.checked);
+	});
+
+	$('#ace-settings-compact').on('click', function () {
+		if (this.checked) {
+			$('#sidebar').addClass('compact');
+			var hover = $('#ace-settings-hover');
+			if (hover.length > 0) {
+				hover.removeAttr('checked').trigger('click');
+			}
+		} else {
+			$('#sidebar').removeClass('compact');
+			$('#sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
+		}
+
+		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0], true);
+	});
+
+	$('#ace-settings-highlight').on('click', function () {
+		if (this.checked) $('#sidebar .nav-list > li').addClass('highlight');else $('#sidebar .nav-list > li').removeClass('highlight');
+
+		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
+	});
+
+	$('#ace-settings-hover').on('click', function () {
+		if ($('#sidebar').hasClass('h-sidebar')) return;
+		if (this.checked) {
+			$('#sidebar li').addClass('hover').filter('.open').removeClass('open').find('> .submenu').css('display', 'none');
+			//and remove .open items
+		} else {
+			$('#sidebar li.hover').removeClass('hover');
+
+			var compact = $('#ace-settings-compact');
+			if (compact.length > 0 && compact.get(0).checked) {
+				compact.trigger('click');
+			}
+		}
+
+		$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset');
+		$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
+
+		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
+	});
+
+	//these are only for Ace demo! 
+	//we want to save only important states(sidebar-fixed and sidebar-collapsed) so before fixing sidebar or collapsing it, hide mobile menu or remove extra classes!
+	//and then save class name, etc to localStorage for later retrieval
+
+	/**
+ $(document).on('presettings.ace', function(ev, event_name, event_val, event_source, save_state) {
+ if( !save_state ) return false;
+ 
+ var $event_name = event_name;
+ if( (event_name == 'sidebar_fixed' || event_name == 'sidebar_collapsed') ) {
+ 	var sidebar = event_source ? $(event_source) : $('#sidebar');
+ 	var tmpClassName = sidebar.attr('class');
+ 	sidebar.attr('class', event_name == 'sidebar_fixed' ? 'sidebar-fixed' : 'menu-min');//don't save these classes in demo
+ 
+ 	//we don't use 'one' because other 'settings.ace' events could be triggered before the 'sidebar_*' one!
+ 	$(document).on('settings.ace.sidebar', function(ev, event_name) {
+ 		if( (event_name == $event_name) ) {
+ 			sidebar.addClass(tmpClassName);
+ 			$(document).off('settings.ace.sidebar');
+ 		}
+ 	});
+ }
+ else if( (event_name == 'navbar_fixed') ) {
+ 	var navbar = event_source ? $(event_source) : $('#navbar');
+ 	var tmpClassName = navbar.attr('class');
+ 	navbar.attr('class', 'navbar-fixed-top');//don't save these classes in demo
+ 
+ 	//we don't use 'one' because other 'settings.ace' events could be triggered before the 'sidebar_*' one!
+ 	$(document).on('settings.ace.navbar', function(ev, event_name) {
+ 		if( (event_name == $event_name) ) {
+ 			navbar.addClass(tmpClassName);
+ 			$(document).off('settings.ace.navbar');
+ 		}
+ 	});
+ }
+  });
+ */
+
+	//check/uncheck the checkbox in settings box
+	var checkbox = this;
+	$(document).on('settings.ace', function (ev, event_name, event_val, event_source, save_state) {
+		var checkbox = '';
+		switch (event_name) {
+			case 'navbar_fixed':
+				checkbox = 'ace-settings-navbar';
+				break;
+
+			case 'sidebar_fixed':
+				checkbox = 'ace-settings-sidebar';
+				break;
+
+			case 'breadcrumbs_fixed':
+				checkbox = 'ace-settings-breadcrumbs';
+				break;
+
+			case 'main_container_fixed':
+				checkbox = 'ace-settings-add-container';
+				break;
+		}
+
+		if (checkbox && (checkbox = document.getElementById(checkbox))) {
+			$(checkbox).prop('checked', event_val);
+
+			try {
+				if (save_state == true) ace.settings.saveState(checkbox, 'checked');
+			} catch (e) {}
+		}
+	});
+
+	////
+	ace.settingFunction = {
+		navbar_fixed: function navbar_fixed(navbar, fixed, save, chain) {
+			if (ace.vars['very_old_ie']) return false;
+
+			var navbar = navbar || '#navbar';
+			if (typeof navbar === 'string') navbar = $(navbar).get(0);
+			if (!navbar) return false;
+
+			var fixed = fixed || false;
+			var save = typeof save !== 'undefined' ? save : true;
+
+			var event;
+			$(document).trigger(event = $.Event('presettings.ace'), ['navbar_fixed', fixed, navbar, save]);
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			if (chain !== false && !fixed) {
+				//unfix sidebar as well
+				var sidebar = $('#sidebar');
+				if (sidebar.hasClass('sidebar-fixed')) {
+					ace.settingFunction.sidebar_fixed(sidebar.get(0), false, save);
+				}
+			}
+
+			if (fixed) {
+				$(navbar).addClass('navbar-fixed-top');
+			} else {
+				$(navbar).removeClass('navbar-fixed-top');
+			}
+
+			if (save) {
+				ace.settings.saveState(navbar, 'class', 'navbar-fixed-top', fixed); //the 'last' boolean means whether to append this classname or to remove it from previous value			
+			}
+
+			$(document).trigger('settings.ace', ['navbar_fixed', fixed, navbar, save]);
+		},
+
+		sidebar_fixed: function sidebar_fixed(sidebar, fixed, save, chain) {
+			if (ace.vars['very_old_ie']) return false;
+
+			var sidebar = sidebar || '#sidebar';
+			if (typeof sidebar === 'string') sidebar = $(sidebar).get(0);
+			if (!sidebar) return false;
+
+			var fixed = fixed || false;
+			var save = typeof save !== 'undefined' ? save : true;
+
+			var event;
+			$(document).trigger(event = $.Event('presettings.ace'), ['sidebar_fixed', fixed, sidebar, save]);
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			if (chain !== false) {
+				if (fixed) {
+					//fix navbar as well
+					ace.settingFunction.navbar_fixed(null, true, save);
+				} else {
+					//unfix breadcrumbs as well
+					ace.settingFunction.breadcrumbs_fixed(null, false, save);
+				}
+			}
+
+			var toggler = $('#menu-toggler');
+			if (fixed) {
+				$(sidebar).addClass('sidebar-fixed');
+				toggler.addClass('fixed');
+			} else {
+				$(sidebar).removeClass('sidebar-fixed');
+				toggler.removeClass('fixed');
+			}
+
+			if (save) {
+				ace.settings.saveState(sidebar, 'class', 'sidebar-fixed', fixed); //the 'last' boolean means whether to append this classname or to remove it from previous value
+				if (toggler.length != 0) ace.settings.saveState(toggler[0], 'class', 'fixed', fixed);
+			}
+
+			$(document).trigger('settings.ace', ['sidebar_fixed', fixed, sidebar, save]);
+		},
+
+		//fixed position
+		breadcrumbs_fixed: function breadcrumbs_fixed(breadcrumbs, fixed, save, chain) {
+			if (ace.vars['very_old_ie']) return false;
+
+			var breadcrumbs = breadcrumbs || '#breadcrumbs';
+			if (typeof breadcrumbs === 'string') breadcrumbs = $(breadcrumbs).get(0);
+			if (!breadcrumbs) return false;
+
+			var fixed = fixed || false;
+			var save = typeof save !== 'undefined' ? save : true;
+
+			var event;
+			$(document).trigger(event = $.Event('presettings.ace'), ['breadcrumbs_fixed', fixed, breadcrumbs, save]);
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			if (fixed && chain !== false) {
+				//fix sidebar and navbar as well
+				ace.settingFunction.sidebar_fixed(null, true, save);
+			}
+
+			if (fixed) {
+				$(breadcrumbs).addClass('breadcrumbs-fixed');
+			} else {
+				$(breadcrumbs).removeClass('breadcrumbs-fixed');
+			}
+
+			if (save) {
+				ace.settings.saveState(breadcrumbs, 'class', 'breadcrumbs-fixed', fixed);
+			}
+
+			$(document).trigger('settings.ace', ['breadcrumbs_fixed', fixed, breadcrumbs, save]);
+		},
+
+		//fixed size
+		main_container_fixed: function main_container_fixed(main_container, fixed, save) {
+			if (ace.vars['very_old_ie']) return false;
+
+			var fixed = fixed || false; //fixed width? inside .container
+			var save = typeof save !== 'undefined' ? save : true;
+
+			var main_container = main_container || '#main-container';
+			if (typeof main_container === 'string') main_container = $(main_container).get(0);
+			if (!main_container) return false;
+
+			var event;
+			$(document).trigger(event = $.Event('presettings.ace'), ['main_container_fixed', fixed, main_container, save]);
+			if (event.isDefaultPrevented()) {
+				return false;
+			}
+
+			var navbar_container = $('#navbar-container');
+			if (fixed) {
+				$(main_container).addClass('container');
+				$(navbar_container).addClass('container');
+			} else {
+				$(main_container).removeClass('container');
+				$(navbar_container).removeClass('container');
+			}
+
+			if (save) {
+				ace.settings.saveState(main_container, 'class', 'container', fixed);
+				if (navbar_container.length != 0) ace.settings.saveState(navbar_container[0], 'class', 'container', fixed);
+			}
+
+			if (navigator.userAgent.match(/webkit/i)) {
+				//webkit has a problem redrawing and moving around the sidebar background in realtime
+				//so we do this, to force redraw
+				//there will be no problems with webkit if the ".container" class is statically put inside HTML code.
+				$('#sidebar').toggleClass('menu-min');
+				setTimeout(function () {
+					$('#sidebar').toggleClass('menu-min');
+				}, 10);
+			}
+
+			$(document).trigger('settings.ace', ['main_container_fixed', fixed, main_container, save]);
+		}
+		/**
+  ,
+  sidebar_collapsed : function(sidebar, collapsed , save) {
+  	if(ace.vars['very_old_ie']) return false;
+  		var sidebar = sidebar || '#sidebar';
+  	if(typeof sidebar === 'string') sidebar = $(sidebar).get(0);
+  	if(!sidebar) return false;
+  		var collapsed = collapsed || false;
+  	var save = typeof save !== 'undefined' ? save : true;
+  	
+  	
+  	var event;
+  	$(document).trigger(event = $.Event('presettings.ace'), ['sidebar_collapsed' , collapsed , sidebar, save]);
+  	if (event.isDefaultPrevented()) {
+  		return false;
+  	}
+  	
+  		if(collapsed) {
+  		$('#sidebar').addClass('menu-min');
+  	} else {
+  		$('#sidebar').removeClass('menu-min');
+  	}
+  	
+  	if( save ) {
+  		ace.settings.saveState(sidebar, 'class', 'menu-min', collapsed);//the 'last' boolean means whether to append this classname or to remove it from previous value
+  	}
+  		$(document).trigger('settings.ace', ['sidebar_collapsed' , collapsed, sidebar, save]);
+  }
+  */
+	};
+})(jQuery);; /**
+             <b>RTL</b> (right-to-left direction for Arabic, Hebrew, Persian languages).
+             It's good for demo only.
+             You should hard code RTL-specific changes inside your HTML/server-side code.
+             Dynamically switching to RTL using Javascript is not a good idea.
+             Please refer to documentation for more info.
+             */
+
+(function ($, undefined) {
+	//Switching to RTL (right to left) Mode
+	$('#ace-settings-rtl').removeAttr('checked').on('click', function () {
+		switch_direction();
+	});
+
+	//>>> you should hard code changes inside HTML for RTL direction
+	//you shouldn't use this function to switch direction
+	//this is only for dynamically switching for Ace's demo
+	//take a look at this function to see what changes should be made
+	//also take a look at docs for some tips
+	var switch_direction = function switch_direction() {
+		applyChanges();
+
+		//in ajax when new content is loaded, we dynamically apply RTL changes again
+		//please note that this is only for Ace demo
+		//for info about RTL see Ace's docs
+		$('.page-content-area[data-ajax-content=true]').on('ajaxscriptsloaded.rtl', function () {
+			if ($('body').hasClass('rtl')) {
+				applyChanges(this);
+			}
+		});
+
+		/////////////////////////
+		function applyChanges(el) {
+			var $body = $(document.body);
+			if (!el) $body.toggleClass('rtl'); //el is 'body'
+
+			el = el || document.body;
+			var $container = $(el);
+			$container
+			//toggle pull-right class on dropdown-menu
+			.find('.dropdown-menu:not(.datepicker-dropdown,.colorpicker)').toggleClass('dropdown-menu-right').end()
+			//swap pull-left & pull-right
+			.find('.pull-right:not(.dropdown-menu,blockquote,.profile-skills .pull-right)').removeClass('pull-right').addClass('tmp-rtl-pull-right').end().find('.pull-left:not(.dropdown-submenu,.profile-skills .pull-left)').removeClass('pull-left').addClass('pull-right').end().find('.tmp-rtl-pull-right').removeClass('tmp-rtl-pull-right').addClass('pull-left').end().find('.chosen-select').toggleClass('chosen-rtl').next().toggleClass('chosen-rtl');
+
+			function swap_classes(class1, class2) {
+				$container.find('.' + class1).removeClass(class1).addClass('tmp-rtl-' + class1).end().find('.' + class2).removeClass(class2).addClass(class1).end().find('.tmp-rtl-' + class1).removeClass('tmp-rtl-' + class1).addClass(class2);
+			}
+
+			swap_classes('align-left', 'align-right');
+			swap_classes('no-padding-left', 'no-padding-right');
+			swap_classes('arrowed', 'arrowed-right');
+			swap_classes('arrowed-in', 'arrowed-in-right');
+			swap_classes('tabs-left', 'tabs-right');
+			swap_classes('messagebar-item-left', 'messagebar-item-right'); //for inbox page
+
+			$('.modal.aside-vc').ace_aside('flip').ace_aside('insideContainer');
+
+			//mirror all icons and attributes that have a "fa-*-right|left" attrobute
+			$container.find('.fa').each(function () {
+				if (this.className.match(/ui-icon/) || $(this).closest('.fc-button').length > 0) return;
+				//skip mirroring icons of plugins that have built in RTL support
+
+				var l = this.attributes.length;
+				for (var i = 0; i < l; i++) {
+					var val = this.attributes[i].value;
+					if (val.match(/fa\-(?:[\w\-]+)\-left/)) this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(left)/i, 'fa-$1-right');else if (val.match(/fa\-(?:[\w\-]+)\-right/)) this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(right)/i, 'fa-$1-left');
+				}
+			});
+
+			//browsers are incosistent with horizontal scroll and RTL
+			//so let's make our scrollbars LTR and wrap the content inside RTL
+			var rtl = $body.hasClass('rtl');
+			if (rtl) {
+				$container.find('.scroll-hz').addClass('make-ltr').find('.scroll-content').wrapInner('<div class="make-rtl" />');
+				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('changeDir', 'right');
+			} else {
+				//remove the wrap
+				$container.find('.scroll-hz').removeClass('make-ltr').find('.make-rtl').children().unwrap();
+				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('changeDir', 'left');
+			}
+			if ($.fn.ace_scroll) $container.find('.scroll-hz').ace_scroll('reset'); //to reset scrollLeft
+
+			//redraw the traffic pie chart on homepage with a different parameter
+			try {
+				var placeholder = $('#piechart-placeholder');
+				if (placeholder.length > 0) {
+					var pos = $body.hasClass('rtl') ? 'nw' : 'ne'; //draw on north-west or north-east?
+					placeholder.data('draw').call(placeholder.get(0), placeholder, placeholder.data('chart'), pos);
+				}
+			} catch (e) {}
+
+			ace.helper.redraw(el, true);
+		}
+	};
+})(jQuery);
+
+; /**
+  <b>Select a different skin</b>. It's good for demo only.
+  You should hard code skin-specific changes inside your HTML/server-side code.
+  Please refer to documentation for more info.
+  */
+
+(function ($, undefined) {
+	try {
+		$('#skin-colorpicker').ace_colorpicker({ 'auto_pos': false });
+	} catch (e) {}
+
+	$('#skin-colorpicker').on('change', function () {
+		var skin_class = $(this).find('option:selected').data('skin');
+		applyChanges(skin_class);
+
+		function applyChanges(skin_class) {
+			//skin cookie tip
+			var body = $(document.body);
+			body.removeClass('no-skin skin-1 skin-2 skin-3');
+			//if(skin_class != 'skin-0') {
+			body.addClass(skin_class);
+			ace.data.set('skin', skin_class);
+			//save the selected skin to cookies
+			//which can later be used by your server side app to set the skin
+			//for example: <body class="<?php echo $_COOKIE['ace_skin']; ?>"
+			//} else ace.data.remove('skin');
+
+			var skin3_colors = ['red', 'blue', 'green', ''];
+
+			//undo skin-1
+			$('.ace-nav > li.grey').removeClass('dark');
+
+			//undo skin-2
+			$('.ace-nav > li').removeClass('no-border margin-1');
+			$('.ace-nav > li:not(:last-child)').removeClass('light-pink').find('> a > ' + ace.vars['.icon']).removeClass('pink').end().eq(0).find('.badge').removeClass('badge-warning');
+			$('.sidebar-shortcuts .btn').removeClass('btn-pink btn-white').find(ace.vars['.icon']).removeClass('white');
+
+			//undo skin-3
+			$('.ace-nav > li.grey').removeClass('red').find('.badge').removeClass('badge-yellow');
+			$('.sidebar-shortcuts .btn').removeClass('btn-primary btn-white');
+			var i = 0;
+			$('.sidebar-shortcuts .btn').each(function () {
+				$(this).find(ace.vars['.icon']).removeClass(skin3_colors[i++]);
+			});
+
+			var skin0_buttons = ['btn-success', 'btn-info', 'btn-warning', 'btn-danger'];
+			if (skin_class == 'no-skin') {
+				var i = 0;
+				$('.sidebar-shortcuts .btn').each(function () {
+					$(this).attr('class', 'btn ' + skin0_buttons[i++ % 4]);
+				});
+
+				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', '');
+				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
+			} else if (skin_class == 'skin-1') {
+				$('.ace-nav > li.grey').addClass('dark');
+				var i = 0;
+				$('.sidebar-shortcuts').find('.btn').each(function () {
+					$(this).attr('class', 'btn ' + skin0_buttons[i++ % 4]);
+				});
+
+				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
+				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
+			} else if (skin_class == 'skin-2') {
+				$('.ace-nav > li').addClass('no-border margin-1');
+				$('.ace-nav > li:not(:last-child)').addClass('light-pink').find('> a > ' + ace.vars['.icon']).addClass('pink').end().eq(0).find('.badge').addClass('badge-warning');
+
+				$('.sidebar-shortcuts .btn').attr('class', 'btn btn-white btn-pink').find(ace.vars['.icon']).addClass('white');
+
+				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
+				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
+			}
+
+			//skin-3
+			//change shortcut buttons classes, this should be hard-coded if you want to choose this skin
+			else if (skin_class == 'skin-3') {
+					body.addClass('no-skin'); //because skin-3 has many parts of no-skin as well
+
+					$('.ace-nav > li.grey').addClass('red').find('.badge').addClass('badge-yellow');
+
+					var i = 0;
+					$('.sidebar-shortcuts .btn').each(function () {
+						$(this).attr('class', 'btn btn-primary btn-white');
+						$(this).find(ace.vars['.icon']).addClass(skin3_colors[i++]);
+					});
+
+					$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-dark no-track');
+					$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
+				}
+
+			//some sizing differences may be there in skins, so reset scrollbar size
+			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
+			//$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset')
+
+			if (ace.vars['old_ie']) ace.helper.redraw(document.body, true);
+		}
+	});
+})(jQuery);; /**
+             The widget box reload button/event handler. You should use your own handler. An example is available at <i class="text-info">examples/widgets.html</i>.
+             <u><i class="glyphicon glyphicon-flash"></i> You don't need this. Used for demo only</u>
+             */
+
+(function ($, undefined) {
+	//***default action for reload in this demo
+	//you should remove this and add your own handler for each specific .widget-box
+	//when data is finished loading or processing is done you can call $box.trigger('reloaded.ace.widget')
+	$(document).on('reload.ace.widget', '.widget-box', function (ev) {
+		var $box = $(this);
+
+		//trigger the reloaded event to remove the spinner icon after 1-2 seconds
+		setTimeout(function () {
+			$box.trigger('reloaded.ace.widget');
+		}, parseInt(Math.random() * 1000 + 1000));
+	});
+
+	//you may want to do something like this:
+	/**
+ $('#my-widget-box').on('reload.ace.widget', function(){
+ 	//load new data here
+ 	//and when finished trigger "reloaded" event
+ 	$(this).trigger('reloaded.ace.widget');
+ });
+ */
+})(window.jQuery);; /**
+                    The autocomplete dropdown when typing inside search box.
+                    <u><i class="glyphicon glyphicon-flash"></i> You don't need this. Used for demo only</u>
+                    */
+(function ($, undefined) {
+
+	ace.vars['US_STATES'] = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Dakota", "North Carolina", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
+	try {
+		$('#nav-search-input').bs_typeahead({
+			source: ace.vars['US_STATES'],
+			updater: function updater(item) {
+				//when an item is selected from dropdown menu, focus back to input element
+				$('#nav-search-input').focus();
+				return item;
+			}
+		});
+	} catch (e) {}
+})(window.jQuery);
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+window._ = __webpack_require__(36);
+
+/**
+ * We'll load jQuery and the Bootstrap jQuery plugin which provides support
+ * for JavaScript based Bootstrap features such as modals and tabs. This
+ * code may be modified to fit the specific needs of your application.
+ */
+
+window.$ = window.jQuery = __webpack_require__(8);
+
+__webpack_require__(33);
+
+/**
+ * Vue is a modern JavaScript library for building interactive web interfaces
+ * using reactive data binding and reusable components. Vue's API is clean
+ * and simple, leaving you to focus on building your next great project.
+ */
+
+window.Vue = __webpack_require__(40);
+
+/**
+ * We'll load the axios HTTP library which allows us to easily issue requests
+ * to our Laravel back-end. This library automatically handles sending the
+ * CSRF token as a header based on the value of the "XSRF" token cookie.
+ */
+
+window.axios = __webpack_require__(12);
+
+window.axios.defaults.headers.common = {
+  'X-Requested-With': 'XMLHttpRequest'
+};
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+
+// import Echo from "laravel-echo"
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: 'your-pusher-key'
+// });
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+/*!
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under the MIT license
+ */
+
+if (typeof jQuery === 'undefined') {
+  throw new Error('Bootstrap\'s JavaScript requires jQuery')
+}
+
++function ($) {
+  'use strict';
+  var version = $.fn.jquery.split(' ')[0].split('.')
+  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 3)) {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4')
+  }
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: alert.js v3.3.7
+ * http://getbootstrap.com/javascript/#alerts
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // ALERT CLASS DEFINITION
+  // ======================
+
+  var dismiss = '[data-dismiss="alert"]'
+  var Alert   = function (el) {
+    $(el).on('click', dismiss, this.close)
+  }
+
+  Alert.VERSION = '3.3.7'
+
+  Alert.TRANSITION_DURATION = 150
+
+  Alert.prototype.close = function (e) {
+    var $this    = $(this)
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = $(selector === '#' ? [] : selector)
+
+    if (e) e.preventDefault()
+
+    if (!$parent.length) {
+      $parent = $this.closest('.alert')
+    }
+
+    $parent.trigger(e = $.Event('close.bs.alert'))
+
+    if (e.isDefaultPrevented()) return
+
+    $parent.removeClass('in')
+
+    function removeElement() {
+      // detach from parent, fire event then clean up data
+      $parent.detach().trigger('closed.bs.alert').remove()
+    }
+
+    $.support.transition && $parent.hasClass('fade') ?
+      $parent
+        .one('bsTransitionEnd', removeElement)
+        .emulateTransitionEnd(Alert.TRANSITION_DURATION) :
+      removeElement()
+  }
+
+
+  // ALERT PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.alert')
+
+      if (!data) $this.data('bs.alert', (data = new Alert(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.alert
+
+  $.fn.alert             = Plugin
+  $.fn.alert.Constructor = Alert
+
+
+  // ALERT NO CONFLICT
+  // =================
+
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+
+
+  // ALERT DATA-API
+  // ==============
+
+  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: button.js v3.3.7
+ * http://getbootstrap.com/javascript/#buttons
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // BUTTON PUBLIC CLASS DEFINITION
+  // ==============================
+
+  var Button = function (element, options) {
+    this.$element  = $(element)
+    this.options   = $.extend({}, Button.DEFAULTS, options)
+    this.isLoading = false
+  }
+
+  Button.VERSION  = '3.3.7'
+
+  Button.DEFAULTS = {
+    loadingText: 'loading...'
+  }
+
+  Button.prototype.setState = function (state) {
+    var d    = 'disabled'
+    var $el  = this.$element
+    var val  = $el.is('input') ? 'val' : 'html'
+    var data = $el.data()
+
+    state += 'Text'
+
+    if (data.resetText == null) $el.data('resetText', $el[val]())
+
+    // push to event loop to allow forms to submit
+    setTimeout($.proxy(function () {
+      $el[val](data[state] == null ? this.options[state] : data[state])
+
+      if (state == 'loadingText') {
+        this.isLoading = true
+        $el.addClass(d).attr(d, d).prop(d, true)
+      } else if (this.isLoading) {
+        this.isLoading = false
+        $el.removeClass(d).removeAttr(d).prop(d, false)
+      }
+    }, this), 0)
+  }
+
+  Button.prototype.toggle = function () {
+    var changed = true
+    var $parent = this.$element.closest('[data-toggle="buttons"]')
+
+    if ($parent.length) {
+      var $input = this.$element.find('input')
+      if ($input.prop('type') == 'radio') {
+        if ($input.prop('checked')) changed = false
+        $parent.find('.active').removeClass('active')
+        this.$element.addClass('active')
+      } else if ($input.prop('type') == 'checkbox') {
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        this.$element.toggleClass('active')
+      }
+      $input.prop('checked', this.$element.hasClass('active'))
+      if (changed) $input.trigger('change')
+    } else {
+      this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
+      this.$element.toggleClass('active')
+    }
+  }
+
+
+  // BUTTON PLUGIN DEFINITION
+  // ========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.button')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.button', (data = new Button(this, options)))
+
+      if (option == 'toggle') data.toggle()
+      else if (option) data.setState(option)
+    })
+  }
+
+  var old = $.fn.button
+
+  $.fn.button             = Plugin
+  $.fn.button.Constructor = Button
+
+
+  // BUTTON NO CONFLICT
+  // ==================
+
+  $.fn.button.noConflict = function () {
+    $.fn.button = old
+    return this
+  }
+
+
+  // BUTTON DATA-API
+  // ===============
+
+  $(document)
+    .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      var $btn = $(e.target).closest('.btn')
+      Plugin.call($btn, 'toggle')
+      if (!($(e.target).is('input[type="radio"], input[type="checkbox"]'))) {
+        // Prevent double click on radios, and the double selections (so cancellation) on checkboxes
+        e.preventDefault()
+        // The target component still receive the focus
+        if ($btn.is('input,button')) $btn.trigger('focus')
+        else $btn.find('input:visible,button:visible').first().trigger('focus')
+      }
+    })
+    .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
+    })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: carousel.js v3.3.7
+ * http://getbootstrap.com/javascript/#carousel
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CAROUSEL CLASS DEFINITION
+  // =========================
+
+  var Carousel = function (element, options) {
+    this.$element    = $(element)
+    this.$indicators = this.$element.find('.carousel-indicators')
+    this.options     = options
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
+    this.$items      = null
+
+    this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
+
+    this.options.pause == 'hover' && !('ontouchstart' in document.documentElement) && this.$element
+      .on('mouseenter.bs.carousel', $.proxy(this.pause, this))
+      .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
+  }
+
+  Carousel.VERSION  = '3.3.7'
+
+  Carousel.TRANSITION_DURATION = 600
+
+  Carousel.DEFAULTS = {
+    interval: 5000,
+    pause: 'hover',
+    wrap: true,
+    keyboard: true
+  }
+
+  Carousel.prototype.keydown = function (e) {
+    if (/input|textarea/i.test(e.target.tagName)) return
+    switch (e.which) {
+      case 37: this.prev(); break
+      case 39: this.next(); break
+      default: return
+    }
+
+    e.preventDefault()
+  }
+
+  Carousel.prototype.cycle = function (e) {
+    e || (this.paused = false)
+
+    this.interval && clearInterval(this.interval)
+
+    this.options.interval
+      && !this.paused
+      && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+
+    return this
+  }
+
+  Carousel.prototype.getItemIndex = function (item) {
+    this.$items = item.parent().children('.item')
+    return this.$items.index(item || this.$active)
+  }
+
+  Carousel.prototype.getItemForDirection = function (direction, active) {
+    var activeIndex = this.getItemIndex(active)
+    var willWrap = (direction == 'prev' && activeIndex === 0)
+                || (direction == 'next' && activeIndex == (this.$items.length - 1))
+    if (willWrap && !this.options.wrap) return active
+    var delta = direction == 'prev' ? -1 : 1
+    var itemIndex = (activeIndex + delta) % this.$items.length
+    return this.$items.eq(itemIndex)
+  }
+
+  Carousel.prototype.to = function (pos) {
+    var that        = this
+    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
+
+    if (pos > (this.$items.length - 1) || pos < 0) return
+
+    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
+    if (activeIndex == pos) return this.pause().cycle()
+
+    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
+  }
+
+  Carousel.prototype.pause = function (e) {
+    e || (this.paused = true)
+
+    if (this.$element.find('.next, .prev').length && $.support.transition) {
+      this.$element.trigger($.support.transition.end)
+      this.cycle(true)
+    }
+
+    this.interval = clearInterval(this.interval)
+
+    return this
+  }
+
+  Carousel.prototype.next = function () {
+    if (this.sliding) return
+    return this.slide('next')
+  }
+
+  Carousel.prototype.prev = function () {
+    if (this.sliding) return
+    return this.slide('prev')
+  }
+
+  Carousel.prototype.slide = function (type, next) {
+    var $active   = this.$element.find('.item.active')
+    var $next     = next || this.getItemForDirection(type, $active)
+    var isCycling = this.interval
+    var direction = type == 'next' ? 'left' : 'right'
+    var that      = this
+
+    if ($next.hasClass('active')) return (this.sliding = false)
+
+    var relatedTarget = $next[0]
+    var slideEvent = $.Event('slide.bs.carousel', {
+      relatedTarget: relatedTarget,
+      direction: direction
+    })
+    this.$element.trigger(slideEvent)
+    if (slideEvent.isDefaultPrevented()) return
+
+    this.sliding = true
+
+    isCycling && this.pause()
+
+    if (this.$indicators.length) {
+      this.$indicators.find('.active').removeClass('active')
+      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
+      $nextIndicator && $nextIndicator.addClass('active')
+    }
+
+    var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
+    if ($.support.transition && this.$element.hasClass('slide')) {
+      $next.addClass(type)
+      $next[0].offsetWidth // force reflow
+      $active.addClass(direction)
+      $next.addClass(direction)
+      $active
+        .one('bsTransitionEnd', function () {
+          $next.removeClass([type, direction].join(' ')).addClass('active')
+          $active.removeClass(['active', direction].join(' '))
+          that.sliding = false
+          setTimeout(function () {
+            that.$element.trigger(slidEvent)
+          }, 0)
+        })
+        .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
+    } else {
+      $active.removeClass('active')
+      $next.addClass('active')
+      this.sliding = false
+      this.$element.trigger(slidEvent)
+    }
+
+    isCycling && this.cycle()
+
+    return this
+  }
+
+
+  // CAROUSEL PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.carousel')
+      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
+      var action  = typeof option == 'string' ? option : options.slide
+
+      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
+      if (typeof option == 'number') data.to(option)
+      else if (action) data[action]()
+      else if (options.interval) data.pause().cycle()
+    })
+  }
+
+  var old = $.fn.carousel
+
+  $.fn.carousel             = Plugin
+  $.fn.carousel.Constructor = Carousel
+
+
+  // CAROUSEL NO CONFLICT
+  // ====================
+
+  $.fn.carousel.noConflict = function () {
+    $.fn.carousel = old
+    return this
+  }
+
+
+  // CAROUSEL DATA-API
+  // =================
+
+  var clickHandler = function (e) {
+    var href
+    var $this   = $(this)
+    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    if (!$target.hasClass('carousel')) return
+    var options = $.extend({}, $target.data(), $this.data())
+    var slideIndex = $this.attr('data-slide-to')
+    if (slideIndex) options.interval = false
+
+    Plugin.call($target, options)
+
+    if (slideIndex) {
+      $target.data('bs.carousel').to(slideIndex)
+    }
+
+    e.preventDefault()
+  }
+
+  $(document)
+    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
+    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
+
+  $(window).on('load', function () {
+    $('[data-ride="carousel"]').each(function () {
+      var $carousel = $(this)
+      Plugin.call($carousel, $carousel.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: dropdown.js v3.3.7
+ * http://getbootstrap.com/javascript/#dropdowns
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle="dropdown"]'
+  var Dropdown = function (element) {
+    $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.VERSION = '3.3.7'
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
+    })
+  }
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we use a backdrop because click events don't delegate
+        $(document.createElement('div'))
+          .addClass('dropdown-backdrop')
+          .insertAfter($(this))
+          .on('click', clearMenus)
+      }
+
+      var relatedTarget = { relatedTarget: this }
+      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this
+        .trigger('focus')
+        .attr('aria-expanded', 'true')
+
+      $parent
+        .toggleClass('open')
+        .trigger($.Event('shown.bs.dropdown', relatedTarget))
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if (!isActive && e.which != 27 || isActive && e.which == 27) {
+      if (e.which == 27) $parent.find(toggle).trigger('focus')
+      return $this.trigger('click')
+    }
+
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('.dropdown-menu' + desc)
+
+    if (!$items.length) return
+
+    var index = $items.index(e.target)
+
+    if (e.which == 38 && index > 0)                 index--         // up
+    if (e.which == 40 && index < $items.length - 1) index++         // down
+    if (!~index)                                    index = 0
+
+    $items.eq(index).trigger('focus')
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.dropdown')
+
+      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown             = Plugin
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.3.7
+ * http://getbootstrap.com/javascript/#modals
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // MODAL CLASS DEFINITION
+  // ======================
+
+  var Modal = function (element, options) {
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
+
+    if (this.options.remote) {
+      this.$element
+        .find('.modal-content')
+        .load(this.options.remote, $.proxy(function () {
+          this.$element.trigger('loaded.bs.modal')
+        }, this))
+    }
+  }
+
+  Modal.VERSION  = '3.3.7'
+
+  Modal.TRANSITION_DURATION = 300
+  Modal.BACKDROP_TRANSITION_DURATION = 150
+
+  Modal.DEFAULTS = {
+    backdrop: true,
+    keyboard: true,
+    show: true
+  }
+
+  Modal.prototype.toggle = function (_relatedTarget) {
+    return this.isShown ? this.hide() : this.show(_relatedTarget)
+  }
+
+  Modal.prototype.show = function (_relatedTarget) {
+    var that = this
+    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+
+    this.$element.trigger(e)
+
+    if (this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = true
+
+    this.checkScrollbar()
+    this.setScrollbar()
+    this.$body.addClass('modal-open')
+
+    this.escape()
+    this.resize()
+
+    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
+    this.backdrop(function () {
+      var transition = $.support.transition && that.$element.hasClass('fade')
+
+      if (!that.$element.parent().length) {
+        that.$element.appendTo(that.$body) // don't move modals dom position
+      }
+
+      that.$element
+        .show()
+        .scrollTop(0)
+
+      that.adjustDialog()
+
+      if (transition) {
+        that.$element[0].offsetWidth // force reflow
+      }
+
+      that.$element.addClass('in')
+
+      that.enforceFocus()
+
+      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+
+      transition ?
+        that.$dialog // wait for modal to slide in
+          .one('bsTransitionEnd', function () {
+            that.$element.trigger('focus').trigger(e)
+          })
+          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+        that.$element.trigger('focus').trigger(e)
+    })
+  }
+
+  Modal.prototype.hide = function (e) {
+    if (e) e.preventDefault()
+
+    e = $.Event('hide.bs.modal')
+
+    this.$element.trigger(e)
+
+    if (!this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = false
+
+    this.escape()
+    this.resize()
+
+    $(document).off('focusin.bs.modal')
+
+    this.$element
+      .removeClass('in')
+      .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
+
+    $.support.transition && this.$element.hasClass('fade') ?
+      this.$element
+        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
+        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+      this.hideModal()
+  }
+
+  Modal.prototype.enforceFocus = function () {
+    $(document)
+      .off('focusin.bs.modal') // guard against infinite focus loop
+      .on('focusin.bs.modal', $.proxy(function (e) {
+        if (document !== e.target &&
+            this.$element[0] !== e.target &&
+            !this.$element.has(e.target).length) {
+          this.$element.trigger('focus')
+        }
+      }, this))
+  }
+
+  Modal.prototype.escape = function () {
+    if (this.isShown && this.options.keyboard) {
+      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
+        e.which == 27 && this.hide()
+      }, this))
+    } else if (!this.isShown) {
+      this.$element.off('keydown.dismiss.bs.modal')
+    }
+  }
+
+  Modal.prototype.resize = function () {
+    if (this.isShown) {
+      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
+    } else {
+      $(window).off('resize.bs.modal')
+    }
+  }
+
+  Modal.prototype.hideModal = function () {
+    var that = this
+    this.$element.hide()
+    this.backdrop(function () {
+      that.$body.removeClass('modal-open')
+      that.resetAdjustments()
+      that.resetScrollbar()
+      that.$element.trigger('hidden.bs.modal')
+    })
+  }
+
+  Modal.prototype.removeBackdrop = function () {
+    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop = null
+  }
+
+  Modal.prototype.backdrop = function (callback) {
+    var that = this
+    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+
+    if (this.isShown && this.options.backdrop) {
+      var doAnimate = $.support.transition && animate
+
+      this.$backdrop = $(document.createElement('div'))
+        .addClass('modal-backdrop ' + animate)
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
+
+      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+
+      this.$backdrop.addClass('in')
+
+      if (!callback) return
+
+      doAnimate ?
+        this.$backdrop
+          .one('bsTransitionEnd', callback)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callback()
+
+    } else if (!this.isShown && this.$backdrop) {
+      this.$backdrop.removeClass('in')
+
+      var callbackRemove = function () {
+        that.removeBackdrop()
+        callback && callback()
+      }
+      $.support.transition && this.$element.hasClass('fade') ?
+        this.$backdrop
+          .one('bsTransitionEnd', callbackRemove)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callbackRemove()
+
+    } else if (callback) {
+      callback()
+    }
+  }
+
+  // these following methods are used to handle overflowing modals
+
+  Modal.prototype.handleUpdate = function () {
+    this.adjustDialog()
+  }
+
+  Modal.prototype.adjustDialog = function () {
+    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
+
+    this.$element.css({
+      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
+      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
+    })
+  }
+
+  Modal.prototype.resetAdjustments = function () {
+    this.$element.css({
+      paddingLeft: '',
+      paddingRight: ''
+    })
+  }
+
+  Modal.prototype.checkScrollbar = function () {
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
+    this.scrollbarWidth = this.measureScrollbar()
+  }
+
+  Modal.prototype.setScrollbar = function () {
+    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
+    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
+  }
+
+  Modal.prototype.resetScrollbar = function () {
+    this.$body.css('padding-right', this.originalBodyPad)
+  }
+
+  Modal.prototype.measureScrollbar = function () { // thx walsh
+    var scrollDiv = document.createElement('div')
+    scrollDiv.className = 'modal-scrollbar-measure'
+    this.$body.append(scrollDiv)
+    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+    this.$body[0].removeChild(scrollDiv)
+    return scrollbarWidth
+  }
+
+
+  // MODAL PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option, _relatedTarget) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.modal')
+      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option](_relatedTarget)
+      else if (options.show) data.show(_relatedTarget)
+    })
+  }
+
+  var old = $.fn.modal
+
+  $.fn.modal             = Plugin
+  $.fn.modal.Constructor = Modal
+
+
+  // MODAL NO CONFLICT
+  // =================
+
+  $.fn.modal.noConflict = function () {
+    $.fn.modal = old
+    return this
+  }
+
+
+  // MODAL DATA-API
+  // ==============
+
+  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+    var $this   = $(this)
+    var href    = $this.attr('href')
+    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
+    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+
+    if ($this.is('a')) e.preventDefault()
+
+    $target.one('show.bs.modal', function (showEvent) {
+      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
+      $target.one('hidden.bs.modal', function () {
+        $this.is(':visible') && $this.trigger('focus')
+      })
+    })
+    Plugin.call($target, option, this)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.3.7
+ * http://getbootstrap.com/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
+    this.$element   = null
+    this.inState    = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.VERSION  = '3.3.7'
+
+  Tooltip.TRANSITION_DURATION = 150
+
+  Tooltip.DEFAULTS = {
+    animation: true,
+    placement: 'top',
+    selector: false,
+    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    container: false,
+    viewport: {
+      selector: 'body',
+      padding: 0
+    }
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled   = true
+    this.type      = type
+    this.$element  = $(element)
+    this.options   = this.getOptions(options)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay,
+        hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
+    }
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.' + this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDom) return
+      var that = this
+
+      var $tip = this.tip()
+
+      var tipId = this.getUID(this.type)
+
+      this.setContent()
+      $tip.attr('id', tipId)
+      this.$element.attr('aria-describedby', tipId)
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+        .data('bs.' + this.type, this)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var orgPlacement = placement
+        var viewportDim = this.getPosition(this.$viewport)
+
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+
+      var complete = function () {
+        var prevHoverState = that.hoverState
+        that.$element.trigger('shown.bs.' + that.type)
+        that.hoverState = null
+
+        if (prevHoverState == 'out') that.leave(that)
+      }
+
+      $.support.transition && this.$tip.hasClass('fade') ?
+        $tip
+          .one('bsTransitionEnd', complete)
+          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+        complete()
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function (offset, placement) {
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  += marginTop
+    offset.left += marginLeft
+
+    // $.fn.offset doesn't round pixel values
+    // so we use setOffset directly with our own function B-0
+    $.offset.setOffset($tip[0], $.extend({
+      using: function (props) {
+        $tip.css({
+          top: Math.round(props.top),
+          left: Math.round(props.left)
+        })
+      }
+    }, offset), 0)
+
+    $tip.addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      offset.top = offset.top + height - actualHeight
+    }
+
+    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+
+    if (delta.left) offset.left += delta.left
+    else offset.top += delta.top
+
+    var isVertical          = /top|bottom/.test(placement)
+    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
+    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+
+    $tip.offset(offset)
+    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
+  }
+
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
+    this.arrow()
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function (callback) {
+    var that = this
+    var $tip = $(this.$tip)
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
+        that.$element
+          .removeAttr('aria-describedby')
+          .trigger('hidden.bs.' + that.type)
+      }
+      callback && callback()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && $tip.hasClass('fade') ?
+      $tip
+        .one('bsTransitionEnd', complete)
+        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+      complete()
+
+    this.hoverState = null
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function ($element) {
+    $element   = $element || this.$element
+
+    var el     = $element[0]
+    var isBody = el.tagName == 'BODY'
+
+    var elRect    = el.getBoundingClientRect()
+    if (elRect.width == null) {
+      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
+      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+    }
+    var isSvg = window.SVGElement && el instanceof window.SVGElement
+    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
+    // See https://github.com/twbs/bootstrap/issues/20280
+    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
+    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
+    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+
+    return $.extend({}, elRect, scroll, outerDims, elOffset)
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
+
+  }
+
+  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
+    var delta = { top: 0, left: 0 }
+    if (!this.$viewport) return delta
+
+    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
+    var viewportDimensions = this.getPosition(this.$viewport)
+
+    if (/right|left/.test(placement)) {
+      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
+      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+      if (topEdgeOffset < viewportDimensions.top) { // top overflow
+        delta.top = viewportDimensions.top - topEdgeOffset
+      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
+        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+      }
+    } else {
+      var leftEdgeOffset  = pos.left - viewportPadding
+      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
+        delta.left = viewportDimensions.left - leftEdgeOffset
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
+        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+      }
+    }
+
+    return delta
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.getUID = function (prefix) {
+    do prefix += ~~(Math.random() * 1000000)
+    while (document.getElementById(prefix))
+    return prefix
+  }
+
+  Tooltip.prototype.tip = function () {
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = this
+    if (e) {
+      self = $(e.currentTarget).data('bs.' + this.type)
+      if (!self) {
+        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
+        $(e.currentTarget).data('bs.' + this.type, self)
+      }
+    }
+
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
+  }
+
+  Tooltip.prototype.destroy = function () {
+    var that = this
+    clearTimeout(this.timeout)
+    this.hide(function () {
+      that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
+      that.$element = null
+    })
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip             = Plugin
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: popover.js v3.3.7
+ * http://getbootstrap.com/javascript/#popovers
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // POPOVER PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Popover = function (element, options) {
+    this.init('popover', element, options)
+  }
+
+  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+
+  Popover.VERSION  = '3.3.7'
+
+  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+  })
+
+
+  // NOTE: POPOVER EXTENDS tooltip.js
+  // ================================
+
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+
+  Popover.prototype.constructor = Popover
+
+  Popover.prototype.getDefaults = function () {
+    return Popover.DEFAULTS
+  }
+
+  Popover.prototype.setContent = function () {
+    var $tip    = this.tip()
+    var title   = this.getTitle()
+    var content = this.getContent()
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+    ](content)
+
+    $tip.removeClass('fade top bottom left right in')
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
+  }
+
+  Popover.prototype.hasContent = function () {
+    return this.getTitle() || this.getContent()
+  }
+
+  Popover.prototype.getContent = function () {
+    var $e = this.$element
+    var o  = this.options
+
+    return $e.attr('data-content')
+      || (typeof o.content == 'function' ?
+            o.content.call($e[0]) :
+            o.content)
+  }
+
+  Popover.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
+  }
+
+
+  // POPOVER PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.popover
+
+  $.fn.popover             = Plugin
+  $.fn.popover.Constructor = Popover
+
+
+  // POPOVER NO CONFLICT
+  // ===================
+
+  $.fn.popover.noConflict = function () {
+    $.fn.popover = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: scrollspy.js v3.3.7
+ * http://getbootstrap.com/javascript/#scrollspy
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // SCROLLSPY CLASS DEFINITION
+  // ==========================
+
+  function ScrollSpy(element, options) {
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
+    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
+    this.selector       = (this.options.target || '') + ' .nav li > a'
+    this.offsets        = []
+    this.targets        = []
+    this.activeTarget   = null
+    this.scrollHeight   = 0
+
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
+    this.refresh()
+    this.process()
+  }
+
+  ScrollSpy.VERSION  = '3.3.7'
+
+  ScrollSpy.DEFAULTS = {
+    offset: 10
+  }
+
+  ScrollSpy.prototype.getScrollHeight = function () {
+    return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
+  }
+
+  ScrollSpy.prototype.refresh = function () {
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
+
+    if (!$.isWindow(this.$scrollElement[0])) {
+      offsetMethod = 'position'
+      offsetBase   = this.$scrollElement.scrollTop()
+    }
+
+    this.$body
+      .find(this.selector)
+      .map(function () {
+        var $el   = $(this)
+        var href  = $el.data('target') || $el.attr('href')
+        var $href = /^#./.test(href) && $(href)
+
+        return ($href
+          && $href.length
+          && $href.is(':visible')
+          && [[$href[offsetMethod]().top + offsetBase, href]]) || null
+      })
+      .sort(function (a, b) { return a[0] - b[0] })
+      .each(function () {
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
+      })
+  }
+
+  ScrollSpy.prototype.process = function () {
+    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
+    var scrollHeight = this.getScrollHeight()
+    var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
+    var offsets      = this.offsets
+    var targets      = this.targets
+    var activeTarget = this.activeTarget
+    var i
+
+    if (this.scrollHeight != scrollHeight) {
+      this.refresh()
+    }
+
+    if (scrollTop >= maxScroll) {
+      return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
+    }
+
+    if (activeTarget && scrollTop < offsets[0]) {
+      this.activeTarget = null
+      return this.clear()
+    }
+
+    for (i = offsets.length; i--;) {
+      activeTarget != targets[i]
+        && scrollTop >= offsets[i]
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
+        && this.activate(targets[i])
+    }
+  }
+
+  ScrollSpy.prototype.activate = function (target) {
+    this.activeTarget = target
+
+    this.clear()
+
+    var selector = this.selector +
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
+
+    var active = $(selector)
+      .parents('li')
+      .addClass('active')
+
+    if (active.parent('.dropdown-menu').length) {
+      active = active
+        .closest('li.dropdown')
+        .addClass('active')
+    }
+
+    active.trigger('activate.bs.scrollspy')
+  }
+
+  ScrollSpy.prototype.clear = function () {
+    $(this.selector)
+      .parentsUntil(this.options.target, '.active')
+      .removeClass('active')
+  }
+
+
+  // SCROLLSPY PLUGIN DEFINITION
+  // ===========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.scrollspy')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.scrollspy
+
+  $.fn.scrollspy             = Plugin
+  $.fn.scrollspy.Constructor = ScrollSpy
+
+
+  // SCROLLSPY NO CONFLICT
+  // =====================
+
+  $.fn.scrollspy.noConflict = function () {
+    $.fn.scrollspy = old
+    return this
+  }
+
+
+  // SCROLLSPY DATA-API
+  // ==================
+
+  $(window).on('load.bs.scrollspy.data-api', function () {
+    $('[data-spy="scroll"]').each(function () {
+      var $spy = $(this)
+      Plugin.call($spy, $spy.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tab.js v3.3.7
+ * http://getbootstrap.com/javascript/#tabs
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
+    this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
+  }
+
+  Tab.VERSION = '3.3.7'
+
+  Tab.TRANSITION_DURATION = 150
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var $previous = $ul.find('.active:last a')
+    var hideEvent = $.Event('hide.bs.tab', {
+      relatedTarget: $this[0]
+    })
+    var showEvent = $.Event('show.bs.tab', {
+      relatedTarget: $previous[0]
+    })
+
+    $previous.trigger(hideEvent)
+    $this.trigger(showEvent)
+
+    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.closest('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $previous.trigger({
+        type: 'hidden.bs.tab',
+        relatedTarget: $this[0]
+      })
+      $this.trigger({
+        type: 'shown.bs.tab',
+        relatedTarget: $previous[0]
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+          .removeClass('active')
+        .end()
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', false)
+
+      element
+        .addClass('active')
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', true)
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu').length) {
+        element
+          .closest('li.dropdown')
+            .addClass('active')
+          .end()
+          .find('[data-toggle="tab"]')
+            .attr('aria-expanded', true)
+      }
+
+      callback && callback()
+    }
+
+    $active.length && transition ?
+      $active
+        .one('bsTransitionEnd', next)
+        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tab
+
+  $.fn.tab             = Plugin
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  var clickHandler = function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'show')
+  }
+
+  $(document)
+    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
+    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: affix.js v3.3.7
+ * http://getbootstrap.com/javascript/#affix
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // AFFIX CLASS DEFINITION
+  // ======================
+
+  var Affix = function (element, options) {
+    this.options = $.extend({}, Affix.DEFAULTS, options)
+
+    this.$target = $(this.options.target)
+      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+
+    this.$element     = $(element)
+    this.affixed      = null
+    this.unpin        = null
+    this.pinnedOffset = null
+
+    this.checkPosition()
+  }
+
+  Affix.VERSION  = '3.3.7'
+
+  Affix.RESET    = 'affix affix-top affix-bottom'
+
+  Affix.DEFAULTS = {
+    offset: 0,
+    target: window
+  }
+
+  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
+    var scrollTop    = this.$target.scrollTop()
+    var position     = this.$element.offset()
+    var targetHeight = this.$target.height()
+
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+
+    if (this.affixed == 'bottom') {
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+    }
+
+    var initializing   = this.affixed == null
+    var colliderTop    = initializing ? scrollTop : position.top
+    var colliderHeight = initializing ? targetHeight : height
+
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
+    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
+
+    return false
+  }
+
+  Affix.prototype.getPinnedOffset = function () {
+    if (this.pinnedOffset) return this.pinnedOffset
+    this.$element.removeClass(Affix.RESET).addClass('affix')
+    var scrollTop = this.$target.scrollTop()
+    var position  = this.$element.offset()
+    return (this.pinnedOffset = position.top - scrollTop)
+  }
+
+  Affix.prototype.checkPositionWithEventLoop = function () {
+    setTimeout($.proxy(this.checkPosition, this), 1)
+  }
+
+  Affix.prototype.checkPosition = function () {
+    if (!this.$element.is(':visible')) return
+
+    var height       = this.$element.height()
+    var offset       = this.options.offset
+    var offsetTop    = offset.top
+    var offsetBottom = offset.bottom
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
+
+    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
+    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
+    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
+
+    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
+
+    if (this.affixed != affix) {
+      if (this.unpin != null) this.$element.css('top', '')
+
+      var affixType = 'affix' + (affix ? '-' + affix : '')
+      var e         = $.Event(affixType + '.bs.affix')
+
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      this.affixed = affix
+      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
+
+      this.$element
+        .removeClass(Affix.RESET)
+        .addClass(affixType)
+        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+    }
+
+    if (affix == 'bottom') {
+      this.$element.offset({
+        top: scrollHeight - height - offsetBottom
+      })
+    }
+  }
+
+
+  // AFFIX PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.affix')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.affix
+
+  $.fn.affix             = Plugin
+  $.fn.affix.Constructor = Affix
+
+
+  // AFFIX NO CONFLICT
+  // =================
+
+  $.fn.affix.noConflict = function () {
+    $.fn.affix = old
+    return this
+  }
+
+
+  // AFFIX DATA-API
+  // ==============
+
+  $(window).on('load', function () {
+    $('[data-spy="affix"]').each(function () {
+      var $spy = $(this)
+      var data = $spy.data()
+
+      data.offset = data.offset || {}
+
+      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
+      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
+
+      Plugin.call($spy, data)
+    })
+  })
+
+}(jQuery);
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+/* @fileoverview 
+ * Provides full Bootstrap based, multi-instance WYSIWYG editor.
+ *
+ * Name     = bootstrap-wysiwyg
+ * Author   = Various, see LICENCE
+ * Version  = v2.0.1
+ * About    = A tiny Bootstrap and jQuery based WYSIWYG rich text editor based on the browser function execCommand.
+*/
+
+!function(a,b){"use strict";function c(c,d){this.selectedRange=null,this.editor=b(c);var e=b(c),f={hotKeys:{"Ctrl+b meta+b":"bold","Ctrl+i meta+i":"italic","Ctrl+u meta+u":"underline","Ctrl+z":"undo","Ctrl+y meta+y meta+shift+z":"redo","Ctrl+l meta+l":"justifyleft","Ctrl+r meta+r":"justifyright","Ctrl+e meta+e":"justifycenter","Ctrl+j meta+j":"justifyfull","Shift+tab":"outdent",tab:"indent"},toolbarSelector:"[data-role=editor-toolbar]",commandRole:"edit",activeToolbarClass:"btn-info",selectionMarker:"edit-focus-marker",selectionColor:"darkgrey",dragAndDropImages:!0,keypressTimeout:200,fileUploadError:function(a,b){console.log("File upload error",a,b)}},g=b.extend(!0,{},f,d),h="a[data-"+g.commandRole+"],button[data-"+g.commandRole+"],input[type=button][data-"+g.commandRole+"]";this.bindHotkeys(e,g,h),g.dragAndDropImages&&this.initFileDrops(e,g,h),this.bindToolbar(e,b(g.toolbarSelector),g,h),e.attr("contenteditable",!0).on("mouseup keyup mouseout",function(){this.saveSelection(),this.updateToolbar(e,h,g)}.bind(this)),b(a).bind("touchend",function(a){var b=e.is(a.target)||e.has(a.target).length>0,c=this.getCurrentRange(),d=c&&c.startContainer===c.endContainer&&c.startOffset===c.endOffset;(!d||b)&&(this.saveSelection(),this.updateToolbar(e,h,g))})}c.prototype.readFileIntoDataUrl=function(a){var c=b.Deferred(),d=new FileReader;return d.onload=function(a){c.resolve(a.target.result)},d.onerror=c.reject,d.onprogress=c.notify,d.readAsDataURL(a),c.promise()},c.prototype.cleanHtml=function(a){var c=this;if(b(c).data("wysiwyg-html-mode")===!0&&(b(c).html(b(c).text()),b(c).attr("contenteditable",!0),b(c).data("wysiwyg-html-mode",!1)),a===!0&&b(c).parent().is("form")){var d=b(c).html;if(b(d).has("img").length){var e=b("img",b(d)),f=[],g=b(c).parent();b.each(e,function(a,c){b(c).attr("src").match(/^data:image\/.*$/)&&(f.push(e[a]),b(g).prepend("<input value='"+b(c).attr("src")+"' type='hidden' name='postedimage/"+a+"' />"),b(c).attr("src","postedimage/"+a))})}}var h=b(c).html();return h&&h.replace(/(<br>|\s|<div><br><\/div>|&nbsp;)*$/,"")},c.prototype.updateToolbar=function(a,c,d){d.activeToolbarClass&&b(d.toolbarSelector).find(c).each(function(){var a=b(this),c=a.data(d.commandRole).split(" "),e=c[0];c.length>1&&document.queryCommandEnabled(e)&&document.queryCommandValue(e)===c[1]?a.addClass(d.activeToolbarClass):1===c.length&&document.queryCommandEnabled(e)&&document.queryCommandState(e)?a.addClass(d.activeToolbarClass):a.removeClass(d.activeToolbarClass)})},c.prototype.execCommand=function(a,b,c,d,e){var f=a.split(" "),g=f.shift(),h=f.join(" ")+(b||""),i=a.split("-");1===i.length?document.execCommand(g,!1,h):"format"===i[0]&&2===i.length&&document.execCommand("formatBlock",!1,i[1]),c.trigger("change"),this.updateToolbar(c,e,d)},c.prototype.bindHotkeys=function(a,c,d){var e=this;b.each(c.hotKeys,function(f,g){b(a).keydown(f,function(f){a.attr("contenteditable")&&b(a).is(":visible")&&(f.preventDefault(),f.stopPropagation(),e.execCommand(g,null,a,c,d))}).keyup(f,function(c){a.attr("contenteditable")&&b(a).is(":visible")&&(c.preventDefault(),c.stopPropagation())})}),a.keyup(function(){a.trigger("change")})},c.prototype.getCurrentRange=function(){var b,c;return a.getSelection?(b=a.getSelection(),b.getRangeAt&&b.rangeCount&&(c=b.getRangeAt(0))):document.selection&&(c=document.selection.createRange()),c},c.prototype.saveSelection=function(){this.selectedRange=this.getCurrentRange()},c.prototype.restoreSelection=function(){var b;if(a.getSelection||document.createRange){if(b=a.getSelection(),this.selectedRange){try{b.removeAllRanges()}catch(c){document.body.createTextRange().select(),document.selection.empty()}b.addRange(this.selectedRange)}}else document.selection&&this.selectedRange&&this.selectedRange.select()},c.prototype.toggleHtmlEdit=function(a){if(a.data("wysiwyg-html-mode")!==!0){var c=a.html(),d=b("<pre />");b(d).append(document.createTextNode(c)),b(d).attr("contenteditable",!0),b(a).html(" "),b(a).append(b(d)),b(a).attr("contenteditable",!1),b(a).data("wysiwyg-html-mode",!0),b(d).focus()}else b(a).html(b(a).text()),b(a).attr("contenteditable",!0),b(a).data("wysiwyg-html-mode",!1),b(a).focus()},c.prototype.insertFiles=function(a,c,d,e){var f=this;d.focus(),b.each(a,function(a,g){/^image\//.test(g.type)?b.when(f.readFileIntoDataUrl(g)).done(function(a){f.execCommand("insertimage",a,d,c,e),d.trigger("image-inserted")}).fail(function(a){c.fileUploadError("file-reader",a)}):c.fileUploadError("unsupported-file-type",g.type)})},c.prototype.markSelection=function(a,b,c){this.restoreSelection(),document.queryCommandSupported("hiliteColor")&&document.execCommand("hiliteColor",!1,b||"transparent"),this.saveSelection(),a.data(c.selectionMarker,b)},c.prototype.bindToolbar=function(a,c,d,e){var f=this;c.find(e).click(function(){f.restoreSelection(),a.focus(),"html"===a.data(d.commandRole)?f.toggleHtmlEdit(a):f.execCommand(b(this).data(d.commandRole),null,a,d,e),f.saveSelection()}),c.find("[data-toggle=dropdown]").click(this.restoreSelection()),c.find("input[type=text][data-"+d.commandRole+"]").on("webkitspeechchange change",function(){var c=this.value;this.value="",f.restoreSelection(),c&&(a.focus(),f.execCommand(b(this).data(d.commandRole),c,a,d,e)),f.saveSelection()}).on("focus",function(){var a=b(this);a.data(d.selectionMarker)||(f.markSelection(a,d.selectionColor,d),a.focus())}).on("blur",function(){var a=b(this);a.data(d.selectionMarker)&&f.markSelection(a,!1,d)}),c.find("input[type=file][data-"+d.commandRole+"]").change(function(){f.restoreSelection(),"file"===this.type&&this.files&&this.files.length>0&&f.insertFiles(this.files,d,a,e),f.saveSelection(),this.value=""})},c.prototype.initFileDrops=function(a,b,c){var d=this;a.on("dragenter dragover",!1).on("drop",function(e){var f=e.originalEvent.dataTransfer;e.stopPropagation(),e.preventDefault(),f&&f.files&&f.files.length>0&&d.insertFiles(f.files,b,a,c)})},b.fn.wysiwyg=function(a){new c(this,a)}}(window,window.jQuery);
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -31742,10 +37081,5765 @@ return jQuery;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(35)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(41)(module)))
 
 /***/ }),
-/* 32 */
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;var require;/*!
+ * Select2 4.0.5
+ * https://select2.github.io
+ *
+ * Released under the MIT license
+ * https://github.com/select2/select2/blob/master/LICENSE.md
+ */
+(function (factory) {
+  if (true) {
+    // AMD. Register as an anonymous module.
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = function (root, jQuery) {
+      if (jQuery === undefined) {
+        // require('jQuery') returns a factory that requires window to
+        // build a jQuery instance, we normalize how we use modules
+        // that require this pattern but the window provided is a noop
+        // if it's defined (how jquery works)
+        if (typeof window !== 'undefined') {
+          jQuery = require('jquery');
+        }
+        else {
+          jQuery = require('jquery')(root);
+        }
+      }
+      factory(jQuery);
+      return jQuery;
+    };
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+} (function (jQuery) {
+  // This is needed so we can catch the AMD loader configuration and use it
+  // The inner file should be wrapped (by `banner.start.js`) in a function that
+  // returns the AMD loader references.
+  var S2 =(function () {
+  // Restore the Select2 AMD loader so it can be used
+  // Needed mostly in the language files, where the loader is not inserted
+  if (jQuery && jQuery.fn && jQuery.fn.select2 && jQuery.fn.select2.amd) {
+    var S2 = jQuery.fn.select2.amd;
+  }
+var S2;(function () { if (!S2 || !S2.requirejs) {
+if (!S2) { S2 = {}; } else { require = S2; }
+/**
+ * @license almond 0.3.3 Copyright jQuery Foundation and other contributors.
+ * Released under MIT license, http://github.com/requirejs/almond/LICENSE
+ */
+//Going sloppy to avoid 'use strict' string cost, but strict practices should
+//be followed.
+/*global setTimeout: false */
+
+var requirejs, require, define;
+(function (undef) {
+    var main, req, makeMap, handlers,
+        defined = {},
+        waiting = {},
+        config = {},
+        defining = {},
+        hasOwn = Object.prototype.hasOwnProperty,
+        aps = [].slice,
+        jsSuffixRegExp = /\.js$/;
+
+    function hasProp(obj, prop) {
+        return hasOwn.call(obj, prop);
+    }
+
+    /**
+     * Given a relative module name, like ./something, normalize it to
+     * a real name that can be mapped to a path.
+     * @param {String} name the relative name
+     * @param {String} baseName a real name that the name arg is relative
+     * to.
+     * @returns {String} normalized name
+     */
+    function normalize(name, baseName) {
+        var nameParts, nameSegment, mapValue, foundMap, lastIndex,
+            foundI, foundStarMap, starI, i, j, part, normalizedBaseParts,
+            baseParts = baseName && baseName.split("/"),
+            map = config.map,
+            starMap = (map && map['*']) || {};
+
+        //Adjust any relative paths.
+        if (name) {
+            name = name.split('/');
+            lastIndex = name.length - 1;
+
+            // If wanting node ID compatibility, strip .js from end
+            // of IDs. Have to do this here, and not in nameToUrl
+            // because node allows either .js or non .js to map
+            // to same file.
+            if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
+                name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
+            }
+
+            // Starts with a '.' so need the baseName
+            if (name[0].charAt(0) === '.' && baseParts) {
+                //Convert baseName to array, and lop off the last part,
+                //so that . matches that 'directory' and not name of the baseName's
+                //module. For instance, baseName of 'one/two/three', maps to
+                //'one/two/three.js', but we want the directory, 'one/two' for
+                //this normalization.
+                normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                name = normalizedBaseParts.concat(name);
+            }
+
+            //start trimDots
+            for (i = 0; i < name.length; i++) {
+                part = name[i];
+                if (part === '.') {
+                    name.splice(i, 1);
+                    i -= 1;
+                } else if (part === '..') {
+                    // If at the start, or previous value is still ..,
+                    // keep them so that when converted to a path it may
+                    // still work when converted to a path, even though
+                    // as an ID it is less than ideal. In larger point
+                    // releases, may be better to just kick out an error.
+                    if (i === 0 || (i === 1 && name[2] === '..') || name[i - 1] === '..') {
+                        continue;
+                    } else if (i > 0) {
+                        name.splice(i - 1, 2);
+                        i -= 2;
+                    }
+                }
+            }
+            //end trimDots
+
+            name = name.join('/');
+        }
+
+        //Apply map config if available.
+        if ((baseParts || starMap) && map) {
+            nameParts = name.split('/');
+
+            for (i = nameParts.length; i > 0; i -= 1) {
+                nameSegment = nameParts.slice(0, i).join("/");
+
+                if (baseParts) {
+                    //Find the longest baseName segment match in the config.
+                    //So, do joins on the biggest to smallest lengths of baseParts.
+                    for (j = baseParts.length; j > 0; j -= 1) {
+                        mapValue = map[baseParts.slice(0, j).join('/')];
+
+                        //baseName segment has  config, find if it has one for
+                        //this name.
+                        if (mapValue) {
+                            mapValue = mapValue[nameSegment];
+                            if (mapValue) {
+                                //Match, update name to the new value.
+                                foundMap = mapValue;
+                                foundI = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (foundMap) {
+                    break;
+                }
+
+                //Check for a star map match, but just hold on to it,
+                //if there is a shorter segment match later in a matching
+                //config, then favor over this star map.
+                if (!foundStarMap && starMap && starMap[nameSegment]) {
+                    foundStarMap = starMap[nameSegment];
+                    starI = i;
+                }
+            }
+
+            if (!foundMap && foundStarMap) {
+                foundMap = foundStarMap;
+                foundI = starI;
+            }
+
+            if (foundMap) {
+                nameParts.splice(0, foundI, foundMap);
+                name = nameParts.join('/');
+            }
+        }
+
+        return name;
+    }
+
+    function makeRequire(relName, forceSync) {
+        return function () {
+            //A version of a require function that passes a moduleName
+            //value for items that may need to
+            //look up paths relative to the moduleName
+            var args = aps.call(arguments, 0);
+
+            //If first arg is not require('string'), and there is only
+            //one arg, it is the array form without a callback. Insert
+            //a null so that the following concat is correct.
+            if (typeof args[0] !== 'string' && args.length === 1) {
+                args.push(null);
+            }
+            return req.apply(undef, args.concat([relName, forceSync]));
+        };
+    }
+
+    function makeNormalize(relName) {
+        return function (name) {
+            return normalize(name, relName);
+        };
+    }
+
+    function makeLoad(depName) {
+        return function (value) {
+            defined[depName] = value;
+        };
+    }
+
+    function callDep(name) {
+        if (hasProp(waiting, name)) {
+            var args = waiting[name];
+            delete waiting[name];
+            defining[name] = true;
+            main.apply(undef, args);
+        }
+
+        if (!hasProp(defined, name) && !hasProp(defining, name)) {
+            throw new Error('No ' + name);
+        }
+        return defined[name];
+    }
+
+    //Turns a plugin!resource to [plugin, resource]
+    //with the plugin being undefined if the name
+    //did not have a plugin prefix.
+    function splitPrefix(name) {
+        var prefix,
+            index = name ? name.indexOf('!') : -1;
+        if (index > -1) {
+            prefix = name.substring(0, index);
+            name = name.substring(index + 1, name.length);
+        }
+        return [prefix, name];
+    }
+
+    //Creates a parts array for a relName where first part is plugin ID,
+    //second part is resource ID. Assumes relName has already been normalized.
+    function makeRelParts(relName) {
+        return relName ? splitPrefix(relName) : [];
+    }
+
+    /**
+     * Makes a name map, normalizing the name, and using a plugin
+     * for normalization if necessary. Grabs a ref to plugin
+     * too, as an optimization.
+     */
+    makeMap = function (name, relParts) {
+        var plugin,
+            parts = splitPrefix(name),
+            prefix = parts[0],
+            relResourceName = relParts[1];
+
+        name = parts[1];
+
+        if (prefix) {
+            prefix = normalize(prefix, relResourceName);
+            plugin = callDep(prefix);
+        }
+
+        //Normalize according
+        if (prefix) {
+            if (plugin && plugin.normalize) {
+                name = plugin.normalize(name, makeNormalize(relResourceName));
+            } else {
+                name = normalize(name, relResourceName);
+            }
+        } else {
+            name = normalize(name, relResourceName);
+            parts = splitPrefix(name);
+            prefix = parts[0];
+            name = parts[1];
+            if (prefix) {
+                plugin = callDep(prefix);
+            }
+        }
+
+        //Using ridiculous property names for space reasons
+        return {
+            f: prefix ? prefix + '!' + name : name, //fullName
+            n: name,
+            pr: prefix,
+            p: plugin
+        };
+    };
+
+    function makeConfig(name) {
+        return function () {
+            return (config && config.config && config.config[name]) || {};
+        };
+    }
+
+    handlers = {
+        require: function (name) {
+            return makeRequire(name);
+        },
+        exports: function (name) {
+            var e = defined[name];
+            if (typeof e !== 'undefined') {
+                return e;
+            } else {
+                return (defined[name] = {});
+            }
+        },
+        module: function (name) {
+            return {
+                id: name,
+                uri: '',
+                exports: defined[name],
+                config: makeConfig(name)
+            };
+        }
+    };
+
+    main = function (name, deps, callback, relName) {
+        var cjsModule, depName, ret, map, i, relParts,
+            args = [],
+            callbackType = typeof callback,
+            usingExports;
+
+        //Use name if no relName
+        relName = relName || name;
+        relParts = makeRelParts(relName);
+
+        //Call the callback to define the module, if necessary.
+        if (callbackType === 'undefined' || callbackType === 'function') {
+            //Pull out the defined dependencies and pass the ordered
+            //values to the callback.
+            //Default to [require, exports, module] if no deps
+            deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
+            for (i = 0; i < deps.length; i += 1) {
+                map = makeMap(deps[i], relParts);
+                depName = map.f;
+
+                //Fast path CommonJS standard dependencies.
+                if (depName === "require") {
+                    args[i] = handlers.require(name);
+                } else if (depName === "exports") {
+                    //CommonJS module spec 1.1
+                    args[i] = handlers.exports(name);
+                    usingExports = true;
+                } else if (depName === "module") {
+                    //CommonJS module spec 1.1
+                    cjsModule = args[i] = handlers.module(name);
+                } else if (hasProp(defined, depName) ||
+                           hasProp(waiting, depName) ||
+                           hasProp(defining, depName)) {
+                    args[i] = callDep(depName);
+                } else if (map.p) {
+                    map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
+                    args[i] = defined[depName];
+                } else {
+                    throw new Error(name + ' missing ' + depName);
+                }
+            }
+
+            ret = callback ? callback.apply(defined[name], args) : undefined;
+
+            if (name) {
+                //If setting exports via "module" is in play,
+                //favor that over return value and exports. After that,
+                //favor a non-undefined return value over exports use.
+                if (cjsModule && cjsModule.exports !== undef &&
+                        cjsModule.exports !== defined[name]) {
+                    defined[name] = cjsModule.exports;
+                } else if (ret !== undef || !usingExports) {
+                    //Use the return value from the function.
+                    defined[name] = ret;
+                }
+            }
+        } else if (name) {
+            //May just be an object definition for the module. Only
+            //worry about defining if have a module name.
+            defined[name] = callback;
+        }
+    };
+
+    requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
+        if (typeof deps === "string") {
+            if (handlers[deps]) {
+                //callback in this case is really relName
+                return handlers[deps](callback);
+            }
+            //Just return the module wanted. In this scenario, the
+            //deps arg is the module name, and second arg (if passed)
+            //is just the relName.
+            //Normalize module name, if it contains . or ..
+            return callDep(makeMap(deps, makeRelParts(callback)).f);
+        } else if (!deps.splice) {
+            //deps is a config object, not an array.
+            config = deps;
+            if (config.deps) {
+                req(config.deps, config.callback);
+            }
+            if (!callback) {
+                return;
+            }
+
+            if (callback.splice) {
+                //callback is an array, which means it is a dependency list.
+                //Adjust args if there are dependencies
+                deps = callback;
+                callback = relName;
+                relName = null;
+            } else {
+                deps = undef;
+            }
+        }
+
+        //Support require(['a'])
+        callback = callback || function () {};
+
+        //If relName is a function, it is an errback handler,
+        //so remove it.
+        if (typeof relName === 'function') {
+            relName = forceSync;
+            forceSync = alt;
+        }
+
+        //Simulate async callback;
+        if (forceSync) {
+            main(undef, deps, callback, relName);
+        } else {
+            //Using a non-zero value because of concern for what old browsers
+            //do, and latest browsers "upgrade" to 4 if lower value is used:
+            //http://www.whatwg.org/specs/web-apps/current-work/multipage/timers.html#dom-windowtimers-settimeout:
+            //If want a value immediately, use require('id') instead -- something
+            //that works in almond on the global level, but not guaranteed and
+            //unlikely to work in other AMD implementations.
+            setTimeout(function () {
+                main(undef, deps, callback, relName);
+            }, 4);
+        }
+
+        return req;
+    };
+
+    /**
+     * Just drops the config on the floor, but returns req in case
+     * the config return value is used.
+     */
+    req.config = function (cfg) {
+        return req(cfg);
+    };
+
+    /**
+     * Expose module registry for debugging and tooling
+     */
+    requirejs._defined = defined;
+
+    define = function (name, deps, callback) {
+        if (typeof name !== 'string') {
+            throw new Error('See almond README: incorrect module build, no module name');
+        }
+
+        //This module may not have dependencies
+        if (!deps.splice) {
+            //deps is not an array, so probably means
+            //an object literal or factory function for
+            //the value. Adjust args.
+            callback = deps;
+            deps = [];
+        }
+
+        if (!hasProp(defined, name) && !hasProp(waiting, name)) {
+            waiting[name] = [name, deps, callback];
+        }
+    };
+
+    define.amd = {
+        jQuery: true
+    };
+}());
+
+S2.requirejs = requirejs;S2.require = require;S2.define = define;
+}
+}());
+S2.define("almond", function(){});
+
+/* global jQuery:false, $:false */
+S2.define('jquery',[],function () {
+  var _$ = jQuery || $;
+
+  if (_$ == null && console && console.error) {
+    console.error(
+      'Select2: An instance of jQuery or a jQuery-compatible library was not ' +
+      'found. Make sure that you are including jQuery before Select2 on your ' +
+      'web page.'
+    );
+  }
+
+  return _$;
+});
+
+S2.define('select2/utils',[
+  'jquery'
+], function ($) {
+  var Utils = {};
+
+  Utils.Extend = function (ChildClass, SuperClass) {
+    var __hasProp = {}.hasOwnProperty;
+
+    function BaseConstructor () {
+      this.constructor = ChildClass;
+    }
+
+    for (var key in SuperClass) {
+      if (__hasProp.call(SuperClass, key)) {
+        ChildClass[key] = SuperClass[key];
+      }
+    }
+
+    BaseConstructor.prototype = SuperClass.prototype;
+    ChildClass.prototype = new BaseConstructor();
+    ChildClass.__super__ = SuperClass.prototype;
+
+    return ChildClass;
+  };
+
+  function getMethods (theClass) {
+    var proto = theClass.prototype;
+
+    var methods = [];
+
+    for (var methodName in proto) {
+      var m = proto[methodName];
+
+      if (typeof m !== 'function') {
+        continue;
+      }
+
+      if (methodName === 'constructor') {
+        continue;
+      }
+
+      methods.push(methodName);
+    }
+
+    return methods;
+  }
+
+  Utils.Decorate = function (SuperClass, DecoratorClass) {
+    var decoratedMethods = getMethods(DecoratorClass);
+    var superMethods = getMethods(SuperClass);
+
+    function DecoratedClass () {
+      var unshift = Array.prototype.unshift;
+
+      var argCount = DecoratorClass.prototype.constructor.length;
+
+      var calledConstructor = SuperClass.prototype.constructor;
+
+      if (argCount > 0) {
+        unshift.call(arguments, SuperClass.prototype.constructor);
+
+        calledConstructor = DecoratorClass.prototype.constructor;
+      }
+
+      calledConstructor.apply(this, arguments);
+    }
+
+    DecoratorClass.displayName = SuperClass.displayName;
+
+    function ctr () {
+      this.constructor = DecoratedClass;
+    }
+
+    DecoratedClass.prototype = new ctr();
+
+    for (var m = 0; m < superMethods.length; m++) {
+        var superMethod = superMethods[m];
+
+        DecoratedClass.prototype[superMethod] =
+          SuperClass.prototype[superMethod];
+    }
+
+    var calledMethod = function (methodName) {
+      // Stub out the original method if it's not decorating an actual method
+      var originalMethod = function () {};
+
+      if (methodName in DecoratedClass.prototype) {
+        originalMethod = DecoratedClass.prototype[methodName];
+      }
+
+      var decoratedMethod = DecoratorClass.prototype[methodName];
+
+      return function () {
+        var unshift = Array.prototype.unshift;
+
+        unshift.call(arguments, originalMethod);
+
+        return decoratedMethod.apply(this, arguments);
+      };
+    };
+
+    for (var d = 0; d < decoratedMethods.length; d++) {
+      var decoratedMethod = decoratedMethods[d];
+
+      DecoratedClass.prototype[decoratedMethod] = calledMethod(decoratedMethod);
+    }
+
+    return DecoratedClass;
+  };
+
+  var Observable = function () {
+    this.listeners = {};
+  };
+
+  Observable.prototype.on = function (event, callback) {
+    this.listeners = this.listeners || {};
+
+    if (event in this.listeners) {
+      this.listeners[event].push(callback);
+    } else {
+      this.listeners[event] = [callback];
+    }
+  };
+
+  Observable.prototype.trigger = function (event) {
+    var slice = Array.prototype.slice;
+    var params = slice.call(arguments, 1);
+
+    this.listeners = this.listeners || {};
+
+    // Params should always come in as an array
+    if (params == null) {
+      params = [];
+    }
+
+    // If there are no arguments to the event, use a temporary object
+    if (params.length === 0) {
+      params.push({});
+    }
+
+    // Set the `_type` of the first object to the event
+    params[0]._type = event;
+
+    if (event in this.listeners) {
+      this.invoke(this.listeners[event], slice.call(arguments, 1));
+    }
+
+    if ('*' in this.listeners) {
+      this.invoke(this.listeners['*'], arguments);
+    }
+  };
+
+  Observable.prototype.invoke = function (listeners, params) {
+    for (var i = 0, len = listeners.length; i < len; i++) {
+      listeners[i].apply(this, params);
+    }
+  };
+
+  Utils.Observable = Observable;
+
+  Utils.generateChars = function (length) {
+    var chars = '';
+
+    for (var i = 0; i < length; i++) {
+      var randomChar = Math.floor(Math.random() * 36);
+      chars += randomChar.toString(36);
+    }
+
+    return chars;
+  };
+
+  Utils.bind = function (func, context) {
+    return function () {
+      func.apply(context, arguments);
+    };
+  };
+
+  Utils._convertData = function (data) {
+    for (var originalKey in data) {
+      var keys = originalKey.split('-');
+
+      var dataLevel = data;
+
+      if (keys.length === 1) {
+        continue;
+      }
+
+      for (var k = 0; k < keys.length; k++) {
+        var key = keys[k];
+
+        // Lowercase the first letter
+        // By default, dash-separated becomes camelCase
+        key = key.substring(0, 1).toLowerCase() + key.substring(1);
+
+        if (!(key in dataLevel)) {
+          dataLevel[key] = {};
+        }
+
+        if (k == keys.length - 1) {
+          dataLevel[key] = data[originalKey];
+        }
+
+        dataLevel = dataLevel[key];
+      }
+
+      delete data[originalKey];
+    }
+
+    return data;
+  };
+
+  Utils.hasScroll = function (index, el) {
+    // Adapted from the function created by @ShadowScripter
+    // and adapted by @BillBarry on the Stack Exchange Code Review website.
+    // The original code can be found at
+    // http://codereview.stackexchange.com/q/13338
+    // and was designed to be used with the Sizzle selector engine.
+
+    var $el = $(el);
+    var overflowX = el.style.overflowX;
+    var overflowY = el.style.overflowY;
+
+    //Check both x and y declarations
+    if (overflowX === overflowY &&
+        (overflowY === 'hidden' || overflowY === 'visible')) {
+      return false;
+    }
+
+    if (overflowX === 'scroll' || overflowY === 'scroll') {
+      return true;
+    }
+
+    return ($el.innerHeight() < el.scrollHeight ||
+      $el.innerWidth() < el.scrollWidth);
+  };
+
+  Utils.escapeMarkup = function (markup) {
+    var replaceMap = {
+      '\\': '&#92;',
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      '\'': '&#39;',
+      '/': '&#47;'
+    };
+
+    // Do not try to escape the markup if it's not a string
+    if (typeof markup !== 'string') {
+      return markup;
+    }
+
+    return String(markup).replace(/[&<>"'\/\\]/g, function (match) {
+      return replaceMap[match];
+    });
+  };
+
+  // Append an array of jQuery nodes to a given element.
+  Utils.appendMany = function ($element, $nodes) {
+    // jQuery 1.7.x does not support $.fn.append() with an array
+    // Fall back to a jQuery object collection using $.fn.add()
+    if ($.fn.jquery.substr(0, 3) === '1.7') {
+      var $jqNodes = $();
+
+      $.map($nodes, function (node) {
+        $jqNodes = $jqNodes.add(node);
+      });
+
+      $nodes = $jqNodes;
+    }
+
+    $element.append($nodes);
+  };
+
+  return Utils;
+});
+
+S2.define('select2/results',[
+  'jquery',
+  './utils'
+], function ($, Utils) {
+  function Results ($element, options, dataAdapter) {
+    this.$element = $element;
+    this.data = dataAdapter;
+    this.options = options;
+
+    Results.__super__.constructor.call(this);
+  }
+
+  Utils.Extend(Results, Utils.Observable);
+
+  Results.prototype.render = function () {
+    var $results = $(
+      '<ul class="select2-results__options" role="tree"></ul>'
+    );
+
+    if (this.options.get('multiple')) {
+      $results.attr('aria-multiselectable', 'true');
+    }
+
+    this.$results = $results;
+
+    return $results;
+  };
+
+  Results.prototype.clear = function () {
+    this.$results.empty();
+  };
+
+  Results.prototype.displayMessage = function (params) {
+    var escapeMarkup = this.options.get('escapeMarkup');
+
+    this.clear();
+    this.hideLoading();
+
+    var $message = $(
+      '<li role="treeitem" aria-live="assertive"' +
+      ' class="select2-results__option"></li>'
+    );
+
+    var message = this.options.get('translations').get(params.message);
+
+    $message.append(
+      escapeMarkup(
+        message(params.args)
+      )
+    );
+
+    $message[0].className += ' select2-results__message';
+
+    this.$results.append($message);
+  };
+
+  Results.prototype.hideMessages = function () {
+    this.$results.find('.select2-results__message').remove();
+  };
+
+  Results.prototype.append = function (data) {
+    this.hideLoading();
+
+    var $options = [];
+
+    if (data.results == null || data.results.length === 0) {
+      if (this.$results.children().length === 0) {
+        this.trigger('results:message', {
+          message: 'noResults'
+        });
+      }
+
+      return;
+    }
+
+    data.results = this.sort(data.results);
+
+    for (var d = 0; d < data.results.length; d++) {
+      var item = data.results[d];
+
+      var $option = this.option(item);
+
+      $options.push($option);
+    }
+
+    this.$results.append($options);
+  };
+
+  Results.prototype.position = function ($results, $dropdown) {
+    var $resultsContainer = $dropdown.find('.select2-results');
+    $resultsContainer.append($results);
+  };
+
+  Results.prototype.sort = function (data) {
+    var sorter = this.options.get('sorter');
+
+    return sorter(data);
+  };
+
+  Results.prototype.highlightFirstItem = function () {
+    var $options = this.$results
+      .find('.select2-results__option[aria-selected]');
+
+    var $selected = $options.filter('[aria-selected=true]');
+
+    // Check if there are any selected options
+    if ($selected.length > 0) {
+      // If there are selected options, highlight the first
+      $selected.first().trigger('mouseenter');
+    } else {
+      // If there are no selected options, highlight the first option
+      // in the dropdown
+      $options.first().trigger('mouseenter');
+    }
+
+    this.ensureHighlightVisible();
+  };
+
+  Results.prototype.setClasses = function () {
+    var self = this;
+
+    this.data.current(function (selected) {
+      var selectedIds = $.map(selected, function (s) {
+        return s.id.toString();
+      });
+
+      var $options = self.$results
+        .find('.select2-results__option[aria-selected]');
+
+      $options.each(function () {
+        var $option = $(this);
+
+        var item = $.data(this, 'data');
+
+        // id needs to be converted to a string when comparing
+        var id = '' + item.id;
+
+        if ((item.element != null && item.element.selected) ||
+            (item.element == null && $.inArray(id, selectedIds) > -1)) {
+          $option.attr('aria-selected', 'true');
+        } else {
+          $option.attr('aria-selected', 'false');
+        }
+      });
+
+    });
+  };
+
+  Results.prototype.showLoading = function (params) {
+    this.hideLoading();
+
+    var loadingMore = this.options.get('translations').get('searching');
+
+    var loading = {
+      disabled: true,
+      loading: true,
+      text: loadingMore(params)
+    };
+    var $loading = this.option(loading);
+    $loading.className += ' loading-results';
+
+    this.$results.prepend($loading);
+  };
+
+  Results.prototype.hideLoading = function () {
+    this.$results.find('.loading-results').remove();
+  };
+
+  Results.prototype.option = function (data) {
+    var option = document.createElement('li');
+    option.className = 'select2-results__option';
+
+    var attrs = {
+      'role': 'treeitem',
+      'aria-selected': 'false'
+    };
+
+    if (data.disabled) {
+      delete attrs['aria-selected'];
+      attrs['aria-disabled'] = 'true';
+    }
+
+    if (data.id == null) {
+      delete attrs['aria-selected'];
+    }
+
+    if (data._resultId != null) {
+      option.id = data._resultId;
+    }
+
+    if (data.title) {
+      option.title = data.title;
+    }
+
+    if (data.children) {
+      attrs.role = 'group';
+      attrs['aria-label'] = data.text;
+      delete attrs['aria-selected'];
+    }
+
+    for (var attr in attrs) {
+      var val = attrs[attr];
+
+      option.setAttribute(attr, val);
+    }
+
+    if (data.children) {
+      var $option = $(option);
+
+      var label = document.createElement('strong');
+      label.className = 'select2-results__group';
+
+      var $label = $(label);
+      this.template(data, label);
+
+      var $children = [];
+
+      for (var c = 0; c < data.children.length; c++) {
+        var child = data.children[c];
+
+        var $child = this.option(child);
+
+        $children.push($child);
+      }
+
+      var $childrenContainer = $('<ul></ul>', {
+        'class': 'select2-results__options select2-results__options--nested'
+      });
+
+      $childrenContainer.append($children);
+
+      $option.append(label);
+      $option.append($childrenContainer);
+    } else {
+      this.template(data, option);
+    }
+
+    $.data(option, 'data', data);
+
+    return option;
+  };
+
+  Results.prototype.bind = function (container, $container) {
+    var self = this;
+
+    var id = container.id + '-results';
+
+    this.$results.attr('id', id);
+
+    container.on('results:all', function (params) {
+      self.clear();
+      self.append(params.data);
+
+      if (container.isOpen()) {
+        self.setClasses();
+        self.highlightFirstItem();
+      }
+    });
+
+    container.on('results:append', function (params) {
+      self.append(params.data);
+
+      if (container.isOpen()) {
+        self.setClasses();
+      }
+    });
+
+    container.on('query', function (params) {
+      self.hideMessages();
+      self.showLoading(params);
+    });
+
+    container.on('select', function () {
+      if (!container.isOpen()) {
+        return;
+      }
+
+      self.setClasses();
+      self.highlightFirstItem();
+    });
+
+    container.on('unselect', function () {
+      if (!container.isOpen()) {
+        return;
+      }
+
+      self.setClasses();
+      self.highlightFirstItem();
+    });
+
+    container.on('open', function () {
+      // When the dropdown is open, aria-expended="true"
+      self.$results.attr('aria-expanded', 'true');
+      self.$results.attr('aria-hidden', 'false');
+
+      self.setClasses();
+      self.ensureHighlightVisible();
+    });
+
+    container.on('close', function () {
+      // When the dropdown is closed, aria-expended="false"
+      self.$results.attr('aria-expanded', 'false');
+      self.$results.attr('aria-hidden', 'true');
+      self.$results.removeAttr('aria-activedescendant');
+    });
+
+    container.on('results:toggle', function () {
+      var $highlighted = self.getHighlightedResults();
+
+      if ($highlighted.length === 0) {
+        return;
+      }
+
+      $highlighted.trigger('mouseup');
+    });
+
+    container.on('results:select', function () {
+      var $highlighted = self.getHighlightedResults();
+
+      if ($highlighted.length === 0) {
+        return;
+      }
+
+      var data = $highlighted.data('data');
+
+      if ($highlighted.attr('aria-selected') == 'true') {
+        self.trigger('close', {});
+      } else {
+        self.trigger('select', {
+          data: data
+        });
+      }
+    });
+
+    container.on('results:previous', function () {
+      var $highlighted = self.getHighlightedResults();
+
+      var $options = self.$results.find('[aria-selected]');
+
+      var currentIndex = $options.index($highlighted);
+
+      // If we are already at te top, don't move further
+      if (currentIndex === 0) {
+        return;
+      }
+
+      var nextIndex = currentIndex - 1;
+
+      // If none are highlighted, highlight the first
+      if ($highlighted.length === 0) {
+        nextIndex = 0;
+      }
+
+      var $next = $options.eq(nextIndex);
+
+      $next.trigger('mouseenter');
+
+      var currentOffset = self.$results.offset().top;
+      var nextTop = $next.offset().top;
+      var nextOffset = self.$results.scrollTop() + (nextTop - currentOffset);
+
+      if (nextIndex === 0) {
+        self.$results.scrollTop(0);
+      } else if (nextTop - currentOffset < 0) {
+        self.$results.scrollTop(nextOffset);
+      }
+    });
+
+    container.on('results:next', function () {
+      var $highlighted = self.getHighlightedResults();
+
+      var $options = self.$results.find('[aria-selected]');
+
+      var currentIndex = $options.index($highlighted);
+
+      var nextIndex = currentIndex + 1;
+
+      // If we are at the last option, stay there
+      if (nextIndex >= $options.length) {
+        return;
+      }
+
+      var $next = $options.eq(nextIndex);
+
+      $next.trigger('mouseenter');
+
+      var currentOffset = self.$results.offset().top +
+        self.$results.outerHeight(false);
+      var nextBottom = $next.offset().top + $next.outerHeight(false);
+      var nextOffset = self.$results.scrollTop() + nextBottom - currentOffset;
+
+      if (nextIndex === 0) {
+        self.$results.scrollTop(0);
+      } else if (nextBottom > currentOffset) {
+        self.$results.scrollTop(nextOffset);
+      }
+    });
+
+    container.on('results:focus', function (params) {
+      params.element.addClass('select2-results__option--highlighted');
+    });
+
+    container.on('results:message', function (params) {
+      self.displayMessage(params);
+    });
+
+    if ($.fn.mousewheel) {
+      this.$results.on('mousewheel', function (e) {
+        var top = self.$results.scrollTop();
+
+        var bottom = self.$results.get(0).scrollHeight - top + e.deltaY;
+
+        var isAtTop = e.deltaY > 0 && top - e.deltaY <= 0;
+        var isAtBottom = e.deltaY < 0 && bottom <= self.$results.height();
+
+        if (isAtTop) {
+          self.$results.scrollTop(0);
+
+          e.preventDefault();
+          e.stopPropagation();
+        } else if (isAtBottom) {
+          self.$results.scrollTop(
+            self.$results.get(0).scrollHeight - self.$results.height()
+          );
+
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+    }
+
+    this.$results.on('mouseup', '.select2-results__option[aria-selected]',
+      function (evt) {
+      var $this = $(this);
+
+      var data = $this.data('data');
+
+      if ($this.attr('aria-selected') === 'true') {
+        if (self.options.get('multiple')) {
+          self.trigger('unselect', {
+            originalEvent: evt,
+            data: data
+          });
+        } else {
+          self.trigger('close', {});
+        }
+
+        return;
+      }
+
+      self.trigger('select', {
+        originalEvent: evt,
+        data: data
+      });
+    });
+
+    this.$results.on('mouseenter', '.select2-results__option[aria-selected]',
+      function (evt) {
+      var data = $(this).data('data');
+
+      self.getHighlightedResults()
+          .removeClass('select2-results__option--highlighted');
+
+      self.trigger('results:focus', {
+        data: data,
+        element: $(this)
+      });
+    });
+  };
+
+  Results.prototype.getHighlightedResults = function () {
+    var $highlighted = this.$results
+    .find('.select2-results__option--highlighted');
+
+    return $highlighted;
+  };
+
+  Results.prototype.destroy = function () {
+    this.$results.remove();
+  };
+
+  Results.prototype.ensureHighlightVisible = function () {
+    var $highlighted = this.getHighlightedResults();
+
+    if ($highlighted.length === 0) {
+      return;
+    }
+
+    var $options = this.$results.find('[aria-selected]');
+
+    var currentIndex = $options.index($highlighted);
+
+    var currentOffset = this.$results.offset().top;
+    var nextTop = $highlighted.offset().top;
+    var nextOffset = this.$results.scrollTop() + (nextTop - currentOffset);
+
+    var offsetDelta = nextTop - currentOffset;
+    nextOffset -= $highlighted.outerHeight(false) * 2;
+
+    if (currentIndex <= 2) {
+      this.$results.scrollTop(0);
+    } else if (offsetDelta > this.$results.outerHeight() || offsetDelta < 0) {
+      this.$results.scrollTop(nextOffset);
+    }
+  };
+
+  Results.prototype.template = function (result, container) {
+    var template = this.options.get('templateResult');
+    var escapeMarkup = this.options.get('escapeMarkup');
+
+    var content = template(result, container);
+
+    if (content == null) {
+      container.style.display = 'none';
+    } else if (typeof content === 'string') {
+      container.innerHTML = escapeMarkup(content);
+    } else {
+      $(container).append(content);
+    }
+  };
+
+  return Results;
+});
+
+S2.define('select2/keys',[
+
+], function () {
+  var KEYS = {
+    BACKSPACE: 8,
+    TAB: 9,
+    ENTER: 13,
+    SHIFT: 16,
+    CTRL: 17,
+    ALT: 18,
+    ESC: 27,
+    SPACE: 32,
+    PAGE_UP: 33,
+    PAGE_DOWN: 34,
+    END: 35,
+    HOME: 36,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    DELETE: 46
+  };
+
+  return KEYS;
+});
+
+S2.define('select2/selection/base',[
+  'jquery',
+  '../utils',
+  '../keys'
+], function ($, Utils, KEYS) {
+  function BaseSelection ($element, options) {
+    this.$element = $element;
+    this.options = options;
+
+    BaseSelection.__super__.constructor.call(this);
+  }
+
+  Utils.Extend(BaseSelection, Utils.Observable);
+
+  BaseSelection.prototype.render = function () {
+    var $selection = $(
+      '<span class="select2-selection" role="combobox" ' +
+      ' aria-haspopup="true" aria-expanded="false">' +
+      '</span>'
+    );
+
+    this._tabindex = 0;
+
+    if (this.$element.data('old-tabindex') != null) {
+      this._tabindex = this.$element.data('old-tabindex');
+    } else if (this.$element.attr('tabindex') != null) {
+      this._tabindex = this.$element.attr('tabindex');
+    }
+
+    $selection.attr('title', this.$element.attr('title'));
+    $selection.attr('tabindex', this._tabindex);
+
+    this.$selection = $selection;
+
+    return $selection;
+  };
+
+  BaseSelection.prototype.bind = function (container, $container) {
+    var self = this;
+
+    var id = container.id + '-container';
+    var resultsId = container.id + '-results';
+
+    this.container = container;
+
+    this.$selection.on('focus', function (evt) {
+      self.trigger('focus', evt);
+    });
+
+    this.$selection.on('blur', function (evt) {
+      self._handleBlur(evt);
+    });
+
+    this.$selection.on('keydown', function (evt) {
+      self.trigger('keypress', evt);
+
+      if (evt.which === KEYS.SPACE) {
+        evt.preventDefault();
+      }
+    });
+
+    container.on('results:focus', function (params) {
+      self.$selection.attr('aria-activedescendant', params.data._resultId);
+    });
+
+    container.on('selection:update', function (params) {
+      self.update(params.data);
+    });
+
+    container.on('open', function () {
+      // When the dropdown is open, aria-expanded="true"
+      self.$selection.attr('aria-expanded', 'true');
+      self.$selection.attr('aria-owns', resultsId);
+
+      self._attachCloseHandler(container);
+    });
+
+    container.on('close', function () {
+      // When the dropdown is closed, aria-expanded="false"
+      self.$selection.attr('aria-expanded', 'false');
+      self.$selection.removeAttr('aria-activedescendant');
+      self.$selection.removeAttr('aria-owns');
+
+      self.$selection.focus();
+
+      self._detachCloseHandler(container);
+    });
+
+    container.on('enable', function () {
+      self.$selection.attr('tabindex', self._tabindex);
+    });
+
+    container.on('disable', function () {
+      self.$selection.attr('tabindex', '-1');
+    });
+  };
+
+  BaseSelection.prototype._handleBlur = function (evt) {
+    var self = this;
+
+    // This needs to be delayed as the active element is the body when the tab
+    // key is pressed, possibly along with others.
+    window.setTimeout(function () {
+      // Don't trigger `blur` if the focus is still in the selection
+      if (
+        (document.activeElement == self.$selection[0]) ||
+        ($.contains(self.$selection[0], document.activeElement))
+      ) {
+        return;
+      }
+
+      self.trigger('blur', evt);
+    }, 1);
+  };
+
+  BaseSelection.prototype._attachCloseHandler = function (container) {
+    var self = this;
+
+    $(document.body).on('mousedown.select2.' + container.id, function (e) {
+      var $target = $(e.target);
+
+      var $select = $target.closest('.select2');
+
+      var $all = $('.select2.select2-container--open');
+
+      $all.each(function () {
+        var $this = $(this);
+
+        if (this == $select[0]) {
+          return;
+        }
+
+        var $element = $this.data('element');
+
+        $element.select2('close');
+      });
+    });
+  };
+
+  BaseSelection.prototype._detachCloseHandler = function (container) {
+    $(document.body).off('mousedown.select2.' + container.id);
+  };
+
+  BaseSelection.prototype.position = function ($selection, $container) {
+    var $selectionContainer = $container.find('.selection');
+    $selectionContainer.append($selection);
+  };
+
+  BaseSelection.prototype.destroy = function () {
+    this._detachCloseHandler(this.container);
+  };
+
+  BaseSelection.prototype.update = function (data) {
+    throw new Error('The `update` method must be defined in child classes.');
+  };
+
+  return BaseSelection;
+});
+
+S2.define('select2/selection/single',[
+  'jquery',
+  './base',
+  '../utils',
+  '../keys'
+], function ($, BaseSelection, Utils, KEYS) {
+  function SingleSelection () {
+    SingleSelection.__super__.constructor.apply(this, arguments);
+  }
+
+  Utils.Extend(SingleSelection, BaseSelection);
+
+  SingleSelection.prototype.render = function () {
+    var $selection = SingleSelection.__super__.render.call(this);
+
+    $selection.addClass('select2-selection--single');
+
+    $selection.html(
+      '<span class="select2-selection__rendered"></span>' +
+      '<span class="select2-selection__arrow" role="presentation">' +
+        '<b role="presentation"></b>' +
+      '</span>'
+    );
+
+    return $selection;
+  };
+
+  SingleSelection.prototype.bind = function (container, $container) {
+    var self = this;
+
+    SingleSelection.__super__.bind.apply(this, arguments);
+
+    var id = container.id + '-container';
+
+    this.$selection.find('.select2-selection__rendered').attr('id', id);
+    this.$selection.attr('aria-labelledby', id);
+
+    this.$selection.on('mousedown', function (evt) {
+      // Only respond to left clicks
+      if (evt.which !== 1) {
+        return;
+      }
+
+      self.trigger('toggle', {
+        originalEvent: evt
+      });
+    });
+
+    this.$selection.on('focus', function (evt) {
+      // User focuses on the container
+    });
+
+    this.$selection.on('blur', function (evt) {
+      // User exits the container
+    });
+
+    container.on('focus', function (evt) {
+      if (!container.isOpen()) {
+        self.$selection.focus();
+      }
+    });
+
+    container.on('selection:update', function (params) {
+      self.update(params.data);
+    });
+  };
+
+  SingleSelection.prototype.clear = function () {
+    this.$selection.find('.select2-selection__rendered').empty();
+  };
+
+  SingleSelection.prototype.display = function (data, container) {
+    var template = this.options.get('templateSelection');
+    var escapeMarkup = this.options.get('escapeMarkup');
+
+    return escapeMarkup(template(data, container));
+  };
+
+  SingleSelection.prototype.selectionContainer = function () {
+    return $('<span></span>');
+  };
+
+  SingleSelection.prototype.update = function (data) {
+    if (data.length === 0) {
+      this.clear();
+      return;
+    }
+
+    var selection = data[0];
+
+    var $rendered = this.$selection.find('.select2-selection__rendered');
+    var formatted = this.display(selection, $rendered);
+
+    $rendered.empty().append(formatted);
+    $rendered.prop('title', selection.title || selection.text);
+  };
+
+  return SingleSelection;
+});
+
+S2.define('select2/selection/multiple',[
+  'jquery',
+  './base',
+  '../utils'
+], function ($, BaseSelection, Utils) {
+  function MultipleSelection ($element, options) {
+    MultipleSelection.__super__.constructor.apply(this, arguments);
+  }
+
+  Utils.Extend(MultipleSelection, BaseSelection);
+
+  MultipleSelection.prototype.render = function () {
+    var $selection = MultipleSelection.__super__.render.call(this);
+
+    $selection.addClass('select2-selection--multiple');
+
+    $selection.html(
+      '<ul class="select2-selection__rendered"></ul>'
+    );
+
+    return $selection;
+  };
+
+  MultipleSelection.prototype.bind = function (container, $container) {
+    var self = this;
+
+    MultipleSelection.__super__.bind.apply(this, arguments);
+
+    this.$selection.on('click', function (evt) {
+      self.trigger('toggle', {
+        originalEvent: evt
+      });
+    });
+
+    this.$selection.on(
+      'click',
+      '.select2-selection__choice__remove',
+      function (evt) {
+        // Ignore the event if it is disabled
+        if (self.options.get('disabled')) {
+          return;
+        }
+
+        var $remove = $(this);
+        var $selection = $remove.parent();
+
+        var data = $selection.data('data');
+
+        self.trigger('unselect', {
+          originalEvent: evt,
+          data: data
+        });
+      }
+    );
+  };
+
+  MultipleSelection.prototype.clear = function () {
+    this.$selection.find('.select2-selection__rendered').empty();
+  };
+
+  MultipleSelection.prototype.display = function (data, container) {
+    var template = this.options.get('templateSelection');
+    var escapeMarkup = this.options.get('escapeMarkup');
+
+    return escapeMarkup(template(data, container));
+  };
+
+  MultipleSelection.prototype.selectionContainer = function () {
+    var $container = $(
+      '<li class="select2-selection__choice">' +
+        '<span class="select2-selection__choice__remove" role="presentation">' +
+          '&times;' +
+        '</span>' +
+      '</li>'
+    );
+
+    return $container;
+  };
+
+  MultipleSelection.prototype.update = function (data) {
+    this.clear();
+
+    if (data.length === 0) {
+      return;
+    }
+
+    var $selections = [];
+
+    for (var d = 0; d < data.length; d++) {
+      var selection = data[d];
+
+      var $selection = this.selectionContainer();
+      var formatted = this.display(selection, $selection);
+
+      $selection.append(formatted);
+      $selection.prop('title', selection.title || selection.text);
+
+      $selection.data('data', selection);
+
+      $selections.push($selection);
+    }
+
+    var $rendered = this.$selection.find('.select2-selection__rendered');
+
+    Utils.appendMany($rendered, $selections);
+  };
+
+  return MultipleSelection;
+});
+
+S2.define('select2/selection/placeholder',[
+  '../utils'
+], function (Utils) {
+  function Placeholder (decorated, $element, options) {
+    this.placeholder = this.normalizePlaceholder(options.get('placeholder'));
+
+    decorated.call(this, $element, options);
+  }
+
+  Placeholder.prototype.normalizePlaceholder = function (_, placeholder) {
+    if (typeof placeholder === 'string') {
+      placeholder = {
+        id: '',
+        text: placeholder
+      };
+    }
+
+    return placeholder;
+  };
+
+  Placeholder.prototype.createPlaceholder = function (decorated, placeholder) {
+    var $placeholder = this.selectionContainer();
+
+    $placeholder.html(this.display(placeholder));
+    $placeholder.addClass('select2-selection__placeholder')
+                .removeClass('select2-selection__choice');
+
+    return $placeholder;
+  };
+
+  Placeholder.prototype.update = function (decorated, data) {
+    var singlePlaceholder = (
+      data.length == 1 && data[0].id != this.placeholder.id
+    );
+    var multipleSelections = data.length > 1;
+
+    if (multipleSelections || singlePlaceholder) {
+      return decorated.call(this, data);
+    }
+
+    this.clear();
+
+    var $placeholder = this.createPlaceholder(this.placeholder);
+
+    this.$selection.find('.select2-selection__rendered').append($placeholder);
+  };
+
+  return Placeholder;
+});
+
+S2.define('select2/selection/allowClear',[
+  'jquery',
+  '../keys'
+], function ($, KEYS) {
+  function AllowClear () { }
+
+  AllowClear.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    if (this.placeholder == null) {
+      if (this.options.get('debug') && window.console && console.error) {
+        console.error(
+          'Select2: The `allowClear` option should be used in combination ' +
+          'with the `placeholder` option.'
+        );
+      }
+    }
+
+    this.$selection.on('mousedown', '.select2-selection__clear',
+      function (evt) {
+        self._handleClear(evt);
+    });
+
+    container.on('keypress', function (evt) {
+      self._handleKeyboardClear(evt, container);
+    });
+  };
+
+  AllowClear.prototype._handleClear = function (_, evt) {
+    // Ignore the event if it is disabled
+    if (this.options.get('disabled')) {
+      return;
+    }
+
+    var $clear = this.$selection.find('.select2-selection__clear');
+
+    // Ignore the event if nothing has been selected
+    if ($clear.length === 0) {
+      return;
+    }
+
+    evt.stopPropagation();
+
+    var data = $clear.data('data');
+
+    for (var d = 0; d < data.length; d++) {
+      var unselectData = {
+        data: data[d]
+      };
+
+      // Trigger the `unselect` event, so people can prevent it from being
+      // cleared.
+      this.trigger('unselect', unselectData);
+
+      // If the event was prevented, don't clear it out.
+      if (unselectData.prevented) {
+        return;
+      }
+    }
+
+    this.$element.val(this.placeholder.id).trigger('change');
+
+    this.trigger('toggle', {});
+  };
+
+  AllowClear.prototype._handleKeyboardClear = function (_, evt, container) {
+    if (container.isOpen()) {
+      return;
+    }
+
+    if (evt.which == KEYS.DELETE || evt.which == KEYS.BACKSPACE) {
+      this._handleClear(evt);
+    }
+  };
+
+  AllowClear.prototype.update = function (decorated, data) {
+    decorated.call(this, data);
+
+    if (this.$selection.find('.select2-selection__placeholder').length > 0 ||
+        data.length === 0) {
+      return;
+    }
+
+    var $remove = $(
+      '<span class="select2-selection__clear">' +
+        '&times;' +
+      '</span>'
+    );
+    $remove.data('data', data);
+
+    this.$selection.find('.select2-selection__rendered').prepend($remove);
+  };
+
+  return AllowClear;
+});
+
+S2.define('select2/selection/search',[
+  'jquery',
+  '../utils',
+  '../keys'
+], function ($, Utils, KEYS) {
+  function Search (decorated, $element, options) {
+    decorated.call(this, $element, options);
+  }
+
+  Search.prototype.render = function (decorated) {
+    var $search = $(
+      '<li class="select2-search select2-search--inline">' +
+        '<input class="select2-search__field" type="search" tabindex="-1"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
+        ' spellcheck="false" role="textbox" aria-autocomplete="list" />' +
+      '</li>'
+    );
+
+    this.$searchContainer = $search;
+    this.$search = $search.find('input');
+
+    var $rendered = decorated.call(this);
+
+    this._transferTabIndex();
+
+    return $rendered;
+  };
+
+  Search.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    container.on('open', function () {
+      self.$search.trigger('focus');
+    });
+
+    container.on('close', function () {
+      self.$search.val('');
+      self.$search.removeAttr('aria-activedescendant');
+      self.$search.trigger('focus');
+    });
+
+    container.on('enable', function () {
+      self.$search.prop('disabled', false);
+
+      self._transferTabIndex();
+    });
+
+    container.on('disable', function () {
+      self.$search.prop('disabled', true);
+    });
+
+    container.on('focus', function (evt) {
+      self.$search.trigger('focus');
+    });
+
+    container.on('results:focus', function (params) {
+      self.$search.attr('aria-activedescendant', params.id);
+    });
+
+    this.$selection.on('focusin', '.select2-search--inline', function (evt) {
+      self.trigger('focus', evt);
+    });
+
+    this.$selection.on('focusout', '.select2-search--inline', function (evt) {
+      self._handleBlur(evt);
+    });
+
+    this.$selection.on('keydown', '.select2-search--inline', function (evt) {
+      evt.stopPropagation();
+
+      self.trigger('keypress', evt);
+
+      self._keyUpPrevented = evt.isDefaultPrevented();
+
+      var key = evt.which;
+
+      if (key === KEYS.BACKSPACE && self.$search.val() === '') {
+        var $previousChoice = self.$searchContainer
+          .prev('.select2-selection__choice');
+
+        if ($previousChoice.length > 0) {
+          var item = $previousChoice.data('data');
+
+          self.searchRemoveChoice(item);
+
+          evt.preventDefault();
+        }
+      }
+    });
+
+    // Try to detect the IE version should the `documentMode` property that
+    // is stored on the document. This is only implemented in IE and is
+    // slightly cleaner than doing a user agent check.
+    // This property is not available in Edge, but Edge also doesn't have
+    // this bug.
+    var msie = document.documentMode;
+    var disableInputEvents = msie && msie <= 11;
+
+    // Workaround for browsers which do not support the `input` event
+    // This will prevent double-triggering of events for browsers which support
+    // both the `keyup` and `input` events.
+    this.$selection.on(
+      'input.searchcheck',
+      '.select2-search--inline',
+      function (evt) {
+        // IE will trigger the `input` event when a placeholder is used on a
+        // search box. To get around this issue, we are forced to ignore all
+        // `input` events in IE and keep using `keyup`.
+        if (disableInputEvents) {
+          self.$selection.off('input.search input.searchcheck');
+          return;
+        }
+
+        // Unbind the duplicated `keyup` event
+        self.$selection.off('keyup.search');
+      }
+    );
+
+    this.$selection.on(
+      'keyup.search input.search',
+      '.select2-search--inline',
+      function (evt) {
+        // IE will trigger the `input` event when a placeholder is used on a
+        // search box. To get around this issue, we are forced to ignore all
+        // `input` events in IE and keep using `keyup`.
+        if (disableInputEvents && evt.type === 'input') {
+          self.$selection.off('input.search input.searchcheck');
+          return;
+        }
+
+        var key = evt.which;
+
+        // We can freely ignore events from modifier keys
+        if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
+          return;
+        }
+
+        // Tabbing will be handled during the `keydown` phase
+        if (key == KEYS.TAB) {
+          return;
+        }
+
+        self.handleSearch(evt);
+      }
+    );
+  };
+
+  /**
+   * This method will transfer the tabindex attribute from the rendered
+   * selection to the search box. This allows for the search box to be used as
+   * the primary focus instead of the selection container.
+   *
+   * @private
+   */
+  Search.prototype._transferTabIndex = function (decorated) {
+    this.$search.attr('tabindex', this.$selection.attr('tabindex'));
+    this.$selection.attr('tabindex', '-1');
+  };
+
+  Search.prototype.createPlaceholder = function (decorated, placeholder) {
+    this.$search.attr('placeholder', placeholder.text);
+  };
+
+  Search.prototype.update = function (decorated, data) {
+    var searchHadFocus = this.$search[0] == document.activeElement;
+
+    this.$search.attr('placeholder', '');
+
+    decorated.call(this, data);
+
+    this.$selection.find('.select2-selection__rendered')
+                   .append(this.$searchContainer);
+
+    this.resizeSearch();
+    if (searchHadFocus) {
+      this.$search.focus();
+    }
+  };
+
+  Search.prototype.handleSearch = function () {
+    this.resizeSearch();
+
+    if (!this._keyUpPrevented) {
+      var input = this.$search.val();
+
+      this.trigger('query', {
+        term: input
+      });
+    }
+
+    this._keyUpPrevented = false;
+  };
+
+  Search.prototype.searchRemoveChoice = function (decorated, item) {
+    this.trigger('unselect', {
+      data: item
+    });
+
+    this.$search.val(item.text);
+    this.handleSearch();
+  };
+
+  Search.prototype.resizeSearch = function () {
+    this.$search.css('width', '25px');
+
+    var width = '';
+
+    if (this.$search.attr('placeholder') !== '') {
+      width = this.$selection.find('.select2-selection__rendered').innerWidth();
+    } else {
+      var minimumWidth = this.$search.val().length + 1;
+
+      width = (minimumWidth * 0.75) + 'em';
+    }
+
+    this.$search.css('width', width);
+  };
+
+  return Search;
+});
+
+S2.define('select2/selection/eventRelay',[
+  'jquery'
+], function ($) {
+  function EventRelay () { }
+
+  EventRelay.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+    var relayEvents = [
+      'open', 'opening',
+      'close', 'closing',
+      'select', 'selecting',
+      'unselect', 'unselecting'
+    ];
+
+    var preventableEvents = ['opening', 'closing', 'selecting', 'unselecting'];
+
+    decorated.call(this, container, $container);
+
+    container.on('*', function (name, params) {
+      // Ignore events that should not be relayed
+      if ($.inArray(name, relayEvents) === -1) {
+        return;
+      }
+
+      // The parameters should always be an object
+      params = params || {};
+
+      // Generate the jQuery event for the Select2 event
+      var evt = $.Event('select2:' + name, {
+        params: params
+      });
+
+      self.$element.trigger(evt);
+
+      // Only handle preventable events if it was one
+      if ($.inArray(name, preventableEvents) === -1) {
+        return;
+      }
+
+      params.prevented = evt.isDefaultPrevented();
+    });
+  };
+
+  return EventRelay;
+});
+
+S2.define('select2/translation',[
+  'jquery',
+  'require'
+], function ($, require) {
+  function Translation (dict) {
+    this.dict = dict || {};
+  }
+
+  Translation.prototype.all = function () {
+    return this.dict;
+  };
+
+  Translation.prototype.get = function (key) {
+    return this.dict[key];
+  };
+
+  Translation.prototype.extend = function (translation) {
+    this.dict = $.extend({}, translation.all(), this.dict);
+  };
+
+  // Static functions
+
+  Translation._cache = {};
+
+  Translation.loadPath = function (path) {
+    if (!(path in Translation._cache)) {
+      var translations = require(path);
+
+      Translation._cache[path] = translations;
+    }
+
+    return new Translation(Translation._cache[path]);
+  };
+
+  return Translation;
+});
+
+S2.define('select2/diacritics',[
+
+], function () {
+  var diacritics = {
+    '\u24B6': 'A',
+    '\uFF21': 'A',
+    '\u00C0': 'A',
+    '\u00C1': 'A',
+    '\u00C2': 'A',
+    '\u1EA6': 'A',
+    '\u1EA4': 'A',
+    '\u1EAA': 'A',
+    '\u1EA8': 'A',
+    '\u00C3': 'A',
+    '\u0100': 'A',
+    '\u0102': 'A',
+    '\u1EB0': 'A',
+    '\u1EAE': 'A',
+    '\u1EB4': 'A',
+    '\u1EB2': 'A',
+    '\u0226': 'A',
+    '\u01E0': 'A',
+    '\u00C4': 'A',
+    '\u01DE': 'A',
+    '\u1EA2': 'A',
+    '\u00C5': 'A',
+    '\u01FA': 'A',
+    '\u01CD': 'A',
+    '\u0200': 'A',
+    '\u0202': 'A',
+    '\u1EA0': 'A',
+    '\u1EAC': 'A',
+    '\u1EB6': 'A',
+    '\u1E00': 'A',
+    '\u0104': 'A',
+    '\u023A': 'A',
+    '\u2C6F': 'A',
+    '\uA732': 'AA',
+    '\u00C6': 'AE',
+    '\u01FC': 'AE',
+    '\u01E2': 'AE',
+    '\uA734': 'AO',
+    '\uA736': 'AU',
+    '\uA738': 'AV',
+    '\uA73A': 'AV',
+    '\uA73C': 'AY',
+    '\u24B7': 'B',
+    '\uFF22': 'B',
+    '\u1E02': 'B',
+    '\u1E04': 'B',
+    '\u1E06': 'B',
+    '\u0243': 'B',
+    '\u0182': 'B',
+    '\u0181': 'B',
+    '\u24B8': 'C',
+    '\uFF23': 'C',
+    '\u0106': 'C',
+    '\u0108': 'C',
+    '\u010A': 'C',
+    '\u010C': 'C',
+    '\u00C7': 'C',
+    '\u1E08': 'C',
+    '\u0187': 'C',
+    '\u023B': 'C',
+    '\uA73E': 'C',
+    '\u24B9': 'D',
+    '\uFF24': 'D',
+    '\u1E0A': 'D',
+    '\u010E': 'D',
+    '\u1E0C': 'D',
+    '\u1E10': 'D',
+    '\u1E12': 'D',
+    '\u1E0E': 'D',
+    '\u0110': 'D',
+    '\u018B': 'D',
+    '\u018A': 'D',
+    '\u0189': 'D',
+    '\uA779': 'D',
+    '\u01F1': 'DZ',
+    '\u01C4': 'DZ',
+    '\u01F2': 'Dz',
+    '\u01C5': 'Dz',
+    '\u24BA': 'E',
+    '\uFF25': 'E',
+    '\u00C8': 'E',
+    '\u00C9': 'E',
+    '\u00CA': 'E',
+    '\u1EC0': 'E',
+    '\u1EBE': 'E',
+    '\u1EC4': 'E',
+    '\u1EC2': 'E',
+    '\u1EBC': 'E',
+    '\u0112': 'E',
+    '\u1E14': 'E',
+    '\u1E16': 'E',
+    '\u0114': 'E',
+    '\u0116': 'E',
+    '\u00CB': 'E',
+    '\u1EBA': 'E',
+    '\u011A': 'E',
+    '\u0204': 'E',
+    '\u0206': 'E',
+    '\u1EB8': 'E',
+    '\u1EC6': 'E',
+    '\u0228': 'E',
+    '\u1E1C': 'E',
+    '\u0118': 'E',
+    '\u1E18': 'E',
+    '\u1E1A': 'E',
+    '\u0190': 'E',
+    '\u018E': 'E',
+    '\u24BB': 'F',
+    '\uFF26': 'F',
+    '\u1E1E': 'F',
+    '\u0191': 'F',
+    '\uA77B': 'F',
+    '\u24BC': 'G',
+    '\uFF27': 'G',
+    '\u01F4': 'G',
+    '\u011C': 'G',
+    '\u1E20': 'G',
+    '\u011E': 'G',
+    '\u0120': 'G',
+    '\u01E6': 'G',
+    '\u0122': 'G',
+    '\u01E4': 'G',
+    '\u0193': 'G',
+    '\uA7A0': 'G',
+    '\uA77D': 'G',
+    '\uA77E': 'G',
+    '\u24BD': 'H',
+    '\uFF28': 'H',
+    '\u0124': 'H',
+    '\u1E22': 'H',
+    '\u1E26': 'H',
+    '\u021E': 'H',
+    '\u1E24': 'H',
+    '\u1E28': 'H',
+    '\u1E2A': 'H',
+    '\u0126': 'H',
+    '\u2C67': 'H',
+    '\u2C75': 'H',
+    '\uA78D': 'H',
+    '\u24BE': 'I',
+    '\uFF29': 'I',
+    '\u00CC': 'I',
+    '\u00CD': 'I',
+    '\u00CE': 'I',
+    '\u0128': 'I',
+    '\u012A': 'I',
+    '\u012C': 'I',
+    '\u0130': 'I',
+    '\u00CF': 'I',
+    '\u1E2E': 'I',
+    '\u1EC8': 'I',
+    '\u01CF': 'I',
+    '\u0208': 'I',
+    '\u020A': 'I',
+    '\u1ECA': 'I',
+    '\u012E': 'I',
+    '\u1E2C': 'I',
+    '\u0197': 'I',
+    '\u24BF': 'J',
+    '\uFF2A': 'J',
+    '\u0134': 'J',
+    '\u0248': 'J',
+    '\u24C0': 'K',
+    '\uFF2B': 'K',
+    '\u1E30': 'K',
+    '\u01E8': 'K',
+    '\u1E32': 'K',
+    '\u0136': 'K',
+    '\u1E34': 'K',
+    '\u0198': 'K',
+    '\u2C69': 'K',
+    '\uA740': 'K',
+    '\uA742': 'K',
+    '\uA744': 'K',
+    '\uA7A2': 'K',
+    '\u24C1': 'L',
+    '\uFF2C': 'L',
+    '\u013F': 'L',
+    '\u0139': 'L',
+    '\u013D': 'L',
+    '\u1E36': 'L',
+    '\u1E38': 'L',
+    '\u013B': 'L',
+    '\u1E3C': 'L',
+    '\u1E3A': 'L',
+    '\u0141': 'L',
+    '\u023D': 'L',
+    '\u2C62': 'L',
+    '\u2C60': 'L',
+    '\uA748': 'L',
+    '\uA746': 'L',
+    '\uA780': 'L',
+    '\u01C7': 'LJ',
+    '\u01C8': 'Lj',
+    '\u24C2': 'M',
+    '\uFF2D': 'M',
+    '\u1E3E': 'M',
+    '\u1E40': 'M',
+    '\u1E42': 'M',
+    '\u2C6E': 'M',
+    '\u019C': 'M',
+    '\u24C3': 'N',
+    '\uFF2E': 'N',
+    '\u01F8': 'N',
+    '\u0143': 'N',
+    '\u00D1': 'N',
+    '\u1E44': 'N',
+    '\u0147': 'N',
+    '\u1E46': 'N',
+    '\u0145': 'N',
+    '\u1E4A': 'N',
+    '\u1E48': 'N',
+    '\u0220': 'N',
+    '\u019D': 'N',
+    '\uA790': 'N',
+    '\uA7A4': 'N',
+    '\u01CA': 'NJ',
+    '\u01CB': 'Nj',
+    '\u24C4': 'O',
+    '\uFF2F': 'O',
+    '\u00D2': 'O',
+    '\u00D3': 'O',
+    '\u00D4': 'O',
+    '\u1ED2': 'O',
+    '\u1ED0': 'O',
+    '\u1ED6': 'O',
+    '\u1ED4': 'O',
+    '\u00D5': 'O',
+    '\u1E4C': 'O',
+    '\u022C': 'O',
+    '\u1E4E': 'O',
+    '\u014C': 'O',
+    '\u1E50': 'O',
+    '\u1E52': 'O',
+    '\u014E': 'O',
+    '\u022E': 'O',
+    '\u0230': 'O',
+    '\u00D6': 'O',
+    '\u022A': 'O',
+    '\u1ECE': 'O',
+    '\u0150': 'O',
+    '\u01D1': 'O',
+    '\u020C': 'O',
+    '\u020E': 'O',
+    '\u01A0': 'O',
+    '\u1EDC': 'O',
+    '\u1EDA': 'O',
+    '\u1EE0': 'O',
+    '\u1EDE': 'O',
+    '\u1EE2': 'O',
+    '\u1ECC': 'O',
+    '\u1ED8': 'O',
+    '\u01EA': 'O',
+    '\u01EC': 'O',
+    '\u00D8': 'O',
+    '\u01FE': 'O',
+    '\u0186': 'O',
+    '\u019F': 'O',
+    '\uA74A': 'O',
+    '\uA74C': 'O',
+    '\u01A2': 'OI',
+    '\uA74E': 'OO',
+    '\u0222': 'OU',
+    '\u24C5': 'P',
+    '\uFF30': 'P',
+    '\u1E54': 'P',
+    '\u1E56': 'P',
+    '\u01A4': 'P',
+    '\u2C63': 'P',
+    '\uA750': 'P',
+    '\uA752': 'P',
+    '\uA754': 'P',
+    '\u24C6': 'Q',
+    '\uFF31': 'Q',
+    '\uA756': 'Q',
+    '\uA758': 'Q',
+    '\u024A': 'Q',
+    '\u24C7': 'R',
+    '\uFF32': 'R',
+    '\u0154': 'R',
+    '\u1E58': 'R',
+    '\u0158': 'R',
+    '\u0210': 'R',
+    '\u0212': 'R',
+    '\u1E5A': 'R',
+    '\u1E5C': 'R',
+    '\u0156': 'R',
+    '\u1E5E': 'R',
+    '\u024C': 'R',
+    '\u2C64': 'R',
+    '\uA75A': 'R',
+    '\uA7A6': 'R',
+    '\uA782': 'R',
+    '\u24C8': 'S',
+    '\uFF33': 'S',
+    '\u1E9E': 'S',
+    '\u015A': 'S',
+    '\u1E64': 'S',
+    '\u015C': 'S',
+    '\u1E60': 'S',
+    '\u0160': 'S',
+    '\u1E66': 'S',
+    '\u1E62': 'S',
+    '\u1E68': 'S',
+    '\u0218': 'S',
+    '\u015E': 'S',
+    '\u2C7E': 'S',
+    '\uA7A8': 'S',
+    '\uA784': 'S',
+    '\u24C9': 'T',
+    '\uFF34': 'T',
+    '\u1E6A': 'T',
+    '\u0164': 'T',
+    '\u1E6C': 'T',
+    '\u021A': 'T',
+    '\u0162': 'T',
+    '\u1E70': 'T',
+    '\u1E6E': 'T',
+    '\u0166': 'T',
+    '\u01AC': 'T',
+    '\u01AE': 'T',
+    '\u023E': 'T',
+    '\uA786': 'T',
+    '\uA728': 'TZ',
+    '\u24CA': 'U',
+    '\uFF35': 'U',
+    '\u00D9': 'U',
+    '\u00DA': 'U',
+    '\u00DB': 'U',
+    '\u0168': 'U',
+    '\u1E78': 'U',
+    '\u016A': 'U',
+    '\u1E7A': 'U',
+    '\u016C': 'U',
+    '\u00DC': 'U',
+    '\u01DB': 'U',
+    '\u01D7': 'U',
+    '\u01D5': 'U',
+    '\u01D9': 'U',
+    '\u1EE6': 'U',
+    '\u016E': 'U',
+    '\u0170': 'U',
+    '\u01D3': 'U',
+    '\u0214': 'U',
+    '\u0216': 'U',
+    '\u01AF': 'U',
+    '\u1EEA': 'U',
+    '\u1EE8': 'U',
+    '\u1EEE': 'U',
+    '\u1EEC': 'U',
+    '\u1EF0': 'U',
+    '\u1EE4': 'U',
+    '\u1E72': 'U',
+    '\u0172': 'U',
+    '\u1E76': 'U',
+    '\u1E74': 'U',
+    '\u0244': 'U',
+    '\u24CB': 'V',
+    '\uFF36': 'V',
+    '\u1E7C': 'V',
+    '\u1E7E': 'V',
+    '\u01B2': 'V',
+    '\uA75E': 'V',
+    '\u0245': 'V',
+    '\uA760': 'VY',
+    '\u24CC': 'W',
+    '\uFF37': 'W',
+    '\u1E80': 'W',
+    '\u1E82': 'W',
+    '\u0174': 'W',
+    '\u1E86': 'W',
+    '\u1E84': 'W',
+    '\u1E88': 'W',
+    '\u2C72': 'W',
+    '\u24CD': 'X',
+    '\uFF38': 'X',
+    '\u1E8A': 'X',
+    '\u1E8C': 'X',
+    '\u24CE': 'Y',
+    '\uFF39': 'Y',
+    '\u1EF2': 'Y',
+    '\u00DD': 'Y',
+    '\u0176': 'Y',
+    '\u1EF8': 'Y',
+    '\u0232': 'Y',
+    '\u1E8E': 'Y',
+    '\u0178': 'Y',
+    '\u1EF6': 'Y',
+    '\u1EF4': 'Y',
+    '\u01B3': 'Y',
+    '\u024E': 'Y',
+    '\u1EFE': 'Y',
+    '\u24CF': 'Z',
+    '\uFF3A': 'Z',
+    '\u0179': 'Z',
+    '\u1E90': 'Z',
+    '\u017B': 'Z',
+    '\u017D': 'Z',
+    '\u1E92': 'Z',
+    '\u1E94': 'Z',
+    '\u01B5': 'Z',
+    '\u0224': 'Z',
+    '\u2C7F': 'Z',
+    '\u2C6B': 'Z',
+    '\uA762': 'Z',
+    '\u24D0': 'a',
+    '\uFF41': 'a',
+    '\u1E9A': 'a',
+    '\u00E0': 'a',
+    '\u00E1': 'a',
+    '\u00E2': 'a',
+    '\u1EA7': 'a',
+    '\u1EA5': 'a',
+    '\u1EAB': 'a',
+    '\u1EA9': 'a',
+    '\u00E3': 'a',
+    '\u0101': 'a',
+    '\u0103': 'a',
+    '\u1EB1': 'a',
+    '\u1EAF': 'a',
+    '\u1EB5': 'a',
+    '\u1EB3': 'a',
+    '\u0227': 'a',
+    '\u01E1': 'a',
+    '\u00E4': 'a',
+    '\u01DF': 'a',
+    '\u1EA3': 'a',
+    '\u00E5': 'a',
+    '\u01FB': 'a',
+    '\u01CE': 'a',
+    '\u0201': 'a',
+    '\u0203': 'a',
+    '\u1EA1': 'a',
+    '\u1EAD': 'a',
+    '\u1EB7': 'a',
+    '\u1E01': 'a',
+    '\u0105': 'a',
+    '\u2C65': 'a',
+    '\u0250': 'a',
+    '\uA733': 'aa',
+    '\u00E6': 'ae',
+    '\u01FD': 'ae',
+    '\u01E3': 'ae',
+    '\uA735': 'ao',
+    '\uA737': 'au',
+    '\uA739': 'av',
+    '\uA73B': 'av',
+    '\uA73D': 'ay',
+    '\u24D1': 'b',
+    '\uFF42': 'b',
+    '\u1E03': 'b',
+    '\u1E05': 'b',
+    '\u1E07': 'b',
+    '\u0180': 'b',
+    '\u0183': 'b',
+    '\u0253': 'b',
+    '\u24D2': 'c',
+    '\uFF43': 'c',
+    '\u0107': 'c',
+    '\u0109': 'c',
+    '\u010B': 'c',
+    '\u010D': 'c',
+    '\u00E7': 'c',
+    '\u1E09': 'c',
+    '\u0188': 'c',
+    '\u023C': 'c',
+    '\uA73F': 'c',
+    '\u2184': 'c',
+    '\u24D3': 'd',
+    '\uFF44': 'd',
+    '\u1E0B': 'd',
+    '\u010F': 'd',
+    '\u1E0D': 'd',
+    '\u1E11': 'd',
+    '\u1E13': 'd',
+    '\u1E0F': 'd',
+    '\u0111': 'd',
+    '\u018C': 'd',
+    '\u0256': 'd',
+    '\u0257': 'd',
+    '\uA77A': 'd',
+    '\u01F3': 'dz',
+    '\u01C6': 'dz',
+    '\u24D4': 'e',
+    '\uFF45': 'e',
+    '\u00E8': 'e',
+    '\u00E9': 'e',
+    '\u00EA': 'e',
+    '\u1EC1': 'e',
+    '\u1EBF': 'e',
+    '\u1EC5': 'e',
+    '\u1EC3': 'e',
+    '\u1EBD': 'e',
+    '\u0113': 'e',
+    '\u1E15': 'e',
+    '\u1E17': 'e',
+    '\u0115': 'e',
+    '\u0117': 'e',
+    '\u00EB': 'e',
+    '\u1EBB': 'e',
+    '\u011B': 'e',
+    '\u0205': 'e',
+    '\u0207': 'e',
+    '\u1EB9': 'e',
+    '\u1EC7': 'e',
+    '\u0229': 'e',
+    '\u1E1D': 'e',
+    '\u0119': 'e',
+    '\u1E19': 'e',
+    '\u1E1B': 'e',
+    '\u0247': 'e',
+    '\u025B': 'e',
+    '\u01DD': 'e',
+    '\u24D5': 'f',
+    '\uFF46': 'f',
+    '\u1E1F': 'f',
+    '\u0192': 'f',
+    '\uA77C': 'f',
+    '\u24D6': 'g',
+    '\uFF47': 'g',
+    '\u01F5': 'g',
+    '\u011D': 'g',
+    '\u1E21': 'g',
+    '\u011F': 'g',
+    '\u0121': 'g',
+    '\u01E7': 'g',
+    '\u0123': 'g',
+    '\u01E5': 'g',
+    '\u0260': 'g',
+    '\uA7A1': 'g',
+    '\u1D79': 'g',
+    '\uA77F': 'g',
+    '\u24D7': 'h',
+    '\uFF48': 'h',
+    '\u0125': 'h',
+    '\u1E23': 'h',
+    '\u1E27': 'h',
+    '\u021F': 'h',
+    '\u1E25': 'h',
+    '\u1E29': 'h',
+    '\u1E2B': 'h',
+    '\u1E96': 'h',
+    '\u0127': 'h',
+    '\u2C68': 'h',
+    '\u2C76': 'h',
+    '\u0265': 'h',
+    '\u0195': 'hv',
+    '\u24D8': 'i',
+    '\uFF49': 'i',
+    '\u00EC': 'i',
+    '\u00ED': 'i',
+    '\u00EE': 'i',
+    '\u0129': 'i',
+    '\u012B': 'i',
+    '\u012D': 'i',
+    '\u00EF': 'i',
+    '\u1E2F': 'i',
+    '\u1EC9': 'i',
+    '\u01D0': 'i',
+    '\u0209': 'i',
+    '\u020B': 'i',
+    '\u1ECB': 'i',
+    '\u012F': 'i',
+    '\u1E2D': 'i',
+    '\u0268': 'i',
+    '\u0131': 'i',
+    '\u24D9': 'j',
+    '\uFF4A': 'j',
+    '\u0135': 'j',
+    '\u01F0': 'j',
+    '\u0249': 'j',
+    '\u24DA': 'k',
+    '\uFF4B': 'k',
+    '\u1E31': 'k',
+    '\u01E9': 'k',
+    '\u1E33': 'k',
+    '\u0137': 'k',
+    '\u1E35': 'k',
+    '\u0199': 'k',
+    '\u2C6A': 'k',
+    '\uA741': 'k',
+    '\uA743': 'k',
+    '\uA745': 'k',
+    '\uA7A3': 'k',
+    '\u24DB': 'l',
+    '\uFF4C': 'l',
+    '\u0140': 'l',
+    '\u013A': 'l',
+    '\u013E': 'l',
+    '\u1E37': 'l',
+    '\u1E39': 'l',
+    '\u013C': 'l',
+    '\u1E3D': 'l',
+    '\u1E3B': 'l',
+    '\u017F': 'l',
+    '\u0142': 'l',
+    '\u019A': 'l',
+    '\u026B': 'l',
+    '\u2C61': 'l',
+    '\uA749': 'l',
+    '\uA781': 'l',
+    '\uA747': 'l',
+    '\u01C9': 'lj',
+    '\u24DC': 'm',
+    '\uFF4D': 'm',
+    '\u1E3F': 'm',
+    '\u1E41': 'm',
+    '\u1E43': 'm',
+    '\u0271': 'm',
+    '\u026F': 'm',
+    '\u24DD': 'n',
+    '\uFF4E': 'n',
+    '\u01F9': 'n',
+    '\u0144': 'n',
+    '\u00F1': 'n',
+    '\u1E45': 'n',
+    '\u0148': 'n',
+    '\u1E47': 'n',
+    '\u0146': 'n',
+    '\u1E4B': 'n',
+    '\u1E49': 'n',
+    '\u019E': 'n',
+    '\u0272': 'n',
+    '\u0149': 'n',
+    '\uA791': 'n',
+    '\uA7A5': 'n',
+    '\u01CC': 'nj',
+    '\u24DE': 'o',
+    '\uFF4F': 'o',
+    '\u00F2': 'o',
+    '\u00F3': 'o',
+    '\u00F4': 'o',
+    '\u1ED3': 'o',
+    '\u1ED1': 'o',
+    '\u1ED7': 'o',
+    '\u1ED5': 'o',
+    '\u00F5': 'o',
+    '\u1E4D': 'o',
+    '\u022D': 'o',
+    '\u1E4F': 'o',
+    '\u014D': 'o',
+    '\u1E51': 'o',
+    '\u1E53': 'o',
+    '\u014F': 'o',
+    '\u022F': 'o',
+    '\u0231': 'o',
+    '\u00F6': 'o',
+    '\u022B': 'o',
+    '\u1ECF': 'o',
+    '\u0151': 'o',
+    '\u01D2': 'o',
+    '\u020D': 'o',
+    '\u020F': 'o',
+    '\u01A1': 'o',
+    '\u1EDD': 'o',
+    '\u1EDB': 'o',
+    '\u1EE1': 'o',
+    '\u1EDF': 'o',
+    '\u1EE3': 'o',
+    '\u1ECD': 'o',
+    '\u1ED9': 'o',
+    '\u01EB': 'o',
+    '\u01ED': 'o',
+    '\u00F8': 'o',
+    '\u01FF': 'o',
+    '\u0254': 'o',
+    '\uA74B': 'o',
+    '\uA74D': 'o',
+    '\u0275': 'o',
+    '\u01A3': 'oi',
+    '\u0223': 'ou',
+    '\uA74F': 'oo',
+    '\u24DF': 'p',
+    '\uFF50': 'p',
+    '\u1E55': 'p',
+    '\u1E57': 'p',
+    '\u01A5': 'p',
+    '\u1D7D': 'p',
+    '\uA751': 'p',
+    '\uA753': 'p',
+    '\uA755': 'p',
+    '\u24E0': 'q',
+    '\uFF51': 'q',
+    '\u024B': 'q',
+    '\uA757': 'q',
+    '\uA759': 'q',
+    '\u24E1': 'r',
+    '\uFF52': 'r',
+    '\u0155': 'r',
+    '\u1E59': 'r',
+    '\u0159': 'r',
+    '\u0211': 'r',
+    '\u0213': 'r',
+    '\u1E5B': 'r',
+    '\u1E5D': 'r',
+    '\u0157': 'r',
+    '\u1E5F': 'r',
+    '\u024D': 'r',
+    '\u027D': 'r',
+    '\uA75B': 'r',
+    '\uA7A7': 'r',
+    '\uA783': 'r',
+    '\u24E2': 's',
+    '\uFF53': 's',
+    '\u00DF': 's',
+    '\u015B': 's',
+    '\u1E65': 's',
+    '\u015D': 's',
+    '\u1E61': 's',
+    '\u0161': 's',
+    '\u1E67': 's',
+    '\u1E63': 's',
+    '\u1E69': 's',
+    '\u0219': 's',
+    '\u015F': 's',
+    '\u023F': 's',
+    '\uA7A9': 's',
+    '\uA785': 's',
+    '\u1E9B': 's',
+    '\u24E3': 't',
+    '\uFF54': 't',
+    '\u1E6B': 't',
+    '\u1E97': 't',
+    '\u0165': 't',
+    '\u1E6D': 't',
+    '\u021B': 't',
+    '\u0163': 't',
+    '\u1E71': 't',
+    '\u1E6F': 't',
+    '\u0167': 't',
+    '\u01AD': 't',
+    '\u0288': 't',
+    '\u2C66': 't',
+    '\uA787': 't',
+    '\uA729': 'tz',
+    '\u24E4': 'u',
+    '\uFF55': 'u',
+    '\u00F9': 'u',
+    '\u00FA': 'u',
+    '\u00FB': 'u',
+    '\u0169': 'u',
+    '\u1E79': 'u',
+    '\u016B': 'u',
+    '\u1E7B': 'u',
+    '\u016D': 'u',
+    '\u00FC': 'u',
+    '\u01DC': 'u',
+    '\u01D8': 'u',
+    '\u01D6': 'u',
+    '\u01DA': 'u',
+    '\u1EE7': 'u',
+    '\u016F': 'u',
+    '\u0171': 'u',
+    '\u01D4': 'u',
+    '\u0215': 'u',
+    '\u0217': 'u',
+    '\u01B0': 'u',
+    '\u1EEB': 'u',
+    '\u1EE9': 'u',
+    '\u1EEF': 'u',
+    '\u1EED': 'u',
+    '\u1EF1': 'u',
+    '\u1EE5': 'u',
+    '\u1E73': 'u',
+    '\u0173': 'u',
+    '\u1E77': 'u',
+    '\u1E75': 'u',
+    '\u0289': 'u',
+    '\u24E5': 'v',
+    '\uFF56': 'v',
+    '\u1E7D': 'v',
+    '\u1E7F': 'v',
+    '\u028B': 'v',
+    '\uA75F': 'v',
+    '\u028C': 'v',
+    '\uA761': 'vy',
+    '\u24E6': 'w',
+    '\uFF57': 'w',
+    '\u1E81': 'w',
+    '\u1E83': 'w',
+    '\u0175': 'w',
+    '\u1E87': 'w',
+    '\u1E85': 'w',
+    '\u1E98': 'w',
+    '\u1E89': 'w',
+    '\u2C73': 'w',
+    '\u24E7': 'x',
+    '\uFF58': 'x',
+    '\u1E8B': 'x',
+    '\u1E8D': 'x',
+    '\u24E8': 'y',
+    '\uFF59': 'y',
+    '\u1EF3': 'y',
+    '\u00FD': 'y',
+    '\u0177': 'y',
+    '\u1EF9': 'y',
+    '\u0233': 'y',
+    '\u1E8F': 'y',
+    '\u00FF': 'y',
+    '\u1EF7': 'y',
+    '\u1E99': 'y',
+    '\u1EF5': 'y',
+    '\u01B4': 'y',
+    '\u024F': 'y',
+    '\u1EFF': 'y',
+    '\u24E9': 'z',
+    '\uFF5A': 'z',
+    '\u017A': 'z',
+    '\u1E91': 'z',
+    '\u017C': 'z',
+    '\u017E': 'z',
+    '\u1E93': 'z',
+    '\u1E95': 'z',
+    '\u01B6': 'z',
+    '\u0225': 'z',
+    '\u0240': 'z',
+    '\u2C6C': 'z',
+    '\uA763': 'z',
+    '\u0386': '\u0391',
+    '\u0388': '\u0395',
+    '\u0389': '\u0397',
+    '\u038A': '\u0399',
+    '\u03AA': '\u0399',
+    '\u038C': '\u039F',
+    '\u038E': '\u03A5',
+    '\u03AB': '\u03A5',
+    '\u038F': '\u03A9',
+    '\u03AC': '\u03B1',
+    '\u03AD': '\u03B5',
+    '\u03AE': '\u03B7',
+    '\u03AF': '\u03B9',
+    '\u03CA': '\u03B9',
+    '\u0390': '\u03B9',
+    '\u03CC': '\u03BF',
+    '\u03CD': '\u03C5',
+    '\u03CB': '\u03C5',
+    '\u03B0': '\u03C5',
+    '\u03C9': '\u03C9',
+    '\u03C2': '\u03C3'
+  };
+
+  return diacritics;
+});
+
+S2.define('select2/data/base',[
+  '../utils'
+], function (Utils) {
+  function BaseAdapter ($element, options) {
+    BaseAdapter.__super__.constructor.call(this);
+  }
+
+  Utils.Extend(BaseAdapter, Utils.Observable);
+
+  BaseAdapter.prototype.current = function (callback) {
+    throw new Error('The `current` method must be defined in child classes.');
+  };
+
+  BaseAdapter.prototype.query = function (params, callback) {
+    throw new Error('The `query` method must be defined in child classes.');
+  };
+
+  BaseAdapter.prototype.bind = function (container, $container) {
+    // Can be implemented in subclasses
+  };
+
+  BaseAdapter.prototype.destroy = function () {
+    // Can be implemented in subclasses
+  };
+
+  BaseAdapter.prototype.generateResultId = function (container, data) {
+    var id = container.id + '-result-';
+
+    id += Utils.generateChars(4);
+
+    if (data.id != null) {
+      id += '-' + data.id.toString();
+    } else {
+      id += '-' + Utils.generateChars(4);
+    }
+    return id;
+  };
+
+  return BaseAdapter;
+});
+
+S2.define('select2/data/select',[
+  './base',
+  '../utils',
+  'jquery'
+], function (BaseAdapter, Utils, $) {
+  function SelectAdapter ($element, options) {
+    this.$element = $element;
+    this.options = options;
+
+    SelectAdapter.__super__.constructor.call(this);
+  }
+
+  Utils.Extend(SelectAdapter, BaseAdapter);
+
+  SelectAdapter.prototype.current = function (callback) {
+    var data = [];
+    var self = this;
+
+    this.$element.find(':selected').each(function () {
+      var $option = $(this);
+
+      var option = self.item($option);
+
+      data.push(option);
+    });
+
+    callback(data);
+  };
+
+  SelectAdapter.prototype.select = function (data) {
+    var self = this;
+
+    data.selected = true;
+
+    // If data.element is a DOM node, use it instead
+    if ($(data.element).is('option')) {
+      data.element.selected = true;
+
+      this.$element.trigger('change');
+
+      return;
+    }
+
+    if (this.$element.prop('multiple')) {
+      this.current(function (currentData) {
+        var val = [];
+
+        data = [data];
+        data.push.apply(data, currentData);
+
+        for (var d = 0; d < data.length; d++) {
+          var id = data[d].id;
+
+          if ($.inArray(id, val) === -1) {
+            val.push(id);
+          }
+        }
+
+        self.$element.val(val);
+        self.$element.trigger('change');
+      });
+    } else {
+      var val = data.id;
+
+      this.$element.val(val);
+      this.$element.trigger('change');
+    }
+  };
+
+  SelectAdapter.prototype.unselect = function (data) {
+    var self = this;
+
+    if (!this.$element.prop('multiple')) {
+      return;
+    }
+
+    data.selected = false;
+
+    if ($(data.element).is('option')) {
+      data.element.selected = false;
+
+      this.$element.trigger('change');
+
+      return;
+    }
+
+    this.current(function (currentData) {
+      var val = [];
+
+      for (var d = 0; d < currentData.length; d++) {
+        var id = currentData[d].id;
+
+        if (id !== data.id && $.inArray(id, val) === -1) {
+          val.push(id);
+        }
+      }
+
+      self.$element.val(val);
+
+      self.$element.trigger('change');
+    });
+  };
+
+  SelectAdapter.prototype.bind = function (container, $container) {
+    var self = this;
+
+    this.container = container;
+
+    container.on('select', function (params) {
+      self.select(params.data);
+    });
+
+    container.on('unselect', function (params) {
+      self.unselect(params.data);
+    });
+  };
+
+  SelectAdapter.prototype.destroy = function () {
+    // Remove anything added to child elements
+    this.$element.find('*').each(function () {
+      // Remove any custom data set by Select2
+      $.removeData(this, 'data');
+    });
+  };
+
+  SelectAdapter.prototype.query = function (params, callback) {
+    var data = [];
+    var self = this;
+
+    var $options = this.$element.children();
+
+    $options.each(function () {
+      var $option = $(this);
+
+      if (!$option.is('option') && !$option.is('optgroup')) {
+        return;
+      }
+
+      var option = self.item($option);
+
+      var matches = self.matches(params, option);
+
+      if (matches !== null) {
+        data.push(matches);
+      }
+    });
+
+    callback({
+      results: data
+    });
+  };
+
+  SelectAdapter.prototype.addOptions = function ($options) {
+    Utils.appendMany(this.$element, $options);
+  };
+
+  SelectAdapter.prototype.option = function (data) {
+    var option;
+
+    if (data.children) {
+      option = document.createElement('optgroup');
+      option.label = data.text;
+    } else {
+      option = document.createElement('option');
+
+      if (option.textContent !== undefined) {
+        option.textContent = data.text;
+      } else {
+        option.innerText = data.text;
+      }
+    }
+
+    if (data.id !== undefined) {
+      option.value = data.id;
+    }
+
+    if (data.disabled) {
+      option.disabled = true;
+    }
+
+    if (data.selected) {
+      option.selected = true;
+    }
+
+    if (data.title) {
+      option.title = data.title;
+    }
+
+    var $option = $(option);
+
+    var normalizedData = this._normalizeItem(data);
+    normalizedData.element = option;
+
+    // Override the option's data with the combined data
+    $.data(option, 'data', normalizedData);
+
+    return $option;
+  };
+
+  SelectAdapter.prototype.item = function ($option) {
+    var data = {};
+
+    data = $.data($option[0], 'data');
+
+    if (data != null) {
+      return data;
+    }
+
+    if ($option.is('option')) {
+      data = {
+        id: $option.val(),
+        text: $option.text(),
+        disabled: $option.prop('disabled'),
+        selected: $option.prop('selected'),
+        title: $option.prop('title')
+      };
+    } else if ($option.is('optgroup')) {
+      data = {
+        text: $option.prop('label'),
+        children: [],
+        title: $option.prop('title')
+      };
+
+      var $children = $option.children('option');
+      var children = [];
+
+      for (var c = 0; c < $children.length; c++) {
+        var $child = $($children[c]);
+
+        var child = this.item($child);
+
+        children.push(child);
+      }
+
+      data.children = children;
+    }
+
+    data = this._normalizeItem(data);
+    data.element = $option[0];
+
+    $.data($option[0], 'data', data);
+
+    return data;
+  };
+
+  SelectAdapter.prototype._normalizeItem = function (item) {
+    if (!$.isPlainObject(item)) {
+      item = {
+        id: item,
+        text: item
+      };
+    }
+
+    item = $.extend({}, {
+      text: ''
+    }, item);
+
+    var defaults = {
+      selected: false,
+      disabled: false
+    };
+
+    if (item.id != null) {
+      item.id = item.id.toString();
+    }
+
+    if (item.text != null) {
+      item.text = item.text.toString();
+    }
+
+    if (item._resultId == null && item.id && this.container != null) {
+      item._resultId = this.generateResultId(this.container, item);
+    }
+
+    return $.extend({}, defaults, item);
+  };
+
+  SelectAdapter.prototype.matches = function (params, data) {
+    var matcher = this.options.get('matcher');
+
+    return matcher(params, data);
+  };
+
+  return SelectAdapter;
+});
+
+S2.define('select2/data/array',[
+  './select',
+  '../utils',
+  'jquery'
+], function (SelectAdapter, Utils, $) {
+  function ArrayAdapter ($element, options) {
+    var data = options.get('data') || [];
+
+    ArrayAdapter.__super__.constructor.call(this, $element, options);
+
+    this.addOptions(this.convertToOptions(data));
+  }
+
+  Utils.Extend(ArrayAdapter, SelectAdapter);
+
+  ArrayAdapter.prototype.select = function (data) {
+    var $option = this.$element.find('option').filter(function (i, elm) {
+      return elm.value == data.id.toString();
+    });
+
+    if ($option.length === 0) {
+      $option = this.option(data);
+
+      this.addOptions($option);
+    }
+
+    ArrayAdapter.__super__.select.call(this, data);
+  };
+
+  ArrayAdapter.prototype.convertToOptions = function (data) {
+    var self = this;
+
+    var $existing = this.$element.find('option');
+    var existingIds = $existing.map(function () {
+      return self.item($(this)).id;
+    }).get();
+
+    var $options = [];
+
+    // Filter out all items except for the one passed in the argument
+    function onlyItem (item) {
+      return function () {
+        return $(this).val() == item.id;
+      };
+    }
+
+    for (var d = 0; d < data.length; d++) {
+      var item = this._normalizeItem(data[d]);
+
+      // Skip items which were pre-loaded, only merge the data
+      if ($.inArray(item.id, existingIds) >= 0) {
+        var $existingOption = $existing.filter(onlyItem(item));
+
+        var existingData = this.item($existingOption);
+        var newData = $.extend(true, {}, item, existingData);
+
+        var $newOption = this.option(newData);
+
+        $existingOption.replaceWith($newOption);
+
+        continue;
+      }
+
+      var $option = this.option(item);
+
+      if (item.children) {
+        var $children = this.convertToOptions(item.children);
+
+        Utils.appendMany($option, $children);
+      }
+
+      $options.push($option);
+    }
+
+    return $options;
+  };
+
+  return ArrayAdapter;
+});
+
+S2.define('select2/data/ajax',[
+  './array',
+  '../utils',
+  'jquery'
+], function (ArrayAdapter, Utils, $) {
+  function AjaxAdapter ($element, options) {
+    this.ajaxOptions = this._applyDefaults(options.get('ajax'));
+
+    if (this.ajaxOptions.processResults != null) {
+      this.processResults = this.ajaxOptions.processResults;
+    }
+
+    AjaxAdapter.__super__.constructor.call(this, $element, options);
+  }
+
+  Utils.Extend(AjaxAdapter, ArrayAdapter);
+
+  AjaxAdapter.prototype._applyDefaults = function (options) {
+    var defaults = {
+      data: function (params) {
+        return $.extend({}, params, {
+          q: params.term
+        });
+      },
+      transport: function (params, success, failure) {
+        var $request = $.ajax(params);
+
+        $request.then(success);
+        $request.fail(failure);
+
+        return $request;
+      }
+    };
+
+    return $.extend({}, defaults, options, true);
+  };
+
+  AjaxAdapter.prototype.processResults = function (results) {
+    return results;
+  };
+
+  AjaxAdapter.prototype.query = function (params, callback) {
+    var matches = [];
+    var self = this;
+
+    if (this._request != null) {
+      // JSONP requests cannot always be aborted
+      if ($.isFunction(this._request.abort)) {
+        this._request.abort();
+      }
+
+      this._request = null;
+    }
+
+    var options = $.extend({
+      type: 'GET'
+    }, this.ajaxOptions);
+
+    if (typeof options.url === 'function') {
+      options.url = options.url.call(this.$element, params);
+    }
+
+    if (typeof options.data === 'function') {
+      options.data = options.data.call(this.$element, params);
+    }
+
+    function request () {
+      var $request = options.transport(options, function (data) {
+        var results = self.processResults(data, params);
+
+        if (self.options.get('debug') && window.console && console.error) {
+          // Check to make sure that the response included a `results` key.
+          if (!results || !results.results || !$.isArray(results.results)) {
+            console.error(
+              'Select2: The AJAX results did not return an array in the ' +
+              '`results` key of the response.'
+            );
+          }
+        }
+
+        callback(results);
+      }, function () {
+        // Attempt to detect if a request was aborted
+        // Only works if the transport exposes a status property
+        if ($request.status && $request.status === '0') {
+          return;
+        }
+
+        self.trigger('results:message', {
+          message: 'errorLoading'
+        });
+      });
+
+      self._request = $request;
+    }
+
+    if (this.ajaxOptions.delay && params.term != null) {
+      if (this._queryTimeout) {
+        window.clearTimeout(this._queryTimeout);
+      }
+
+      this._queryTimeout = window.setTimeout(request, this.ajaxOptions.delay);
+    } else {
+      request();
+    }
+  };
+
+  return AjaxAdapter;
+});
+
+S2.define('select2/data/tags',[
+  'jquery'
+], function ($) {
+  function Tags (decorated, $element, options) {
+    var tags = options.get('tags');
+
+    var createTag = options.get('createTag');
+
+    if (createTag !== undefined) {
+      this.createTag = createTag;
+    }
+
+    var insertTag = options.get('insertTag');
+
+    if (insertTag !== undefined) {
+        this.insertTag = insertTag;
+    }
+
+    decorated.call(this, $element, options);
+
+    if ($.isArray(tags)) {
+      for (var t = 0; t < tags.length; t++) {
+        var tag = tags[t];
+        var item = this._normalizeItem(tag);
+
+        var $option = this.option(item);
+
+        this.$element.append($option);
+      }
+    }
+  }
+
+  Tags.prototype.query = function (decorated, params, callback) {
+    var self = this;
+
+    this._removeOldTags();
+
+    if (params.term == null || params.page != null) {
+      decorated.call(this, params, callback);
+      return;
+    }
+
+    function wrapper (obj, child) {
+      var data = obj.results;
+
+      for (var i = 0; i < data.length; i++) {
+        var option = data[i];
+
+        var checkChildren = (
+          option.children != null &&
+          !wrapper({
+            results: option.children
+          }, true)
+        );
+
+        var optionText = (option.text || '').toUpperCase();
+        var paramsTerm = (params.term || '').toUpperCase();
+
+        var checkText = optionText === paramsTerm;
+
+        if (checkText || checkChildren) {
+          if (child) {
+            return false;
+          }
+
+          obj.data = data;
+          callback(obj);
+
+          return;
+        }
+      }
+
+      if (child) {
+        return true;
+      }
+
+      var tag = self.createTag(params);
+
+      if (tag != null) {
+        var $option = self.option(tag);
+        $option.attr('data-select2-tag', true);
+
+        self.addOptions([$option]);
+
+        self.insertTag(data, tag);
+      }
+
+      obj.results = data;
+
+      callback(obj);
+    }
+
+    decorated.call(this, params, wrapper);
+  };
+
+  Tags.prototype.createTag = function (decorated, params) {
+    var term = $.trim(params.term);
+
+    if (term === '') {
+      return null;
+    }
+
+    return {
+      id: term,
+      text: term
+    };
+  };
+
+  Tags.prototype.insertTag = function (_, data, tag) {
+    data.unshift(tag);
+  };
+
+  Tags.prototype._removeOldTags = function (_) {
+    var tag = this._lastTag;
+
+    var $options = this.$element.find('option[data-select2-tag]');
+
+    $options.each(function () {
+      if (this.selected) {
+        return;
+      }
+
+      $(this).remove();
+    });
+  };
+
+  return Tags;
+});
+
+S2.define('select2/data/tokenizer',[
+  'jquery'
+], function ($) {
+  function Tokenizer (decorated, $element, options) {
+    var tokenizer = options.get('tokenizer');
+
+    if (tokenizer !== undefined) {
+      this.tokenizer = tokenizer;
+    }
+
+    decorated.call(this, $element, options);
+  }
+
+  Tokenizer.prototype.bind = function (decorated, container, $container) {
+    decorated.call(this, container, $container);
+
+    this.$search =  container.dropdown.$search || container.selection.$search ||
+      $container.find('.select2-search__field');
+  };
+
+  Tokenizer.prototype.query = function (decorated, params, callback) {
+    var self = this;
+
+    function createAndSelect (data) {
+      // Normalize the data object so we can use it for checks
+      var item = self._normalizeItem(data);
+
+      // Check if the data object already exists as a tag
+      // Select it if it doesn't
+      var $existingOptions = self.$element.find('option').filter(function () {
+        return $(this).val() === item.id;
+      });
+
+      // If an existing option wasn't found for it, create the option
+      if (!$existingOptions.length) {
+        var $option = self.option(item);
+        $option.attr('data-select2-tag', true);
+
+        self._removeOldTags();
+        self.addOptions([$option]);
+      }
+
+      // Select the item, now that we know there is an option for it
+      select(item);
+    }
+
+    function select (data) {
+      self.trigger('select', {
+        data: data
+      });
+    }
+
+    params.term = params.term || '';
+
+    var tokenData = this.tokenizer(params, this.options, createAndSelect);
+
+    if (tokenData.term !== params.term) {
+      // Replace the search term if we have the search box
+      if (this.$search.length) {
+        this.$search.val(tokenData.term);
+        this.$search.focus();
+      }
+
+      params.term = tokenData.term;
+    }
+
+    decorated.call(this, params, callback);
+  };
+
+  Tokenizer.prototype.tokenizer = function (_, params, options, callback) {
+    var separators = options.get('tokenSeparators') || [];
+    var term = params.term;
+    var i = 0;
+
+    var createTag = this.createTag || function (params) {
+      return {
+        id: params.term,
+        text: params.term
+      };
+    };
+
+    while (i < term.length) {
+      var termChar = term[i];
+
+      if ($.inArray(termChar, separators) === -1) {
+        i++;
+
+        continue;
+      }
+
+      var part = term.substr(0, i);
+      var partParams = $.extend({}, params, {
+        term: part
+      });
+
+      var data = createTag(partParams);
+
+      if (data == null) {
+        i++;
+        continue;
+      }
+
+      callback(data);
+
+      // Reset the term to not include the tokenized portion
+      term = term.substr(i + 1) || '';
+      i = 0;
+    }
+
+    return {
+      term: term
+    };
+  };
+
+  return Tokenizer;
+});
+
+S2.define('select2/data/minimumInputLength',[
+
+], function () {
+  function MinimumInputLength (decorated, $e, options) {
+    this.minimumInputLength = options.get('minimumInputLength');
+
+    decorated.call(this, $e, options);
+  }
+
+  MinimumInputLength.prototype.query = function (decorated, params, callback) {
+    params.term = params.term || '';
+
+    if (params.term.length < this.minimumInputLength) {
+      this.trigger('results:message', {
+        message: 'inputTooShort',
+        args: {
+          minimum: this.minimumInputLength,
+          input: params.term,
+          params: params
+        }
+      });
+
+      return;
+    }
+
+    decorated.call(this, params, callback);
+  };
+
+  return MinimumInputLength;
+});
+
+S2.define('select2/data/maximumInputLength',[
+
+], function () {
+  function MaximumInputLength (decorated, $e, options) {
+    this.maximumInputLength = options.get('maximumInputLength');
+
+    decorated.call(this, $e, options);
+  }
+
+  MaximumInputLength.prototype.query = function (decorated, params, callback) {
+    params.term = params.term || '';
+
+    if (this.maximumInputLength > 0 &&
+        params.term.length > this.maximumInputLength) {
+      this.trigger('results:message', {
+        message: 'inputTooLong',
+        args: {
+          maximum: this.maximumInputLength,
+          input: params.term,
+          params: params
+        }
+      });
+
+      return;
+    }
+
+    decorated.call(this, params, callback);
+  };
+
+  return MaximumInputLength;
+});
+
+S2.define('select2/data/maximumSelectionLength',[
+
+], function (){
+  function MaximumSelectionLength (decorated, $e, options) {
+    this.maximumSelectionLength = options.get('maximumSelectionLength');
+
+    decorated.call(this, $e, options);
+  }
+
+  MaximumSelectionLength.prototype.query =
+    function (decorated, params, callback) {
+      var self = this;
+
+      this.current(function (currentData) {
+        var count = currentData != null ? currentData.length : 0;
+        if (self.maximumSelectionLength > 0 &&
+          count >= self.maximumSelectionLength) {
+          self.trigger('results:message', {
+            message: 'maximumSelected',
+            args: {
+              maximum: self.maximumSelectionLength
+            }
+          });
+          return;
+        }
+        decorated.call(self, params, callback);
+      });
+  };
+
+  return MaximumSelectionLength;
+});
+
+S2.define('select2/dropdown',[
+  'jquery',
+  './utils'
+], function ($, Utils) {
+  function Dropdown ($element, options) {
+    this.$element = $element;
+    this.options = options;
+
+    Dropdown.__super__.constructor.call(this);
+  }
+
+  Utils.Extend(Dropdown, Utils.Observable);
+
+  Dropdown.prototype.render = function () {
+    var $dropdown = $(
+      '<span class="select2-dropdown">' +
+        '<span class="select2-results"></span>' +
+      '</span>'
+    );
+
+    $dropdown.attr('dir', this.options.get('dir'));
+
+    this.$dropdown = $dropdown;
+
+    return $dropdown;
+  };
+
+  Dropdown.prototype.bind = function () {
+    // Should be implemented in subclasses
+  };
+
+  Dropdown.prototype.position = function ($dropdown, $container) {
+    // Should be implmented in subclasses
+  };
+
+  Dropdown.prototype.destroy = function () {
+    // Remove the dropdown from the DOM
+    this.$dropdown.remove();
+  };
+
+  return Dropdown;
+});
+
+S2.define('select2/dropdown/search',[
+  'jquery',
+  '../utils'
+], function ($, Utils) {
+  function Search () { }
+
+  Search.prototype.render = function (decorated) {
+    var $rendered = decorated.call(this);
+
+    var $search = $(
+      '<span class="select2-search select2-search--dropdown">' +
+        '<input class="select2-search__field" type="search" tabindex="-1"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
+        ' spellcheck="false" role="textbox" />' +
+      '</span>'
+    );
+
+    this.$searchContainer = $search;
+    this.$search = $search.find('input');
+
+    $rendered.prepend($search);
+
+    return $rendered;
+  };
+
+  Search.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    this.$search.on('keydown', function (evt) {
+      self.trigger('keypress', evt);
+
+      self._keyUpPrevented = evt.isDefaultPrevented();
+    });
+
+    // Workaround for browsers which do not support the `input` event
+    // This will prevent double-triggering of events for browsers which support
+    // both the `keyup` and `input` events.
+    this.$search.on('input', function (evt) {
+      // Unbind the duplicated `keyup` event
+      $(this).off('keyup');
+    });
+
+    this.$search.on('keyup input', function (evt) {
+      self.handleSearch(evt);
+    });
+
+    container.on('open', function () {
+      self.$search.attr('tabindex', 0);
+
+      self.$search.focus();
+
+      window.setTimeout(function () {
+        self.$search.focus();
+      }, 0);
+    });
+
+    container.on('close', function () {
+      self.$search.attr('tabindex', -1);
+
+      self.$search.val('');
+    });
+
+    container.on('focus', function () {
+      if (!container.isOpen()) {
+        self.$search.focus();
+      }
+    });
+
+    container.on('results:all', function (params) {
+      if (params.query.term == null || params.query.term === '') {
+        var showSearch = self.showSearch(params);
+
+        if (showSearch) {
+          self.$searchContainer.removeClass('select2-search--hide');
+        } else {
+          self.$searchContainer.addClass('select2-search--hide');
+        }
+      }
+    });
+  };
+
+  Search.prototype.handleSearch = function (evt) {
+    if (!this._keyUpPrevented) {
+      var input = this.$search.val();
+
+      this.trigger('query', {
+        term: input
+      });
+    }
+
+    this._keyUpPrevented = false;
+  };
+
+  Search.prototype.showSearch = function (_, params) {
+    return true;
+  };
+
+  return Search;
+});
+
+S2.define('select2/dropdown/hidePlaceholder',[
+
+], function () {
+  function HidePlaceholder (decorated, $element, options, dataAdapter) {
+    this.placeholder = this.normalizePlaceholder(options.get('placeholder'));
+
+    decorated.call(this, $element, options, dataAdapter);
+  }
+
+  HidePlaceholder.prototype.append = function (decorated, data) {
+    data.results = this.removePlaceholder(data.results);
+
+    decorated.call(this, data);
+  };
+
+  HidePlaceholder.prototype.normalizePlaceholder = function (_, placeholder) {
+    if (typeof placeholder === 'string') {
+      placeholder = {
+        id: '',
+        text: placeholder
+      };
+    }
+
+    return placeholder;
+  };
+
+  HidePlaceholder.prototype.removePlaceholder = function (_, data) {
+    var modifiedData = data.slice(0);
+
+    for (var d = data.length - 1; d >= 0; d--) {
+      var item = data[d];
+
+      if (this.placeholder.id === item.id) {
+        modifiedData.splice(d, 1);
+      }
+    }
+
+    return modifiedData;
+  };
+
+  return HidePlaceholder;
+});
+
+S2.define('select2/dropdown/infiniteScroll',[
+  'jquery'
+], function ($) {
+  function InfiniteScroll (decorated, $element, options, dataAdapter) {
+    this.lastParams = {};
+
+    decorated.call(this, $element, options, dataAdapter);
+
+    this.$loadingMore = this.createLoadingMore();
+    this.loading = false;
+  }
+
+  InfiniteScroll.prototype.append = function (decorated, data) {
+    this.$loadingMore.remove();
+    this.loading = false;
+
+    decorated.call(this, data);
+
+    if (this.showLoadingMore(data)) {
+      this.$results.append(this.$loadingMore);
+    }
+  };
+
+  InfiniteScroll.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    container.on('query', function (params) {
+      self.lastParams = params;
+      self.loading = true;
+    });
+
+    container.on('query:append', function (params) {
+      self.lastParams = params;
+      self.loading = true;
+    });
+
+    this.$results.on('scroll', function () {
+      var isLoadMoreVisible = $.contains(
+        document.documentElement,
+        self.$loadingMore[0]
+      );
+
+      if (self.loading || !isLoadMoreVisible) {
+        return;
+      }
+
+      var currentOffset = self.$results.offset().top +
+        self.$results.outerHeight(false);
+      var loadingMoreOffset = self.$loadingMore.offset().top +
+        self.$loadingMore.outerHeight(false);
+
+      if (currentOffset + 50 >= loadingMoreOffset) {
+        self.loadMore();
+      }
+    });
+  };
+
+  InfiniteScroll.prototype.loadMore = function () {
+    this.loading = true;
+
+    var params = $.extend({}, {page: 1}, this.lastParams);
+
+    params.page++;
+
+    this.trigger('query:append', params);
+  };
+
+  InfiniteScroll.prototype.showLoadingMore = function (_, data) {
+    return data.pagination && data.pagination.more;
+  };
+
+  InfiniteScroll.prototype.createLoadingMore = function () {
+    var $option = $(
+      '<li ' +
+      'class="select2-results__option select2-results__option--load-more"' +
+      'role="treeitem" aria-disabled="true"></li>'
+    );
+
+    var message = this.options.get('translations').get('loadingMore');
+
+    $option.html(message(this.lastParams));
+
+    return $option;
+  };
+
+  return InfiniteScroll;
+});
+
+S2.define('select2/dropdown/attachBody',[
+  'jquery',
+  '../utils'
+], function ($, Utils) {
+  function AttachBody (decorated, $element, options) {
+    this.$dropdownParent = options.get('dropdownParent') || $(document.body);
+
+    decorated.call(this, $element, options);
+  }
+
+  AttachBody.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    var setupResultsEvents = false;
+
+    decorated.call(this, container, $container);
+
+    container.on('open', function () {
+      self._showDropdown();
+      self._attachPositioningHandler(container);
+
+      if (!setupResultsEvents) {
+        setupResultsEvents = true;
+
+        container.on('results:all', function () {
+          self._positionDropdown();
+          self._resizeDropdown();
+        });
+
+        container.on('results:append', function () {
+          self._positionDropdown();
+          self._resizeDropdown();
+        });
+      }
+    });
+
+    container.on('close', function () {
+      self._hideDropdown();
+      self._detachPositioningHandler(container);
+    });
+
+    this.$dropdownContainer.on('mousedown', function (evt) {
+      evt.stopPropagation();
+    });
+  };
+
+  AttachBody.prototype.destroy = function (decorated) {
+    decorated.call(this);
+
+    this.$dropdownContainer.remove();
+  };
+
+  AttachBody.prototype.position = function (decorated, $dropdown, $container) {
+    // Clone all of the container classes
+    $dropdown.attr('class', $container.attr('class'));
+
+    $dropdown.removeClass('select2');
+    $dropdown.addClass('select2-container--open');
+
+    $dropdown.css({
+      position: 'absolute',
+      top: -999999
+    });
+
+    this.$container = $container;
+  };
+
+  AttachBody.prototype.render = function (decorated) {
+    var $container = $('<span></span>');
+
+    var $dropdown = decorated.call(this);
+    $container.append($dropdown);
+
+    this.$dropdownContainer = $container;
+
+    return $container;
+  };
+
+  AttachBody.prototype._hideDropdown = function (decorated) {
+    this.$dropdownContainer.detach();
+  };
+
+  AttachBody.prototype._attachPositioningHandler =
+      function (decorated, container) {
+    var self = this;
+
+    var scrollEvent = 'scroll.select2.' + container.id;
+    var resizeEvent = 'resize.select2.' + container.id;
+    var orientationEvent = 'orientationchange.select2.' + container.id;
+
+    var $watchers = this.$container.parents().filter(Utils.hasScroll);
+    $watchers.each(function () {
+      $(this).data('select2-scroll-position', {
+        x: $(this).scrollLeft(),
+        y: $(this).scrollTop()
+      });
+    });
+
+    $watchers.on(scrollEvent, function (ev) {
+      var position = $(this).data('select2-scroll-position');
+      $(this).scrollTop(position.y);
+    });
+
+    $(window).on(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent,
+      function (e) {
+      self._positionDropdown();
+      self._resizeDropdown();
+    });
+  };
+
+  AttachBody.prototype._detachPositioningHandler =
+      function (decorated, container) {
+    var scrollEvent = 'scroll.select2.' + container.id;
+    var resizeEvent = 'resize.select2.' + container.id;
+    var orientationEvent = 'orientationchange.select2.' + container.id;
+
+    var $watchers = this.$container.parents().filter(Utils.hasScroll);
+    $watchers.off(scrollEvent);
+
+    $(window).off(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent);
+  };
+
+  AttachBody.prototype._positionDropdown = function () {
+    var $window = $(window);
+
+    var isCurrentlyAbove = this.$dropdown.hasClass('select2-dropdown--above');
+    var isCurrentlyBelow = this.$dropdown.hasClass('select2-dropdown--below');
+
+    var newDirection = null;
+
+    var offset = this.$container.offset();
+
+    offset.bottom = offset.top + this.$container.outerHeight(false);
+
+    var container = {
+      height: this.$container.outerHeight(false)
+    };
+
+    container.top = offset.top;
+    container.bottom = offset.top + container.height;
+
+    var dropdown = {
+      height: this.$dropdown.outerHeight(false)
+    };
+
+    var viewport = {
+      top: $window.scrollTop(),
+      bottom: $window.scrollTop() + $window.height()
+    };
+
+    var enoughRoomAbove = viewport.top < (offset.top - dropdown.height);
+    var enoughRoomBelow = viewport.bottom > (offset.bottom + dropdown.height);
+
+    var css = {
+      left: offset.left,
+      top: container.bottom
+    };
+
+    // Determine what the parent element is to use for calciulating the offset
+    var $offsetParent = this.$dropdownParent;
+
+    // For statically positoned elements, we need to get the element
+    // that is determining the offset
+    if ($offsetParent.css('position') === 'static') {
+      $offsetParent = $offsetParent.offsetParent();
+    }
+
+    var parentOffset = $offsetParent.offset();
+
+    css.top -= parentOffset.top;
+    css.left -= parentOffset.left;
+
+    if (!isCurrentlyAbove && !isCurrentlyBelow) {
+      newDirection = 'below';
+    }
+
+    if (!enoughRoomBelow && enoughRoomAbove && !isCurrentlyAbove) {
+      newDirection = 'above';
+    } else if (!enoughRoomAbove && enoughRoomBelow && isCurrentlyAbove) {
+      newDirection = 'below';
+    }
+
+    if (newDirection == 'above' ||
+      (isCurrentlyAbove && newDirection !== 'below')) {
+      css.top = container.top - parentOffset.top - dropdown.height;
+    }
+
+    if (newDirection != null) {
+      this.$dropdown
+        .removeClass('select2-dropdown--below select2-dropdown--above')
+        .addClass('select2-dropdown--' + newDirection);
+      this.$container
+        .removeClass('select2-container--below select2-container--above')
+        .addClass('select2-container--' + newDirection);
+    }
+
+    this.$dropdownContainer.css(css);
+  };
+
+  AttachBody.prototype._resizeDropdown = function () {
+    var css = {
+      width: this.$container.outerWidth(false) + 'px'
+    };
+
+    if (this.options.get('dropdownAutoWidth')) {
+      css.minWidth = css.width;
+      css.position = 'relative';
+      css.width = 'auto';
+    }
+
+    this.$dropdown.css(css);
+  };
+
+  AttachBody.prototype._showDropdown = function (decorated) {
+    this.$dropdownContainer.appendTo(this.$dropdownParent);
+
+    this._positionDropdown();
+    this._resizeDropdown();
+  };
+
+  return AttachBody;
+});
+
+S2.define('select2/dropdown/minimumResultsForSearch',[
+
+], function () {
+  function countResults (data) {
+    var count = 0;
+
+    for (var d = 0; d < data.length; d++) {
+      var item = data[d];
+
+      if (item.children) {
+        count += countResults(item.children);
+      } else {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  function MinimumResultsForSearch (decorated, $element, options, dataAdapter) {
+    this.minimumResultsForSearch = options.get('minimumResultsForSearch');
+
+    if (this.minimumResultsForSearch < 0) {
+      this.minimumResultsForSearch = Infinity;
+    }
+
+    decorated.call(this, $element, options, dataAdapter);
+  }
+
+  MinimumResultsForSearch.prototype.showSearch = function (decorated, params) {
+    if (countResults(params.data.results) < this.minimumResultsForSearch) {
+      return false;
+    }
+
+    return decorated.call(this, params);
+  };
+
+  return MinimumResultsForSearch;
+});
+
+S2.define('select2/dropdown/selectOnClose',[
+
+], function () {
+  function SelectOnClose () { }
+
+  SelectOnClose.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    container.on('close', function (params) {
+      self._handleSelectOnClose(params);
+    });
+  };
+
+  SelectOnClose.prototype._handleSelectOnClose = function (_, params) {
+    if (params && params.originalSelect2Event != null) {
+      var event = params.originalSelect2Event;
+
+      // Don't select an item if the close event was triggered from a select or
+      // unselect event
+      if (event._type === 'select' || event._type === 'unselect') {
+        return;
+      }
+    }
+
+    var $highlightedResults = this.getHighlightedResults();
+
+    // Only select highlighted results
+    if ($highlightedResults.length < 1) {
+      return;
+    }
+
+    var data = $highlightedResults.data('data');
+
+    // Don't re-select already selected resulte
+    if (
+      (data.element != null && data.element.selected) ||
+      (data.element == null && data.selected)
+    ) {
+      return;
+    }
+
+    this.trigger('select', {
+        data: data
+    });
+  };
+
+  return SelectOnClose;
+});
+
+S2.define('select2/dropdown/closeOnSelect',[
+
+], function () {
+  function CloseOnSelect () { }
+
+  CloseOnSelect.prototype.bind = function (decorated, container, $container) {
+    var self = this;
+
+    decorated.call(this, container, $container);
+
+    container.on('select', function (evt) {
+      self._selectTriggered(evt);
+    });
+
+    container.on('unselect', function (evt) {
+      self._selectTriggered(evt);
+    });
+  };
+
+  CloseOnSelect.prototype._selectTriggered = function (_, evt) {
+    var originalEvent = evt.originalEvent;
+
+    // Don't close if the control key is being held
+    if (originalEvent && originalEvent.ctrlKey) {
+      return;
+    }
+
+    this.trigger('close', {
+      originalEvent: originalEvent,
+      originalSelect2Event: evt
+    });
+  };
+
+  return CloseOnSelect;
+});
+
+S2.define('select2/i18n/en',[],function () {
+  // English
+  return {
+    errorLoading: function () {
+      return 'The results could not be loaded.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      var message = 'Please delete ' + overChars + ' character';
+
+      if (overChars != 1) {
+        message += 's';
+      }
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Please enter ' + remainingChars + ' or more characters';
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Loading more results…';
+    },
+    maximumSelected: function (args) {
+      var message = 'You can only select ' + args.maximum + ' item';
+
+      if (args.maximum != 1) {
+        message += 's';
+      }
+
+      return message;
+    },
+    noResults: function () {
+      return 'No results found';
+    },
+    searching: function () {
+      return 'Searching…';
+    }
+  };
+});
+
+S2.define('select2/defaults',[
+  'jquery',
+  'require',
+
+  './results',
+
+  './selection/single',
+  './selection/multiple',
+  './selection/placeholder',
+  './selection/allowClear',
+  './selection/search',
+  './selection/eventRelay',
+
+  './utils',
+  './translation',
+  './diacritics',
+
+  './data/select',
+  './data/array',
+  './data/ajax',
+  './data/tags',
+  './data/tokenizer',
+  './data/minimumInputLength',
+  './data/maximumInputLength',
+  './data/maximumSelectionLength',
+
+  './dropdown',
+  './dropdown/search',
+  './dropdown/hidePlaceholder',
+  './dropdown/infiniteScroll',
+  './dropdown/attachBody',
+  './dropdown/minimumResultsForSearch',
+  './dropdown/selectOnClose',
+  './dropdown/closeOnSelect',
+
+  './i18n/en'
+], function ($, require,
+
+             ResultsList,
+
+             SingleSelection, MultipleSelection, Placeholder, AllowClear,
+             SelectionSearch, EventRelay,
+
+             Utils, Translation, DIACRITICS,
+
+             SelectData, ArrayData, AjaxData, Tags, Tokenizer,
+             MinimumInputLength, MaximumInputLength, MaximumSelectionLength,
+
+             Dropdown, DropdownSearch, HidePlaceholder, InfiniteScroll,
+             AttachBody, MinimumResultsForSearch, SelectOnClose, CloseOnSelect,
+
+             EnglishTranslation) {
+  function Defaults () {
+    this.reset();
+  }
+
+  Defaults.prototype.apply = function (options) {
+    options = $.extend(true, {}, this.defaults, options);
+
+    if (options.dataAdapter == null) {
+      if (options.ajax != null) {
+        options.dataAdapter = AjaxData;
+      } else if (options.data != null) {
+        options.dataAdapter = ArrayData;
+      } else {
+        options.dataAdapter = SelectData;
+      }
+
+      if (options.minimumInputLength > 0) {
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          MinimumInputLength
+        );
+      }
+
+      if (options.maximumInputLength > 0) {
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          MaximumInputLength
+        );
+      }
+
+      if (options.maximumSelectionLength > 0) {
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          MaximumSelectionLength
+        );
+      }
+
+      if (options.tags) {
+        options.dataAdapter = Utils.Decorate(options.dataAdapter, Tags);
+      }
+
+      if (options.tokenSeparators != null || options.tokenizer != null) {
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          Tokenizer
+        );
+      }
+
+      if (options.query != null) {
+        var Query = require(options.amdBase + 'compat/query');
+
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          Query
+        );
+      }
+
+      if (options.initSelection != null) {
+        var InitSelection = require(options.amdBase + 'compat/initSelection');
+
+        options.dataAdapter = Utils.Decorate(
+          options.dataAdapter,
+          InitSelection
+        );
+      }
+    }
+
+    if (options.resultsAdapter == null) {
+      options.resultsAdapter = ResultsList;
+
+      if (options.ajax != null) {
+        options.resultsAdapter = Utils.Decorate(
+          options.resultsAdapter,
+          InfiniteScroll
+        );
+      }
+
+      if (options.placeholder != null) {
+        options.resultsAdapter = Utils.Decorate(
+          options.resultsAdapter,
+          HidePlaceholder
+        );
+      }
+
+      if (options.selectOnClose) {
+        options.resultsAdapter = Utils.Decorate(
+          options.resultsAdapter,
+          SelectOnClose
+        );
+      }
+    }
+
+    if (options.dropdownAdapter == null) {
+      if (options.multiple) {
+        options.dropdownAdapter = Dropdown;
+      } else {
+        var SearchableDropdown = Utils.Decorate(Dropdown, DropdownSearch);
+
+        options.dropdownAdapter = SearchableDropdown;
+      }
+
+      if (options.minimumResultsForSearch !== 0) {
+        options.dropdownAdapter = Utils.Decorate(
+          options.dropdownAdapter,
+          MinimumResultsForSearch
+        );
+      }
+
+      if (options.closeOnSelect) {
+        options.dropdownAdapter = Utils.Decorate(
+          options.dropdownAdapter,
+          CloseOnSelect
+        );
+      }
+
+      if (
+        options.dropdownCssClass != null ||
+        options.dropdownCss != null ||
+        options.adaptDropdownCssClass != null
+      ) {
+        var DropdownCSS = require(options.amdBase + 'compat/dropdownCss');
+
+        options.dropdownAdapter = Utils.Decorate(
+          options.dropdownAdapter,
+          DropdownCSS
+        );
+      }
+
+      options.dropdownAdapter = Utils.Decorate(
+        options.dropdownAdapter,
+        AttachBody
+      );
+    }
+
+    if (options.selectionAdapter == null) {
+      if (options.multiple) {
+        options.selectionAdapter = MultipleSelection;
+      } else {
+        options.selectionAdapter = SingleSelection;
+      }
+
+      // Add the placeholder mixin if a placeholder was specified
+      if (options.placeholder != null) {
+        options.selectionAdapter = Utils.Decorate(
+          options.selectionAdapter,
+          Placeholder
+        );
+      }
+
+      if (options.allowClear) {
+        options.selectionAdapter = Utils.Decorate(
+          options.selectionAdapter,
+          AllowClear
+        );
+      }
+
+      if (options.multiple) {
+        options.selectionAdapter = Utils.Decorate(
+          options.selectionAdapter,
+          SelectionSearch
+        );
+      }
+
+      if (
+        options.containerCssClass != null ||
+        options.containerCss != null ||
+        options.adaptContainerCssClass != null
+      ) {
+        var ContainerCSS = require(options.amdBase + 'compat/containerCss');
+
+        options.selectionAdapter = Utils.Decorate(
+          options.selectionAdapter,
+          ContainerCSS
+        );
+      }
+
+      options.selectionAdapter = Utils.Decorate(
+        options.selectionAdapter,
+        EventRelay
+      );
+    }
+
+    if (typeof options.language === 'string') {
+      // Check if the language is specified with a region
+      if (options.language.indexOf('-') > 0) {
+        // Extract the region information if it is included
+        var languageParts = options.language.split('-');
+        var baseLanguage = languageParts[0];
+
+        options.language = [options.language, baseLanguage];
+      } else {
+        options.language = [options.language];
+      }
+    }
+
+    if ($.isArray(options.language)) {
+      var languages = new Translation();
+      options.language.push('en');
+
+      var languageNames = options.language;
+
+      for (var l = 0; l < languageNames.length; l++) {
+        var name = languageNames[l];
+        var language = {};
+
+        try {
+          // Try to load it with the original name
+          language = Translation.loadPath(name);
+        } catch (e) {
+          try {
+            // If we couldn't load it, check if it wasn't the full path
+            name = this.defaults.amdLanguageBase + name;
+            language = Translation.loadPath(name);
+          } catch (ex) {
+            // The translation could not be loaded at all. Sometimes this is
+            // because of a configuration problem, other times this can be
+            // because of how Select2 helps load all possible translation files.
+            if (options.debug && window.console && console.warn) {
+              console.warn(
+                'Select2: The language file for "' + name + '" could not be ' +
+                'automatically loaded. A fallback will be used instead.'
+              );
+            }
+
+            continue;
+          }
+        }
+
+        languages.extend(language);
+      }
+
+      options.translations = languages;
+    } else {
+      var baseTranslation = Translation.loadPath(
+        this.defaults.amdLanguageBase + 'en'
+      );
+      var customTranslation = new Translation(options.language);
+
+      customTranslation.extend(baseTranslation);
+
+      options.translations = customTranslation;
+    }
+
+    return options;
+  };
+
+  Defaults.prototype.reset = function () {
+    function stripDiacritics (text) {
+      // Used 'uni range + named function' from http://jsperf.com/diacritics/18
+      function match(a) {
+        return DIACRITICS[a] || a;
+      }
+
+      return text.replace(/[^\u0000-\u007E]/g, match);
+    }
+
+    function matcher (params, data) {
+      // Always return the object if there is nothing to compare
+      if ($.trim(params.term) === '') {
+        return data;
+      }
+
+      // Do a recursive check for options with children
+      if (data.children && data.children.length > 0) {
+        // Clone the data object if there are children
+        // This is required as we modify the object to remove any non-matches
+        var match = $.extend(true, {}, data);
+
+        // Check each child of the option
+        for (var c = data.children.length - 1; c >= 0; c--) {
+          var child = data.children[c];
+
+          var matches = matcher(params, child);
+
+          // If there wasn't a match, remove the object in the array
+          if (matches == null) {
+            match.children.splice(c, 1);
+          }
+        }
+
+        // If any children matched, return the new object
+        if (match.children.length > 0) {
+          return match;
+        }
+
+        // If there were no matching children, check just the plain object
+        return matcher(params, match);
+      }
+
+      var original = stripDiacritics(data.text).toUpperCase();
+      var term = stripDiacritics(params.term).toUpperCase();
+
+      // Check if the text contains the term
+      if (original.indexOf(term) > -1) {
+        return data;
+      }
+
+      // If it doesn't contain the term, don't return anything
+      return null;
+    }
+
+    this.defaults = {
+      amdBase: './',
+      amdLanguageBase: './i18n/',
+      closeOnSelect: true,
+      debug: false,
+      dropdownAutoWidth: false,
+      escapeMarkup: Utils.escapeMarkup,
+      language: EnglishTranslation,
+      matcher: matcher,
+      minimumInputLength: 0,
+      maximumInputLength: 0,
+      maximumSelectionLength: 0,
+      minimumResultsForSearch: 0,
+      selectOnClose: false,
+      sorter: function (data) {
+        return data;
+      },
+      templateResult: function (result) {
+        return result.text;
+      },
+      templateSelection: function (selection) {
+        return selection.text;
+      },
+      theme: 'default',
+      width: 'resolve'
+    };
+  };
+
+  Defaults.prototype.set = function (key, value) {
+    var camelKey = $.camelCase(key);
+
+    var data = {};
+    data[camelKey] = value;
+
+    var convertedData = Utils._convertData(data);
+
+    $.extend(this.defaults, convertedData);
+  };
+
+  var defaults = new Defaults();
+
+  return defaults;
+});
+
+S2.define('select2/options',[
+  'require',
+  'jquery',
+  './defaults',
+  './utils'
+], function (require, $, Defaults, Utils) {
+  function Options (options, $element) {
+    this.options = options;
+
+    if ($element != null) {
+      this.fromElement($element);
+    }
+
+    this.options = Defaults.apply(this.options);
+
+    if ($element && $element.is('input')) {
+      var InputCompat = require(this.get('amdBase') + 'compat/inputData');
+
+      this.options.dataAdapter = Utils.Decorate(
+        this.options.dataAdapter,
+        InputCompat
+      );
+    }
+  }
+
+  Options.prototype.fromElement = function ($e) {
+    var excludedData = ['select2'];
+
+    if (this.options.multiple == null) {
+      this.options.multiple = $e.prop('multiple');
+    }
+
+    if (this.options.disabled == null) {
+      this.options.disabled = $e.prop('disabled');
+    }
+
+    if (this.options.language == null) {
+      if ($e.prop('lang')) {
+        this.options.language = $e.prop('lang').toLowerCase();
+      } else if ($e.closest('[lang]').prop('lang')) {
+        this.options.language = $e.closest('[lang]').prop('lang');
+      }
+    }
+
+    if (this.options.dir == null) {
+      if ($e.prop('dir')) {
+        this.options.dir = $e.prop('dir');
+      } else if ($e.closest('[dir]').prop('dir')) {
+        this.options.dir = $e.closest('[dir]').prop('dir');
+      } else {
+        this.options.dir = 'ltr';
+      }
+    }
+
+    $e.prop('disabled', this.options.disabled);
+    $e.prop('multiple', this.options.multiple);
+
+    if ($e.data('select2Tags')) {
+      if (this.options.debug && window.console && console.warn) {
+        console.warn(
+          'Select2: The `data-select2-tags` attribute has been changed to ' +
+          'use the `data-data` and `data-tags="true"` attributes and will be ' +
+          'removed in future versions of Select2.'
+        );
+      }
+
+      $e.data('data', $e.data('select2Tags'));
+      $e.data('tags', true);
+    }
+
+    if ($e.data('ajaxUrl')) {
+      if (this.options.debug && window.console && console.warn) {
+        console.warn(
+          'Select2: The `data-ajax-url` attribute has been changed to ' +
+          '`data-ajax--url` and support for the old attribute will be removed' +
+          ' in future versions of Select2.'
+        );
+      }
+
+      $e.attr('ajax--url', $e.data('ajaxUrl'));
+      $e.data('ajax--url', $e.data('ajaxUrl'));
+    }
+
+    var dataset = {};
+
+    // Prefer the element's `dataset` attribute if it exists
+    // jQuery 1.x does not correctly handle data attributes with multiple dashes
+    if ($.fn.jquery && $.fn.jquery.substr(0, 2) == '1.' && $e[0].dataset) {
+      dataset = $.extend(true, {}, $e[0].dataset, $e.data());
+    } else {
+      dataset = $e.data();
+    }
+
+    var data = $.extend(true, {}, dataset);
+
+    data = Utils._convertData(data);
+
+    for (var key in data) {
+      if ($.inArray(key, excludedData) > -1) {
+        continue;
+      }
+
+      if ($.isPlainObject(this.options[key])) {
+        $.extend(this.options[key], data[key]);
+      } else {
+        this.options[key] = data[key];
+      }
+    }
+
+    return this;
+  };
+
+  Options.prototype.get = function (key) {
+    return this.options[key];
+  };
+
+  Options.prototype.set = function (key, val) {
+    this.options[key] = val;
+  };
+
+  return Options;
+});
+
+S2.define('select2/core',[
+  'jquery',
+  './options',
+  './utils',
+  './keys'
+], function ($, Options, Utils, KEYS) {
+  var Select2 = function ($element, options) {
+    if ($element.data('select2') != null) {
+      $element.data('select2').destroy();
+    }
+
+    this.$element = $element;
+
+    this.id = this._generateId($element);
+
+    options = options || {};
+
+    this.options = new Options(options, $element);
+
+    Select2.__super__.constructor.call(this);
+
+    // Set up the tabindex
+
+    var tabindex = $element.attr('tabindex') || 0;
+    $element.data('old-tabindex', tabindex);
+    $element.attr('tabindex', '-1');
+
+    // Set up containers and adapters
+
+    var DataAdapter = this.options.get('dataAdapter');
+    this.dataAdapter = new DataAdapter($element, this.options);
+
+    var $container = this.render();
+
+    this._placeContainer($container);
+
+    var SelectionAdapter = this.options.get('selectionAdapter');
+    this.selection = new SelectionAdapter($element, this.options);
+    this.$selection = this.selection.render();
+
+    this.selection.position(this.$selection, $container);
+
+    var DropdownAdapter = this.options.get('dropdownAdapter');
+    this.dropdown = new DropdownAdapter($element, this.options);
+    this.$dropdown = this.dropdown.render();
+
+    this.dropdown.position(this.$dropdown, $container);
+
+    var ResultsAdapter = this.options.get('resultsAdapter');
+    this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
+    this.$results = this.results.render();
+
+    this.results.position(this.$results, this.$dropdown);
+
+    // Bind events
+
+    var self = this;
+
+    // Bind the container to all of the adapters
+    this._bindAdapters();
+
+    // Register any DOM event handlers
+    this._registerDomEvents();
+
+    // Register any internal event handlers
+    this._registerDataEvents();
+    this._registerSelectionEvents();
+    this._registerDropdownEvents();
+    this._registerResultsEvents();
+    this._registerEvents();
+
+    // Set the initial state
+    this.dataAdapter.current(function (initialData) {
+      self.trigger('selection:update', {
+        data: initialData
+      });
+    });
+
+    // Hide the original select
+    $element.addClass('select2-hidden-accessible');
+    $element.attr('aria-hidden', 'true');
+
+    // Synchronize any monitored attributes
+    this._syncAttributes();
+
+    $element.data('select2', this);
+  };
+
+  Utils.Extend(Select2, Utils.Observable);
+
+  Select2.prototype._generateId = function ($element) {
+    var id = '';
+
+    if ($element.attr('id') != null) {
+      id = $element.attr('id');
+    } else if ($element.attr('name') != null) {
+      id = $element.attr('name') + '-' + Utils.generateChars(2);
+    } else {
+      id = Utils.generateChars(4);
+    }
+
+    id = id.replace(/(:|\.|\[|\]|,)/g, '');
+    id = 'select2-' + id;
+
+    return id;
+  };
+
+  Select2.prototype._placeContainer = function ($container) {
+    $container.insertAfter(this.$element);
+
+    var width = this._resolveWidth(this.$element, this.options.get('width'));
+
+    if (width != null) {
+      $container.css('width', width);
+    }
+  };
+
+  Select2.prototype._resolveWidth = function ($element, method) {
+    var WIDTH = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i;
+
+    if (method == 'resolve') {
+      var styleWidth = this._resolveWidth($element, 'style');
+
+      if (styleWidth != null) {
+        return styleWidth;
+      }
+
+      return this._resolveWidth($element, 'element');
+    }
+
+    if (method == 'element') {
+      var elementWidth = $element.outerWidth(false);
+
+      if (elementWidth <= 0) {
+        return 'auto';
+      }
+
+      return elementWidth + 'px';
+    }
+
+    if (method == 'style') {
+      var style = $element.attr('style');
+
+      if (typeof(style) !== 'string') {
+        return null;
+      }
+
+      var attrs = style.split(';');
+
+      for (var i = 0, l = attrs.length; i < l; i = i + 1) {
+        var attr = attrs[i].replace(/\s/g, '');
+        var matches = attr.match(WIDTH);
+
+        if (matches !== null && matches.length >= 1) {
+          return matches[1];
+        }
+      }
+
+      return null;
+    }
+
+    return method;
+  };
+
+  Select2.prototype._bindAdapters = function () {
+    this.dataAdapter.bind(this, this.$container);
+    this.selection.bind(this, this.$container);
+
+    this.dropdown.bind(this, this.$container);
+    this.results.bind(this, this.$container);
+  };
+
+  Select2.prototype._registerDomEvents = function () {
+    var self = this;
+
+    this.$element.on('change.select2', function () {
+      self.dataAdapter.current(function (data) {
+        self.trigger('selection:update', {
+          data: data
+        });
+      });
+    });
+
+    this.$element.on('focus.select2', function (evt) {
+      self.trigger('focus', evt);
+    });
+
+    this._syncA = Utils.bind(this._syncAttributes, this);
+    this._syncS = Utils.bind(this._syncSubtree, this);
+
+    if (this.$element[0].attachEvent) {
+      this.$element[0].attachEvent('onpropertychange', this._syncA);
+    }
+
+    var observer = window.MutationObserver ||
+      window.WebKitMutationObserver ||
+      window.MozMutationObserver
+    ;
+
+    if (observer != null) {
+      this._observer = new observer(function (mutations) {
+        $.each(mutations, self._syncA);
+        $.each(mutations, self._syncS);
+      });
+      this._observer.observe(this.$element[0], {
+        attributes: true,
+        childList: true,
+        subtree: false
+      });
+    } else if (this.$element[0].addEventListener) {
+      this.$element[0].addEventListener(
+        'DOMAttrModified',
+        self._syncA,
+        false
+      );
+      this.$element[0].addEventListener(
+        'DOMNodeInserted',
+        self._syncS,
+        false
+      );
+      this.$element[0].addEventListener(
+        'DOMNodeRemoved',
+        self._syncS,
+        false
+      );
+    }
+  };
+
+  Select2.prototype._registerDataEvents = function () {
+    var self = this;
+
+    this.dataAdapter.on('*', function (name, params) {
+      self.trigger(name, params);
+    });
+  };
+
+  Select2.prototype._registerSelectionEvents = function () {
+    var self = this;
+    var nonRelayEvents = ['toggle', 'focus'];
+
+    this.selection.on('toggle', function () {
+      self.toggleDropdown();
+    });
+
+    this.selection.on('focus', function (params) {
+      self.focus(params);
+    });
+
+    this.selection.on('*', function (name, params) {
+      if ($.inArray(name, nonRelayEvents) !== -1) {
+        return;
+      }
+
+      self.trigger(name, params);
+    });
+  };
+
+  Select2.prototype._registerDropdownEvents = function () {
+    var self = this;
+
+    this.dropdown.on('*', function (name, params) {
+      self.trigger(name, params);
+    });
+  };
+
+  Select2.prototype._registerResultsEvents = function () {
+    var self = this;
+
+    this.results.on('*', function (name, params) {
+      self.trigger(name, params);
+    });
+  };
+
+  Select2.prototype._registerEvents = function () {
+    var self = this;
+
+    this.on('open', function () {
+      self.$container.addClass('select2-container--open');
+    });
+
+    this.on('close', function () {
+      self.$container.removeClass('select2-container--open');
+    });
+
+    this.on('enable', function () {
+      self.$container.removeClass('select2-container--disabled');
+    });
+
+    this.on('disable', function () {
+      self.$container.addClass('select2-container--disabled');
+    });
+
+    this.on('blur', function () {
+      self.$container.removeClass('select2-container--focus');
+    });
+
+    this.on('query', function (params) {
+      if (!self.isOpen()) {
+        self.trigger('open', {});
+      }
+
+      this.dataAdapter.query(params, function (data) {
+        self.trigger('results:all', {
+          data: data,
+          query: params
+        });
+      });
+    });
+
+    this.on('query:append', function (params) {
+      this.dataAdapter.query(params, function (data) {
+        self.trigger('results:append', {
+          data: data,
+          query: params
+        });
+      });
+    });
+
+    this.on('keypress', function (evt) {
+      var key = evt.which;
+
+      if (self.isOpen()) {
+        if (key === KEYS.ESC || key === KEYS.TAB ||
+            (key === KEYS.UP && evt.altKey)) {
+          self.close();
+
+          evt.preventDefault();
+        } else if (key === KEYS.ENTER) {
+          self.trigger('results:select', {});
+
+          evt.preventDefault();
+        } else if ((key === KEYS.SPACE && evt.ctrlKey)) {
+          self.trigger('results:toggle', {});
+
+          evt.preventDefault();
+        } else if (key === KEYS.UP) {
+          self.trigger('results:previous', {});
+
+          evt.preventDefault();
+        } else if (key === KEYS.DOWN) {
+          self.trigger('results:next', {});
+
+          evt.preventDefault();
+        }
+      } else {
+        if (key === KEYS.ENTER || key === KEYS.SPACE ||
+            (key === KEYS.DOWN && evt.altKey)) {
+          self.open();
+
+          evt.preventDefault();
+        }
+      }
+    });
+  };
+
+  Select2.prototype._syncAttributes = function () {
+    this.options.set('disabled', this.$element.prop('disabled'));
+
+    if (this.options.get('disabled')) {
+      if (this.isOpen()) {
+        this.close();
+      }
+
+      this.trigger('disable', {});
+    } else {
+      this.trigger('enable', {});
+    }
+  };
+
+  Select2.prototype._syncSubtree = function (evt, mutations) {
+    var changed = false;
+    var self = this;
+
+    // Ignore any mutation events raised for elements that aren't options or
+    // optgroups. This handles the case when the select element is destroyed
+    if (
+      evt && evt.target && (
+        evt.target.nodeName !== 'OPTION' && evt.target.nodeName !== 'OPTGROUP'
+      )
+    ) {
+      return;
+    }
+
+    if (!mutations) {
+      // If mutation events aren't supported, then we can only assume that the
+      // change affected the selections
+      changed = true;
+    } else if (mutations.addedNodes && mutations.addedNodes.length > 0) {
+      for (var n = 0; n < mutations.addedNodes.length; n++) {
+        var node = mutations.addedNodes[n];
+
+        if (node.selected) {
+          changed = true;
+        }
+      }
+    } else if (mutations.removedNodes && mutations.removedNodes.length > 0) {
+      changed = true;
+    }
+
+    // Only re-pull the data if we think there is a change
+    if (changed) {
+      this.dataAdapter.current(function (currentData) {
+        self.trigger('selection:update', {
+          data: currentData
+        });
+      });
+    }
+  };
+
+  /**
+   * Override the trigger method to automatically trigger pre-events when
+   * there are events that can be prevented.
+   */
+  Select2.prototype.trigger = function (name, args) {
+    var actualTrigger = Select2.__super__.trigger;
+    var preTriggerMap = {
+      'open': 'opening',
+      'close': 'closing',
+      'select': 'selecting',
+      'unselect': 'unselecting'
+    };
+
+    if (args === undefined) {
+      args = {};
+    }
+
+    if (name in preTriggerMap) {
+      var preTriggerName = preTriggerMap[name];
+      var preTriggerArgs = {
+        prevented: false,
+        name: name,
+        args: args
+      };
+
+      actualTrigger.call(this, preTriggerName, preTriggerArgs);
+
+      if (preTriggerArgs.prevented) {
+        args.prevented = true;
+
+        return;
+      }
+    }
+
+    actualTrigger.call(this, name, args);
+  };
+
+  Select2.prototype.toggleDropdown = function () {
+    if (this.options.get('disabled')) {
+      return;
+    }
+
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
+  };
+
+  Select2.prototype.open = function () {
+    if (this.isOpen()) {
+      return;
+    }
+
+    this.trigger('query', {});
+  };
+
+  Select2.prototype.close = function () {
+    if (!this.isOpen()) {
+      return;
+    }
+
+    this.trigger('close', {});
+  };
+
+  Select2.prototype.isOpen = function () {
+    return this.$container.hasClass('select2-container--open');
+  };
+
+  Select2.prototype.hasFocus = function () {
+    return this.$container.hasClass('select2-container--focus');
+  };
+
+  Select2.prototype.focus = function (data) {
+    // No need to re-trigger focus events if we are already focused
+    if (this.hasFocus()) {
+      return;
+    }
+
+    this.$container.addClass('select2-container--focus');
+    this.trigger('focus', {});
+  };
+
+  Select2.prototype.enable = function (args) {
+    if (this.options.get('debug') && window.console && console.warn) {
+      console.warn(
+        'Select2: The `select2("enable")` method has been deprecated and will' +
+        ' be removed in later Select2 versions. Use $element.prop("disabled")' +
+        ' instead.'
+      );
+    }
+
+    if (args == null || args.length === 0) {
+      args = [true];
+    }
+
+    var disabled = !args[0];
+
+    this.$element.prop('disabled', disabled);
+  };
+
+  Select2.prototype.data = function () {
+    if (this.options.get('debug') &&
+        arguments.length > 0 && window.console && console.warn) {
+      console.warn(
+        'Select2: Data can no longer be set using `select2("data")`. You ' +
+        'should consider setting the value instead using `$element.val()`.'
+      );
+    }
+
+    var data = [];
+
+    this.dataAdapter.current(function (currentData) {
+      data = currentData;
+    });
+
+    return data;
+  };
+
+  Select2.prototype.val = function (args) {
+    if (this.options.get('debug') && window.console && console.warn) {
+      console.warn(
+        'Select2: The `select2("val")` method has been deprecated and will be' +
+        ' removed in later Select2 versions. Use $element.val() instead.'
+      );
+    }
+
+    if (args == null || args.length === 0) {
+      return this.$element.val();
+    }
+
+    var newVal = args[0];
+
+    if ($.isArray(newVal)) {
+      newVal = $.map(newVal, function (obj) {
+        return obj.toString();
+      });
+    }
+
+    this.$element.val(newVal).trigger('change');
+  };
+
+  Select2.prototype.destroy = function () {
+    this.$container.remove();
+
+    if (this.$element[0].detachEvent) {
+      this.$element[0].detachEvent('onpropertychange', this._syncA);
+    }
+
+    if (this._observer != null) {
+      this._observer.disconnect();
+      this._observer = null;
+    } else if (this.$element[0].removeEventListener) {
+      this.$element[0]
+        .removeEventListener('DOMAttrModified', this._syncA, false);
+      this.$element[0]
+        .removeEventListener('DOMNodeInserted', this._syncS, false);
+      this.$element[0]
+        .removeEventListener('DOMNodeRemoved', this._syncS, false);
+    }
+
+    this._syncA = null;
+    this._syncS = null;
+
+    this.$element.off('.select2');
+    this.$element.attr('tabindex', this.$element.data('old-tabindex'));
+
+    this.$element.removeClass('select2-hidden-accessible');
+    this.$element.attr('aria-hidden', 'false');
+    this.$element.removeData('select2');
+
+    this.dataAdapter.destroy();
+    this.selection.destroy();
+    this.dropdown.destroy();
+    this.results.destroy();
+
+    this.dataAdapter = null;
+    this.selection = null;
+    this.dropdown = null;
+    this.results = null;
+  };
+
+  Select2.prototype.render = function () {
+    var $container = $(
+      '<span class="select2 select2-container">' +
+        '<span class="selection"></span>' +
+        '<span class="dropdown-wrapper" aria-hidden="true"></span>' +
+      '</span>'
+    );
+
+    $container.attr('dir', this.options.get('dir'));
+
+    this.$container = $container;
+
+    this.$container.addClass('select2-container--' + this.options.get('theme'));
+
+    $container.data('element', this.$element);
+
+    return $container;
+  };
+
+  return Select2;
+});
+
+S2.define('jquery-mousewheel',[
+  'jquery'
+], function ($) {
+  // Used to shim jQuery.mousewheel for non-full builds.
+  return $;
+});
+
+S2.define('jquery.select2',[
+  'jquery',
+  'jquery-mousewheel',
+
+  './select2/core',
+  './select2/defaults'
+], function ($, _, Select2, Defaults) {
+  if ($.fn.select2 == null) {
+    // All methods that should return the element
+    var thisMethods = ['open', 'close', 'destroy'];
+
+    $.fn.select2 = function (options) {
+      options = options || {};
+
+      if (typeof options === 'object') {
+        this.each(function () {
+          var instanceOptions = $.extend(true, {}, options);
+
+          var instance = new Select2($(this), instanceOptions);
+        });
+
+        return this;
+      } else if (typeof options === 'string') {
+        var ret;
+        var args = Array.prototype.slice.call(arguments, 1);
+
+        this.each(function () {
+          var instance = $(this).data('select2');
+
+          if (instance == null && window.console && console.error) {
+            console.error(
+              'The select2(\'' + options + '\') method was called on an ' +
+              'element that is not using Select2.'
+            );
+          }
+
+          ret = instance[options].apply(instance, args);
+        });
+
+        // Check if we should be returning `this`
+        if ($.inArray(options, thisMethods) > -1) {
+          return this;
+        }
+
+        return ret;
+      } else {
+        throw new Error('Invalid arguments for Select2: ' + options);
+      }
+    };
+  }
+
+  if ($.fn.select2.defaults == null) {
+    $.fn.select2.defaults = Defaults;
+  }
+
+  return Select2;
+});
+
+  // Return the AMD loader configuration so it can be used outside of this file
+  return {
+    define: S2.define,
+    require: S2.require
+  };
+}());
+
+  // Autoload the jQuery bindings
+  // We know that all of the modules exist above this, so we're safe
+  var select2 = S2.require('jquery.select2');
+
+  // Hold the AMD module references on the jQuery function that was just loaded
+  // This allows Select2 to use the internal loader outside of this file, such
+  // as in the language files.
+  jQuery.fn.select2.amd = S2;
+
+  // Return the Select2 instance for anyone who is importing it.
+  return select2;
+}));
+
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -31935,10 +43029,10 @@ return jQuery;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(9)))
 
 /***/ }),
-/* 33 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var apply = Function.prototype.apply;
@@ -31991,7 +43085,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(32);
+__webpack_require__(38);
 // On some exotic environments, it's not clear which object `setimmeidate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -32005,7 +43099,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 34 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42968,10 +54062,10 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(33).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(39).setImmediate))
 
 /***/ }),
-/* 35 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -42999,5351 +54093,11 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 36 */,
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * First we will load all of this project's JavaScript dependencies which
- * include Vue and Vue Resource. This gives a great starting point for
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-__webpack_require__(27);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-__webpack_require__(42);
-__webpack_require__(41);
-
-var cici = new Vue({
-  el: '#cici'
-});
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 40 */,
-/* 41 */
-/***/ (function(module, exports) {
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/**
- <b>Ace custom scroller</b>. It is not as feature-rich as plugins such as NiceScroll but it's good enough for most cases.
-*/
-(function ($, undefined) {
-	var Ace_Scroll = function Ace_Scroll(element, _settings) {
-		var self = this;
-
-		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_scroll.defaults);
-		var settings = $.extend({}, $.fn.ace_scroll.defaults, _settings, attrib_values);
-
-		this.size = 0;
-		this.lock = false;
-		this.lock_anyway = false;
-
-		this.$element = $(element);
-		this.element = element;
-
-		var vertical = true;
-
-		var disabled = false;
-		var active = false;
-		var created = false;
-
-		var $content_wrap = null,
-		    content_wrap = null;
-		var $track = null,
-		    $bar = null,
-		    track = null,
-		    bar = null;
-		var bar_style = null;
-
-		var bar_size = 0,
-		    bar_pos = 0,
-		    bar_max_pos = 0,
-		    bar_size_2 = 0,
-		    move_bar = true;
-		var reset_once = false;
-
-		var styleClass = '';
-		var trackFlip = false; //vertical on left or horizontal on top
-		var trackSize = 0;
-
-		var css_pos, css_size, max_css_size, client_size, scroll_direction, scroll_size;
-
-		var ratio = 1;
-		var inline_style = false;
-		var mouse_track = false;
-		var mouse_release_target = 'onmouseup' in window ? window : 'html';
-		var dragEvent = settings.dragEvent || false;
-
-		var trigger_scroll = _settings.scrollEvent || false;
-
-		var detached = settings.detached || false; //when detached, hideOnIdle as well?
-		var updatePos = settings.updatePos || false; //default is true
-
-		var hideOnIdle = settings.hideOnIdle || false;
-		var hideDelay = settings.hideDelay || 1500;
-		var insideTrack = false; //used to hide scroll track when mouse is up and outside of track
-		var observeContent = settings.observeContent || false;
-		var prevContentSize = 0;
-
-		var is_dirty = true; //to prevent consecutive 'reset' calls
-
-		this.ref = function () {
-			return this;
-		};
-
-		this.create = function (_settings) {
-			if (created) return;
-
-			if (_settings) settings = $.extend({}, $.fn.ace_scroll.defaults, _settings);
-
-			this.size = parseInt(this.$element.attr('data-size')) || settings.size || 200;
-			vertical = !settings['horizontal'];
-
-			css_pos = vertical ? 'top' : 'left'; //'left' for horizontal
-			css_size = vertical ? 'height' : 'width'; //'width' for horizontal
-			max_css_size = vertical ? 'maxHeight' : 'maxWidth';
-
-			client_size = vertical ? 'clientHeight' : 'clientWidth';
-			scroll_direction = vertical ? 'scrollTop' : 'scrollLeft';
-			scroll_size = vertical ? 'scrollHeight' : 'scrollWidth';
-
-			this.$element.addClass('ace-scroll');
-			if (this.$element.css('position') == 'static') {
-				inline_style = this.element.style.position;
-				this.element.style.position = 'relative';
-			} else inline_style = false;
-
-			var scroll_bar = null;
-			if (!detached) {
-				this.$element.wrapInner('<div class="scroll-content" />');
-				this.$element.prepend('<div class="scroll-track"><div class="scroll-bar"></div></div>');
-			} else {
-				scroll_bar = $('<div class="scroll-track scroll-detached"><div class="scroll-bar"></div></div>').appendTo('body');
-			}
-
-			$content_wrap = this.$element;
-			if (!detached) $content_wrap = this.$element.find('.scroll-content').eq(0);
-
-			if (!vertical) $content_wrap.wrapInner('<div />');
-
-			content_wrap = $content_wrap.get(0);
-			if (detached) {
-				//set position for detached scrollbar
-				$track = scroll_bar;
-				setTrackPos();
-			} else $track = this.$element.find('.scroll-track').eq(0);
-
-			$bar = $track.find('.scroll-bar').eq(0);
-			track = $track.get(0);
-			bar = $bar.get(0);
-			bar_style = bar.style;
-
-			//add styling classes and horizontalness
-			if (!vertical) $track.addClass('scroll-hz');
-			if (settings.styleClass) {
-				styleClass = settings.styleClass;
-				$track.addClass(styleClass);
-				trackFlip = !!styleClass.match(/scroll\-left|scroll\-top/);
-			}
-
-			//calculate size of track!
-			if (trackSize == 0) {
-				$track.show();
-				getTrackSize();
-			}
-
-			$track.hide();
-
-			//if(!touchDrag) {
-			$track.on('mousedown', mouse_down_track);
-			$bar.on('mousedown', mouse_down_bar);
-			//}
-
-			$content_wrap.on('scroll', function () {
-				if (move_bar) {
-					bar_pos = parseInt(Math.round(this[scroll_direction] * ratio));
-					bar_style[css_pos] = bar_pos + 'px';
-				}
-				move_bar = false;
-				if (trigger_scroll) this.$element.trigger('scroll', [content_wrap]);
-			});
-
-			if (settings.mouseWheel) {
-				this.lock = settings.mouseWheelLock;
-				this.lock_anyway = settings.lockAnyway;
-
-				//mousewheel library available?
-				this.$element.on(!!$.event.special.mousewheel ? 'mousewheel.ace_scroll' : 'mousewheel.ace_scroll DOMMouseScroll.ace_scroll', function (event) {
-					if (disabled) return;
-					checkContentChanges(true);
-
-					if (!active) return !self.lock_anyway;
-
-					if (mouse_track) {
-						mouse_track = false;
-						$('html').off('.ace_scroll');
-						$(mouse_release_target).off('.ace_scroll');
-						if (dragEvent) self.$element.trigger('drag.end');
-					}
-
-					event.deltaY = event.deltaY || 0;
-					var delta = event.deltaY > 0 || event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1;
-					var scrollEnd = false; //have we reached the end of scrolling?
-
-					var clientSize = content_wrap[client_size],
-					    scrollAmount = content_wrap[scroll_direction];
-					if (!self.lock) {
-						if (delta == -1) scrollEnd = content_wrap[scroll_size] <= scrollAmount + clientSize;else scrollEnd = scrollAmount == 0;
-					}
-
-					self.move_bar(true);
-
-					//var step = parseInt( Math.min(Math.max(parseInt(clientSize / 8) , 80) , self.size) ) + 1;
-					var step = parseInt(clientSize / 8);
-					if (step < 80) step = 80;
-					if (step > self.size) step = self.size;
-					step += 1;
-
-					content_wrap[scroll_direction] = scrollAmount - delta * step;
-
-					return scrollEnd && !self.lock_anyway;
-				});
-			}
-
-			//swipe not available yet
-			var touchDrag = ace.vars['touch'] && 'ace_drag' in $.event.special && settings.touchDrag; //&& !settings.touchSwipe;
-			//add drag event for touch devices to scroll
-			if (touchDrag /** || ($.fn.swipe && settings.touchSwipe)*/) {
-					var dir = '',
-					    event_name = touchDrag ? 'ace_drag' : 'swipe';
-					this.$element.on(event_name + '.ace_scroll', function (event) {
-						if (disabled) {
-							event.retval.cancel = true;
-							return;
-						}
-						checkContentChanges(true);
-
-						if (!active) {
-							event.retval.cancel = this.lock_anyway;
-							return;
-						}
-
-						dir = event.direction;
-						if (vertical && (dir == 'up' || dir == 'down') || !vertical && (dir == 'left' || dir == 'right')) {
-							var distance = vertical ? event.dy : event.dx;
-
-							if (distance != 0) {
-								if (Math.abs(distance) > 20 && touchDrag) distance = distance * 2;
-
-								self.move_bar(true);
-								content_wrap[scroll_direction] = content_wrap[scroll_direction] + distance;
-							}
-						}
-					});
-				}
-
-			/////////////////////////////////
-
-			if (hideOnIdle) {
-				$track.addClass('idle-hide');
-			}
-			if (observeContent) {
-				$track.on('mouseenter.ace_scroll', function () {
-					insideTrack = true;
-					checkContentChanges(false);
-				}).on('mouseleave.ace_scroll', function () {
-					insideTrack = false;
-					if (mouse_track == false) hideScrollbars();
-				});
-			}
-
-			//some mobile browsers don't have mouseenter
-			this.$element.on('mouseenter.ace_scroll touchstart.ace_scroll', function (e) {
-				is_dirty = true;
-				if (observeContent) checkContentChanges(true);else if (settings.hoverReset) self.reset(true);
-
-				$track.addClass('scroll-hover');
-			}).on('mouseleave.ace_scroll touchend.ace_scroll', function () {
-				$track.removeClass('scroll-hover');
-			});
-			//
-
-			if (!vertical) $content_wrap.children(0).css(css_size, this.size); //the extra wrapper
-			$content_wrap.css(max_css_size, this.size);
-
-			disabled = false;
-			created = true;
-		};
-		this.is_active = function () {
-			return active;
-		};
-		this.is_enabled = function () {
-			return !disabled;
-		};
-		this.move_bar = function ($move) {
-			move_bar = $move;
-		};
-
-		this.get_track = function () {
-			return track;
-		};
-
-		this.reset = function (innert_call) {
-			if (disabled) return; // this;
-			if (!created) this.create();
-			/////////////////////
-			var size = this.size;
-
-			if (innert_call && !is_dirty) {
-				return;
-			}
-			is_dirty = false;
-
-			if (detached) {
-				var border_size = parseInt(Math.round((parseInt($content_wrap.css('border-top-width')) + parseInt($content_wrap.css('border-bottom-width'))) / 2.5)); //(2.5 from trial?!)
-				size -= border_size; //only if detached
-			}
-
-			var content_size = vertical ? content_wrap[scroll_size] : size;
-			if (vertical && content_size == 0 || !vertical && this.element.scrollWidth == 0) {
-				//element is hidden
-				//this.$element.addClass('scroll-hidden');
-				$track.removeClass('scroll-active');
-				return; // this;
-			}
-
-			var available_space = vertical ? size : content_wrap.clientWidth;
-
-			if (!vertical) $content_wrap.children(0).css(css_size, size); //the extra wrapper
-			$content_wrap.css(max_css_size, this.size);
-
-			if (content_size > available_space) {
-				active = true;
-				$track.css(css_size, available_space).show();
-
-				ratio = parseFloat((available_space / content_size).toFixed(5));
-
-				bar_size = parseInt(Math.round(available_space * ratio));
-				bar_size_2 = parseInt(Math.round(bar_size / 2));
-
-				bar_max_pos = available_space - bar_size;
-				bar_pos = parseInt(Math.round(content_wrap[scroll_direction] * ratio));
-
-				bar_style[css_size] = bar_size + 'px';
-				bar_style[css_pos] = bar_pos + 'px';
-
-				$track.addClass('scroll-active');
-
-				if (trackSize == 0) {
-					getTrackSize();
-				}
-
-				if (!reset_once) {
-					//this.$element.removeClass('scroll-hidden');
-					if (settings.reset) {
-						//reset scrollbar to zero position at first							
-						content_wrap[scroll_direction] = 0;
-						bar_style[css_pos] = 0;
-					}
-					reset_once = true;
-				}
-
-				if (detached) setTrackPos();
-			} else {
-				active = false;
-				$track.hide();
-				$track.removeClass('scroll-active');
-				$content_wrap.css(max_css_size, '');
-			}
-
-			return; // this;
-		};
-		this.disable = function () {
-			content_wrap[scroll_direction] = 0;
-			bar_style[css_pos] = 0;
-
-			disabled = true;
-			active = false;
-			$track.hide();
-
-			this.$element.addClass('scroll-disabled');
-
-			$track.removeClass('scroll-active');
-			$content_wrap.css(max_css_size, '');
-		};
-		this.enable = function () {
-			disabled = false;
-			this.$element.removeClass('scroll-disabled');
-		};
-		this.destroy = function () {
-			active = false;
-			disabled = false;
-			created = false;
-
-			this.$element.removeClass('ace-scroll scroll-disabled scroll-active');
-			this.$element.off('.ace_scroll');
-
-			if (!detached) {
-				if (!vertical) {
-					//remove the extra wrapping div
-					$content_wrap.find('> div').children().unwrap();
-				}
-				$content_wrap.children().unwrap();
-				$content_wrap.remove();
-			}
-
-			$track.remove();
-
-			if (inline_style !== false) this.element.style.position = inline_style;
-
-			if (idleTimer != null) {
-				clearTimeout(idleTimer);
-				idleTimer = null;
-			}
-		};
-		this.modify = function (_settings) {
-			if (_settings) settings = $.extend({}, settings, _settings);
-
-			this.destroy();
-			this.create();
-			is_dirty = true;
-			this.reset(true);
-		};
-		this.update = function (_settings) {
-			if (_settings) settings = $.extend({}, settings, _settings);
-
-			this.size = settings.size || this.size;
-
-			this.lock = settings.mouseWheelLock || this.lock;
-			this.lock_anyway = settings.lockAnyway || this.lock_anyway;
-
-			hideOnIdle = settings.hideOnIdle || hideOnIdle;
-			hideDelay = settings.hideDelay || hideDelay;
-			observeContent = settings.observeContent || false;
-
-			dragEvent = settings.dragEvent || false;
-
-			if (typeof _settings.styleClass !== 'undefined') {
-				if (styleClass) $track.removeClass(styleClass);
-				styleClass = _settings.styleClass;
-				if (styleClass) $track.addClass(styleClass);
-				trackFlip = !!styleClass.match(/scroll\-left|scroll\-top/);
-			}
-		};
-
-		this.start = function () {
-			content_wrap[scroll_direction] = 0;
-		};
-		this.end = function () {
-			content_wrap[scroll_direction] = content_wrap[scroll_size];
-		};
-
-		this.hide = function () {
-			$track.hide();
-		};
-		this.show = function () {
-			$track.show();
-		};
-
-		this.update_scroll = function () {
-			move_bar = false;
-			bar_style[css_pos] = bar_pos + 'px';
-			content_wrap[scroll_direction] = parseInt(Math.round(bar_pos / ratio));
-		};
-
-		function mouse_down_track(e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			var track_offset = $track.offset();
-			var track_pos = track_offset[css_pos]; //top for vertical, left for horizontal
-			var mouse_pos = vertical ? e.pageY : e.pageX;
-
-			if (mouse_pos > track_pos + bar_pos) {
-				bar_pos = mouse_pos - track_pos - bar_size + bar_size_2;
-				if (bar_pos > bar_max_pos) {
-					bar_pos = bar_max_pos;
-				}
-			} else {
-				bar_pos = mouse_pos - track_pos - bar_size_2;
-				if (bar_pos < 0) bar_pos = 0;
-			}
-
-			self.update_scroll();
-		}
-
-		var mouse_pos1 = -1,
-		    mouse_pos2 = -1;
-		function mouse_down_bar(e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			if (vertical) {
-				mouse_pos2 = mouse_pos1 = e.pageY;
-			} else {
-				mouse_pos2 = mouse_pos1 = e.pageX;
-			}
-
-			mouse_track = true;
-			$('html').off('mousemove.ace_scroll').on('mousemove.ace_scroll', mouse_move_bar);
-			$(mouse_release_target).off('mouseup.ace_scroll').on('mouseup.ace_scroll', mouse_up_bar);
-
-			$track.addClass('active');
-			if (dragEvent) self.$element.trigger('drag.start');
-		}
-		function mouse_move_bar(e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			if (vertical) {
-				mouse_pos2 = e.pageY;
-			} else {
-				mouse_pos2 = e.pageX;
-			}
-
-			if (mouse_pos2 - mouse_pos1 + bar_pos > bar_max_pos) {
-				mouse_pos2 = mouse_pos1 + bar_max_pos - bar_pos;
-			} else if (mouse_pos2 - mouse_pos1 + bar_pos < 0) {
-				mouse_pos2 = mouse_pos1 - bar_pos;
-			}
-			bar_pos = bar_pos + (mouse_pos2 - mouse_pos1);
-
-			mouse_pos1 = mouse_pos2;
-
-			if (bar_pos < 0) {
-				bar_pos = 0;
-			} else if (bar_pos > bar_max_pos) {
-				bar_pos = bar_max_pos;
-			}
-
-			self.update_scroll();
-		}
-		function mouse_up_bar(e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			mouse_track = false;
-			$('html').off('.ace_scroll');
-			$(mouse_release_target).off('.ace_scroll');
-
-			$track.removeClass('active');
-			if (dragEvent) self.$element.trigger('drag.end');
-
-			if (active && hideOnIdle && !insideTrack) hideScrollbars();
-		}
-
-		var idleTimer = null;
-		var prevCheckTime = 0;
-		function checkContentChanges(hideSoon) {
-			//check if content size has been modified since last time?
-			//and with at least 1s delay
-			var newCheck = +new Date();
-			if (observeContent && newCheck - prevCheckTime > 1000) {
-				var newSize = content_wrap[scroll_size];
-				if (prevContentSize != newSize) {
-					prevContentSize = newSize;
-					is_dirty = true;
-					self.reset(true);
-				}
-				prevCheckTime = newCheck;
-			}
-
-			//show scrollbars when not idle anymore i.e. triggered by mousewheel, dragging, etc
-			if (active && hideOnIdle) {
-				if (idleTimer != null) {
-					clearTimeout(idleTimer);
-					idleTimer = null;
-				}
-				$track.addClass('not-idle');
-
-				if (!insideTrack && hideSoon == true) {
-					//hideSoon is false when mouse enters track
-					hideScrollbars();
-				}
-			}
-		}
-
-		function hideScrollbars() {
-			if (idleTimer != null) {
-				clearTimeout(idleTimer);
-				idleTimer = null;
-			}
-			idleTimer = setTimeout(function () {
-				idleTimer = null;
-				$track.removeClass('not-idle');
-			}, hideDelay);
-		}
-
-		//for detached scrollbars
-		function getTrackSize() {
-			$track.css('visibility', 'hidden').addClass('scroll-hover');
-			if (vertical) trackSize = parseInt($track.outerWidth()) || 0;else trackSize = parseInt($track.outerHeight()) || 0;
-			$track.css('visibility', '').removeClass('scroll-hover');
-		}
-		this.track_size = function () {
-			if (trackSize == 0) getTrackSize();
-			return trackSize;
-		};
-
-		//for detached scrollbars
-		function setTrackPos() {
-			if (updatePos === false) return;
-
-			var off = $content_wrap.offset(); //because we want it relative to parent not document
-			var left = off.left;
-			var top = off.top;
-
-			if (vertical) {
-				if (!trackFlip) {
-					left += $content_wrap.outerWidth() - trackSize;
-				}
-			} else {
-				if (!trackFlip) {
-					top += $content_wrap.outerHeight() - trackSize;
-				}
-			}
-
-			if (updatePos === true) $track.css({ top: parseInt(top), left: parseInt(left) });else if (updatePos === 'left') $track.css('left', parseInt(left));else if (updatePos === 'top') $track.css('top', parseInt(top));
-		}
-
-		this.create();
-		is_dirty = true;
-		this.reset(true);
-		prevContentSize = content_wrap[scroll_size];
-
-		return this;
-	};
-
-	$.fn.ace_scroll = function (option, value) {
-		var retval;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_scroll');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_scroll', data = new Ace_Scroll(this, options));
-			//else if(typeof options == 'object') data['modify'](options);
-			if (typeof option === 'string') retval = data[option](value);
-		});
-
-		return retval === undefined ? $set : retval;
-	};
-
-	$.fn.ace_scroll.defaults = {
-		'size': 200,
-		'horizontal': false,
-		'mouseWheel': true,
-		'mouseWheelLock': false,
-		'lockAnyway': false,
-		'styleClass': false,
-
-		'observeContent': false,
-		'hideOnIdle': false,
-		'hideDelay': 1500,
-
-		'hoverReset': true //reset scrollbar sizes on mouse hover because of possible sizing changes
-
-		, 'reset': false //true= set scrollTop = 0
-
-		, 'dragEvent': false,
-
-		'touchDrag': true,
-
-		'touchSwipe': false,
-
-		'scrollEvent': false //trigger scroll event
-
-
-		, 'detached': false,
-
-		'updatePos': true
-		/**
-  ,		
-  'track' : true,
-  'show' : false,
-  'dark': false,
-  'alwaysVisible': false,
-  'margin': false,
-  'thin': false,
-  'position': 'right'
-  */
-
-
-		/**
-  $(document).on('ace.settings.ace_scroll', function(e, name) {
-  	if(name == 'sidebar_collapsed') $('.ace-scroll').scroller('reset');
-  });
-  $(window).on('resize.ace_scroll', function() {
-  	$('.ace-scroll').scroller('reset');
-  });
-  */
-
-	};
-})(window.jQuery);
-
-/**
- <b>Custom color picker element</b>. Converts html select elements to a dropdown color picker.
-*/
-(function ($, undefined) {
-	var Ace_Colorpicker = function Ace_Colorpicker(element, _options) {
-
-		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_colorpicker.defaults);
-		var options = $.extend({}, $.fn.ace_colorpicker.defaults, _options, attrib_values);
-
-		var $element = $(element);
-		var color_list = '';
-		var color_selected = '';
-		var selection = null;
-		var color_array = [];
-
-		$element.addClass('hide').find('option').each(function () {
-			var $class = 'colorpick-btn';
-			var color = this.value.replace(/[^\w\s,#\(\)\.]/g, '');
-			if (color.indexOf('number') >= 0) return; //ng
-			if (this.value != color) this.value = color;
-			if (this.selected) {
-				$class += ' selected';
-				color_selected = color;
-			}
-			color_array.push(color);
-			color_list += '<li><a class="' + $class + '" style="background-color:' + color + ';" data-color="' + color + '"></a></li>';
-		}).end().on('change.color', function () {
-			$element.next().find('.btn-colorpicker').css('background-color', this.value);
-		}).after('<div class="dropdown dropdown-colorpicker">\
-		<a data-toggle="dropdown" class="dropdown-toggle" ' + (options.auto_pos ? 'data-position="auto"' : '') + '><span class="btn-colorpicker" style="background-color:' + color_selected + '"></span></a><ul class="dropdown-menu' + (options.caret ? ' dropdown-caret' : '') + (options.pull_right ? ' dropdown-menu-right' : '') + '">' + color_list + '</ul></div>');
-
-		var dropdown = $element.next().find('.dropdown-menu');
-		dropdown.on(ace.click_event, function (e, inner_call) {
-			var a = $(e.target);
-			if (!a.is('.colorpick-btn')) return false;
-
-			if (selection) selection.removeClass('selected');
-			selection = a;
-			selection.addClass('selected');
-			var color = selection.data('color');
-
-			if (inner_call !== true) $element.val(color).trigger('change');
-			$element.next().find('.btn-colorpicker').css('background-color', color);
-
-			e.preventDefault();
-			return true; //to hide dropdown
-		});
-		selection = $element.next().find('a.selected');
-
-		this.pick = function (index, insert) {
-			if (typeof index === 'number') {
-				if (index >= color_array.length) return;
-				element.selectedIndex = index;
-				dropdown.find('a:eq(' + index + ')').trigger(ace.click_event, [true]);
-			} else if (typeof index === 'string') {
-				var color = index.replace(/[^\w\s,#\(\)\.]/g, '');
-				index = color_array.indexOf(color);
-
-				//add this color if it doesn't exist
-				if (index == -1 && insert === true) {
-					color_array.push(color);
-
-					$('<option />').appendTo($element).val(color);
-
-					$('<li><a class="colorpick-btn"></a></li>').appendTo(dropdown).find('a').css('background-color', color).data('color', color);
-
-					index = color_array.length - 1;
-				}
-
-				if (index == -1) return;
-				dropdown.find('a:eq(' + index + ')').trigger(ace.click_event, [true]);
-			}
-		};
-
-		this.destroy = function () {
-			$element.removeClass('hide') //.off('change.color')
-			.next().remove();
-			color_array = [];
-		};
-	};
-
-	$.fn.ace_colorpicker = function (option, value) {
-		var retval;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_colorpicker');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_colorpicker', data = new Ace_Colorpicker(this, options));
-			if (typeof option === 'string') retval = data[option](value);
-		});
-
-		return retval === undefined ? $set : retval;
-	};
-
-	$.fn.ace_colorpicker.defaults = {
-		'pull_right': false,
-		'caret': true,
-		'auto_pos': true
-	};
-})(window.jQuery);
-
-/**
- <b>Ace file input element</b>. Custom, simple file input element to style browser's default file input.
-*/
-(function ($, undefined) {
-	var multiplible = 'multiple' in document.createElement('INPUT');
-	var hasFileList = 'FileList' in window; //file list enabled in modern browsers
-	var hasFileReader = 'FileReader' in window;
-	var hasFile = 'File' in window;
-
-	var Ace_File_Input = function Ace_File_Input(element, settings) {
-		var self = this;
-
-		var attrib_values = ace.helper.getAttrSettings(element, $.fn.ace_file_input.defaults);
-		this.settings = $.extend({}, $.fn.ace_file_input.defaults, settings, attrib_values);
-
-		this.$element = $(element);
-		this.element = element;
-		this.disabled = false;
-		this.can_reset = true;
-
-		this.$element.off('change.ace_inner_call').on('change.ace_inner_call', function (e, ace_inner_call) {
-			if (self.disabled) return;
-
-			if (ace_inner_call === true) return; //this change event is called from above drop event and extra checkings are taken care of there
-			return handle_on_change.call(self);
-			//if(ret === false) e.preventDefault();
-		});
-
-		var parent_label = this.$element.closest('label').css({ 'display': 'block' });
-		var tagName = parent_label.length == 0 ? 'label' : 'span'; //if not inside a "LABEL" tag, use "LABEL" tag, otherwise use "SPAN"
-		this.$element.wrap('<' + tagName + ' class="ace-file-input" />');
-
-		this.apply_settings();
-		this.reset_input_field(); //for firefox as it keeps selected file after refresh
-	};
-	Ace_File_Input.error = {
-		'FILE_LOAD_FAILED': 1,
-		'IMAGE_LOAD_FAILED': 2,
-		'THUMBNAIL_FAILED': 3
-	};
-
-	Ace_File_Input.prototype.apply_settings = function () {
-		var self = this;
-
-		this.multi = this.$element.attr('multiple') && multiplible;
-		this.well_style = this.settings.style == 'well';
-
-		if (this.well_style) {
-			if (!this.settings.thumbnail) this.settings.thumbnail = 'small';
-			this.$element.parent().addClass('ace-file-multiple');
-		} else {
-			this.$element.parent().removeClass('ace-file-multiple');
-		}
-
-		this.$element.parent().find(':not(input[type=file])').remove(); //remove all except our input, good for when changing settings
-		this.$element.after('<span class="ace-file-container" data-title="' + this.settings.btn_choose + '"><span class="ace-file-name" data-title="' + this.settings.no_file + '">' + (this.settings.no_icon ? '<i class="' + ace.vars['icon'] + this.settings.no_icon + '"></i>' : '') + '</span></span>');
-		this.$label = this.$element.next();
-		this.$container = this.$element.closest('.ace-file-input');
-
-		var remove_btn = !!this.settings.icon_remove;
-		if (remove_btn) {
-			var btn = $('<a class="remove" href="#"><i class="' + ace.vars['icon'] + this.settings.icon_remove + '"></i></a>').appendTo(this.$element.parent());
-
-			btn.on(ace.click_event, function (e) {
-				e.preventDefault();
-				if (!self.can_reset) return false;
-
-				var ret = true;
-				if (self.settings.before_remove) ret = self.settings.before_remove.call(self.element);
-				if (!ret) return false;
-
-				var r = self.reset_input();
-				return false;
-			});
-		}
-
-		if (this.settings.droppable && hasFileList) {
-			enable_drop_functionality.call(this);
-		}
-	};
-
-	Ace_File_Input.prototype.show_file_list = function ($files, inner_call) {
-		var files = typeof $files === "undefined" ? this.$element.data('ace_input_files') : $files;
-		if (!files || files.length == 0) return;
-
-		//////////////////////////////////////////////////////////////////
-
-		if (this.well_style) {
-			this.$label.find('.ace-file-name').remove();
-			if (!this.settings.btn_change) this.$label.addClass('hide-placeholder');
-		}
-		this.$label.attr('data-title', this.settings.btn_change).addClass('selected');
-
-		for (var i = 0; i < files.length; i++) {
-			var filename = '',
-			    format = false;
-			if (typeof files[i] === "string") filename = files[i];else if (hasFile && files[i] instanceof File) filename = $.trim(files[i].name);else if (files[i] instanceof Object && files[i].hasOwnProperty('name')) {
-				//format & name specified by user (pre-displaying name, etc)
-				filename = files[i].name;
-				if (files[i].hasOwnProperty('type')) format = files[i].type;
-				if (!files[i].hasOwnProperty('path')) files[i].path = files[i].name;
-			} else continue;
-
-			var index = filename.lastIndexOf("\\") + 1;
-			if (index == 0) index = filename.lastIndexOf("/") + 1;
-			filename = filename.substr(index);
-
-			if (format == false) {
-				if (/\.(jpe?g|png|gif|svg|bmp|tiff?)$/i.test(filename)) {
-					format = 'image';
-				} else if (/\.(mpe?g|flv|mov|avi|swf|mp4|mkv|webm|wmv|3gp)$/i.test(filename)) {
-					format = 'video';
-				} else if (/\.(mp3|ogg|wav|wma|amr|aac)$/i.test(filename)) {
-					format = 'audio';
-				} else format = 'file';
-			}
-
-			var fileIcons = {
-				'file': 'fa fa-file',
-				'image': 'fa fa-picture-o file-image',
-				'video': 'fa fa-film file-video',
-				'audio': 'fa fa-music file-audio'
-			};
-			var fileIcon = fileIcons[format];
-
-			if (!this.well_style) this.$label.find('.ace-file-name').attr({ 'data-title': filename }).find(ace.vars['.icon']).attr('class', ace.vars['icon'] + fileIcon);else {
-				this.$label.append('<span class="ace-file-name" data-title="' + filename + '"><i class="' + ace.vars['icon'] + fileIcon + '"></i></span>');
-				var type = inner_call === true && hasFile && files[i] instanceof File ? $.trim(files[i].type) : '';
-				var can_preview = hasFileReader && this.settings.thumbnail && (type.length > 0 && type.match('image') || type.length == 0 && format == 'image'); //the second one is for older Android's default browser which gives an empty text for file.type
-				if (can_preview) {
-					var self = this;
-					$.when(preview_image.call(this, files[i])).fail(function (result) {
-						//called on failure to load preview
-						if (self.settings.preview_error) self.settings.preview_error.call(self, filename, result.code);
-					});
-				}
-			}
-		}
-
-		return true;
-	};
-
-	Ace_File_Input.prototype.reset_input = function () {
-		this.reset_input_ui();
-		this.reset_input_field();
-	};
-
-	Ace_File_Input.prototype.reset_input_ui = function () {
-		this.$label.attr({ 'data-title': this.settings.btn_choose, 'class': 'ace-file-container' }).find('.ace-file-name:first').attr({ 'data-title': this.settings.no_file, 'class': 'ace-file-name' }).find(ace.vars['.icon']).attr('class', ace.vars['icon'] + this.settings.no_icon).prev('img').remove();
-		if (!this.settings.no_icon) this.$label.find(ace.vars['.icon']).remove();
-
-		this.$label.find('.ace-file-name').not(':first').remove();
-
-		this.reset_input_data();
-
-		//if(ace.vars['old_ie']) ace.helper.redraw(this.$container[0]);
-	};
-	Ace_File_Input.prototype.reset_input_field = function () {
-		//http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery/13351234#13351234
-		this.$element.wrap('<form>').parent().get(0).reset();
-		this.$element.unwrap();
-
-		//strangely when reset is called on this temporary inner form
-		//only **IE9/10** trigger 'reset' on the outer form as well
-		//and as we have mentioned to reset input on outer form reset
-		//it causes infinite recusrsion by coming back to reset_input_field
-		//thus calling reset again and again and again
-		//so because when "reset" button of outer form is hit, file input is automatically reset
-		//we just reset_input_ui to avoid recursion
-	};
-	Ace_File_Input.prototype.reset_input_data = function () {
-		if (this.$element.data('ace_input_files')) {
-			this.$element.removeData('ace_input_files');
-			this.$element.removeData('ace_input_method');
-		}
-	};
-
-	Ace_File_Input.prototype.enable_reset = function (can_reset) {
-		this.can_reset = can_reset;
-	};
-
-	Ace_File_Input.prototype.disable = function () {
-		this.disabled = true;
-		this.$element.attr('disabled', 'disabled').addClass('disabled');
-	};
-	Ace_File_Input.prototype.enable = function () {
-		this.disabled = false;
-		this.$element.removeAttr('disabled').removeClass('disabled');
-	};
-
-	Ace_File_Input.prototype.files = function () {
-		return $(this).data('ace_input_files') || null;
-	};
-	Ace_File_Input.prototype.method = function () {
-		return $(this).data('ace_input_method') || '';
-	};
-
-	Ace_File_Input.prototype.update_settings = function (new_settings) {
-		this.settings = $.extend({}, this.settings, new_settings);
-		this.apply_settings();
-	};
-
-	Ace_File_Input.prototype.loading = function (is_loading) {
-		if (is_loading === false) {
-			this.$container.find('.ace-file-overlay').remove();
-			this.element.removeAttribute('readonly');
-		} else {
-			var inside = typeof is_loading === 'string' ? is_loading : '<i class="overlay-content fa fa-spin fa-spinner orange2 fa-2x"></i>';
-			var loader = this.$container.find('.ace-file-overlay');
-			if (loader.length == 0) {
-				loader = $('<div class="ace-file-overlay"></div>').appendTo(this.$container);
-				loader.on('click tap', function (e) {
-					e.stopImmediatePropagation();
-					e.preventDefault();
-					return false;
-				});
-
-				this.element.setAttribute('readonly', 'true'); //for IE
-			}
-			loader.empty().append(inside);
-		}
-	};
-
-	var enable_drop_functionality = function enable_drop_functionality() {
-		var self = this;
-
-		var dropbox = this.$element.parent();
-		dropbox.off('dragenter').on('dragenter', function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-		}).off('dragover').on('dragover', function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-		}).off('drop').on('drop', function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			if (self.disabled) return;
-
-			var dt = e.originalEvent.dataTransfer;
-			var file_list = dt.files;
-			if (!self.multi && file_list.length > 1) {
-				//single file upload, but dragged multiple files
-				var tmpfiles = [];
-				tmpfiles.push(file_list[0]);
-				file_list = tmpfiles; //keep only first file
-			}
-
-			file_list = processFiles.call(self, file_list, true); //true means files have been selected, not dropped
-			if (file_list === false) return false;
-
-			self.$element.data('ace_input_method', 'drop');
-			self.$element.data('ace_input_files', file_list); //save files data to be used later by user
-
-			self.show_file_list(file_list, true);
-
-			self.$element.triggerHandler('change', [true]); //true means ace_inner_call
-			return true;
-		});
-	};
-
-	var handle_on_change = function handle_on_change() {
-		var file_list = this.element.files || [this.element.value]; /** make it an array */
-
-		file_list = processFiles.call(this, file_list, false); //false means files have been selected, not dropped
-		if (file_list === false) return false;
-
-		this.$element.data('ace_input_method', 'select');
-		this.$element.data('ace_input_files', file_list);
-
-		this.show_file_list(file_list, true);
-
-		return true;
-	};
-
-	var preview_image = function preview_image(file) {
-		var self = this;
-		var $span = self.$label.find('.ace-file-name:last'); //it should be out of onload, otherwise all onloads may target the same span because of delays
-
-		var deferred = new $.Deferred();
-
-		var getImage = function getImage(src, $file) {
-			$span.prepend("<img class='middle' style='display:none;' />");
-			var img = $span.find('img:last').get(0);
-
-			$(img).one('load', function () {
-				imgLoaded.call(null, img, $file);
-			}).one('error', function () {
-				imgFailed.call(null, img);
-			});
-
-			img.src = src;
-		};
-		var imgLoaded = function imgLoaded(img, $file) {
-			//if image loaded successfully
-
-			var size = self.settings['previewSize'];
-
-			if (!size) {
-				if (self.settings['previewWidth'] || self.settings['previewHeight']) {
-					size = { previewWidth: self.settings['previewWidth'], previewHeight: self.settings['previewHeight'] };
-				} else {
-					size = 50;
-					if (self.settings.thumbnail == 'large') size = 150;
-				}
-			}
-			if (self.settings.thumbnail == 'fit') size = $span.width();else if (typeof size == 'number') size = parseInt(Math.min(size, $span.width()));
-
-			var thumb = get_thumbnail(img, size /**, file.type*/);
-			if (thumb == null) {
-				//if making thumbnail fails
-				$(this).remove();
-				deferred.reject({ code: Ace_File_Input.error['THUMBNAIL_FAILED'] });
-				return;
-			}
-
-			var showPreview = true;
-			//add width/height info to "file" and trigger preview finished event for each image!
-			if ($file && $file instanceof File) {
-				$file.width = thumb.width;
-				$file.height = thumb.height;
-				self.$element.trigger('file.preview.ace', { 'file': $file });
-
-				var event;
-				self.$element.trigger(event = new $.Event('file.preview.ace'), { 'file': $file });
-				if (event.isDefaultPrevented()) showPreview = false;
-			}
-
-			if (showPreview) {
-				var w = thumb.previewWidth,
-				    h = thumb.previewHeight;
-				if (self.settings.thumbnail == 'small') {
-					w = h = parseInt(Math.max(w, h));
-				} else $span.addClass('large');
-
-				$(img).css({ 'background-image': 'url(' + thumb.src + ')', width: w, height: h }).data('thumb', thumb.src).attr({ src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==' }).show();
-			}
-
-			///////////////////
-			deferred.resolve();
-		};
-		var imgFailed = function imgFailed(img) {
-			//for example when a file has image extenstion, but format is something else
-			$span.find('img').remove();
-			deferred.reject({ code: Ace_File_Input.error['IMAGE_LOAD_FAILED'] });
-		};
-
-		if (hasFile && file instanceof File) {
-			var reader = new FileReader();
-			reader.onload = function (e) {
-				getImage(e.target.result, file);
-			};
-			reader.onerror = function (e) {
-				deferred.reject({ code: Ace_File_Input.error['FILE_LOAD_FAILED'] });
-			};
-			reader.readAsDataURL(file);
-		} else {
-			if (file instanceof Object && file.hasOwnProperty('path')) {
-				getImage(file.path, null); //file is a file name (path) --- this is used to pre-show user-selected image
-			}
-		}
-
-		return deferred.promise();
-	};
-
-	var get_thumbnail = function get_thumbnail(img, size, type) {
-		var imgWidth = img.width,
-		    imgHeight = img.height;
-
-		//**IE10** is not giving correct width using img.width so we use $(img).width()
-		imgWidth = imgWidth > 0 ? imgWidth : $(img).width();
-		imgHeight = imgHeight > 0 ? imgHeight : $(img).height();
-
-		var previewSize = false,
-		    previewHeight = false,
-		    previewWidth = false;
-		if (typeof size == 'number') previewSize = size;else if (size instanceof Object) {
-			if (size['previewWidth'] && !size['previewHeight']) previewWidth = size['previewWidth'];else if (size['previewHeight'] && !size['previewWidth']) previewHeight = size['previewHeight'];else if (size['previewWidth'] && size['previewHeight']) {
-				previewWidth = size['previewWidth'];
-				previewHeight = size['previewHeight'];
-			}
-		}
-
-		if (previewSize) {
-			if (imgWidth > imgHeight) {
-				previewWidth = previewSize;
-				previewHeight = parseInt(imgHeight / imgWidth * previewWidth);
-			} else {
-				previewHeight = previewSize;
-				previewWidth = parseInt(imgWidth / imgHeight * previewHeight);
-			}
-		} else {
-			if (!previewHeight && previewWidth) {
-				previewHeight = parseInt(imgHeight / imgWidth * previewWidth);
-			} else if (previewHeight && !previewWidth) {
-				previewWidth = parseInt(imgWidth / imgHeight * previewHeight);
-			}
-		}
-
-		var dataURL;
-		try {
-			var canvas = document.createElement('canvas');
-			canvas.width = previewWidth;canvas.height = previewHeight;
-			var context = canvas.getContext('2d');
-			context.drawImage(img, 0, 0, imgWidth, imgHeight, 0, 0, previewWidth, previewHeight);
-			dataURL = canvas.toDataURL();
-		} catch (e) {
-			dataURL = null;
-		}
-		if (!dataURL) return null;
-
-		//there was only one image that failed in firefox completely randomly! so let's double check things
-		if (!/^data\:image\/(png|jpe?g|gif);base64,[0-9A-Za-z\+\/\=]+$/.test(dataURL)) dataURL = null;
-		if (!dataURL) return null;
-
-		return { src: dataURL, previewWidth: previewWidth, previewHeight: previewHeight, width: imgWidth, height: imgHeight };
-	};
-
-	var processFiles = function processFiles(file_list, dropped) {
-		var ret = checkFileList.call(this, file_list, dropped);
-		if (ret === -1) {
-			this.reset_input();
-			return false;
-		}
-		if (!ret || ret.length == 0) {
-			if (!this.$element.data('ace_input_files')) this.reset_input();
-			//if nothing selected before, reset because of the newly unacceptable (ret=false||length=0) selection
-			//otherwise leave the previous selection intact?!!!
-			return false;
-		}
-		if (ret instanceof Array || hasFileList && ret instanceof FileList) file_list = ret;
-
-		ret = true;
-		if (this.settings.before_change) ret = this.settings.before_change.call(this.element, file_list, dropped);
-		if (ret === -1) {
-			this.reset_input();
-			return false;
-		}
-		if (!ret || ret.length == 0) {
-			if (!this.$element.data('ace_input_files')) this.reset_input();
-			return false;
-		}
-
-		//inside before_change you can return a modified File Array as result
-		if (ret instanceof Array || hasFileList && ret instanceof FileList) file_list = ret;
-
-		return file_list;
-	};
-
-	var getExtRegex = function getExtRegex(ext) {
-		if (!ext) return null;
-		if (typeof ext === 'string') ext = [ext];
-		if (ext.length == 0) return null;
-		return new RegExp("\.(?:" + ext.join('|') + ")$", "i");
-	};
-	var getMimeRegex = function getMimeRegex(mime) {
-		if (!mime) return null;
-		if (typeof mime === 'string') mime = [mime];
-		if (mime.length == 0) return null;
-		return new RegExp("^(?:" + mime.join('|').replace(/\//g, "\\/") + ")$", "i");
-	};
-	var checkFileList = function checkFileList(files, dropped) {
-		var allowExt = getExtRegex(this.settings.allowExt);
-
-		var denyExt = getExtRegex(this.settings.denyExt);
-
-		var allowMime = getMimeRegex(this.settings.allowMime);
-
-		var denyMime = getMimeRegex(this.settings.denyMime);
-
-		var maxSize = this.settings.maxSize || false;
-
-		if (!(allowExt || denyExt || allowMime || denyMime || maxSize)) return true; //no checking required
-
-
-		var safe_files = [];
-		var error_list = {};
-		for (var f = 0; f < files.length; f++) {
-			var file = files[f];
-
-			//file is either a string(file name) or a File object
-			var filename = !hasFile ? file : file.name;
-			if (allowExt && !allowExt.test(filename)) {
-				//extension not matching whitelist, so drop it
-				if (!('ext' in error_list)) error_list['ext'] = [];
-				error_list['ext'].push(filename);
-
-				continue;
-			} else if (denyExt && denyExt.test(filename)) {
-				//extension is matching blacklist, so drop it
-				if (!('ext' in error_list)) error_list['ext'] = [];
-				error_list['ext'].push(filename);
-
-				continue;
-			}
-
-			var type;
-			if (!hasFile) {
-				//in browsers that don't support FileReader API
-				safe_files.push(file);
-				continue;
-			} else if ((type = $.trim(file.type)).length > 0) {
-				//there is a mimetype for file so let's check against are rules
-				if (allowMime && !allowMime.test(type)) {
-					//mimeType is not matching whitelist, so drop it
-					if (!('mime' in error_list)) error_list['mime'] = [];
-					error_list['mime'].push(filename);
-					continue;
-				} else if (denyMime && denyMime.test(type)) {
-					//mimeType is matching blacklist, so drop it
-					if (!('mime' in error_list)) error_list['mime'] = [];
-					error_list['mime'].push(filename);
-					continue;
-				}
-			}
-
-			if (maxSize && file.size > maxSize) {
-				//file size is not acceptable
-				if (!('size' in error_list)) error_list['size'] = [];
-				error_list['size'].push(filename);
-				continue;
-			}
-
-			safe_files.push(file);
-		}
-
-		if (safe_files.length == files.length) return files; //return original file list if all are valid
-
-		/////////
-		var error_count = { 'ext': 0, 'mime': 0, 'size': 0 };
-		if ('ext' in error_list) error_count['ext'] = error_list['ext'].length;
-		if ('mime' in error_list) error_count['mime'] = error_list['mime'].length;
-		if ('size' in error_list) error_count['size'] = error_list['size'].length;
-
-		var event;
-		this.$element.trigger(event = new $.Event('file.error.ace'), {
-			'file_count': files.length,
-			'invalid_count': files.length - safe_files.length,
-			'error_list': error_list,
-			'error_count': error_count,
-			'dropped': dropped
-		});
-		if (event.isDefaultPrevented()) return -1; //it will reset input
-		//////////
-
-		return safe_files; //return safe_files
-	};
-
-	///////////////////////////////////////////
-	$.fn.aceFileInput = $.fn.ace_file_input = function (option, value) {
-		var retval;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_file_input');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_file_input', data = new Ace_File_Input(this, options));
-			if (typeof option === 'string') retval = data[option](value);
-		});
-
-		return retval === undefined ? $set : retval;
-	};
-
-	$.fn.ace_file_input.defaults = {
-		style: false,
-		no_file: 'No File ...',
-		no_icon: 'fa fa-upload',
-		btn_choose: 'Choose',
-		btn_change: 'Change',
-		icon_remove: 'fa fa-times',
-		droppable: false,
-		thumbnail: false, //large, fit, small
-
-		allowExt: null,
-		denyExt: null,
-		allowMime: null,
-		denyMime: null,
-		maxSize: false,
-
-		previewSize: false,
-		previewWidth: false,
-		previewHeight: false,
-
-		//callbacks
-		before_change: null,
-		before_remove: null,
-		preview_error: null
-	};
-})(window.jQuery);
-
-/**
- <b>Wysiwyg</b>. A wrapper for Bootstrap wyswiwyg plugin.
- It's just a wrapper so you still need to include Bootstrap wysiwyg script first.
-*/
-(function ($, undefined) {
-	$.fn.ace_wysiwyg = function ($options, undefined) {
-		var options = $.extend({
-			speech_button: true,
-			wysiwyg: {}
-		}, $options);
-
-		var color_values = ['#ac725e', '#d06b64', '#f83a22', '#fa573c', '#ff7537', '#ffad46', '#42d692', '#16a765', '#7bd148', '#b3dc6c', '#fbe983', '#fad165', '#92e1c0', '#9fe1e7', '#9fc6e7', '#4986e7', '#9a9cff', '#b99aff', '#c2c2c2', '#cabdbf', '#cca6ac', '#f691b2', '#cd74e6', '#a47ae2', '#444444'];
-
-		var button_defaults = {
-			'font': {
-				values: ['Arial', 'Courier', 'Comic Sans MS', 'Helvetica', 'Open Sans', 'Tahoma', 'Verdana'],
-				icon: 'fa fa-font',
-				title: 'Font'
-			},
-			'fontSize': {
-				values: { 5: 'Huge', 3: 'Normal', 1: 'Small' },
-				icon: 'fa fa-text-height',
-				title: 'Font Size'
-			},
-			'bold': {
-				icon: 'fa fa-bold',
-				title: 'Bold (Ctrl/Cmd+B)'
-			},
-			'italic': {
-				icon: 'fa fa-italic',
-				title: 'Italic (Ctrl/Cmd+I)'
-			},
-			'strikethrough': {
-				icon: 'fa fa-strikethrough',
-				title: 'Strikethrough'
-			},
-			'underline': {
-				icon: 'fa fa-underline',
-				title: 'Underline'
-			},
-			'insertunorderedlist': {
-				icon: 'fa fa-list-ul',
-				title: 'Bullet list'
-			},
-			'insertorderedlist': {
-				icon: 'fa fa-list-ol',
-				title: 'Number list'
-			},
-			'outdent': {
-				icon: 'fa fa-outdent',
-				title: 'Reduce indent (Shift+Tab)'
-			},
-			'indent': {
-				icon: 'fa fa-indent',
-				title: 'Indent (Tab)'
-			},
-			'justifyleft': {
-				icon: 'fa fa-align-left',
-				title: 'Align Left (Ctrl/Cmd+L)'
-			},
-			'justifycenter': {
-				icon: 'fa fa-align-center',
-				title: 'Center (Ctrl/Cmd+E)'
-			},
-			'justifyright': {
-				icon: 'fa fa-align-right',
-				title: 'Align Right (Ctrl/Cmd+R)'
-			},
-			'justifyfull': {
-				icon: 'fa fa-align-justify',
-				title: 'Justify (Ctrl/Cmd+J)'
-			},
-			'createLink': {
-				icon: 'fa fa-link',
-				title: 'Hyperlink',
-				button_text: 'Add',
-				placeholder: 'URL',
-				button_class: 'btn-primary'
-			},
-			'unlink': {
-				icon: 'fa fa-chain-broken',
-				title: 'Remove Hyperlink'
-			},
-			'insertImage': {
-				icon: 'fa fa-picture-o',
-				title: 'Insert picture',
-				button_text: '<i class="' + ace.vars['icon'] + 'fa fa-file"></i> Choose Image &hellip;',
-				placeholder: 'Image URL',
-				button_insert: 'Insert',
-				button_class: 'btn-success',
-				button_insert_class: 'btn-primary',
-				choose_file: true //show the choose file button?
-			},
-			'foreColor': {
-				values: color_values,
-				title: 'Change Color'
-			},
-			'backColor': {
-				values: color_values,
-				title: 'Change Background Color'
-			},
-			'undo': {
-				icon: 'fa fa-undo',
-				title: 'Undo (Ctrl/Cmd+Z)'
-			},
-			'redo': {
-				icon: 'fa fa-repeat',
-				title: 'Redo (Ctrl/Cmd+Y)'
-			},
-			'viewSource': {
-				icon: 'fa fa-code',
-				title: 'View Source'
-			}
-		};
-
-		var toolbar_buttons = options.toolbar || ['font', null, 'fontSize', null, 'bold', 'italic', 'strikethrough', 'underline', null, 'insertunorderedlist', 'insertorderedlist', 'outdent', 'indent', null, 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', null, 'createLink', 'unlink', null, 'insertImage', null, 'foreColor', null, 'undo', 'redo', null, 'viewSource'];
-
-		this.each(function () {
-			var toolbar = ' <div class="wysiwyg-toolbar btn-toolbar center"> <div class="btn-group"> ';
-
-			for (var tb in toolbar_buttons) {
-				if (toolbar_buttons.hasOwnProperty(tb)) {
-					var button = toolbar_buttons[tb];
-					if (button === null) {
-						toolbar += ' </div> <div class="btn-group"> ';
-						continue;
-					}
-
-					if (typeof button == "string" && button in button_defaults) {
-						button = button_defaults[button];
-						button.name = toolbar_buttons[tb];
-					} else if ((typeof button === 'undefined' ? 'undefined' : _typeof(button)) == "object" && button.name in button_defaults) {
-						button = $.extend(button_defaults[button.name], button);
-					} else continue;
-
-					var className = "className" in button ? button.className : 'btn-default';
-					switch (button.name) {
-						case 'font':
-							toolbar += ' <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i><i class="' + ace.vars['icon'] + 'fa fa-angle-down icon-on-right"></i></a> ';
-							toolbar += ' <ul class="dropdown-menu dropdown-light dropdown-caret">';
-							for (var font in button.values) {
-								if (button.values.hasOwnProperty(font)) toolbar += ' <li><a data-edit="fontName ' + button.values[font] + '" style="font-family:\'' + button.values[font] + '\'">' + button.values[font] + '</a></li> ';
-							}toolbar += ' </ul>';
-							break;
-
-						case 'fontSize':
-							toolbar += ' <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i>&nbsp;<i class="' + ace.vars['icon'] + 'fa fa-angle-down icon-on-right"></i></a> ';
-							toolbar += ' <ul class="dropdown-menu dropdown-light dropdown-caret"> ';
-							for (var size in button.values) {
-								if (button.values.hasOwnProperty(size)) toolbar += ' <li><a data-edit="fontSize ' + size + '"><font size="' + size + '">' + button.values[size] + '</font></a></li> ';
-							}toolbar += ' </ul> ';
-							break;
-
-						case 'createLink':
-							toolbar += ' <div class="btn-group"> <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
-							toolbar += ' <div class="dropdown-menu dropdown-caret dropdown-menu-right">\
-							 <div class="input-group">\
-								<input class="form-control" placeholder="' + button.placeholder + '" type="text" data-edit="' + button.name + '" />\
-								<span class="input-group-btn">\
-									<button class="btn btn-sm ' + button.button_class + '" type="button">' + button.button_text + '</button>\
-								</span>\
-							 </div>\
-						</div> </div>';
-							break;
-
-						case 'insertImage':
-							toolbar += ' <div class="btn-group"> <a class="btn btn-sm ' + className + ' dropdown-toggle" data-toggle="dropdown" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
-							toolbar += ' <div class="dropdown-menu dropdown-caret dropdown-menu-right">\
-							 <div class="input-group">\
-								<input class="form-control" placeholder="' + button.placeholder + '" type="text" data-edit="' + button.name + '" />\
-								<span class="input-group-btn">\
-									<button class="btn btn-sm ' + button.button_insert_class + '" type="button">' + button.button_insert + '</button>\
-								</span>\
-							 </div>';
-							if (button.choose_file && 'FileReader' in window) toolbar += '<div class="space-2"></div>\
-							 <label class="center block no-margin-bottom">\
-								<button class="btn btn-sm ' + button.button_class + ' wysiwyg-choose-file" type="button">' + button.button_text + '</button>\
-								<input type="file" data-edit="' + button.name + '" />\
-							  </label>';
-							toolbar += ' </div> </div>';
-							break;
-
-						case 'foreColor':
-						case 'backColor':
-							toolbar += ' <select class="hide wysiwyg_colorpicker" title="' + button.title + '"> ';
-							$.each(button.values, function (_, color) {
-								toolbar += ' <option value="' + color + '">' + color + '</option> ';
-							});
-							toolbar += ' </select> ';
-							toolbar += ' <input style="display:none;" disabled class="hide" type="text" data-edit="' + button.name + '" /> ';
-							break;
-
-						case 'viewSource':
-							toolbar += ' <a class="btn btn-sm ' + className + '" data-view="source" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
-							break;
-						default:
-							toolbar += ' <a class="btn btn-sm ' + className + '" data-edit="' + button.name + '" title="' + button.title + '"><i class="' + ace.vars['icon'] + button.icon + '"></i></a> ';
-							break;
-					}
-				}
-			}toolbar += ' </div> ';
-			////////////
-			var speech_input;
-			if (options.speech_button && 'onwebkitspeechchange' in (speech_input = document.createElement('input'))) {
-				toolbar += ' <input class="wysiwyg-speech-input" type="text" data-edit="inserttext" x-webkit-speech />';
-			}
-			speech_input = null;
-			////////////
-			toolbar += ' </div> ';
-
-			//if we have a function to decide where to put the toolbar, then call that
-			if (options.toolbar_place) toolbar = options.toolbar_place.call(this, toolbar);
-			//otherwise put it just before our DIV
-			else toolbar = $(this).before(toolbar).prev();
-
-			if ($.fn.tooltip) toolbar.find('a[title]').tooltip({ animation: false, container: 'body' });
-
-			toolbar.find('.dropdown-menu input[type=text]').on('click', function () {
-				return false;
-			}).on('change', function () {
-				$(this).closest('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');
-			}).on('keydown', function (e) {
-				if (e.which == 27) {
-					this.value = '';
-					$(this).change();
-				} else if (e.which == 13) {
-					e.preventDefault();
-					e.stopPropagation();
-					$(this).change();
-				}
-			});
-
-			toolbar.find('input[type=file]').prev().on(ace.click_event, function (e) {
-				$(this).next().click();
-			});
-			toolbar.find('.wysiwyg_colorpicker').each(function () {
-				var el = $(this).ace_colorpicker({ pull_right: true }).change(function () {
-					$(this).nextAll('input').eq(0).val(this.value).change();
-				}).next().find('.btn-colorpicker');
-
-				if ($.fn.tooltip) el.tooltip({ title: this.title, animation: false, container: 'body' });
-			});
-
-			var self = $(this);
-			//view source
-			var view_source = false;
-			toolbar.find('a[data-view=source]').on('click', function (e) {
-				e.preventDefault();
-
-				if (!view_source) {
-					$('<textarea />').css({ 'width': self.outerWidth(), 'height': self.outerHeight() }).val(self.html()).insertAfter(self);
-					self.hide();
-
-					$(this).addClass('active');
-				} else {
-					var textarea = self.next();
-					self.html(textarea.val()).show();
-					textarea.remove();
-
-					$(this).removeClass('active');
-				}
-
-				view_source = !view_source;
-			});
-
-			var $options = $.extend({}, { activeToolbarClass: 'active', toolbarSelector: toolbar }, options.wysiwyg || {});
-			$(this).wysiwyg($options);
-		});
-
-		return this;
-	};
-})(window.jQuery);
-
-/**
- <b>Wizard</b>. A wrapper for FuelUX wizard element.
- It's just a wrapper so you still need to include FuelUX wizard script first.
-*/
-(function ($, undefined) {
-	$.fn.aceWizard = $.fn.ace_wizard = function (options) {
-
-		this.each(function () {
-			var $this = $(this);
-			$this.wizard();
-
-			if (ace.vars['old_ie']) $this.find('ul.steps > li').last().addClass('last-child');
-
-			var buttons = options && options['buttons'] ? $(options['buttons']) : $this.siblings('.wizard-actions').eq(0);
-			var $wizard = $this.data('fu.wizard');
-			$wizard.$prevBtn.remove();
-			$wizard.$nextBtn.remove();
-
-			$wizard.$prevBtn = buttons.find('.btn-prev').eq(0).on(ace.click_event, function () {
-				$wizard.previous();
-			}).attr('disabled', 'disabled');
-			$wizard.$nextBtn = buttons.find('.btn-next').eq(0).on(ace.click_event, function () {
-				$wizard.next();
-			}).removeAttr('disabled');
-			$wizard.nextText = $wizard.$nextBtn.text();
-
-			var step = options && (options.selectedItem && options.selectedItem.step || options.step);
-			if (step) {
-				$wizard.currentStep = step;
-				$wizard.setState();
-			}
-		});
-
-		return this;
-	};
-})(window.jQuery);
-
-/**
- <b>Content Slider</b>. with custom content and elements based on Bootstrap modals.
-*/
-(function ($, undefined) {
-	var $window = $(window);
-
-	function Aside(modal, settings) {
-		var self = this;
-
-		var $modal = $(modal);
-		var placement = 'right',
-		    vertical = false;
-		var hasFade = $modal.hasClass('fade'); //Bootstrap enables transition only when modal is ".fade"
-
-		var attrib_values = ace.helper.getAttrSettings(modal, $.fn.ace_aside.defaults);
-		this.settings = $.extend({}, $.fn.ace_aside.defaults, settings, attrib_values);
-
-		//if no scroll style specified and modal has dark background, let's make scrollbars 'white'
-		if (this.settings.background && !settings.scroll_style && !attrib_values.scroll_style) {
-			this.settings.scroll_style = 'scroll-white no-track';
-		}
-
-		this.container = this.settings.container;
-		if (this.container) {
-			try {
-				if ($(this.container).get(0) == document.body) this.container = null;
-			} catch (e) {}
-		}
-		if (this.container) {
-			this.settings.backdrop = false; //no backdrop when inside another element?
-			$modal.addClass('aside-contained');
-		}
-
-		var dialog = $modal.find('.modal-dialog');
-		var content = $modal.find('.modal-content');
-		var delay = 300;
-
-		this.initiate = function () {
-			modal.className = modal.className.replace(/(\s|^)aside\-(right|top|left|bottom)(\s|$)/ig, '$1$3');
-
-			placement = this.settings.placement;
-			if (placement) placement = $.trim(placement.toLowerCase());
-			if (!placement || !/right|top|left|bottom/.test(placement)) placement = 'right';
-
-			$modal.attr('data-placement', placement);
-			$modal.addClass('aside-' + placement);
-
-			if (/right|left/.test(placement)) {
-				vertical = true;
-				$modal.addClass('aside-vc'); //vertical
-			} else $modal.addClass('aside-hz'); //horizontal
-
-			if (this.settings.fixed) $modal.addClass('aside-fixed');
-			if (this.settings.background) $modal.addClass('aside-dark');
-			if (this.settings.offset) $modal.addClass('navbar-offset');
-
-			if (!this.settings.transition) $modal.addClass('transition-off');
-
-			$modal.addClass('aside-hidden');
-
-			this.insideContainer();
-
-			/////////////////////////////
-
-			dialog = $modal.find('.modal-dialog');
-			content = $modal.find('.modal-content');
-
-			if (!this.settings.body_scroll) {
-				//don't allow body scroll when modal is open
-				$modal.on('mousewheel.aside DOMMouseScroll.aside touchmove.aside pointermove.aside', function (e) {
-					if (!$.contains(content[0], e.target)) {
-						e.preventDefault();
-						return false;
-					}
-				});
-			}
-
-			if (this.settings.backdrop == false) {
-				$modal.addClass('no-backdrop');
-			}
-		};
-
-		this.show = function () {
-			if (this.settings.backdrop == false) {
-				try {
-					$modal.data('bs.modal').$backdrop.remove();
-				} catch (e) {}
-			}
-
-			if (this.container) $(this.container).addClass('overflow-hidden');else $modal.css('position', 'fixed');
-
-			$modal.removeClass('aside-hidden');
-		};
-
-		this.hide = function () {
-			if (this.container) {
-				this.container.addClass('overflow-hidden');
-
-				if (ace.vars['firefox']) {
-					//firefox needs a bit of forcing re-calculation
-					modal.offsetHeight;
-				}
-			}
-
-			toggleButton();
-
-			if (ace.vars['transition'] && !hasFade) {
-				$modal.one('bsTransitionEnd', function () {
-					$modal.addClass('aside-hidden');
-					$modal.css('position', '');
-
-					if (self.container) self.container.removeClass('overflow-hidden');
-				}).emulateTransitionEnd(delay);
-			}
-		};
-
-		this.shown = function () {
-			toggleButton();
-			$('body').removeClass('modal-open').css('padding-right', '');
-
-			if (this.settings.backdrop == 'invisible') {
-				try {
-					$modal.data('bs.modal').$backdrop.css('opacity', 0);
-				} catch (e) {}
-			}
-
-			var size = !vertical ? dialog.height() : content.height();
-			if (!ace.vars['touch']) {
-				if (!content.hasClass('ace-scroll')) {
-					content.ace_scroll({
-						size: size,
-						reset: true,
-						mouseWheelLock: true,
-						lockAnyway: !this.settings.body_scroll,
-						styleClass: this.settings.scroll_style,
-						'observeContent': true,
-						'hideOnIdle': !ace.vars['old_ie'],
-						'hideDelay': 1500
-					});
-				}
-			} else {
-				content.addClass('overflow-scroll').css('max-height', size + 'px');
-			}
-
-			$window.off('resize.modal.aside').on('resize.modal.aside', function () {
-				if (!ace.vars['touch']) {
-					content.ace_scroll('disable'); //to get correct size when going from small window size to large size
-					var size = !vertical ? dialog.height() : content.height();
-					content.ace_scroll('update', { 'size': size }).ace_scroll('enable').ace_scroll('reset');
-				} else content.css('max-height', (!vertical ? dialog.height() : content.height()) + 'px');
-			}).triggerHandler('resize.modal.aside');
-
-			///////////////////////////////////////////////////////////////////////////
-			if (self.container && ace.vars['transition'] && !hasFade) {
-				$modal.one('bsTransitionEnd', function () {
-					self.container.removeClass('overflow-hidden');
-				}).emulateTransitionEnd(delay);
-			}
-		};
-
-		this.hidden = function () {
-			$window.off('.aside');
-			//$modal.off('.aside')
-			//			
-			if (!ace.vars['transition'] || hasFade) {
-				$modal.addClass('aside-hidden');
-				$modal.css('position', '');
-			}
-		};
-
-		this.insideContainer = function () {
-			var container = $('.main-container');
-
-			var dialog = $modal.find('.modal-dialog');
-			dialog.css({ 'right': '', 'left': '' });
-			if (container.hasClass('container')) {
-				var flag = false;
-				if (vertical == true) {
-					dialog.css(placement, parseInt(($window.width() - container.width()) / 2));
-					flag = true;
-				}
-
-				//strange firefox issue, not redrawing properly on window resize (zoom in/out)!!!!
-				//--- firefix is still having issue!
-				if (flag && ace.vars['firefox']) {
-					ace.helper.redraw(container[0]);
-				}
-			}
-		};
-
-		this.flip = function () {
-			var flipSides = { right: 'left', left: 'right', top: 'bottom', bottom: 'top' };
-			$modal.removeClass('aside-' + placement).addClass('aside-' + flipSides[placement]);
-			placement = flipSides[placement];
-		};
-
-		var toggleButton = function toggleButton() {
-			var btn = $modal.find('.aside-trigger');
-			if (btn.length == 0) return;
-			btn.toggleClass('open');
-
-			var icon = btn.find(ace.vars['.icon']);
-			if (icon.length == 0) return;
-			icon.toggleClass(icon.attr('data-icon1') + " " + icon.attr('data-icon2'));
-		};
-
-		this.initiate();
-
-		if (this.container) this.container = $(this.container);
-		$modal.appendTo(this.container || 'body');
-	}
-
-	$(document).on('show.bs.modal', '.modal.aside', function (e) {
-		$('.aside.in').modal('hide'); //??? hide previous open ones?
-		$(this).ace_aside('show');
-	}).on('hide.bs.modal', '.modal.aside', function (e) {
-		$(this).ace_aside('hide');
-	}).on('shown.bs.modal', '.modal.aside', function (e) {
-		$(this).ace_aside('shown');
-	}).on('hidden.bs.modal', '.modal.aside', function (e) {
-		$(this).ace_aside('hidden');
-	});
-
-	$(window).on('resize.aside_container', function () {
-		$('.modal.aside').ace_aside('insideContainer');
-	});
-	$(document).on('settings.ace.aside', function (e, event_name) {
-		if (event_name == 'main_container_fixed') $('.modal.aside').ace_aside('insideContainer');
-	});
-
-	$.fn.aceAside = $.fn.ace_aside = function (option, value) {
-		var method_call;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_aside');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_aside', data = new Aside(this, options));
-			if (typeof option === 'string' && typeof data[option] === 'function') {
-				if (value instanceof Array) method_call = data[option].apply(data, value);else method_call = data[option](value);
-			}
-		});
-
-		return method_call === undefined ? $set : method_call;
-	};
-
-	$.fn.ace_aside.defaults = {
-		fixed: false,
-		background: false,
-		offset: false,
-		body_scroll: false,
-		transition: true,
-		scroll_style: 'scroll-dark no-track',
-		container: null,
-		backdrop: false,
-		placement: 'right'
-	};
-})(window.jQuery);
-
-/***/ }),
 /* 42 */
-/***/ (function(module, exports) {
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/*!
- * Ace v1.4.0
- */
-
-if (typeof jQuery === 'undefined') {
-	throw new Error('Ace\'s JavaScript requires jQuery');
-}
-
-/**
- Required. Ace's Basic File to Initiliaze Different Parts and Some Variables.
-*/
-
-//some basic variables
-(function (undefined) {
-	if (!('ace' in window)) window['ace'] = {};
-	if (!('helper' in window['ace'])) window['ace'].helper = {};
-	if (!('vars' in window['ace'])) window['ace'].vars = {};
-	window['ace'].vars['icon'] = ' ace-icon ';
-	window['ace'].vars['.icon'] = '.ace-icon';
-
-	ace.vars['touch'] = 'ontouchstart' in window; //(('ontouchstart' in document.documentElement) || (window.DocumentTouch && document instanceof DocumentTouch));
-
-	//sometimes the only good way to work around browser's pecularities is to detect them using user-agents
-	//though it's not accurate
-	var agent = navigator.userAgent;
-	ace.vars['webkit'] = !!agent.match(/AppleWebKit/i);
-	ace.vars['safari'] = !!agent.match(/Safari/i) && !agent.match(/Chrome/i);
-	ace.vars['android'] = ace.vars['safari'] && !!agent.match(/Android/i);
-	ace.vars['ios_safari'] = !!agent.match(/OS ([4-9])(_\d)+ like Mac OS X/i) && !agent.match(/CriOS/i);
-
-	ace.vars['ie'] = window.navigator.msPointerEnabled || document.all && document.querySelector; //8-11
-	ace.vars['old_ie'] = document.all && !document.addEventListener; //8 and below
-	ace.vars['very_old_ie'] = document.all && !document.querySelector; //7 and below
-	ace.vars['firefox'] = 'MozAppearance' in document.documentElement.style;
-
-	ace.vars['non_auto_fixed'] = ace.vars['android'] || ace.vars['ios_safari'];
-
-	//sometimes we try to use 'tap' event instead of 'click' if jquery mobile plugin is available
-	ace['click_event'] = ace.vars['touch'] && jQuery.fn.tap ? 'tap' : 'click';
-})();
-
-//some ace helper functions
-(function ($$, undefined) {
-	//$$ is ace.helper
-	$$.unCamelCase = function (str) {
-		return str.replace(/([a-z])([A-Z])/g, function (match, c1, c2) {
-			return c1 + '-' + c2.toLowerCase();
-		});
-	};
-	$$.strToVal = function (str) {
-		var res = str.match(/^(?:(true)|(false)|(null)|(\-?[\d]+(?:\.[\d]+)?)|(\[.*\]|\{.*\}))$/i);
-
-		var val = str;
-		if (res) {
-			if (res[1]) val = true;else if (res[2]) val = false;else if (res[3]) val = null;else if (res[4]) val = parseFloat(str);else if (res[5]) {
-				try {
-					val = JSON.parse(str);
-				} catch (err) {}
-			}
-		}
-
-		return val;
-	};
-	$$.getAttrSettings = function (elem, attr_list, prefix) {
-		if (!elem) return;
-		var list_type = attr_list instanceof Array ? 1 : 2;
-		//attr_list can be Array or Object(key/value)
-		var prefix = prefix ? prefix.replace(/([^\-])$/, '$1-') : '';
-		prefix = 'data-' + prefix;
-
-		var settings = {};
-		for (var li in attr_list) {
-			if (attr_list.hasOwnProperty(li)) {
-				var name = list_type == 1 ? attr_list[li] : li;
-				var attr_val,
-				    attr_name = $$.unCamelCase(name.replace(/[^A-Za-z0-9]{1,}/g, '-')).toLowerCase();
-
-				if (!(attr_val = elem.getAttribute(prefix + attr_name))) continue;
-				settings[name] = $$.strToVal(attr_val);
-			}
-		}return settings;
-	};
-
-	$$.scrollTop = function () {
-		return document.scrollTop || document.documentElement.scrollTop || document.body.scrollTop;
-	};
-	$$.winHeight = function () {
-		return window.innerHeight || document.documentElement.clientHeight;
-	};
-	$$.redraw = function (elem, force) {
-		if (!elem) return;
-		var saved_val = elem.style['display'];
-		elem.style.display = 'none';
-		elem.offsetHeight;
-		if (force !== true) {
-			elem.style.display = saved_val;
-		} else {
-			//force redraw for example in old IE
-			setTimeout(function () {
-				elem.style.display = saved_val;
-			}, 10);
-		}
-	};
-})(ace.helper);; /**
-                 <b>Ace demo functions</b>. Calls sidebar functions, demo ajax, some fixes, etc
-                 */
-
-//document ready function
-jQuery(function ($) {
-	try {
-		ace.demo.init();
-	} catch (e) {}
-});
-
-(function ($, undefined) {
-
-	ace.demo = {
-		functions: {},
-
-		init: function init(initAnyway) {
-			//initAnyway used to make sure the call is from our RequireJS app and not a document ready event!
-			var initAnyway = !!initAnyway && true;
-			if (typeof requirejs !== "undefined" && !initAnyway) return;
-
-			for (var func in ace.demo.functions) {
-				if (ace.demo.functions.hasOwnProperty(func)) {
-					ace.demo.functions[func]();
-				}
-			}
-		}
-	};
-
-	ace.demo.functions.basics = function () {
-		// for android and ios we don't use "top:auto" when breadcrumbs is fixed
-		if (ace.vars['non_auto_fixed']) {
-			$('body').addClass('mob-safari');
-		}
-
-		ace.vars['transition'] = ace.vars['animation'] || !!$.support.transition;
-	};
-
-	ace.demo.functions.enableSidebar = function () {
-		//initiate sidebar function
-		var $sidebar = $('.sidebar');
-		if ($.fn.ace_sidebar) $sidebar.ace_sidebar();
-		if ($.fn.ace_sidebar_scroll) $sidebar.ace_sidebar_scroll({
-			//for other options please see documentation
-			'include_toggle': false || ace.vars['safari'] || ace.vars['ios_safari'] //true = include toggle button in the scrollbars
-		});
-		if ($.fn.ace_sidebar_hover) $sidebar.ace_sidebar_hover({
-			'sub_hover_delay': 750,
-			'sub_scroll_style': 'no-track scroll-thin scroll-margin scroll-visible'
-		});
-	};
-
-	//Load content via ajax
-	ace.demo.functions.enableDemoAjax = function () {
-		if (!$.fn.ace_ajax) return;
-
-		if (window.Pace) {
-			window.paceOptions = {
-				ajax: true,
-				document: true,
-				eventLag: false // disabled
-				//elements: {selectors: ['.page-content-area']}
-			};
-		}
-
-		var demo_ajax_options = {
-			'close_active': true,
-
-			close_mobile_menu: '#sidebar',
-			close_dropdowns: true,
-
-			'default_url': 'page/index', //default hash
-			'content_url': function content_url(hash) {
-				//***NOTE***
-				//this is for Ace demo only, you should change it to return a valid URL
-				//please refer to documentation for more info
-
-				if (!hash.match(/^page\//)) return false;
-				var path = document.location.pathname;
-
-				//for example in Ace HTML demo version we convert /ajax/index.html#page/gallery to > /ajax/content/gallery.html and load it
-				if (path.match(/(\/ajax\/)(index\.html)?/)) return path.replace(/(\/ajax\/)(index\.html)?/, '/ajax/content/' + hash.replace(/^page\//, '') + '.html');
-
-				//for example in Ace PHP demo version we convert "ajax.php#page/dashboard" to "ajax.php?page=dashboard" and load it
-				return path + "?" + hash.replace(/\//, "=");
-			}
-
-			//for IE9 and below we exclude PACE loader (using conditional IE comments)
-			//for other browsers we use the following extra ajax loader options
-			//if(window.Pace) {
-		};demo_ajax_options['loading_overlay'] = 'body'; //the opaque overlay is applied to 'body'
-		//}
-
-		//initiate ajax loading on this element( which is .page-content-area[data-ajax-content=true] in Ace's demo)
-		$('[data-ajax-content=true]').ace_ajax(demo_ajax_options);
-
-		//if general error happens and ajax is working, let's stop loading icon & PACE
-		$(window).on('error.ace_ajax', function () {
-			$('[data-ajax-content=true]').each(function () {
-				var $this = $(this);
-				if ($this.ace_ajax('working')) {
-					if (window.Pace && Pace.running) Pace.stop();
-					$this.ace_ajax('stopLoading', true);
-				}
-			});
-		});
-	};
-
-	/////////////////////////////
-
-	ace.demo.functions.handleScrollbars = function () {
-		//add scrollbars for navbar dropdowns
-		var has_scroll = !!$.fn.ace_scroll;
-		if (has_scroll) $('.dropdown-content').ace_scroll({ reset: false, mouseWheelLock: true });
-
-		//reset scrolls bars on window resize
-		if (has_scroll && !ace.vars['old_ie']) {
-			//IE has an issue with widget fullscreen on ajax?!!!
-			$(window).on('resize.reset_scroll', function () {
-				$('.ace-scroll:not(.scroll-disabled)').not(':hidden').ace_scroll('reset');
-			});
-			if (has_scroll) $(document).on('settings.ace.reset_scroll', function (e, name) {
-				if (name == 'sidebar_collapsed') $('.ace-scroll:not(.scroll-disabled)').not(':hidden').ace_scroll('reset');
-			});
-		}
-	};
-
-	ace.demo.functions.dropdownAutoPos = function () {
-		//change a dropdown to "dropup" depending on its position
-		$(document).on('click.dropdown.pos', '.dropdown-toggle[data-position="auto"]', function () {
-			var offset = $(this).offset();
-			var parent = $(this.parentNode);
-
-			if (parseInt(offset.top + $(this).height()) + 50 > ace.helper.scrollTop() + ace.helper.winHeight() - parent.find('.dropdown-menu').eq(0).height()) parent.addClass('dropup');else parent.removeClass('dropup');
-		});
-	};
-
-	ace.demo.functions.navbarHelpers = function () {
-		//prevent dropdowns from hiding when a from is clicked
-		/**$(document).on('click', '.dropdown-navbar form', function(e){
-  	e.stopPropagation();
-  });*/
-
-		//disable navbar icon animation upon click
-		$('.ace-nav [class*="icon-animated-"]').closest('a').one('click', function () {
-			var icon = $(this).find('[class*="icon-animated-"]').eq(0);
-			var $match = icon.attr('class').match(/icon\-animated\-([\d\w]+)/);
-			icon.removeClass($match[0]);
-		});
-
-		//prevent dropdowns from hiding when a tab is selected
-		$(document).on('click', '.dropdown-navbar .nav-tabs', function (e) {
-			e.stopPropagation();
-			var $this, href;
-			var that = e.target;
-			if (($this = $(e.target).closest('[data-toggle=tab]')) && $this.length > 0) {
-				$this.tab('show');
-				e.preventDefault();
-				$(window).triggerHandler('resize.navbar.dropdown');
-			}
-		});
-	};
-
-	ace.demo.functions.sidebarTooltips = function () {
-		//tooltip in sidebar items
-		$('.sidebar .nav-list .badge[title],.sidebar .nav-list .badge[title]').each(function () {
-			var tooltip_class = $(this).attr('class').match(/tooltip\-(?:\w+)/);
-			tooltip_class = tooltip_class ? tooltip_class[0] : 'tooltip-error';
-			$(this).tooltip({
-				'placement': function placement(context, source) {
-					var offset = $(source).offset();
-
-					if (parseInt(offset.left) < parseInt(document.body.scrollWidth / 2)) return 'right';
-					return 'left';
-				},
-				container: 'body',
-				template: '<div class="tooltip ' + tooltip_class + '"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-			});
-		});
-
-		//or something like this if items are dynamically inserted
-		/**
-  $('.sidebar').tooltip({
-  	'placement': function (context, source) {
-  		var offset = $(source).offset();
-  			if( parseInt(offset.left) < parseInt(document.body.scrollWidth / 2) ) return 'right';
-  		return 'left';
-  	},
-  	selector: '.nav-list .badge[title],.nav-list .label[title]',
-  	container: 'body',
-  	template: '<div class="tooltip tooltip-error"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-  });
-  */
-	};
-
-	ace.demo.functions.someBrowserFix = function () {
-		//chrome and webkit have a problem here when resizing from 479px to more
-		//we should force them redraw the navbar!
-		if (ace.vars['webkit']) {
-			var ace_nav = $('.ace-nav').get(0);
-			if (ace_nav) $(window).on('resize.webkit_fix', function () {
-				ace.helper.redraw(ace_nav);
-			});
-		}
-
-		//fix an issue with ios safari, when an element is fixed and an input receives focus
-		if (ace.vars['ios_safari']) {
-			$(document).on('ace.settings.ios_fix', function (e, event_name, event_val) {
-				if (event_name != 'navbar_fixed') return;
-
-				$(document).off('focus.ios_fix blur.ios_fix', 'input,textarea,.wysiwyg-editor');
-				if (event_val == true) {
-					$(document).on('focus.ios_fix', 'input,textarea,.wysiwyg-editor', function () {
-						$(window).on('scroll.ios_fix', function () {
-							var navbar = $('#navbar').get(0);
-							if (navbar) ace.helper.redraw(navbar);
-						});
-					}).on('blur.ios_fix', 'input,textarea,.wysiwyg-editor', function () {
-						$(window).off('scroll.ios_fix');
-					});
-				}
-			}).triggerHandler('ace.settings.ios_fix', ['navbar_fixed', $('#navbar').css('position') == 'fixed']);
-		}
-	};
-
-	ace.demo.functions.bsCollapseToggle = function () {
-		//bootstrap collapse component icon toggle
-		$(document).on('hide.bs.collapse show.bs.collapse', function (ev) {
-			var panel_id = ev.target.getAttribute('id');
-			var panel = $('a[href*="#' + panel_id + '"]');
-			if (panel.length == 0) panel = $('a[data-target*="#' + panel_id + '"]');
-			if (panel.length == 0) return;
-
-			panel.find(ace.vars['.icon']).each(function () {
-				var $icon = $(this);
-
-				var $match;
-				var $icon_down = null;
-				var $icon_up = null;
-				if ($icon_down = $icon.attr('data-icon-show')) {
-					$icon_up = $icon.attr('data-icon-hide');
-				} else if ($match = $icon.attr('class').match(/fa\-(.*)\-(up|down)/)) {
-					$icon_down = 'fa-' + $match[1] + '-down';
-					$icon_up = 'fa-' + $match[1] + '-up';
-				}
-
-				if ($icon_down) {
-					if (ev.type == 'show') $icon.removeClass($icon_down).addClass($icon_up);else $icon.removeClass($icon_up).addClass($icon_down);
-
-					return false; //ignore other icons that match, one is enough
-				}
-			});
-		});
-	};
-
-	//in small devices display navbar dropdowns like modal boxes
-	ace.demo.functions.smallDeviceDropdowns = function () {
-		if (ace.vars['old_ie']) return;
-
-		$(document).on('shown.bs.dropdown.navbar', '.ace-nav > li.dropdown-modal', function (e) {
-			adjustNavbarDropdown.call(this);
-			var self = this;
-			$(window).on('resize.navbar.dropdown', function () {
-				adjustNavbarDropdown.call(self);
-			});
-		}).on('hidden.bs.dropdown.navbar', '.ace-nav > li.dropdown-modal', function (e) {
-			$(window).off('resize.navbar.dropdown');
-			resetNavbarDropdown.call(this);
-		});
-
-		function adjustNavbarDropdown() {
-			var $sub = $(this).find('> .dropdown-menu');
-
-			if ($sub.css('position') == 'fixed') {
-				var win_width = parseInt($(window).width());
-				var offset_w = win_width > 320 ? 60 : win_width > 240 ? 40 : 30;
-				var avail_width = parseInt(win_width) - offset_w;
-				var avail_height = parseInt($(window).height()) - 30;
-
-				var width = parseInt(Math.min(avail_width, 320));
-				//we set 'width' here for text wrappings and spacings to take effect before calculating scrollHeight
-				$sub.css('width', width);
-
-				var tabbed = false;
-				var extra_parts = 0;
-				var dropdown_content = $sub.find('.tab-pane.active .dropdown-content.ace-scroll');
-				if (dropdown_content.length == 0) dropdown_content = $sub.find('.dropdown-content.ace-scroll');else tabbed = true;
-
-				var parent_menu = dropdown_content.closest('.dropdown-menu');
-				var scrollHeight = $sub[0].scrollHeight;
-				if (dropdown_content.length == 1) {
-					//sometimes there's no scroll-content, for example in detached scrollbars
-					var content = dropdown_content.find('.scroll-content')[0];
-					if (content) {
-						scrollHeight = content.scrollHeight;
-					}
-
-					extra_parts += parent_menu.find('.dropdown-header').outerHeight();
-					extra_parts += parent_menu.find('.dropdown-footer').outerHeight();
-
-					var tab_content = parent_menu.closest('.tab-content');
-					if (tab_content.length != 0) {
-						extra_parts += tab_content.siblings('.nav-tabs').eq(0).height();
-					}
-				}
-
-				var height = parseInt(Math.min(avail_height, 480, scrollHeight + extra_parts));
-				var left = parseInt(Math.abs((avail_width + offset_w - width) / 2));
-				var top = parseInt(Math.abs((avail_height + 30 - height) / 2));
-
-				var zindex = parseInt($sub.css('z-index')) || 0;
-
-				$sub.css({ 'height': height, 'left': left, 'right': 'auto', 'top': top - (!tabbed ? 1 : 3) });
-				if (dropdown_content.length == 1) {
-					if (!ace.vars['touch']) {
-						dropdown_content.ace_scroll('update', { size: height - extra_parts }).ace_scroll('enable').ace_scroll('reset');
-					} else {
-						dropdown_content.ace_scroll('disable').css('max-height', height - extra_parts).addClass('overflow-scroll');
-					}
-				}
-				$sub.css('height', height + (!tabbed ? 2 : 7)); //for bottom border adjustment and tab content paddings
-
-
-				if ($sub.hasClass('user-menu')) {
-					$sub.css('height', ''); //because of user-info hiding/showing at different widths, which changes above 'scrollHeight', so we remove it!
-
-					//user menu is re-positioned in small widths
-					//but we need to re-position again in small heights as well (modal mode)
-					var user_info = $(this).find('.user-info');
-					if (user_info.length == 1 && user_info.css('position') == 'fixed') {
-						user_info.css({ 'left': left, 'right': 'auto', 'top': top, 'width': width - 2, 'max-width': width - 2, 'z-index': zindex + 1 });
-					} else user_info.css({ 'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': '' });
-				}
-
-				//dropdown's z-index is limited by parent .navbar's z-index (which doesn't make sense because dropdowns are fixed!)
-				//so for example when in 'content-slider' page, fixed modal toggle buttons go above are dropdowns
-				//so we increase navbar's z-index to fix this!
-				$(this).closest('.navbar.navbar-fixed-top').css('z-index', zindex);
-			} else {
-				if ($sub.length != 0) resetNavbarDropdown.call(this, $sub);
-			}
-		}
-
-		//reset scrollbars and user menu
-		function resetNavbarDropdown($sub) {
-			$sub = $sub || $(this).find('> .dropdown-menu');
-
-			if ($sub.length > 0) {
-				$sub.css({ 'width': '', 'height': '', 'left': '', 'right': '', 'top': '' }).find('.dropdown-content').each(function () {
-					if (ace.vars['touch']) {
-						$(this).css('max-height', '').removeClass('overflow-scroll');
-					}
-
-					var size = parseInt($(this).attr('data-size') || 0) || $.fn.ace_scroll.defaults.size;
-					$(this).ace_scroll('update', { size: size }).ace_scroll('enable').ace_scroll('reset');
-				});
-
-				if ($sub.hasClass('user-menu')) {
-					var user_info = $(this).find('.user-info').css({ 'left': '', 'right': '', 'top': '', 'width': '', 'max-width': '', 'z-index': '' });
-				}
-			}
-
-			$(this).closest('.navbar').css('z-index', '');
-		}
-	};
-})(jQuery);; /**
-             <b>Scroll to top button</b>.
-             */
-(function ($, undefined) {
-
-	//the scroll to top button
-	var scroll_btn = $('.btn-scroll-up');
-	if (scroll_btn.length > 0) {
-		var is_visible = false;
-		$(window).on('scroll.scroll_btn', function () {
-			var scroll = ace.helper.scrollTop();
-			var h = ace.helper.winHeight();
-			var body_sH = document.body.scrollHeight;
-			if (scroll > parseInt(h / 4) || scroll > 0 && body_sH >= h && h + scroll >= body_sH - 1) {
-				//|| for smaller pages, when reached end of page
-				if (!is_visible) {
-					scroll_btn.addClass('display');
-					is_visible = true;
-				}
-			} else {
-				if (is_visible) {
-					scroll_btn.removeClass('display');
-					is_visible = false;
-				}
-			}
-		}).triggerHandler('scroll.scroll_btn');
-
-		scroll_btn.on(ace.click_event, function () {
-			var duration = Math.min(500, Math.max(100, parseInt(ace.helper.scrollTop() / 3)));
-			$('html,body').animate({ scrollTop: 0 }, duration);
-			return false;
-		});
-	}
-})(window.jQuery);; /**
-                    <b>Load content via Ajax </b>. For more information please refer to documentation #basics/ajax
-                    */
-
-(function ($, undefined) {
-	var ajax_loaded_scripts = {};
-
-	function AceAjax(contentArea, settings) {
-		var $contentArea = $(contentArea);
-		var self = this;
-		$contentArea.attr('data-ajax-content', 'true');
-
-		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
-		var attrib_values = ace.helper.getAttrSettings(contentArea, $.fn.ace_ajax.defaults);
-		this.settings = $.extend({}, $.fn.ace_ajax.defaults, settings, attrib_values);
-
-		var working = false;
-		var $overlay = $(); //empty set
-
-		this.force_reload = false; //set jQuery ajax's cache option to 'false' to reload content
-		this.loadUrl = function (hash, cache, manual_trigger) {
-			var url = false;
-			hash = hash.replace(/^(\#\!)?\#/, '');
-
-			this.force_reload = cache === false;
-
-			if (typeof this.settings.content_url === 'function') url = this.settings.content_url(hash);
-			if (typeof url === 'string') this.getUrl(url, hash, manual_trigger);
-		};
-
-		this.loadAddr = function (url, hash, cache) {
-			this.force_reload = cache === false;
-			this.getUrl(url, hash, false);
-		};
-
-		this.reload = function () {
-			var hash = $.trim(window.location.hash);
-			if (!hash && this.settings.default_url) hash = this.settings.default_url;
-
-			this.loadUrl(hash, false);
-		};
-		this.post = function (url, data, updateView, extraParams) {
-			var url = url || $.trim(location.href.replace(location.hash, ''));
-			if (!url) return;
-			var data = data || {};
-			var updateView = updateView || false;
-			this.getUrl(url, null, false, 'POST', data, updateView, extraParams);
-		};
-
-		this.getUrl = function (url, hash, manual_trigger, method, data, updateView, extraParams) {
-			if (working) {
-				return;
-			}
-
-			var method = method || 'GET';
-			var updateView = method == 'GET' || method == 'POST' && updateView == true;
-			var data = data || null;
-
-			var event;
-			$contentArea.trigger(event = $.Event('ajaxloadstart'), { url: url, hash: hash, method: method, data: data });
-			if (event.isDefaultPrevented()) return;
-
-			self.startLoading();
-
-			var ajax_params = method == 'GET' ? { 'url': url, 'cache': !this.force_reload } : { 'url': url, 'method': 'POST', 'data': data };
-			if (method == 'POST' && (typeof extraParams === 'undefined' ? 'undefined' : _typeof(extraParams)) == 'object') ajax_params = $.extend({}, ajax_params, extraParams);
-
-			$.ajax(ajax_params).error(function () {
-				$contentArea.trigger('ajaxloaderror', { url: url, hash: hash, method: method, data: data });
-
-				self.stopLoading(true);
-			}).done(function (result) {
-				$contentArea.trigger('ajaxloaddone', { url: url, hash: hash, method: method, data: data });
-				if (method == 'POST') {
-					var event;
-					$contentArea.trigger(event = $.Event('ajaxpostdone', { url: url, data: data, result: result }));
-					if (event.isDefaultPrevented()) updateView = false;
-				}
-
-				var link_element = null,
-				    link_text = '';
-				if (typeof self.settings.update_active === 'function') {
-					link_element = self.settings.update_active.call(null, hash, url, method, updateView);
-				} else if (self.settings.update_active === true && hash) {
-					link_element = $('a[data-url="' + hash + '"]');
-					if (link_element.length > 0) {
-						var nav = link_element.closest('.nav');
-						if (nav.length > 0) {
-							nav.find('.active').each(function () {
-								var $class = 'active';
-								if ($(this).hasClass('hover') || self.settings.close_active) $class += ' open';
-
-								$(this).removeClass($class);
-								if (self.settings.close_active) {
-									$(this).find(' > .submenu').css('display', '');
-								}
-							});
-
-							var active_li = link_element.closest('li').addClass('active').parents('.nav li').addClass('active open');
-							nav.closest('.sidebar[data-sidebar-scroll=true]').each(function () {
-								var $this = $(this);
-								$this.ace_sidebar_scroll('reset');
-								if (manual_trigger == true) $this.ace_sidebar_scroll('scroll_to_active'); //first time only
-							});
-						}
-					}
-				}
-
-				/////////
-				if (typeof self.settings.update_breadcrumbs === 'function') {
-					link_text = self.settings.update_breadcrumbs.call(null, hash, url, link_element, method, updateView);
-				} else if (self.settings.update_breadcrumbs === true && link_element != null && link_element.length > 0) {
-					link_text = updateBreadcrumbs(link_element);
-				}
-				/////////
-
-				$overlay.addClass('content-loaded').detach();
-				if (updateView) {
-					//convert "title" and "link" tags to "div" tags for later processing
-					result = String(result).replace(/<(title|link)([\s\>])/gi, '<div class="hidden ajax-append-$1"$2').replace(/<\/(title|link)\>/gi, '</div>');
-					$contentArea.empty().html(result);
-				}
-
-				$(self.settings.loading_overlay || $contentArea).append($overlay);
-
-				//remove previous stylesheets inserted via ajax
-				if (updateView) setTimeout(function () {
-					$('head').find('link.ace-ajax-stylesheet').remove();
-
-					var main_selectors = ['link.ace-main-stylesheet', 'link#main-ace-style', 'link[href*="/ace.min.css"]', 'link[href*="/ace.css"]'];
-					var ace_style = [];
-					for (var m = 0; m < main_selectors.length; m++) {
-						ace_style = $('head').find(main_selectors[m]).first();
-						if (ace_style.length > 0) break;
-					}
-
-					$contentArea.find('.ajax-append-link').each(function (e) {
-						var $link = $(this);
-						if ($link.attr('href')) {
-							var new_link = jQuery('<link />', { type: 'text/css', rel: 'stylesheet', 'class': 'ace-ajax-stylesheet' });
-							if (ace_style.length > 0) new_link.insertBefore(ace_style);else new_link.appendTo('head');
-							new_link.attr('href', $link.attr('href')); //we set "href" after insertion, for IE to work
-						}
-						$link.remove();
-					});
-				}, 10);
-
-				//////////////////////
-
-				if (typeof self.settings.update_title === 'function') {
-					self.settings.update_title.call(null, hash, url, link_text, method, updateView);
-				} else if (self.settings.update_title === true && method == 'GET') {
-					updateTitle(link_text);
-				}
-
-				if (!manual_trigger && updateView) {
-					$('html,body').animate({ scrollTop: 0 }, 250);
-				}
-
-				//////////////////////
-				$contentArea.trigger('ajaxloadcomplete', { url: url, hash: hash, method: method, data: data });
-				//////////////////////
-
-
-				//if result contains call to "loadScripts" then don't stopLoading now
-				var re = /\.(?:\s*)ace(?:_a|A)jax(?:\s*)\((?:\s*)(?:\'|\")loadScripts(?:\'|\")/;
-				if (result.match(re)) self.stopLoading();else self.stopLoading(true);
-			});
-		};
-
-		///////////////////////
-		var fixPos = false;
-		var loadTimer = null;
-		this.startLoading = function () {
-			if (working) return;
-			working = true;
-
-			if (!this.settings.loading_overlay && $contentArea.css('position') == 'static') {
-				$contentArea.css('position', 'relative'); //for correct icon positioning
-				fixPos = true;
-			}
-
-			$overlay.remove();
-			$overlay = $('<div class="ajax-loading-overlay"><i class="ajax-loading-icon ' + (this.settings.loading_icon || '') + '"></i> ' + this.settings.loading_text + '</div>');
-
-			if (this.settings.loading_overlay == 'body') $('body').append($overlay.addClass('ajax-overlay-body'));else if (this.settings.loading_overlay) $(this.settings.loading_overlay).append($overlay);else $contentArea.append($overlay);
-
-			if (this.settings.max_load_wait !== false) loadTimer = setTimeout(function () {
-				loadTimer = null;
-				if (!working) return;
-
-				var event;
-				$contentArea.trigger(event = $.Event('ajaxloadlong'));
-				if (event.isDefaultPrevented()) return;
-
-				self.stopLoading(true);
-			}, this.settings.max_load_wait * 1000);
-		};
-
-		this.stopLoading = function (stopNow) {
-			if (stopNow === true) {
-				working = false;
-
-				$overlay.remove();
-				if (fixPos) {
-					$contentArea.css('position', ''); //restore previous 'position' value
-					fixPos = false;
-				}
-
-				if (loadTimer != null) {
-					clearTimeout(loadTimer);
-					loadTimer = null;
-				}
-			} else {
-				$overlay.addClass('almost-loaded');
-
-				$contentArea.one('ajaxscriptsloaded.inner_call', function () {
-					self.stopLoading(true);
-					/**
-     if(window.Pace && Pace.running == true) {
-     	Pace.off('done');
-     	Pace.once('done', function() { self.stopLoading(true) })
-     }
-     else self.stopLoading(true);
-     */
-				});
-			}
-		};
-
-		this.working = function () {
-			return working;
-		};
-		///////////////////////
-
-
-		function updateBreadcrumbs(link_element) {
-			var link_text = '';
-
-			//update breadcrumbs
-			var breadcrumbs = $('.breadcrumb');
-			if (breadcrumbs.length > 0 && breadcrumbs.is(':visible')) {
-				breadcrumbs.find('> li:not(:first-child)').remove();
-
-				var i = 0;
-				link_element.parents('.nav li').each(function () {
-					var link = $(this).find('> a');
-
-					var link_clone = link.clone();
-					link_clone.find('i,.fa,.glyphicon,.ace-icon,.menu-icon,.badge,.label').remove();
-					var text = link_clone.text();
-					link_clone.remove();
-
-					var href = link.attr('href');
-
-					if (i == 0) {
-						var li = $('<li class="active"></li>').appendTo(breadcrumbs);
-						li.text(text);
-						link_text = text;
-					} else {
-						var li = $('<li><a /></li>').insertAfter(breadcrumbs.find('> li:first-child'));
-						li.find('a').attr('href', href).text(text);
-					}
-					i++;
-				});
-			}
-
-			return link_text;
-		}
-
-		function updateTitle(link_text) {
-			var $title = $contentArea.find('.ajax-append-title');
-			if ($title.length > 0) {
-				document.title = $title.text();
-				$title.remove();
-			} else if (link_text.length > 0) {
-				var extra = $.trim(String(document.title).replace(/^(.*)[\-]/, '')); //for example like " - Ace Admin"
-				if (extra) extra = ' - ' + extra;
-				link_text = $.trim(link_text) + extra;
-			}
-		}
-
-		this.loadScripts = function (scripts, callback) {
-			var scripts = scripts || [];
-			$.ajaxPrefilter('script', function (opts) {
-				opts.cache = true;
-			});
-			setTimeout(function () {
-				//let's keep a list of loaded scripts so that we don't load them more than once!
-
-				function finishLoading() {
-					if (typeof callback === 'function') callback();
-					$('.btn-group[data-toggle="buttons"] > .btn').button();
-
-					$contentArea.trigger('ajaxscriptsloaded');
-				}
-
-				//var deferreds = [];
-				var deferred_count = 0; //deferreds count
-				var resolved = 0;
-				for (var i = 0; i < scripts.length; i++) {
-					if (scripts[i]) {
-						(function () {
-							var script_name = "js-" + scripts[i].replace(/[^\w\d\-]/g, '-').replace(/\-\-/g, '-');
-							if (ajax_loaded_scripts[script_name] !== true) deferred_count++;
-						})();
-					}
-				}function nextScript(index) {
-					index += 1;
-					if (index < scripts.length) loadScript(index);else {
-						finishLoading();
-					}
-				}
-
-				function loadScript(index) {
-					index = index || 0;
-					if (!scripts[index]) {
-						//could be null sometimes
-						return nextScript(index);
-					}
-
-					var script_name = "js-" + scripts[index].replace(/[^\w\d\-]/g, '-').replace(/\-\-/g, '-');
-					//only load scripts that are not loaded yet!
-					if (ajax_loaded_scripts[script_name] !== true) {
-						$.getScript(scripts[index]).done(function () {
-							ajax_loaded_scripts[script_name] = true;
-						})
-						//.fail(function() {
-						//})
-						.complete(function () {
-							resolved++;
-							if (resolved >= deferred_count && working) {
-								finishLoading();
-							} else {
-								nextScript(index);
-							}
-						});
-					} else {
-						//script previoisly loaded
-						nextScript(index);
-					}
-				}
-
-				if (deferred_count > 0) {
-					loadScript();
-				} else {
-					finishLoading();
-				}
-			}, 10);
-		};
-
-		/////////////////
-		$(window).off('hashchange.ace_ajax').on('hashchange.ace_ajax', function (e, manual_trigger) {
-			var hash = $.trim(window.location.hash);
-			if (!hash || hash.length == 0) return;
-
-			if (self.settings.close_mobile_menu) {
-				try {
-					$(self.settings.close_mobile_menu).ace_sidebar('mobileHide');
-				} catch (e) {}
-			}
-			if (self.settings.close_dropdowns) {
-				$('.dropdown.open .dropdown-toggle').dropdown('toggle');
-			}
-
-			self.loadUrl(hash, null, manual_trigger);
-		}).trigger('hashchange.ace_ajax', [true]);
-
-		var hash = $.trim(window.location.hash);
-		if (!hash && this.settings.default_url) window.location.hash = this.settings.default_url;
-	} //AceAjax
-
-
-	$.fn.aceAjax = $.fn.ace_ajax = function (option, value, value2, value3, value4) {
-		var method_call;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_ajax');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_ajax', data = new AceAjax(this, options));
-			if (typeof option === 'string' && typeof data[option] === 'function') {
-				if (value4 !== undefined) method_call = data[option](value, value2, value3, value4);else if (value3 !== undefined) method_call = data[option](value, value2, value3);else if (value2 !== undefined) method_call = data[option](value, value2);else method_call = data[option](value);
-			}
-		});
-
-		return method_call === undefined ? $set : method_call;
-	};
-
-	$.fn.aceAjax.defaults = $.fn.ace_ajax.defaults = {
-		content_url: false,
-		default_url: false,
-		loading_icon: 'fa fa-spin fa-spinner fa-2x orange',
-		loading_text: '',
-		loading_overlay: null,
-		update_breadcrumbs: true,
-		update_title: true,
-		update_active: true,
-		close_active: false,
-		max_load_wait: false,
-		close_mobile_menu: false,
-		close_dropdowns: false
-	};
-})(window.jQuery);
-
-; /**
-  <b>Custom drag event for touch devices</b> used in scrollbars.
-  For better touch event handling and extra options a more advanced solution such as <u>Hammer.js</u> is recommended.
-  */
-
-//based on but not dependent on jQuery mobile
-/*
-* jQuery Mobile v1.3.2
-* http://jquerymobile.com
-*
-* Copyright 2010, 2013 jQuery Foundation, Inc. and other contributors
-* Released under the MIT license.
-* http://jquery.org/license
-*
-*/
-(function ($, undefined) {
-
-	if (!ace.vars['touch']) return;
-
-	var touchStartEvent = "touchstart MSPointerDown pointerdown",
-	    // : "mousedown",
-	touchStopEvent = "touchend touchcancel MSPointerUp MSPointerCancel pointerup pointercancel",
-	    // : "mouseup",
-	touchMoveEvent = "touchmove MSPointerMove MSPointerHover pointermove"; // : "mousemove";
-
-
-	$.event.special.ace_drag = {
-		setup: function setup() {
-			var min_threshold = 0;
-
-			var $this = $(this);
-			$this.on(touchStartEvent, function (event) {
-				var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event,
-				    start = {
-					//time: Date.now(),
-					coords: [data.pageX, data.pageY],
-					origin: $(event.target)
-				},
-				    stop;
-				//start.origin.trigger({'type' : 'ace_dragStart', 'start':(start || [-1,-1])});
-
-				var direction = false,
-				    dx = 0,
-				    dy = 0;
-
-				function moveHandler(event) {
-					if (!start) {
-						return;
-					}
-					var data = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
-					stop = {
-						coords: [data.pageX, data.pageY]
-					};
-
-					// prevent scrolling
-					//if ( Math.abs(start.coords[1] - stop.coords[1]) > 0 || Math.abs(start.coords[0] - stop.coords[01]) > 0 ) {
-					//event.preventDefault();
-					//}
-
-
-					if (start && stop) {
-						dx = 0;
-						dy = 0;
-
-						direction = Math.abs(dy = start.coords[1] - stop.coords[1]) > min_threshold && Math.abs(dx = start.coords[0] - stop.coords[0]) <= Math.abs(dy) ? dy > 0 ? 'up' : 'down' : Math.abs(dx = start.coords[0] - stop.coords[0]) > min_threshold && Math.abs(dy) <= Math.abs(dx) ? dx > 0 ? 'left' : 'right' : false;
-
-						if (direction !== false) {
-							var retval = { cancel: false };
-							start.origin.trigger({
-								'type': 'ace_drag',
-								//'start': start.coords,
-								//'stop': stop.coords,
-								'direction': direction,
-								'dx': dx,
-								'dy': dy,
-								'retval': retval
-							});
-
-							// prevent document scrolling unless retval.cancel == true
-							if (retval.cancel == false) event.preventDefault();
-						}
-					}
-					start.coords[0] = stop.coords[0];
-					start.coords[1] = stop.coords[1];
-				}
-
-				$this.on(touchMoveEvent, moveHandler).one(touchStopEvent, function (event) {
-					$this.off(touchMoveEvent, moveHandler);
-					//start.origin.trigger({'type' : 'ace_dragEnd', 'stop':(stop || [-1,-1])});
-
-					start = stop = undefined;
-				});
-			});
-		}
-	};
-})(window.jQuery);; /**
-                    <b>Sidebar functions</b>. Collapsing/expanding, toggling mobile view menu and other sidebar functions.
-                    */
-
-(function ($, undefined) {
-	var sidebar_count = 0;
-
-	function Sidebar(sidebar, settings) {
-		var self = this;
-		this.$sidebar = $(sidebar);
-		this.$sidebar.attr('data-sidebar', 'true');
-		if (!this.$sidebar.attr('id')) this.$sidebar.attr('id', 'id-sidebar-' + ++sidebar_count);
-
-		//get a list of 'data-*' attributes that override 'defaults' and 'settings'
-		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar.defaults, 'sidebar-');
-		this.settings = $.extend({}, $.fn.ace_sidebar.defaults, settings, attrib_values);
-
-		//some vars
-		this.minimized = false; //will be initialized later
-		this.collapsible = false; //...
-		this.horizontal = false; //...
-		this.mobile_view = false; //
-
-
-		//return an array containing sidebar state variables
-		this.vars = function () {
-			return { 'minimized': this.minimized, 'collapsible': this.collapsible, 'horizontal': this.horizontal, 'mobile_view': this.mobile_view };
-		};
-		this.get = function (name) {
-			if (this.hasOwnProperty(name)) return this[name];
-		};
-		this.set = function (name, value) {
-			if (this.hasOwnProperty(name)) this[name] = value;
-		};
-
-		//return a reference to self (sidebar instance)
-		this.ref = function () {
-			return this;
-		};
-
-		//toggle icon for sidebar collapse/expand button
-		var toggleIcon = function toggleIcon(minimized, save) {
-			var icon = $(this).find(ace.vars['.icon']),
-			    icon1,
-			    icon2;
-			if (icon.length > 0) {
-				icon1 = icon.attr('data-icon1'); //the icon for expanded state
-				icon2 = icon.attr('data-icon2'); //the icon for collapsed state
-
-				if (typeof minimized !== "undefined") {
-					if (minimized) icon.removeClass(icon1).addClass(icon2);else icon.removeClass(icon2).addClass(icon1);
-				} else {
-					icon.toggleClass(icon1).toggleClass(icon2);
-				}
-
-				try {
-					if (save !== false) ace.settings.saveState(icon.get(0));
-				} catch (e) {}
-			}
-		};
-
-		//if not specified, find the toggle button related to this sidebar
-		var findToggleBtn = function findToggleBtn() {
-			var toggle_btn = self.$sidebar.find('.sidebar-collapse');
-			if (toggle_btn.length == 0) toggle_btn = $('.sidebar-collapse[data-target="#' + (self.$sidebar.attr('id') || '') + '"]');
-			if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
-
-			return toggle_btn;
-		};
-
-		//collapse/expand sidebar
-		this.toggleMenu = function (toggle_btn, save) {
-			if (this.collapsible) return false;
-
-			this.minimized = !this.minimized;
-			var save = !(toggle_btn === false || save === false);
-
-			if (this.minimized) this.$sidebar.addClass('menu-min');else this.$sidebar.removeClass('menu-min');
-
-			try {
-				if (save) ace.settings.saveState(sidebar, 'class', 'menu-min', this.minimized);
-			} catch (e) {}
-
-			if (!toggle_btn) {
-				toggle_btn = findToggleBtn();
-			}
-			if (toggle_btn) {
-				toggleIcon.call(toggle_btn, this.minimized, save);
-			}
-
-			//force redraw for ie8
-			if (ace.vars['old_ie']) ace.helper.redraw(sidebar);
-
-			$(document).trigger('settings.ace', ['sidebar_collapsed', this.minimized, sidebar, save]);
-
-			if (this.minimized) this.$sidebar.trigger($.Event('collapse.ace.sidebar'));else this.$sidebar.trigger($.Event('expand.ace.sidebar'));
-
-			return true;
-		};
-		this.collapse = function (toggle_btn, save) {
-			if (this.collapsible) return;
-
-			this.minimized = false;
-			this.toggleMenu(toggle_btn, save);
-		};
-		this.expand = function (toggle_btn, save) {
-			if (this.collapsible) return;
-
-			this.minimized = true;
-			this.toggleMenu(toggle_btn, save);
-		};
-
-		this.showResponsive = function () {
-			this.$sidebar.removeClass(responsive_min_class).removeClass(responsive_max_class);
-		};
-
-		//collapse/expand in 2nd mobile style
-		this.toggleResponsive = function (toggle_btn, showMenu) {
-			if (!this.mobile_view || this.mobile_style != 3) return;
-
-			if (this.$sidebar.hasClass('menu-min')) {
-				//remove menu-min because it interferes with responsive-max
-				this.$sidebar.removeClass('menu-min');
-				var btn = findToggleBtn();
-				if (btn) toggleIcon.call(btn);
-			}
-
-			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : this.$sidebar.hasClass(responsive_min_class);
-
-			if (showMenu) {
-				this.$sidebar.addClass(responsive_max_class).removeClass(responsive_min_class);
-			} else {
-				this.$sidebar.removeClass(responsive_max_class).addClass(responsive_min_class);
-			}
-			this.minimized = !showMenu;
-
-			if (!toggle_btn || (typeof toggle_btn === 'undefined' ? 'undefined' : _typeof(toggle_btn)) !== 'object') {
-				toggle_btn = this.$sidebar.find('.sidebar-expand');
-				if (toggle_btn.length == 0) toggle_btn = $('.sidebar-expand[data-target="#' + (this.$sidebar.attr('id') || '') + '"]');
-				if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
-			}
-
-			if (toggle_btn) {
-				var icon = $(toggle_btn).find(ace.vars['.icon']),
-				    icon1,
-				    icon2;
-				if (icon.length > 0) {
-					icon1 = icon.attr('data-icon1'); //the icon for expanded state
-					icon2 = icon.attr('data-icon2'); //the icon for collapsed state
-
-					if (!showMenu) icon.removeClass(icon2).addClass(icon1);else icon.removeClass(icon1).addClass(icon2);
-				}
-			}
-
-			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
-
-			$(document).triggerHandler('settings.ace', ['sidebar_collapsed', this.minimized]);
-		};
-
-		//some helper functions
-
-		//determine if we have 4th mobile style responsive sidebar and we are in mobile view
-		this.is_collapsible = function () {
-			var toggle;
-			return this.$sidebar.hasClass('navbar-collapse') && (toggle = $('.navbar-toggle[data-target="#' + (this.$sidebar.attr('id') || '') + '"]').get(0)) != null && toggle.scrollHeight > 0;
-			//sidebar is collapsible and collapse button is visible?
-		};
-		//determine if we are in mobile view
-		this.is_mobile_view = function () {
-			var toggle;
-			return (toggle = $('.menu-toggler[data-target="#' + (this.$sidebar.attr('id') || '') + '"]').get(0)) != null && toggle.scrollHeight > 0;
-		};
-
-		var submenu_working = false;
-		//show submenu
-		this.show = function (sub, $duration, shouldWait) {
-			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
-			shouldWait = shouldWait !== false;
-			if (shouldWait && submenu_working) return false;
-
-			var $sub = $(sub);
-			var event;
-			$sub.trigger(event = $.Event('show.ace.submenu'));
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			if (shouldWait) submenu_working = true;
-
-			$duration = typeof $duration !== 'undefined' ? $duration : this.settings.duration;
-
-			$sub.css({
-				height: 0,
-				overflow: 'hidden',
-				display: 'block'
-			}).removeClass('nav-hide').addClass('nav-show') //only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
-			.parent().addClass('open');
-
-			sub.scrollTop = 0; //this is for submenu_hover when sidebar is minimized and a submenu is scrollTop'ed using scrollbars ...
-
-
-			var complete = function complete(ev, trigger) {
-				ev && ev.stopPropagation();
-				$sub.css({ 'transition-property': '', 'transition-duration': '', overflow: '', height: '' });
-				//if(ace.vars['webkit']) ace.helper.redraw(sub);//little Chrome issue, force redraw ;)
-
-				if (trigger !== false) $sub.trigger($.Event('shown.ace.submenu'));
-
-				if (shouldWait) submenu_working = false;
-			};
-
-			var finalHeight = sub.scrollHeight;
-
-			if ($duration == 0 || finalHeight == 0 || !$.support.transition.end) {
-				//(if duration is zero || element is hidden (scrollHeight == 0) || CSS3 transitions are not available)
-				complete();
-			} else {
-				$sub.css({
-					'height': finalHeight,
-					'transition-property': 'height',
-					'transition-duration': $duration / 1000 + 's'
-				}).one($.support.transition.end, complete);
-
-				//there is sometimes a glitch, so maybe retry
-				if (ace.vars['android']) {
-					setTimeout(function () {
-						complete(null, false);
-						ace.helper.redraw(sub);
-					}, $duration + 20);
-				}
-			}
-
-			return true;
-		};
-
-		//hide submenu
-		this.hide = function (sub, $duration, shouldWait) {
-			//'shouldWait' indicates whether to wait for previous transition (submenu toggle) to be complete or not?
-			shouldWait = shouldWait !== false;
-			if (shouldWait && submenu_working) return false;
-
-			var $sub = $(sub);
-			var event;
-			$sub.trigger(event = $.Event('hide.ace.submenu'));
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			if (shouldWait) submenu_working = true;
-
-			$duration = typeof $duration !== 'undefined' ? $duration : this.settings.duration;
-
-			var initialHeight = sub.scrollHeight;
-			$sub.css({
-				height: initialHeight,
-				overflow: 'hidden',
-				display: 'block'
-			}).parent().removeClass('open');
-
-			sub.offsetHeight;
-			//forces the "sub" to re-consider the new 'height' before transition
-
-
-			var complete = function complete(ev, trigger) {
-				ev && ev.stopPropagation();
-				$sub.css({ display: 'none', overflow: '', height: '', 'transition-property': '', 'transition-duration': '' }).removeClass('nav-show').addClass('nav-hide'); //only for window < @grid-float-breakpoint and .navbar-collapse.menu-min
-
-				if (trigger !== false) $sub.trigger($.Event('hidden.ace.submenu'));
-
-				if (shouldWait) submenu_working = false;
-			};
-
-			if ($duration == 0 || initialHeight == 0 || !$.support.transition.end) {
-				//(if duration is zero || element is hidden (scrollHeight == 0) || CSS3 transitions are not available)
-				complete();
-			} else {
-				$sub.css({
-					'height': 0,
-					'transition-property': 'height',
-					'transition-duration': $duration / 1000 + 's'
-				}).one($.support.transition.end, complete);
-
-				//there is sometimes a glitch, so maybe retry
-				if (ace.vars['android']) {
-					setTimeout(function () {
-						complete(null, false);
-						ace.helper.redraw(sub);
-					}, $duration + 20);
-				}
-			}
-
-			return true;
-		};
-
-		//toggle submenu
-		this.toggle = function (sub, $duration) {
-			$duration = $duration || self.settings.duration;
-
-			if (sub.scrollHeight == 0) {
-				//if an element is hidden scrollHeight becomes 0
-				if (this.show(sub, $duration)) return 1;
-			} else {
-				if (this.hide(sub, $duration)) return -1;
-			}
-			return 0;
-		};
-
-		//toggle mobile menu
-		this.mobileToggle = function (showMenu) {
-			if (this.mobile_view) {
-				if (this.mobile_style == 1 || this.mobile_style == 2) {
-					this.toggleMobile((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
-				} else if (this.mobile_style == 3) {
-					this.toggleResponsive((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
-				}
-				//return true;
-			} else if (this.collapsible) {
-				this.toggleCollapsible((typeof showMenu === 'undefined' ? 'undefined' : _typeof(showMenu)) === 'object' ? showMenu : null, typeof showMenu === 'boolean' ? showMenu : null);
-				//return true;
-			}
-
-			//return true;
-		};
-		this.mobileShow = function () {
-			this.mobileToggle(true);
-		};
-		this.mobileHide = function () {
-			this.mobileToggle(false);
-		};
-
-		this.toggleMobile = function (toggle_btn, showMenu) {
-			if (!(this.mobile_style == 1 || this.mobile_style == 2)) return;
-
-			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : !this.$sidebar.hasClass('display');
-
-			if (!toggle_btn || (typeof toggle_btn === 'undefined' ? 'undefined' : _typeof(toggle_btn)) !== 'object') {
-				toggle_btn = $('.menu-toggler[data-target="#' + (this.$sidebar.attr('id') || '') + '"]');
-				if (toggle_btn.length != 0) toggle_btn = toggle_btn[0];else toggle_btn = null;
-			}
-			if (showMenu) {
-				this.$sidebar.addClass('display');
-				if (toggle_btn) $(toggle_btn).addClass('display');
-			} else {
-				this.$sidebar.removeClass('display');
-				if (toggle_btn) $(toggle_btn).removeClass('display');
-			}
-
-			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
-		};
-
-		this.toggleCollapsible = function (toggle_btn, showMenu) {
-			if (this.mobile_style != 4) return;
-
-			var showMenu = typeof showMenu === 'boolean' ? showMenu : typeof toggle_btn === 'boolean' ? toggle_btn : !this.$sidebar.hasClass('in');
-			if (showMenu) {
-				this.$sidebar.collapse('show');
-			} else {
-				this.$sidebar.removeClass('display');
-				this.$sidebar.collapse('hide');
-			}
-
-			if (showMenu) self.$sidebar.trigger($.Event('mobileShow.ace.sidebar'));else self.$sidebar.trigger($.Event('mobileHide.ace.sidebar'));
-		};
-
-		////////////////
-		//private functions
-		//sidebar vars
-		var minimized_menu_class = 'menu-min';
-		var responsive_min_class = 'responsive-min';
-		var responsive_max_class = 'responsive-max';
-		var horizontal_menu_class = 'h-sidebar';
-
-		var sidebar_mobile_style = function sidebar_mobile_style() {
-			//differnet mobile menu styles
-			this.mobile_style = 1; //default responsive mode with toggle button inside navbar
-			if (this.$sidebar.hasClass('responsive') && !$('.menu-toggler[data-target="#' + this.$sidebar.attr('id') + '"]').hasClass('navbar-toggle')) this.mobile_style = 2; //toggle button behind sidebar
-			else if (this.$sidebar.hasClass(responsive_min_class)) this.mobile_style = 3; //minimized menu
-				else if (this.$sidebar.hasClass('navbar-collapse')) this.mobile_style = 4; //collapsible (bootstrap style)
-		};
-		sidebar_mobile_style.call(self);
-
-		function update_vars() {
-			this.mobile_view = this.mobile_style < 4 && this.is_mobile_view();
-			this.collapsible = !this.mobile_view && this.is_collapsible();
-
-			this.minimized = !this.collapsible && this.$sidebar.hasClass(minimized_menu_class) || this.mobile_style == 3 && this.mobile_view && this.$sidebar.hasClass(responsive_min_class);
-
-			this.horizontal = !(this.mobile_view || this.collapsible) && this.$sidebar.hasClass(horizontal_menu_class);
-		}
-
-		//update some basic variables
-		$(window).on('resize.sidebar.vars', function () {
-			update_vars.call(self);
-		}).triggerHandler('resize.sidebar.vars');
-
-		//toggling (show/hide) submenu elements
-		this.$sidebar.on(ace.click_event + '.ace.submenu', '.nav-list', function (ev) {
-			var nav_list = this;
-
-			//check to see if we have clicked on an element which is inside a .dropdown-toggle element?!
-			//if so, it means we should toggle a submenu
-			var link_element = $(ev.target).closest('a');
-			if (!link_element || link_element.length == 0) return; //return if not clicked inside a link element
-
-			var minimized = self.minimized && !self.collapsible;
-			//if .sidebar is .navbar-collapse and in small device mode, then let minimized be uneffective
-
-			if (!link_element.hasClass('dropdown-toggle')) {
-				//it doesn't have a submenu return
-				//just one thing before we return
-				//if sidebar is collapsed(minimized) and we click on a first level menu item
-				//and the click is on the icon, not on the menu text then let's cancel event and cancel navigation
-				//Good for touch devices, that when the icon is tapped to see the menu text, navigation is cancelled
-				//navigation is only done when menu text is tapped
-
-				if (ace.click_event == 'tap' && minimized && link_element.get(0).parentNode.parentNode == nav_list) //only level-1 links
-					{
-						var text = link_element.find('.menu-text').get(0);
-						if (text != null && ev.target != text && !$.contains(text, ev.target)) {
-							//not clicking on the text or its children
-							ev.preventDefault();
-							return false;
-						}
-					}
-
-				//ios safari only has a bit of a problem not navigating to link address when scrolling down
-				//specify data-link attribute to ignore this
-				if (ace.vars['ios_safari'] && link_element.attr('data-link') !== 'false') {
-					//only ios safari has a bit of a problem not navigating to link address when scrolling down
-					//please see issues section in documentation
-					document.location = link_element.attr('href');
-					ev.preventDefault();
-					return false;
-				}
-
-				return;
-			}
-
-			ev.preventDefault();
-
-			var sub = link_element.siblings('.submenu').get(0);
-			if (!sub) return false;
-			var $sub = $(sub);
-
-			var height_change = 0; //the amount of height change in .nav-list
-
-			var parent_ul = sub.parentNode.parentNode;
-			if (minimized && parent_ul == nav_list || $sub.parent().hasClass('hover') && $sub.css('position') == 'absolute' && !self.collapsible) {
-				return false;
-			}
-
-			var sub_hidden = sub.scrollHeight == 0;
-
-			//if not open and visible, let's open it and make it visible
-			if (sub_hidden && self.settings.hide_open_subs) {
-				//being shown now
-				$(parent_ul).find('> .open > .submenu').each(function () {
-					//close all other open submenus except for the active one
-					if (this != sub && !$(this.parentNode).hasClass('active')) {
-						height_change -= this.scrollHeight;
-						self.hide(this, self.settings.duration, false);
-					}
-				});
-			}
-
-			if (sub_hidden) {
-				//being shown now
-				self.show(sub, self.settings.duration);
-				//if a submenu is being shown and another one previously started to hide, then we may need to update/hide scrollbars
-				//but if no previous submenu is being hidden, then no need to check if we need to hide the scrollbars in advance
-				if (height_change != 0) height_change += sub.scrollHeight; //we need new updated 'scrollHeight' here
-			} else {
-				self.hide(sub, self.settings.duration);
-				height_change -= sub.scrollHeight;
-				//== -1 means submenu is being hidden
-			}
-
-			//hide scrollbars if content is going to be small enough that scrollbars is not needed anymore
-			//do this almost before submenu hiding begins
-			//but when minimized submenu's toggle should have no effect
-			if (height_change != 0) {
-				if (self.$sidebar.attr('data-sidebar-scroll') == 'true' && !self.minimized) self.$sidebar.ace_sidebar_scroll('prehide', height_change);
-			}
-
-			return false;
-		});
-	} //end of Sidebar
-
-
-	//sidebar events
-
-	//menu-toggler
-	$(document).on(ace.click_event + '.ace.menu', '.menu-toggler', function (e) {
-		var btn = $(this);
-		var sidebar = $(btn.attr('data-target'));
-		if (sidebar.length == 0) return;
-
-		e.preventDefault();
-
-		//sidebar.toggleClass('display');
-		//btn.toggleClass('display');
-
-		sidebar.ace_sidebar('mobileToggle', this);
-
-		var click_event = ace.click_event + '.ace.autohide';
-		var auto_hide = sidebar.attr('data-auto-hide') === 'true';
-
-		if (btn.hasClass('display')) {
-			//hide menu if clicked outside of it!
-			if (auto_hide) {
-				$(document).on(click_event, function (ev) {
-					if (sidebar.get(0) == ev.target || $.contains(sidebar.get(0), ev.target)) {
-						ev.stopPropagation();
-						return;
-					}
-
-					sidebar.ace_sidebar('mobileToggle', this, false);
-					$(document).off(click_event);
-				});
-			}
-
-			if (sidebar.attr('data-sidebar-scroll') == 'true') sidebar.ace_sidebar_scroll('reset');
-		} else {
-			if (auto_hide) $(document).off(click_event);
-		}
-
-		return false;
-	})
-	//sidebar collapse/expand button
-	.on(ace.click_event + '.ace.menu', '.sidebar-collapse', function (e) {
-
-		var target = $(this).attr('data-target'),
-		    $sidebar = null;
-		if (target) $sidebar = $(target);
-		if ($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
-		if ($sidebar.length == 0) return;
-
-		e.preventDefault();
-		$sidebar.ace_sidebar('toggleMenu', this);
-	})
-	//this button is used in `mobile_style = 3` responsive menu style to expand minimized sidebar
-	.on(ace.click_event + '.ace.menu', '.sidebar-expand', function (e) {
-		var target = $(this).attr('data-target'),
-		    $sidebar = null;
-		if (target) $sidebar = $(target);
-		if ($sidebar == null || $sidebar.length == 0) $sidebar = $(this).closest('.sidebar');
-		if ($sidebar.length == 0) return;
-
-		var btn = this;
-		e.preventDefault();
-		$sidebar.ace_sidebar('toggleResponsive', this);
-
-		var click_event = ace.click_event + '.ace.autohide';
-		if ($sidebar.attr('data-auto-hide') === 'true') {
-			if ($sidebar.hasClass(responsive_max_class)) {
-				$(document).on(click_event, function (ev) {
-					if ($sidebar.get(0) == ev.target || $.contains($sidebar.get(0), ev.target)) {
-						ev.stopPropagation();
-						return;
-					}
-
-					$sidebar.ace_sidebar('toggleResponsive', btn);
-					$(document).off(click_event);
-				});
-			} else {
-				$(document).off(click_event);
-			}
-		}
-	});
-
-	$.fn.ace_sidebar = function (option, value, value2) {
-		var method_call;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_sidebar');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_sidebar', data = new Sidebar(this, options));
-			if (typeof option === 'string' && typeof data[option] === 'function') {
-				if (value instanceof Array) method_call = data[option].apply(data, value);else if (value2 !== undefined) method_call = data[option](value, value2);else method_call = data[option](value);
-			}
-		});
-
-		return method_call === undefined ? $set : method_call;
-	};
-
-	$.fn.ace_sidebar.defaults = {
-		'duration': 300,
-		'hide_open_subs': true
-	};
-})(window.jQuery);
-; /**
-  <b>Scrollbars for sidebar</b>. This approach can <span class="text-danger">only</span> be used on <u>fixed</u> sidebar.
-  It doesn't use <u>"overflow:hidden"</u> CSS property and therefore can be used with <u>.hover</u> submenus and minimized sidebar.
-  Except when in mobile view and menu toggle button is not in the navbar.
-  */
-
-(function ($, undefined) {
-	//if( !$.fn.ace_scroll ) return;
-
-	var old_safari = ace.vars['safari'] && navigator.userAgent.match(/version\/[1-5]/i);
-	//NOTE
-	//Safari on windows has not been updated for a long time.
-	//And it has a problem when sidebar is fixed & scrollable and there is a CSS3 animation inside page content.
-	//Very probably windows users of safari have migrated to another browser by now!
-
-	var is_element_pos = 'getComputedStyle' in window ?
-	//el.offsetHeight is used to force redraw and recalculate 'el.style.position' esp. for webkit!
-	function (el, pos) {
-		el.offsetHeight;return window.getComputedStyle(el).position == pos;
-	} : function (el, pos) {
-		el.offsetHeight;return $(el).css('position') == pos;
-	};
-
-	function Sidebar_Scroll(sidebar, settings) {
-		var self = this;
-
-		var $window = $(window);
-
-		var $sidebar = $(sidebar),
-		    $nav,
-		    nav,
-		    $toggle,
-		    $shortcuts;
-		$nav = $sidebar.find('.nav-list');
-		nav = $nav.get(0);
-		if (!nav) return;
-
-		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_scroll.defaults);
-		this.settings = $.extend({}, $.fn.ace_sidebar_scroll.defaults, settings, attrib_values);
-		var scroll_to_active = self.settings.scroll_to_active;
-
-		var ace_sidebar = $sidebar.ace_sidebar('ref');
-		$sidebar.attr('data-sidebar-scroll', 'true');
-
-		var scroll_div = null,
-		    scroll_content = null,
-		    scroll_content_div = null,
-		    bar = null,
-		    track = null,
-		    ace_scroll = null;
-
-		this.is_scrolling = false;
-		var _initiated = false;
-		this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
-
-		var $avail_height, $content_height;
-
-		var available_height = function available_height() {
-			//available window space
-			var offset = $nav.parent().offset(); //because `$nav.offset()` considers the "scrolled top" amount as well
-			if (self.sidebar_fixed) offset.top -= ace.helper.scrollTop();
-
-			return $window.innerHeight() - offset.top - (self.settings.include_toggle ? 0 : $toggle.outerHeight()) + 1;
-		};
-		var content_height = function content_height() {
-			return nav.clientHeight; //we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
-		};
-
-		var initiate = function initiate(on_page_load) {
-			if (_initiated) return;
-			if (!self.sidebar_fixed) return; //eligible??
-			//return if we want scrollbars only on "fixed" sidebar and sidebar is not "fixed" yet!
-
-
-			$nav = $sidebar.find('.nav-list');
-			$toggle = $sidebar.find('.sidebar-toggle').eq(0);
-			$shortcuts = $sidebar.find('.sidebar-shortcuts').eq(0);
-			nav = $nav.get(0);
-
-			if (!nav) return;
-
-			//initiate once
-			$nav.wrap('<div class="nav-wrap-up pos-rel" />');
-			$nav.after('<div><div></div></div>');
-
-			$nav.wrap('<div class="nav-wrap" />');
-
-			if (!self.settings.include_toggle) $toggle.css({ 'z-index': 1 });
-			if (!self.settings.include_shortcuts) $shortcuts.css({ 'z-index': 99 });
-
-			scroll_div = $nav.parent().next().ace_scroll({
-				size: available_height(),
-				//reset: true,
-				mouseWheelLock: true,
-				hoverReset: false,
-				dragEvent: true,
-				styleClass: self.settings.scroll_style,
-				touchDrag: false //disable touch drag event on scrollbars, we'll add a custom one later
-			}).closest('.ace-scroll').addClass('nav-scroll');
-
-			ace_scroll = scroll_div.data('ace_scroll');
-
-			scroll_content = scroll_div.find('.scroll-content').eq(0);
-			scroll_content_div = scroll_content.find(' > div').eq(0);
-
-			track = $(ace_scroll.get_track());
-			bar = track.find('.scroll-bar').eq(0);
-
-			if (self.settings.include_shortcuts && $shortcuts.length != 0) {
-				$nav.parent().prepend($shortcuts).wrapInner('<div />');
-				$nav = $nav.parent();
-			}
-			if (self.settings.include_toggle && $toggle.length != 0) {
-				$nav.append($toggle);
-				$nav.closest('.nav-wrap').addClass('nav-wrap-t'); //it just helps to remove toggle button's top border and restore li:last-child's bottom border
-			}
-
-			$nav.css({ position: 'relative' });
-			if (self.settings.scroll_outside == true) scroll_div.addClass('scrollout');
-
-			nav = $nav.get(0);
-			nav.style.top = 0;
-			scroll_content.on('scroll.nav', function () {
-				nav.style.top = -1 * this.scrollTop + 'px';
-			});
-
-			//mousewheel library available?
-			$nav.on(!!$.event.special.mousewheel ? 'mousewheel.ace_scroll' : 'mousewheel.ace_scroll DOMMouseScroll.ace_scroll', function (event) {
-				if (!self.is_scrolling || !ace_scroll.is_active()) {
-					return !self.settings.lock_anyway;
-				}
-				//transfer $nav's mousewheel event to scrollbars
-				return scroll_div.trigger(event);
-			});
-
-			$nav.on('mouseenter.ace_scroll', function () {
-				track.addClass('scroll-hover');
-			}).on('mouseleave.ace_scroll', function () {
-				track.removeClass('scroll-hover');
-			});
-
-			/**
-   $(document.body).on('touchmove.nav', function(event) {
-   	if( self.is_scrolling && $.contains(sidebar, event.target) ) {
-   		event.preventDefault();
-   		return false;
-   	}
-   })
-   */
-
-			//you can also use swipe event in a similar way //swipe.nav
-			var content = scroll_content.get(0);
-			$nav.on('ace_drag.nav', function (event) {
-				if (!self.is_scrolling || !ace_scroll.is_active()) {
-					event.retval.cancel = true;
-					return;
-				}
-
-				//if submenu hover is being scrolled let's cancel sidebar scroll!
-				if ($(event.target).closest('.can-scroll').length != 0) {
-					event.retval.cancel = true;
-					return;
-				}
-
-				if (event.direction == 'up' || event.direction == 'down') {
-
-					ace_scroll.move_bar(true);
-
-					var distance = event.dy;
-
-					distance = parseInt(Math.min($avail_height, distance));
-					if (Math.abs(distance) > 2) distance = distance * 2;
-
-					if (distance != 0) {
-						content.scrollTop = content.scrollTop + distance;
-						nav.style.top = -1 * content.scrollTop + 'px';
-					}
-				}
-			});
-
-			//for drag only
-			if (self.settings.smooth_scroll) {
-				$nav.on('touchstart.nav MSPointerDown.nav pointerdown.nav', function (event) {
-					$nav.css('transition-property', 'none');
-					bar.css('transition-property', 'none');
-				}).on('touchend.nav touchcancel.nav MSPointerUp.nav MSPointerCancel.nav pointerup.nav pointercancel.nav', function (event) {
-					$nav.css('transition-property', 'top');
-					bar.css('transition-property', 'top');
-				});
-			}
-
-			if (old_safari && !self.settings.include_toggle) {
-				var toggle = $toggle.get(0);
-				if (toggle) scroll_content.on('scroll.safari', function () {
-					ace.helper.redraw(toggle);
-				});
-			}
-
-			_initiated = true;
-
-			//if the active item is not visible, scroll down so that it becomes visible
-			//only the first time, on page load
-			if (on_page_load == true) {
-				self.reset(); //try resetting at first
-
-				if (scroll_to_active) {
-					self.scroll_to_active();
-				}
-				scroll_to_active = false;
-			}
-
-			if (typeof self.settings.smooth_scroll === 'number' && self.settings.smooth_scroll > 0) {
-				$nav.css({ 'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1000).toFixed(2) + 's' });
-				bar.css({ 'transition-property': 'top', 'transition-duration': (self.settings.smooth_scroll / 1500).toFixed(2) + 's' });
-
-				scroll_div.on('drag.start', function (e) {
-					e.stopPropagation();
-					$nav.css('transition-property', 'none');
-				}).on('drag.end', function (e) {
-					e.stopPropagation();
-					$nav.css('transition-property', 'top');
-				});
-			}
-
-			if (ace.vars['android']) {
-				//force hide address bar, because its changes don't trigger window resize and become kinda ugly
-				var val = ace.helper.scrollTop();
-				if (val < 2) {
-					window.scrollTo(val, 0);
-					setTimeout(function () {
-						self.reset();
-					}, 20);
-				}
-
-				var last_height = ace.helper.winHeight(),
-				    new_height;
-				$(window).on('scroll.ace_scroll', function () {
-					if (self.is_scrolling && ace_scroll.is_active()) {
-						new_height = ace.helper.winHeight();
-						if (new_height != last_height) {
-							last_height = new_height;
-							self.reset();
-						}
-					}
-				});
-			}
-		};
-
-		this.scroll_to_active = function () {
-			if (!ace_scroll || !ace_scroll.is_active()) return;
-			try {
-				//sometimes there's no active item or not 'offsetTop' property
-				var $active;
-
-				var vars = ace_sidebar['vars']();
-
-				var nav_list = $sidebar.find('.nav-list');
-				if (vars['minimized'] && !vars['collapsible']) {
-					$active = nav_list.find('> .active');
-				} else {
-					$active = $nav.find('> .active.hover');
-					if ($active.length == 0) $active = $nav.find('.active:not(.open)');
-				}
-
-				var top = $active.outerHeight();
-				nav_list = nav_list.get(0);
-				var active = $active.get(0);
-				while (active != nav_list) {
-					top += active.offsetTop;
-					active = active.parentNode;
-				}
-
-				var scroll_amount = top - scroll_div.height();
-				if (scroll_amount > 0) {
-					nav.style.top = -scroll_amount + 'px';
-					scroll_content.scrollTop(scroll_amount);
-				}
-			} catch (e) {}
-		};
-
-		this.reset = function (recalc) {
-			if (recalc === true) {
-				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
-			}
-
-			if (!this.sidebar_fixed) {
-				this.disable();
-				return; //eligible??
-			}
-
-			//return if we want scrollbars only on "fixed" sidebar and sidebar is not "fixed" yet!
-
-			if (!_initiated) initiate();
-			//initiate scrollbars if not yet
-
-			var vars = ace_sidebar['vars']();
-
-			//enable if:
-			//menu is not collapsible mode (responsive navbar-collapse mode which has default browser scrollbar)
-			//menu is not horizontal or horizontal but mobile view (which is not navbar-collapse)
-			//and available height is less than nav's height
-
-
-			var enable_scroll = !vars['collapsible'] && !vars['horizontal'] && ($avail_height = available_height()) < ($content_height = nav.clientHeight);
-			//we don't use nav.scrollHeight here, because hover submenus are considered in calculating scrollHeight despite position=absolute!
-
-
-			this.is_scrolling = true;
-			if (enable_scroll) {
-				scroll_content_div.css({ height: $content_height, width: 8 });
-				scroll_div.prev().css({ 'max-height': $avail_height });
-				ace_scroll.update({ size: $avail_height });
-				ace_scroll.enable();
-				ace_scroll.reset();
-			}
-			if (!enable_scroll || !ace_scroll.is_active()) {
-				if (this.is_scrolling) this.disable();
-			} else {
-				$sidebar.addClass('sidebar-scroll');
-			}
-
-			//return this.is_scrolling;
-		};
-
-		this.disable = function () {
-			this.is_scrolling = false;
-			if (scroll_div) {
-				scroll_div.css({ 'height': '', 'max-height': '' });
-				scroll_content_div.css({ height: '', width: '' }); //otherwise it will have height and takes up some space even when invisible
-				scroll_div.prev().css({ 'max-height': '' });
-				ace_scroll.disable();
-			}
-
-			if (parseInt(nav.style.top) < 0 && self.settings.smooth_scroll && $.support.transition.end) {
-				$nav.one($.support.transition.end, function () {
-					$sidebar.removeClass('sidebar-scroll');
-					$nav.off('.trans');
-				});
-			} else {
-				$sidebar.removeClass('sidebar-scroll');
-			}
-
-			nav.style.top = 0;
-		};
-
-		this.prehide = function (height_change) {
-			if (!this.is_scrolling || ace_sidebar.get('minimized')) return; //when minimized submenu's toggle should have no effect
-
-			if (content_height() + height_change < available_height()) {
-				this.disable();
-			} else if (height_change < 0) {
-				//if content height is decreasing
-				//let's move nav down while a submenu is being hidden
-				var scroll_top = scroll_content.scrollTop() + height_change;
-				if (scroll_top < 0) return;
-
-				nav.style.top = -1 * scroll_top + 'px';
-			}
-		};
-
-		this._reset = function (recalc) {
-			if (recalc === true) {
-				this.sidebar_fixed = is_element_pos(sidebar, 'fixed');
-			}
-
-			if (ace.vars['webkit']) setTimeout(function () {
-				self.reset();
-			}, 0);else this.reset();
-		};
-
-		this.set_hover = function () {
-			if (track) track.addClass('scroll-hover');
-		};
-
-		this.get = function (name) {
-			if (this.hasOwnProperty(name)) return this[name];
-		};
-		this.set = function (name, value) {
-			if (this.hasOwnProperty(name)) this[name] = value;
-		};
-		this.ref = function () {
-			//return a reference to self
-			return this;
-		};
-
-		this.updateStyle = function (styleClass) {
-			if (ace_scroll == null) return;
-			ace_scroll.update({ styleClass: styleClass });
-		};
-
-		//change scrollbar size after a submenu is hidden/shown
-		//but don't change if sidebar is minimized
-		$sidebar.on('hidden.ace.submenu.sidebar_scroll shown.ace.submenu.sidebar_scroll', '.submenu', function (e) {
-			e.stopPropagation();
-
-			if (!ace_sidebar.get('minimized')) {
-				//webkit has a little bit of a glitch!!!
-				self._reset();
-				if (e.type == 'shown') self.set_hover();
-			}
-		});
-
-		initiate(true); //true = on_page_load
-	}
-
-	//reset on document and window changes
-	$(document).on('settings.ace.sidebar_scroll', function (ev, event_name, event_val) {
-		$('.sidebar[data-sidebar-scroll=true]').each(function () {
-			var $this = $(this);
-			var sidebar_scroll = $this.ace_sidebar_scroll('ref');
-
-			if (event_name == 'sidebar_collapsed' && is_element_pos(this, 'fixed')) {
-				if ($this.attr('data-sidebar-hover') == 'true') $this.ace_sidebar_hover('reset');
-				sidebar_scroll._reset();
-			} else if (event_name === 'sidebar_fixed' || event_name === 'navbar_fixed') {
-				var is_scrolling = sidebar_scroll.get('is_scrolling');
-				var sidebar_fixed = is_element_pos(this, 'fixed');
-				sidebar_scroll.set('sidebar_fixed', sidebar_fixed);
-
-				if (sidebar_fixed && !is_scrolling) {
-					sidebar_scroll._reset();
-				} else if (!sidebar_fixed) {
-					sidebar_scroll.disable();
-				}
-			}
-		});
-	});
-
-	$(window).on('resize.ace.sidebar_scroll', function () {
-		$('.sidebar[data-sidebar-scroll=true]').each(function () {
-			var $this = $(this);
-			if ($this.attr('data-sidebar-hover') == 'true') $this.ace_sidebar_hover('reset');
-			/////////////
-			var sidebar_scroll = $(this).ace_sidebar_scroll('ref');
-
-			var sidebar_fixed = is_element_pos(this, 'fixed');
-			sidebar_scroll.set('sidebar_fixed', sidebar_fixed);
-			sidebar_scroll._reset();
-		});
-	});
-
-	/////////////////////////////////////////////
-	if (!$.fn.ace_sidebar_scroll) {
-
-		$.fn.ace_sidebar_scroll = function (option, value) {
-			var method_call;
-
-			var $set = this.each(function () {
-				var $this = $(this);
-				var data = $this.data('ace_sidebar_scroll');
-				var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-				if (!data) $this.data('ace_sidebar_scroll', data = new Sidebar_Scroll(this, options));
-				if (typeof option === 'string' && typeof data[option] === 'function') {
-					method_call = data[option](value);
-				}
-			});
-
-			return method_call === undefined ? $set : method_call;
-		};
-
-		$.fn.ace_sidebar_scroll.defaults = {
-			'scroll_to_active': true,
-			'include_shortcuts': true,
-			'include_toggle': false,
-			'smooth_scroll': 150,
-			'scroll_outside': false,
-			'scroll_style': '',
-			'lock_anyway': false
-		};
-	}
-})(window.jQuery);; /**
-                    <b>Submenu hover adjustment</b>. Automatically move up a submenu to fit into screen when some part of it goes beneath window.
-                    Pass a "true" value as an argument and submenu will have native browser scrollbars when necessary.
-                    */
-
-(function ($, undefined) {
-
-	if (ace.vars['very_old_ie']) return;
-	//ignore IE7 & below
-
-	var hasTouch = ace.vars['touch'];
-	var nativeScroll = ace.vars['old_ie'] || hasTouch;
-
-	var is_element_pos = 'getComputedStyle' in window ?
-	//el.offsetHeight is used to force redraw and recalculate 'el.style.position' esp. for webkit!
-	function (el, pos) {
-		el.offsetHeight;return window.getComputedStyle(el).position == pos;
-	} : function (el, pos) {
-		el.offsetHeight;return $(el).css('position') == pos;
-	};
-
-	$(window).on('resize.sidebar.ace_hover', function () {
-		$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('update_vars').ace_sidebar_hover('reset');
-	});
-
-	$(document).on('settings.ace.ace_hover', function (e, event_name, event_val) {
-		if (event_name == 'sidebar_collapsed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset');else if (event_name == 'navbar_fixed') $('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('update_vars');
-	});
-
-	var sidebars = [];
-
-	function Sidebar_Hover(sidebar, settings) {
-		var self = this,
-		    that = this;
-
-		var attrib_values = ace.helper.getAttrSettings(sidebar, $.fn.ace_sidebar_hover.defaults);
-		this.settings = $.extend({}, $.fn.ace_sidebar_hover.defaults, settings, attrib_values);
-
-		var $sidebar = $(sidebar),
-		    nav_list = $sidebar.find('.nav-list').get(0);
-		$sidebar.attr('data-sidebar-hover', 'true');
-
-		sidebars.push($sidebar);
-
-		var sidebar_vars = {};
-		var old_ie = ace.vars['old_ie'];
-
-		var scroll_right = false;
-		//scroll style class
-		var hasHoverDelay = self.settings.sub_hover_delay || false;
-
-		if (hasTouch && hasHoverDelay) self.settings.sub_hover_delay = parseInt(Math.max(self.settings.sub_hover_delay, 2500)); //for touch device, delay is at least 2.5sec
-
-		var $window = $(window);
-		//navbar used for adding extra offset from top when adjusting submenu
-		var $navbar = $('.navbar').eq(0);
-		var navbar_fixed = $navbar.css('position') == 'fixed';
-		this.update_vars = function () {
-			navbar_fixed = $navbar.css('position') == 'fixed';
-		};
-
-		self.dirty = false;
-		//on window resize or sidebar expand/collapse a previously "pulled up" submenu should be reset back to its default position
-		//for example if "pulled up" in "responsive-min" mode, in "fullmode" should not remain "pulled up"
-		this.reset = function () {
-			if (self.dirty == false) return;
-			self.dirty = false; //so don't reset is not called multiple times in a row!
-
-			$sidebar.find('.submenu').each(function () {
-				var $sub = $(this),
-				    li = $sub.parent();
-				$sub.css({ 'top': '', 'bottom': '', 'max-height': '' });
-
-				if ($sub.hasClass('ace-scroll')) {
-					$sub.ace_scroll('disable');
-				} else {
-					$sub.removeClass('sub-scroll');
-				}
-
-				if (is_element_pos(this, 'absolute')) $sub.addClass('can-scroll');else $sub.removeClass('can-scroll');
-
-				li.removeClass('pull_up').find('.menu-text:first').css('margin-top', '');
-			});
-
-			$sidebar.find('.hover-show').removeClass('hover-show hover-shown hover-flip');
-		};
-
-		this.updateStyle = function (newStyle) {
-			sub_scroll_style = newStyle;
-			$sidebar.find('.submenu.ace-scroll').ace_scroll('update', { styleClass: newStyle });
-		};
-		this.changeDir = function (dir) {
-			scroll_right = dir === 'right';
-		};
-
-		//update submenu scrollbars on submenu hide & show
-
-		var lastScrollHeight = -1;
-		//hide scrollbars if it's going to be not needed anymore!
-		if (!nativeScroll) $sidebar.on('hide.ace.submenu.sidebar_hover', '.submenu', function (e) {
-			if (lastScrollHeight < 1) return;
-
-			e.stopPropagation();
-			var $sub = $(this).closest('.ace-scroll.can-scroll');
-			if ($sub.length == 0 || !is_element_pos($sub[0], 'absolute')) return;
-
-			if ($sub[0].scrollHeight - this.scrollHeight < lastScrollHeight) {
-				$sub.ace_scroll('disable');
-			}
-		});
-
-		//reset scrollbars 
-		if (!nativeScroll) $sidebar.on('shown.ace.submenu.sidebar_hover hidden.ace.submenu.sidebar_hover', '.submenu', function (e) {
-			if (lastScrollHeight < 1) return;
-
-			var $sub = $(this).closest('.ace-scroll.can-scroll');
-			if ($sub.length == 0 || !is_element_pos($sub[0], 'absolute')) return;
-
-			var sub_h = $sub[0].scrollHeight;
-
-			if (lastScrollHeight > 14 && sub_h - lastScrollHeight > 4) {
-				$sub.ace_scroll('enable').ace_scroll('reset'); //don't update track position
-			} else {
-				$sub.ace_scroll('disable');
-			}
-		});
-
-		///////////////////////
-
-
-		var currentScroll = -1;
-
-		//some mobile browsers don't have mouseenter
-		var event_1 = !hasTouch ? 'mouseenter.sub_hover' : 'touchstart.sub_hover'; // pointerdown.sub_hover';
-		var event_2 = !hasTouch ? 'mouseleave.sub_hover' : 'touchend.sub_hover touchcancel.sub_hover'; // pointerup.sub_hover pointercancel.sub_hover';
-
-		$sidebar.on(event_1, '.nav-list li, .sidebar-shortcuts', function (e) {
-			sidebar_vars = $sidebar.ace_sidebar('vars');
-
-			//ignore if collapsible mode (mobile view .navbar-collapse) so it doesn't trigger submenu movements
-			//or return if horizontal but not mobile_view (style 1&3)
-			if (sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/) return;
-
-			var $this = $(this);
-
-			var shortcuts = false;
-			var has_hover = $this.hasClass('hover');
-
-			var sub = $this.find('> .submenu').get(0);
-			if (!(sub || this.parentNode == nav_list || has_hover || (shortcuts = $this.hasClass('sidebar-shortcuts')))) {
-				if (sub) $(sub).removeClass('can-scroll');
-				return; //include .compact and .hover state as well?
-			}
-
-			var target_element = sub,
-			    is_abs = false;
-			if (!target_element && this.parentNode == nav_list) target_element = $this.find('> a > .menu-text').get(0);
-			if (!target_element && shortcuts) target_element = $this.find('.sidebar-shortcuts-large').get(0);
-			if ((!target_element || !(is_abs = is_element_pos(target_element, 'absolute'))) && !has_hover) {
-				if (sub) $(sub).removeClass('can-scroll');
-				return;
-			}
-
-			var sub_hide = hasHoverDelay ? getSubHide(this) : null;
-			//var show_sub = false;
-
-			if (sub) {
-				if (is_abs) {
-					self.dirty = true;
-
-					var newScroll = ace.helper.scrollTop();
-					//if submenu is becoming visible for first time or document has been scrolled, then adjust menu
-					if (hasHoverDelay && !sub_hide.is_visible() || !hasTouch && newScroll != currentScroll || old_ie) {
-						//try to move/adjust submenu if the parent is a li.hover or if submenu is minimized
-						//if( is_element_pos(sub, 'absolute') ) {//for example in small device .hover > .submenu may not be absolute anymore!
-						$(sub).addClass('can-scroll');
-						//show_sub = true;
-						if (!old_ie && !hasTouch) adjust_submenu.call(this, sub);else {
-							//because ie8 needs some time for submenu to be displayed and real value of sub.scrollHeight be kicked in
-							var that = this;
-							setTimeout(function () {
-								adjust_submenu.call(that, sub);
-							}, 0);
-						}
-						//}
-						//else $(sub).removeClass('can-scroll');
-					}
-					currentScroll = newScroll;
-				} else {
-					$(sub).removeClass('can-scroll');
-				}
-			}
-			//if(show_sub) 
-			hasHoverDelay && sub_hide.show();
-		}).on(event_2, '.nav-list li, .sidebar-shortcuts', function (e) {
-			sidebar_vars = $sidebar.ace_sidebar('vars');
-
-			if (sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/) return;
-
-			if (!$(this).hasClass('hover-show')) return;
-
-			hasHoverDelay && getSubHide(this).hideDelay();
-		});
-
-		function subHide(li_sub) {
-			var self = li_sub,
-			    $self = $(self);
-			var timer = null;
-			var visible = false;
-
-			this.show = function () {
-				if (timer != null) clearTimeout(timer);
-				timer = null;
-
-				$self.addClass('hover-show hover-shown');
-				visible = true;
-
-				//let's hide .hover-show elements that are not .hover-shown anymore (i.e. marked for hiding in hideDelay)
-				for (var i = 0; i < sidebars.length; i++) {
-					sidebars[i].find('.hover-show').not('.hover-shown').each(function () {
-						getSubHide(this).hide();
-					});
-				}
-			};
-
-			this.hide = function () {
-				visible = false;
-
-				$self.removeClass('hover-show hover-shown hover-flip');
-
-				if (timer != null) clearTimeout(timer);
-				timer = null;
-
-				var sub = $self.find('> .submenu').get(0);
-				if (sub) getSubScroll(sub, 'hide');
-			};
-
-			this.hideDelay = function (callback) {
-				if (timer != null) clearTimeout(timer);
-
-				$self.removeClass('hover-shown'); //somehow marked for hiding
-
-				timer = setTimeout(function () {
-					visible = false;
-					$self.removeClass('hover-show hover-flip');
-					timer = null;
-
-					var sub = $self.find('> .submenu').get(0);
-					if (sub) getSubScroll(sub, 'hide');
-
-					if (typeof callback === 'function') callback.call(this);
-				}, that.settings.sub_hover_delay);
-			};
-
-			this.is_visible = function () {
-				return visible;
-			};
-		}
-		function getSubHide(el) {
-			var sub_hide = $(el).data('subHide');
-			if (!sub_hide) $(el).data('subHide', sub_hide = new subHide(el));
-			return sub_hide;
-		}
-
-		function getSubScroll(el, func) {
-			var sub_scroll = $(el).data('ace_scroll');
-			if (!sub_scroll) return false;
-			if (typeof func === 'string') {
-				sub_scroll[func]();
-				return true;
-			}
-			return sub_scroll;
-		}
-
-		function adjust_submenu(sub) {
-			var $li = $(this);
-			var $sub = $(sub);
-			sub.style.top = '';
-			sub.style.bottom = '';
-
-			var menu_text = null;
-			if (sidebar_vars['minimized'] && (menu_text = $li.find('.menu-text').get(0))) {
-				//2nd level items don't have .menu-text
-				menu_text.style.marginTop = '';
-			}
-
-			var scroll = ace.helper.scrollTop();
-			var navbar_height = 0;
-
-			var $scroll = scroll;
-
-			if (navbar_fixed) {
-				navbar_height = sidebar.offsetTop; //$navbar.height();
-				$scroll += navbar_height + 1;
-				//let's avoid our submenu from going below navbar
-				//because of chrome z-index stacking issue and firefox's normal .submenu over fixed .navbar flicker issue
-			}
-
-			var off = $li.offset();
-			off.top = parseInt(off.top);
-
-			var extra = 0,
-			    parent_height;
-
-			sub.style.maxHeight = ''; //otherwise scrollHeight won't be consistent in consecutive calls!?
-			var sub_h = sub.scrollHeight;
-			var parent_height = $li.height();
-			if (menu_text) {
-				extra = parent_height;
-				off.top += extra;
-			}
-			var sub_bottom = parseInt(off.top + sub_h);
-
-			var move_up = 0;
-			var winh = $window.height();
-
-			//if the bottom of menu is going to go below visible window
-
-			var top_space = parseInt(off.top - $scroll - extra); //available space on top
-			var win_space = winh; //available window space
-
-			var horizontal = sidebar_vars['horizontal'],
-			    horizontal_sub = false;
-			if (horizontal && this.parentNode == nav_list) {
-				move_up = 0; //don't move up first level submenu in horizontal mode
-				off.top += $li.height();
-				horizontal_sub = true; //first level submenu
-			}
-
-			if (!horizontal_sub && (move_up = sub_bottom - (winh + scroll)) >= 0) {
-				//don't move up more than available space
-				move_up = move_up < top_space ? move_up : top_space;
-
-				//move it up a bit more if there's empty space
-				if (move_up == 0) move_up = 20;
-				if (top_space - move_up > 10) {
-					move_up += parseInt(Math.min(25, top_space - move_up));
-				}
-
-				//move it down if submenu's bottom is going above parent LI
-				if (off.top + (parent_height - extra) > sub_bottom - move_up) {
-					move_up -= off.top + (parent_height - extra) - (sub_bottom - move_up);
-				}
-
-				if (move_up > 0) {
-					sub.style.top = -move_up + 'px';
-					if (menu_text) {
-						menu_text.style.marginTop = -move_up + 'px';
-					}
-				}
-			}
-			if (move_up < 0) move_up = 0; //when it goes below
-
-			var pull_up = move_up > 0 && move_up > parent_height - 20;
-			if (pull_up) {
-				$li.addClass('pull_up');
-			} else $li.removeClass('pull_up');
-
-			//flip submenu if out of window width
-			if (horizontal) {
-				if ($li.parent().parent().hasClass('hover-flip')) $li.addClass('hover-flip'); //if a parent is already flipped, flip it then!
-				else {
-						var sub_off = $sub.offset();
-						var sub_w = $sub.width();
-						var win_w = $window.width();
-						if (sub_off.left + sub_w > win_w) {
-							$li.addClass('hover-flip');
-						}
-					}
-			}
-
-			//don't add scrollbars if it contains .hover menus
-			var has_hover = $li.hasClass('hover') && !sidebar_vars['mobile_view'];
-			if (has_hover && $sub.find('> li > .submenu').length > 0) return;
-
-			//if(  ) {
-			var scroll_height = win_space - (off.top - scroll) + move_up;
-			//if after scroll, the submenu is above parent LI, then move it down
-			var tmp = move_up - scroll_height;
-			if (tmp > 0 && tmp < parent_height) scroll_height += parseInt(Math.max(parent_height, parent_height - tmp));
-
-			scroll_height -= 5;
-
-			if (scroll_height < 90) {
-				return;
-			}
-
-			var ace_scroll = false;
-			if (!nativeScroll) {
-				ace_scroll = getSubScroll(sub);
-				if (ace_scroll == false) {
-					$sub.ace_scroll({
-						//hideOnIdle: true,
-						observeContent: true,
-						detached: true,
-						updatePos: false,
-						reset: true,
-						mouseWheelLock: true,
-						styleClass: self.settings.sub_scroll_style
-					});
-					ace_scroll = getSubScroll(sub);
-
-					var track = ace_scroll.get_track();
-					if (track) {
-						//detach it from body and insert it after submenu for better and cosistent positioning
-						$sub.after(track);
-					}
-				}
-
-				ace_scroll.update({ size: scroll_height });
-			} else {
-				$sub.addClass('sub-scroll').css('max-height', scroll_height + 'px');
-			}
-
-			lastScrollHeight = scroll_height;
-			if (!nativeScroll && ace_scroll) {
-				if (scroll_height > 14 && sub_h - scroll_height > 4) {
-					ace_scroll.enable();
-					ace_scroll.reset();
-				} else {
-					ace_scroll.disable();
-				}
-
-				//////////////////////////////////
-				var track = ace_scroll.get_track();
-				if (track) {
-					track.style.top = -(move_up - extra - 1) + 'px';
-
-					var off = $sub.position();
-					var left = off.left;
-					if (!scroll_right) {
-						left += $sub.outerWidth() - ace_scroll.track_size();
-					} else {
-						left += 2;
-					}
-					track.style.left = parseInt(left) + 'px';
-
-					if (horizontal_sub) {
-						//first level submenu
-						track.style.left = parseInt(left - 2) + 'px';
-						track.style.top = parseInt(off.top) + (menu_text ? extra - 2 : 0) + 'px';
-					}
-				}
-			}
-			//}
-
-
-			//again force redraw for safari!
-			if (ace.vars['safari']) {
-				ace.helper.redraw(sub);
-			}
-		}
-	}
-
-	/////////////////////////////////////////////
-	$.fn.ace_sidebar_hover = function (option, value) {
-		var method_call;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('ace_sidebar_hover');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('ace_sidebar_hover', data = new Sidebar_Hover(this, options));
-			if (typeof option === 'string' && typeof data[option] === 'function') {
-				method_call = data[option](value);
-			}
-		});
-
-		return method_call === undefined ? $set : method_call;
-	};
-
-	$.fn.ace_sidebar_hover.defaults = {
-		'sub_hover_delay': 750,
-		'sub_scroll_style': 'no-track scroll-thin'
-	};
-})(window.jQuery);
-
-; /**
-  <b>Widget boxes</b>
-  */
-(function ($, undefined) {
-
-	var Widget_Box = function Widget_Box(box, options) {
-		this.$box = $(box);
-		var that = this;
-		//this.options = $.extend({}, $.fn.widget_box.defaults, options);
-
-		this.reload = function () {
-			var $box = this.$box;
-			var $remove_position = false;
-			if ($box.css('position') == 'static') {
-				$remove_position = true;
-				$box.addClass('position-relative');
-			}
-			$box.append('<div class="widget-box-overlay"><i class="' + ace.vars['icon'] + 'loading-icon fa fa-spinner fa-spin fa-2x white"></i></div>');
-
-			$box.one('reloaded.ace.widget', function () {
-				$box.find('.widget-box-overlay').remove();
-				if ($remove_position) $box.removeClass('position-relative');
-			});
-		};
-
-		this.closeFast = function () {
-			this.close(0);
-		};
-		this.close = function (closeSpeed) {
-			var $box = this.$box;
-			var closeSpeed = typeof closeSpeed === 'undefined' ? 300 : closeSpeed;
-			$box.fadeOut(closeSpeed, function () {
-				$box.trigger('closed.ace.widget');
-				$box.remove();
-			});
-		};
-
-		this.toggleFast = function () {
-			this.toggle(null, null, 0, 0);
-		};
-
-		this.toggle = function (type, button, expandSpeed, collapseSpeed) {
-			var $box = this.$box;
-			var $body = $box.find('.widget-body').eq(0);
-			var $icon = null;
-
-			var event_name = type || ($box.hasClass('collapsed') ? 'show' : 'hide');
-			var event_complete_name = event_name == 'show' ? 'shown' : 'hidden';
-
-			if (!button) {
-				button = $box.find('> .widget-header a[data-action=collapse]').eq(0);
-				if (button.length == 0) button = null;
-			}
-
-			if (button) {
-
-				$icon = button.find(ace.vars['.icon']).eq(0);
-
-				var $match;
-				var $icon_down = null;
-				var $icon_up = null;
-				if ($icon_down = $icon.attr('data-icon-show')) {
-					$icon_up = $icon.attr('data-icon-hide');
-				} else if ($match = $icon.attr('class').match(/fa\-(.*)\-(up|down)/)) {
-					$icon_down = 'fa-' + $match[1] + '-down';
-					$icon_up = 'fa-' + $match[1] + '-up';
-				}
-			}
-
-			var expandSpeed = typeof expandSpeed === 'undefined' ? 250 : expandSpeed;
-			var collapseSpeed = typeof collapseSpeed === 'undefined' ? 200 : collapseSpeed;
-
-			if (event_name == 'show') {
-				if ($icon) $icon.removeClass($icon_down).addClass($icon_up);
-
-				$body.hide();
-				$box.removeClass('collapsed');
-				$body.slideDown(expandSpeed, function () {
-					$box.trigger(event_complete_name + '.ace.widget');
-				});
-			} else {
-				if ($icon) $icon.removeClass($icon_up).addClass($icon_down);
-				$body.slideUp(collapseSpeed, function () {
-					$box.addClass('collapsed');
-					$box.trigger(event_complete_name + '.ace.widget');
-				});
-			}
-
-			$box.trigger('toggled.ace.widget', [event_name]);
-		};
-
-		this.hide = function () {
-			this.toggle('hide');
-		};
-		this.show = function () {
-			this.toggle('show');
-		};
-
-		this.hideFast = function () {
-			this.toggle('hide', null, 0, 0);
-		};
-		this.showFast = function () {
-			this.toggle('show', null, 0, 0);
-		};
-
-		this.fullscreen = function (makeFullscreen) {
-			var $icon = this.$box.find('> .widget-header a[data-action=fullscreen]').find(ace.vars['.icon']).eq(0);
-			var $icon_expand = null;
-			var $icon_compress = null;
-			if ($icon_expand = $icon.attr('data-icon1')) {
-				$icon_compress = $icon.attr('data-icon2');
-			} else {
-				$icon_expand = 'fa-expand';
-				$icon_compress = 'fa-compress';
-			}
-
-			var isAlreadyFull = this.$box.hasClass('fullscreen');
-			var noMakeFullscreenParam = makeFullscreen !== true && makeFullscreen !== false; //no true/false arguement provided for this function, so decide based on widget box classnames
-
-			//make it fullscreen if:
-			//1)we want to go full screen anyway
-			//2)it is not fullscreen already
-			if (makeFullscreen === true || noMakeFullscreenParam && !isAlreadyFull) {
-				$icon.removeClass($icon_expand).addClass($icon_compress);
-				this.$box.addClass('fullscreen');
-
-				applyScrollbars(this.$box, true);
-			} else if (makeFullscreen === false || noMakeFullscreenParam && isAlreadyFull) {
-				$icon.addClass($icon_expand).removeClass($icon_compress);
-				this.$box.removeClass('fullscreen');
-
-				applyScrollbars(this.$box, false);
-			}
-
-			this.$box.trigger('fullscreened.ace.widget');
-		};
-	};
-
-	$.fn.widget_box = function (option, value) {
-		var method_call;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('widget_box');
-			var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
-
-			if (!data) $this.data('widget_box', data = new Widget_Box(this, options));
-			if (typeof option === 'string') method_call = data[option](value);
-		});
-
-		return method_call === undefined ? $set : method_call;
-	};
-
-	$(document).on(ace['click_event'] + '.ace.widget', '.widget-header a[data-action]', function (ev) {
-		ev.preventDefault();
-
-		var $this = $(this);
-		var $box = $this.closest('.widget-box');
-		if ($box.length == 0 || $box.hasClass('ui-sortable-helper')) return;
-
-		var $widget_box = $box.data('widget_box');
-		if (!$widget_box) {
-			$box.data('widget_box', $widget_box = new Widget_Box($box.get(0)));
-		}
-
-		var $action = $this.data('action');
-		if ($action == 'collapse') {
-			var event_name = $box.hasClass('collapsed') ? 'show' : 'hide';
-
-			var event;
-			$box.trigger(event = $.Event(event_name + '.ace.widget'));
-			if (event.isDefaultPrevented()) return;
-
-			$box.trigger(event = $.Event('toggle.ace.widget'), [event_name]);
-
-			$widget_box.toggle(event_name, $this);
-		} else if ($action == 'close') {
-			var event;
-			$box.trigger(event = $.Event('close.ace.widget'));
-			if (event.isDefaultPrevented()) return;
-
-			$widget_box.close();
-		} else if ($action == 'reload') {
-			$this.blur();
-			var event;
-			$box.trigger(event = $.Event('reload.ace.widget'));
-			if (event.isDefaultPrevented()) return;
-
-			$widget_box.reload();
-		} else if ($action == 'fullscreen') {
-			var event;
-			$box.trigger(event = $.Event('fullscreen.ace.widget'));
-			if (event.isDefaultPrevented()) return;
-
-			$widget_box.fullscreen();
-		} else if ($action == 'settings') {
-			$box.trigger('setting.ace.widget');
-		}
-	});
-
-	function applyScrollbars($widget, enable) {
-		var $main = $widget.find('.widget-main').eq(0);
-		$(window).off('resize.widget.scroll');
-
-		//IE8 has an unresolvable issue!!! re-scrollbaring with unknown values?!
-		var nativeScrollbars = ace.vars['old_ie'] || ace.vars['touch'];
-
-		if (enable) {
-			var ace_scroll = $main.data('ace_scroll');
-			if (ace_scroll) {
-				$main.data('save_scroll', { size: ace_scroll['size'], lock: ace_scroll['lock'], lock_anyway: ace_scroll['lock_anyway'] });
-			}
-
-			var size = $widget.height() - $widget.find('.widget-header').height() - 10; //extra paddings
-			size = parseInt(size);
-
-			$main.css('min-height', size);
-			if (!nativeScrollbars) {
-				if (ace_scroll) {
-					$main.ace_scroll('update', { 'size': size, 'mouseWheelLock': true, 'lockAnyway': true });
-				} else {
-					$main.ace_scroll({ 'size': size, 'mouseWheelLock': true, 'lockAnyway': true });
-				}
-				$main.ace_scroll('enable').ace_scroll('reset');
-			} else {
-				if (ace_scroll) $main.ace_scroll('disable');
-				$main.css('max-height', size).addClass('overflow-scroll');
-			}
-
-			$(window).on('resize.widget.scroll', function () {
-				var size = $widget.height() - $widget.find('.widget-header').height() - 10; //extra paddings
-				size = parseInt(size);
-
-				$main.css('min-height', size);
-				if (!nativeScrollbars) {
-					$main.ace_scroll('update', { 'size': size }).ace_scroll('reset');
-				} else {
-					$main.css('max-height', size).addClass('overflow-scroll');
-				}
-			});
-		} else {
-			$main.css('min-height', '');
-			var saved_scroll = $main.data('save_scroll');
-			if (saved_scroll) {
-				$main.ace_scroll('update', { 'size': saved_scroll['size'], 'mouseWheelLock': saved_scroll['lock'], 'lockAnyway': saved_scroll['lock_anyway'] }).ace_scroll('enable').ace_scroll('reset');
-			}
-
-			if (!nativeScrollbars) {
-				if (!saved_scroll) $main.ace_scroll('disable');
-			} else {
-				$main.css('max-height', '').removeClass('overflow-scroll');
-			}
-		}
-	}
-})(window.jQuery);; /**
-                    <b>Settings box</b>. It's good for demo only. You don't need this.
-                    */
-(function ($, undefined) {
-
-	$('#ace-settings-btn').on(ace.click_event, function (e) {
-		e.preventDefault();
-
-		$(this).toggleClass('open');
-		$('#ace-settings-box').toggleClass('open');
-	});
-
-	$('#ace-settings-navbar').on('click', function () {
-		ace.settingFunction.navbar_fixed(null, this.checked);
-	});
-
-	$('#ace-settings-sidebar').on('click', function () {
-		ace.settingFunction.sidebar_fixed(null, this.checked);
-	});
-
-	$('#ace-settings-breadcrumbs').on('click', function () {
-		ace.settingFunction.breadcrumbs_fixed(null, this.checked);
-	});
-
-	$('#ace-settings-add-container').on('click', function () {
-		ace.settingFunction.main_container_fixed(null, this.checked);
-	});
-
-	$('#ace-settings-compact').on('click', function () {
-		if (this.checked) {
-			$('#sidebar').addClass('compact');
-			var hover = $('#ace-settings-hover');
-			if (hover.length > 0) {
-				hover.removeAttr('checked').trigger('click');
-			}
-		} else {
-			$('#sidebar').removeClass('compact');
-			$('#sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
-		}
-
-		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0], true);
-	});
-
-	$('#ace-settings-highlight').on('click', function () {
-		if (this.checked) $('#sidebar .nav-list > li').addClass('highlight');else $('#sidebar .nav-list > li').removeClass('highlight');
-
-		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
-	});
-
-	$('#ace-settings-hover').on('click', function () {
-		if ($('#sidebar').hasClass('h-sidebar')) return;
-		if (this.checked) {
-			$('#sidebar li').addClass('hover').filter('.open').removeClass('open').find('> .submenu').css('display', 'none');
-			//and remove .open items
-		} else {
-			$('#sidebar li.hover').removeClass('hover');
-
-			var compact = $('#ace-settings-compact');
-			if (compact.length > 0 && compact.get(0).checked) {
-				compact.trigger('click');
-			}
-		}
-
-		$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset');
-		$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
-
-		if (ace.vars['old_ie']) ace.helper.redraw($('#sidebar')[0]);
-	});
-
-	//these are only for Ace demo! 
-	//we want to save only important states(sidebar-fixed and sidebar-collapsed) so before fixing sidebar or collapsing it, hide mobile menu or remove extra classes!
-	//and then save class name, etc to localStorage for later retrieval
-
-	/**
- $(document).on('presettings.ace', function(ev, event_name, event_val, event_source, save_state) {
- if( !save_state ) return false;
- 
- var $event_name = event_name;
- if( (event_name == 'sidebar_fixed' || event_name == 'sidebar_collapsed') ) {
- 	var sidebar = event_source ? $(event_source) : $('#sidebar');
- 	var tmpClassName = sidebar.attr('class');
- 	sidebar.attr('class', event_name == 'sidebar_fixed' ? 'sidebar-fixed' : 'menu-min');//don't save these classes in demo
- 
- 	//we don't use 'one' because other 'settings.ace' events could be triggered before the 'sidebar_*' one!
- 	$(document).on('settings.ace.sidebar', function(ev, event_name) {
- 		if( (event_name == $event_name) ) {
- 			sidebar.addClass(tmpClassName);
- 			$(document).off('settings.ace.sidebar');
- 		}
- 	});
- }
- else if( (event_name == 'navbar_fixed') ) {
- 	var navbar = event_source ? $(event_source) : $('#navbar');
- 	var tmpClassName = navbar.attr('class');
- 	navbar.attr('class', 'navbar-fixed-top');//don't save these classes in demo
- 
- 	//we don't use 'one' because other 'settings.ace' events could be triggered before the 'sidebar_*' one!
- 	$(document).on('settings.ace.navbar', function(ev, event_name) {
- 		if( (event_name == $event_name) ) {
- 			navbar.addClass(tmpClassName);
- 			$(document).off('settings.ace.navbar');
- 		}
- 	});
- }
-  });
- */
-
-	//check/uncheck the checkbox in settings box
-	var checkbox = this;
-	$(document).on('settings.ace', function (ev, event_name, event_val, event_source, save_state) {
-		var checkbox = '';
-		switch (event_name) {
-			case 'navbar_fixed':
-				checkbox = 'ace-settings-navbar';
-				break;
-
-			case 'sidebar_fixed':
-				checkbox = 'ace-settings-sidebar';
-				break;
-
-			case 'breadcrumbs_fixed':
-				checkbox = 'ace-settings-breadcrumbs';
-				break;
-
-			case 'main_container_fixed':
-				checkbox = 'ace-settings-add-container';
-				break;
-		}
-
-		if (checkbox && (checkbox = document.getElementById(checkbox))) {
-			$(checkbox).prop('checked', event_val);
-
-			try {
-				if (save_state == true) ace.settings.saveState(checkbox, 'checked');
-			} catch (e) {}
-		}
-	});
-
-	////
-	ace.settingFunction = {
-		navbar_fixed: function navbar_fixed(navbar, fixed, save, chain) {
-			if (ace.vars['very_old_ie']) return false;
-
-			var navbar = navbar || '#navbar';
-			if (typeof navbar === 'string') navbar = $(navbar).get(0);
-			if (!navbar) return false;
-
-			var fixed = fixed || false;
-			var save = typeof save !== 'undefined' ? save : true;
-
-			var event;
-			$(document).trigger(event = $.Event('presettings.ace'), ['navbar_fixed', fixed, navbar, save]);
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			if (chain !== false && !fixed) {
-				//unfix sidebar as well
-				var sidebar = $('#sidebar');
-				if (sidebar.hasClass('sidebar-fixed')) {
-					ace.settingFunction.sidebar_fixed(sidebar.get(0), false, save);
-				}
-			}
-
-			if (fixed) {
-				$(navbar).addClass('navbar-fixed-top');
-			} else {
-				$(navbar).removeClass('navbar-fixed-top');
-			}
-
-			if (save) {
-				ace.settings.saveState(navbar, 'class', 'navbar-fixed-top', fixed); //the 'last' boolean means whether to append this classname or to remove it from previous value			
-			}
-
-			$(document).trigger('settings.ace', ['navbar_fixed', fixed, navbar, save]);
-		},
-
-		sidebar_fixed: function sidebar_fixed(sidebar, fixed, save, chain) {
-			if (ace.vars['very_old_ie']) return false;
-
-			var sidebar = sidebar || '#sidebar';
-			if (typeof sidebar === 'string') sidebar = $(sidebar).get(0);
-			if (!sidebar) return false;
-
-			var fixed = fixed || false;
-			var save = typeof save !== 'undefined' ? save : true;
-
-			var event;
-			$(document).trigger(event = $.Event('presettings.ace'), ['sidebar_fixed', fixed, sidebar, save]);
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			if (chain !== false) {
-				if (fixed) {
-					//fix navbar as well
-					ace.settingFunction.navbar_fixed(null, true, save);
-				} else {
-					//unfix breadcrumbs as well
-					ace.settingFunction.breadcrumbs_fixed(null, false, save);
-				}
-			}
-
-			var toggler = $('#menu-toggler');
-			if (fixed) {
-				$(sidebar).addClass('sidebar-fixed');
-				toggler.addClass('fixed');
-			} else {
-				$(sidebar).removeClass('sidebar-fixed');
-				toggler.removeClass('fixed');
-			}
-
-			if (save) {
-				ace.settings.saveState(sidebar, 'class', 'sidebar-fixed', fixed); //the 'last' boolean means whether to append this classname or to remove it from previous value
-				if (toggler.length != 0) ace.settings.saveState(toggler[0], 'class', 'fixed', fixed);
-			}
-
-			$(document).trigger('settings.ace', ['sidebar_fixed', fixed, sidebar, save]);
-		},
-
-		//fixed position
-		breadcrumbs_fixed: function breadcrumbs_fixed(breadcrumbs, fixed, save, chain) {
-			if (ace.vars['very_old_ie']) return false;
-
-			var breadcrumbs = breadcrumbs || '#breadcrumbs';
-			if (typeof breadcrumbs === 'string') breadcrumbs = $(breadcrumbs).get(0);
-			if (!breadcrumbs) return false;
-
-			var fixed = fixed || false;
-			var save = typeof save !== 'undefined' ? save : true;
-
-			var event;
-			$(document).trigger(event = $.Event('presettings.ace'), ['breadcrumbs_fixed', fixed, breadcrumbs, save]);
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			if (fixed && chain !== false) {
-				//fix sidebar and navbar as well
-				ace.settingFunction.sidebar_fixed(null, true, save);
-			}
-
-			if (fixed) {
-				$(breadcrumbs).addClass('breadcrumbs-fixed');
-			} else {
-				$(breadcrumbs).removeClass('breadcrumbs-fixed');
-			}
-
-			if (save) {
-				ace.settings.saveState(breadcrumbs, 'class', 'breadcrumbs-fixed', fixed);
-			}
-
-			$(document).trigger('settings.ace', ['breadcrumbs_fixed', fixed, breadcrumbs, save]);
-		},
-
-		//fixed size
-		main_container_fixed: function main_container_fixed(main_container, fixed, save) {
-			if (ace.vars['very_old_ie']) return false;
-
-			var fixed = fixed || false; //fixed width? inside .container
-			var save = typeof save !== 'undefined' ? save : true;
-
-			var main_container = main_container || '#main-container';
-			if (typeof main_container === 'string') main_container = $(main_container).get(0);
-			if (!main_container) return false;
-
-			var event;
-			$(document).trigger(event = $.Event('presettings.ace'), ['main_container_fixed', fixed, main_container, save]);
-			if (event.isDefaultPrevented()) {
-				return false;
-			}
-
-			var navbar_container = $('#navbar-container');
-			if (fixed) {
-				$(main_container).addClass('container');
-				$(navbar_container).addClass('container');
-			} else {
-				$(main_container).removeClass('container');
-				$(navbar_container).removeClass('container');
-			}
-
-			if (save) {
-				ace.settings.saveState(main_container, 'class', 'container', fixed);
-				if (navbar_container.length != 0) ace.settings.saveState(navbar_container[0], 'class', 'container', fixed);
-			}
-
-			if (navigator.userAgent.match(/webkit/i)) {
-				//webkit has a problem redrawing and moving around the sidebar background in realtime
-				//so we do this, to force redraw
-				//there will be no problems with webkit if the ".container" class is statically put inside HTML code.
-				$('#sidebar').toggleClass('menu-min');
-				setTimeout(function () {
-					$('#sidebar').toggleClass('menu-min');
-				}, 10);
-			}
-
-			$(document).trigger('settings.ace', ['main_container_fixed', fixed, main_container, save]);
-		}
-		/**
-  ,
-  sidebar_collapsed : function(sidebar, collapsed , save) {
-  	if(ace.vars['very_old_ie']) return false;
-  		var sidebar = sidebar || '#sidebar';
-  	if(typeof sidebar === 'string') sidebar = $(sidebar).get(0);
-  	if(!sidebar) return false;
-  		var collapsed = collapsed || false;
-  	var save = typeof save !== 'undefined' ? save : true;
-  	
-  	
-  	var event;
-  	$(document).trigger(event = $.Event('presettings.ace'), ['sidebar_collapsed' , collapsed , sidebar, save]);
-  	if (event.isDefaultPrevented()) {
-  		return false;
-  	}
-  	
-  		if(collapsed) {
-  		$('#sidebar').addClass('menu-min');
-  	} else {
-  		$('#sidebar').removeClass('menu-min');
-  	}
-  	
-  	if( save ) {
-  		ace.settings.saveState(sidebar, 'class', 'menu-min', collapsed);//the 'last' boolean means whether to append this classname or to remove it from previous value
-  	}
-  		$(document).trigger('settings.ace', ['sidebar_collapsed' , collapsed, sidebar, save]);
-  }
-  */
-	};
-})(jQuery);; /**
-             <b>RTL</b> (right-to-left direction for Arabic, Hebrew, Persian languages).
-             It's good for demo only.
-             You should hard code RTL-specific changes inside your HTML/server-side code.
-             Dynamically switching to RTL using Javascript is not a good idea.
-             Please refer to documentation for more info.
-             */
-
-(function ($, undefined) {
-	//Switching to RTL (right to left) Mode
-	$('#ace-settings-rtl').removeAttr('checked').on('click', function () {
-		switch_direction();
-	});
-
-	//>>> you should hard code changes inside HTML for RTL direction
-	//you shouldn't use this function to switch direction
-	//this is only for dynamically switching for Ace's demo
-	//take a look at this function to see what changes should be made
-	//also take a look at docs for some tips
-	var switch_direction = function switch_direction() {
-		applyChanges();
-
-		//in ajax when new content is loaded, we dynamically apply RTL changes again
-		//please note that this is only for Ace demo
-		//for info about RTL see Ace's docs
-		$('.page-content-area[data-ajax-content=true]').on('ajaxscriptsloaded.rtl', function () {
-			if ($('body').hasClass('rtl')) {
-				applyChanges(this);
-			}
-		});
-
-		/////////////////////////
-		function applyChanges(el) {
-			var $body = $(document.body);
-			if (!el) $body.toggleClass('rtl'); //el is 'body'
-
-			el = el || document.body;
-			var $container = $(el);
-			$container
-			//toggle pull-right class on dropdown-menu
-			.find('.dropdown-menu:not(.datepicker-dropdown,.colorpicker)').toggleClass('dropdown-menu-right').end()
-			//swap pull-left & pull-right
-			.find('.pull-right:not(.dropdown-menu,blockquote,.profile-skills .pull-right)').removeClass('pull-right').addClass('tmp-rtl-pull-right').end().find('.pull-left:not(.dropdown-submenu,.profile-skills .pull-left)').removeClass('pull-left').addClass('pull-right').end().find('.tmp-rtl-pull-right').removeClass('tmp-rtl-pull-right').addClass('pull-left').end().find('.chosen-select').toggleClass('chosen-rtl').next().toggleClass('chosen-rtl');
-
-			function swap_classes(class1, class2) {
-				$container.find('.' + class1).removeClass(class1).addClass('tmp-rtl-' + class1).end().find('.' + class2).removeClass(class2).addClass(class1).end().find('.tmp-rtl-' + class1).removeClass('tmp-rtl-' + class1).addClass(class2);
-			}
-
-			swap_classes('align-left', 'align-right');
-			swap_classes('no-padding-left', 'no-padding-right');
-			swap_classes('arrowed', 'arrowed-right');
-			swap_classes('arrowed-in', 'arrowed-in-right');
-			swap_classes('tabs-left', 'tabs-right');
-			swap_classes('messagebar-item-left', 'messagebar-item-right'); //for inbox page
-
-			$('.modal.aside-vc').ace_aside('flip').ace_aside('insideContainer');
-
-			//mirror all icons and attributes that have a "fa-*-right|left" attrobute
-			$container.find('.fa').each(function () {
-				if (this.className.match(/ui-icon/) || $(this).closest('.fc-button').length > 0) return;
-				//skip mirroring icons of plugins that have built in RTL support
-
-				var l = this.attributes.length;
-				for (var i = 0; i < l; i++) {
-					var val = this.attributes[i].value;
-					if (val.match(/fa\-(?:[\w\-]+)\-left/)) this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(left)/i, 'fa-$1-right');else if (val.match(/fa\-(?:[\w\-]+)\-right/)) this.attributes[i].value = val.replace(/fa\-([\w\-]+)\-(right)/i, 'fa-$1-left');
-				}
-			});
-
-			//browsers are incosistent with horizontal scroll and RTL
-			//so let's make our scrollbars LTR and wrap the content inside RTL
-			var rtl = $body.hasClass('rtl');
-			if (rtl) {
-				$container.find('.scroll-hz').addClass('make-ltr').find('.scroll-content').wrapInner('<div class="make-rtl" />');
-				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('changeDir', 'right');
-			} else {
-				//remove the wrap
-				$container.find('.scroll-hz').removeClass('make-ltr').find('.make-rtl').children().unwrap();
-				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('changeDir', 'left');
-			}
-			if ($.fn.ace_scroll) $container.find('.scroll-hz').ace_scroll('reset'); //to reset scrollLeft
-
-			//redraw the traffic pie chart on homepage with a different parameter
-			try {
-				var placeholder = $('#piechart-placeholder');
-				if (placeholder.length > 0) {
-					var pos = $body.hasClass('rtl') ? 'nw' : 'ne'; //draw on north-west or north-east?
-					placeholder.data('draw').call(placeholder.get(0), placeholder, placeholder.data('chart'), pos);
-				}
-			} catch (e) {}
-
-			ace.helper.redraw(el, true);
-		}
-	};
-})(jQuery);
-
-; /**
-  <b>Select a different skin</b>. It's good for demo only.
-  You should hard code skin-specific changes inside your HTML/server-side code.
-  Please refer to documentation for more info.
-  */
-
-(function ($, undefined) {
-	try {
-		$('#skin-colorpicker').ace_colorpicker({ 'auto_pos': false });
-	} catch (e) {}
-
-	$('#skin-colorpicker').on('change', function () {
-		var skin_class = $(this).find('option:selected').data('skin');
-		applyChanges(skin_class);
-
-		function applyChanges(skin_class) {
-			//skin cookie tip
-			var body = $(document.body);
-			body.removeClass('no-skin skin-1 skin-2 skin-3');
-			//if(skin_class != 'skin-0') {
-			body.addClass(skin_class);
-			ace.data.set('skin', skin_class);
-			//save the selected skin to cookies
-			//which can later be used by your server side app to set the skin
-			//for example: <body class="<?php echo $_COOKIE['ace_skin']; ?>"
-			//} else ace.data.remove('skin');
-
-			var skin3_colors = ['red', 'blue', 'green', ''];
-
-			//undo skin-1
-			$('.ace-nav > li.grey').removeClass('dark');
-
-			//undo skin-2
-			$('.ace-nav > li').removeClass('no-border margin-1');
-			$('.ace-nav > li:not(:last-child)').removeClass('light-pink').find('> a > ' + ace.vars['.icon']).removeClass('pink').end().eq(0).find('.badge').removeClass('badge-warning');
-			$('.sidebar-shortcuts .btn').removeClass('btn-pink btn-white').find(ace.vars['.icon']).removeClass('white');
-
-			//undo skin-3
-			$('.ace-nav > li.grey').removeClass('red').find('.badge').removeClass('badge-yellow');
-			$('.sidebar-shortcuts .btn').removeClass('btn-primary btn-white');
-			var i = 0;
-			$('.sidebar-shortcuts .btn').each(function () {
-				$(this).find(ace.vars['.icon']).removeClass(skin3_colors[i++]);
-			});
-
-			var skin0_buttons = ['btn-success', 'btn-info', 'btn-warning', 'btn-danger'];
-			if (skin_class == 'no-skin') {
-				var i = 0;
-				$('.sidebar-shortcuts .btn').each(function () {
-					$(this).attr('class', 'btn ' + skin0_buttons[i++ % 4]);
-				});
-
-				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', '');
-				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
-			} else if (skin_class == 'skin-1') {
-				$('.ace-nav > li.grey').addClass('dark');
-				var i = 0;
-				$('.sidebar-shortcuts').find('.btn').each(function () {
-					$(this).attr('class', 'btn ' + skin0_buttons[i++ % 4]);
-				});
-
-				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
-				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
-			} else if (skin_class == 'skin-2') {
-				$('.ace-nav > li').addClass('no-border margin-1');
-				$('.ace-nav > li:not(:last-child)').addClass('light-pink').find('> a > ' + ace.vars['.icon']).addClass('pink').end().eq(0).find('.badge').addClass('badge-warning');
-
-				$('.sidebar-shortcuts .btn').attr('class', 'btn btn-white btn-pink').find(ace.vars['.icon']).addClass('white');
-
-				$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-white no-track');
-				$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin scroll-white');
-			}
-
-			//skin-3
-			//change shortcut buttons classes, this should be hard-coded if you want to choose this skin
-			else if (skin_class == 'skin-3') {
-					body.addClass('no-skin'); //because skin-3 has many parts of no-skin as well
-
-					$('.ace-nav > li.grey').addClass('red').find('.badge').addClass('badge-yellow');
-
-					var i = 0;
-					$('.sidebar-shortcuts .btn').each(function () {
-						$(this).attr('class', 'btn btn-primary btn-white');
-						$(this).find(ace.vars['.icon']).addClass(skin3_colors[i++]);
-					});
-
-					$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('updateStyle', 'scroll-dark no-track');
-					$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('updateStyle', 'no-track scroll-thin');
-				}
-
-			//some sizing differences may be there in skins, so reset scrollbar size
-			$('.sidebar[data-sidebar-scroll=true]').ace_sidebar_scroll('reset');
-			//$('.sidebar[data-sidebar-hover=true]').ace_sidebar_hover('reset')
-
-			if (ace.vars['old_ie']) ace.helper.redraw(document.body, true);
-		}
-	});
-})(jQuery);; /**
-             The widget box reload button/event handler. You should use your own handler. An example is available at <i class="text-info">examples/widgets.html</i>.
-             <u><i class="glyphicon glyphicon-flash"></i> You don't need this. Used for demo only</u>
-             */
-
-(function ($, undefined) {
-	//***default action for reload in this demo
-	//you should remove this and add your own handler for each specific .widget-box
-	//when data is finished loading or processing is done you can call $box.trigger('reloaded.ace.widget')
-	$(document).on('reload.ace.widget', '.widget-box', function (ev) {
-		var $box = $(this);
-
-		//trigger the reloaded event to remove the spinner icon after 1-2 seconds
-		setTimeout(function () {
-			$box.trigger('reloaded.ace.widget');
-		}, parseInt(Math.random() * 1000 + 1000));
-	});
-
-	//you may want to do something like this:
-	/**
- $('#my-widget-box').on('reload.ace.widget', function(){
- 	//load new data here
- 	//and when finished trigger "reloaded" event
- 	$(this).trigger('reloaded.ace.widget');
- });
- */
-})(window.jQuery);; /**
-                    The autocomplete dropdown when typing inside search box.
-                    <u><i class="glyphicon glyphicon-flash"></i> You don't need this. Used for demo only</u>
-                    */
-(function ($, undefined) {
-
-	ace.vars['US_STATES'] = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Dakota", "North Carolina", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
-	try {
-		$('#nav-search-input').bs_typeahead({
-			source: ace.vars['US_STATES'],
-			updater: function updater(item) {
-				//when an item is selected from dropdown menu, focus back to input element
-				$('#nav-search-input').focus();
-				return item;
-			}
-		});
-	} catch (e) {}
-})(window.jQuery);
-
-/***/ }),
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(37);
-__webpack_require__(38);
-module.exports = __webpack_require__(39);
+__webpack_require__(10);
+module.exports = __webpack_require__(11);
 
 
 /***/ })

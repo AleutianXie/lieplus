@@ -17,6 +17,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.6.0",
         "spatie/laravel-permission": "^2.7",
+        "stevenyangecho/laravel-u-editor": "^1.4",
         "tom-lingham/searchy": "^2.0",
         "yajra/laravel-datatables": "^1.0"
     },
