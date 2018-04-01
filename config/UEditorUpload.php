@@ -18,7 +18,7 @@ return [
 */
     'core' => [
         'route' => [
-           'middleware' => 'auth',
+           // 'middleware' => 'auth',
         ],
 
         'mode'=>'local',//上传方式,local 为本地   qiniu 为七牛

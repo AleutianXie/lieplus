@@ -40,10 +40,15 @@ class ResumeController extends Controller
     {
         $title = '新建简历';
 
-        $region = Region::getInstance();
+        //$region = Region::getInstance();
         //dd($region->getProvinces(), $region->getCities('350000'), $region->getCounties('350800'));
         if ($request->isMethod('POST')) {
-            dd($request->input());
+            //dd($request->input());
+//dd($request->input());
+            $data = $request->input();
+            $data['created_by'] = Auth::id();
+            $data['updated_by'] = Auth::id();
+            dd(CiciResume::create($data));
         }
         // if ($request->isMethod('POST')) {
         //     try {
@@ -114,36 +119,39 @@ class ResumeController extends Controller
         return view('Lieplus::resume.create');
     }
 
-    // public function detail(Request $request, $id)
-    // {
-    //     $title = '简历详情';
-    //     $resume = Resume::findOrFail($id);
+    public function detail(Request $request, $id)
+    {
+        $title = '简历详情';
+        $resume = CiciResume::findOrFail($id);
 
-    //     $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
-    //     $feedbacks = array();
+        $region = Region::getInstance();
+        // dd($region->getNameByAdcode('110000'));
 
-    //     foreach ($feedbacks_obj as $fitem) {
-    //         $keys = explode(' ', $fitem->created_at);
+        // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
+        // $feedbacks = array();
 
-    //         $date = $keys[0];
-    //         if ($keys[0] == date("Y-m-d")) {
-    //             $date = '今天';
-    //         } elseif ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
-    //             $date = '昨天';
-    //         }
+        // foreach ($feedbacks_obj as $fitem) {
+        //     $keys = explode(' ', $fitem->created_at);
 
-    //         $feedbacks[$date][] = array(
-    //             'text'    => $fitem->text,
-    //             'creater' => Auth::user($fitem->creater)->name,
-    //             'ctime'   => $keys[1]);
-    //     }
+        //     $date = $keys[0];
+        //     if ($keys[0] == date("Y-m-d")) {
+        //         $date = '今天';
+        //     } elseif ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
+        //         $date = '昨天';
+        //     }
 
-    //     return view('resume.detail', [
-    //         'title'     => $title,
-    //         'resume'    => $resume,
-    //         'feedbacks' => $feedbacks,
-    //     ]);
-    // }
+        //     $feedbacks[$date][] = array(
+        //         'text'    => $fitem->text,
+        //         'creater' => Auth::user($fitem->creater)->name,
+        //         'ctime'   => $keys[1]);
+        // }
+
+        return view('Lieplus::resume.detail', [
+            'title'     => $title,
+            'resume'    => $resume,
+            //'feedbacks' => $feedbacks,
+        ]);
+    }
 
     // public function edit(Request $request)
     // {

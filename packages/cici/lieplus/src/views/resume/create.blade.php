@@ -81,7 +81,7 @@
         </div>
 
         <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="state">城市:</label>
-{{--         <div class="col-xs-6 col-sm-6">
+        <div class="col-xs-6 col-sm-6">
             <select id="province" name="province" required>
                 <option></option>
             </select>
@@ -91,7 +91,7 @@
             <select id="county" name="county" required>
                 <option></option>
             </select>
-        </div> --}}
+        </div>
     </div>
 
     <div class="form-group">
@@ -109,26 +109,26 @@
             </div>
         </div>
 
-        <label class="control-label col-xs-12 col-sm-1 no-padding-right" for="startworkdate">开始工作:</label>
+        <label class="control-label col-xs-12 col-sm-1 no-padding-right" for="start_work_date">开始工作:</label>
         <div class="col-xs-6 col-sm-2">
             <div class="input-group">
                 <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                 </span>
 
-                <input type="date" name="startworkdate" id="startworkdate" value="{{ old('startworkdate') }}" max="{{ date('Y-m-d', time()) }}" min="{{ date('Y-m-d', strtotime('-20 years')) }}" required />
+                <input type="date" name="start_work_date" id="start_work_date" value="{{ old('start_work_date') }}" max="{{ date('Y-m-d', time()) }}" min="{{ date('Y-m-d', strtotime('-20 years')) }}" required />
                 <span class="red">
-                    {{ $errors->first('startworkdate') }}
+                    {{ $errors->first('start_work_date') }}
                 </span>
             </div>
         </div>
     </div>
 
     <div class="form-group">
-        <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="servicestatus">当前状态:</label>
+        <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="service_status">当前状态:</label>
         <div class="col-xs-6 col-sm-2">
             <div class="clearfix">
-                <select name="servicestatus" id="servicestatus">
+                <select name="service_status" id="service_status">
                 @foreach (config('lieplus.servicestatus') as $element)
                     <option value="{{ $element['id'] }}">{{ $element['text'] }}</option>
                 @endforeach
@@ -224,63 +224,68 @@
     //     format: 'yyyy-mm-dd',
     // });
 
-    var provinces = [];
-    //alert(item.provinces);
-    $.each({!! json_encode(config('lieplus.provinces')) !!}, function(k, v) {
-        provinces.push({id: k, text: v});
-    });
-
-    var cities = [];
-    $.each({!! json_encode(config('lieplus.cities')) !!}, function(key, value) {
-        cities[key] = [];
-        $.each(value, function(k, v){
-            cities[key].push({id: k, text: v});
-        });
-    });
-
-    var counties = [];
-    $.each({!! json_encode(config('lieplus.counties')) !!}, function(key,value) {
-        counties[key] = [];
-        $.each(value, function(k, v) {
-            counties[key].push({id: k, text: v});
-        });
-    });
-
     $('#province').select2({
-        data: provinces,
-        placeholder: '请选择省',
-        width: 140
+      placeholder: '请选择省',
+      width: 140,
+      ajax: {
+        url: "{{ url('/provinces') }}",
+        dataType: 'json',
+        processResults: function (data, params) {
+          var provinces = [];
+          $.each(data, function(k, v) {
+            provinces.push({id: k, text: v});
+          });
+          return { results: provinces };
+        },
+        cache: true
+      },
     });
 
     $('#city').select2({
         placeholder: '请选择市',
-        width: 140
+        width: 140,
+        ajax: {
+          url: function () {
+            return '/province/' + $('#province').val() + '/cities';
+          },
+          dataType: 'json',
+          processResults: function (data, params) {
+            var cities = [];
+            $.each(data, function(k, v) {
+              cities.push({id: k, text: v});
+            });
+            return { results: cities };
+          },
+          cache: true
+        },
     });
 
     $('#county').select2({
         placeholder: '请选择县',
-        width: 140
+        width: 140,
+        ajax: {
+          url: function () {
+            return '/city/' + $('#city').val() + '/counties';
+          },
+          dataType: 'json',
+          processResults: function (data, params) {
+            var counties = [];
+            $.each(data, function(k, v) {
+              counties.push({id: k, text: v});
+            });
+            return { results: counties };
+          },
+          cache: true
+        },
     });
 
     $('#province').on('select2:select', function(evt) {
         $('#city').find("option").remove();
-        $('#city').select2({
-            data: cities[$(this).val()],
-            width: 140
-        });
         $('#county').find("option").remove();
-        $('#county').select2({
-            data: counties[$('#city').val()],
-            width: 140
-        });
     });
 
     $('#city').on('select2:select', function (evt) {
         $('#county').find("option").remove();
-        $('#county').select2({
-            data: counties[$(this).val()],
-            width: 140
-        });
     });
 
     $('#servicestatus').select2({

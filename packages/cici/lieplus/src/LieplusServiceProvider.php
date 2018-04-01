@@ -26,6 +26,10 @@ class LieplusServiceProvider extends ServiceProvider
         // ]);
 
         $this->publishes([
+            __DIR__.'/config/lieplus.php' => config_path('lieplus.php'),
+        ]);
+
+        $this->publishes([
             __DIR__.'/../database/data/' => database_path('data/vendor/cici/lieplus'),
         ]);
         $this->publishes([

@@ -3,6 +3,7 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
+use Cici\Lieplus\Models\Region;
 use Illuminate\Support\Collection;
 
 /**
@@ -75,6 +76,24 @@ class Resume extends Base
             config('permission.models.role'),
             config('permission.table_names.role_has_permissions')
         );
+    }
+
+    public function getprovinceAttribute($value)
+    {
+        $region = Region::getInstance();
+        return $region->getNameByAdcode($value);
+    }
+
+    public function getcityAttribute($value)
+    {
+        $region = Region::getInstance();
+        return $region->getNameByAdcode($value);
+    }
+
+    public function getcountyAttribute($value)
+    {
+        $region = Region::getInstance();
+        return $region->getNameByAdcode($value);
     }
 
     /**

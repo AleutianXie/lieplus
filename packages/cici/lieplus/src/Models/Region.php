@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
  */
 class Region extends Base
 {
-    private function __construct(array $attributes = [])
+    protected function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
@@ -44,5 +44,10 @@ class Region extends Base
     public function getCounties($city)
     {
         return static::where('level', 3)->where('adcode', 'like', substr($city, 0, 4).'%')->orderBy('adcode')->pluck('name', 'adcode')->toArray();
+    }
+
+    public function getNameByAdcode($adcode)
+    {
+        return static::where('adcode', $adcode)->first()->name;
     }
 }

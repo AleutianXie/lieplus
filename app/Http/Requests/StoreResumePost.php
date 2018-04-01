@@ -30,7 +30,7 @@ class StoreResumePost extends FormRequest
                 'mobile'        => ['required', 'regex:/^1(3|4|5|7|8)[0-9]{9}$/', 'unique:resumes'],
                 'email'         => 'required|email|unique:resumes',
                 'birthdate'     => 'required|date|before_or_equal:' . date('Y-m-d', time()),
-                'startworkdate' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
+                'start_work_date' => 'required|date|before_or_equal:' . date('Y-m-d', time()) . '|after_or_equal:' . date('Y-m-d', strtotime('-20 years')),
             ];
         }
         return [];

@@ -3,6 +3,7 @@
 /storage/*.key
 /vendor
 /public/ace
+/public/uploads
 /resources/vendor
 /resources/views/vendor
 /.idea
