@@ -23,12 +23,10 @@
         <label class="control-label col-xs-6 col-sm-2 no-padding-right">性别:</label>
 
         <div class="col-xs-6 col-sm-2">
-            @foreach (config('lieplus.gender') as $element)
+            @foreach (config('lieplus.gender') as $key => $value)
             <label class="control-label line-height-1 blue">
-                <input name="gender" type="radio" class="ace" value="{{ $element['id'] }}" @if ($element['id'] == old('gender'))
-                    checked="checked"
-                @endif required />
-                <span class="lbl"> {{ $element['text'] }}</span>
+                <input name="gender" type="radio" class="ace" value="{{ $key }}" @if ($key == old('gender')) checked @endif required />
+                <span class="lbl"> {{ $value }}</span>
                 &nbsp;
             </label>
             @endforeach
@@ -73,8 +71,8 @@
         <div class="col-xs-6 col-sm-2">
             <div class="clearfix">
                 <select name="degree" id="degree">
-                @foreach (config('lieplus.degree') as $element)
-                <option value="{{ $element['id'] }}">{{ $element['text'] }}</option>
+                @foreach (config('lieplus.degree') as $key => $value)
+                <option value="{{ $key }}"  @if ($key == old('degree')) selected @endif>{{ $value }}</option>
                 @endforeach
                 </select>
             </div>
@@ -288,7 +286,7 @@
         $('#county').find("option").remove();
     });
 
-    $('#servicestatus').select2({
+    $('#service_status').select2({
         minimumResultsForSearch: Infinity,
         width: 140
     });

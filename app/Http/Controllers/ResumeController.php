@@ -2,18 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\AssignLine;
-use App\Helper;
 use App\Http\Requests\StoreResumePost;
-use App\JobLibrary;
-use App\Line;
-use App\MyLibrary;
-// use App\Region;
-use App\Resume;
-use App\Station;
-use App\User;
 use Cici\Lieplus\Models\Region;
-use Cici\Lieplus\Models\Resume as CiciResume;
+use Cici\Lieplus\Models\Resume;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +17,13 @@ class ResumeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('Lieplus::resume.index');
+        $model = Resume::query();
+        $filter = $request->input();
+        $this->getModel($model, $filter);
+        $resumes = $model->paginate()->appends($filter);
+        return view('Lieplus::resume.index', compact('resumes', 'filter'));
     }
 
     /**
@@ -38,94 +33,27 @@ class ResumeController extends Controller
      */
     public function add(StoreResumePost $request)
     {
-        $title = '新建简历';
-
-        //$region = Region::getInstance();
-        //dd($region->getProvinces(), $region->getCities('350000'), $region->getCounties('350800'));
         if ($request->isMethod('POST')) {
-            //dd($request->input());
-//dd($request->input());
-            $data = $request->input();
-            $data['created_by'] = Auth::id();
-            $data['updated_by'] = Auth::id();
-            dd(CiciResume::create($data));
+            try {
+                $data = $request->input();
+                $data['created_by'] = $request->user();
+                $data['updated_by'] = $request->user();
+                DB::beginTransaction();
+                $resume = Resume::create($data);
+                // todo: add my library
+                // todo: add job library
+                // todo: add to station
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollBack();
+            }
         }
-        // if ($request->isMethod('POST')) {
-        //     try {
-        //         DB::beginTransaction();
-        //         $data = $request->input();
-        //         // save resume
-        //         $resume                = new Resume();
-        //         $resume->sn            = Helper::generationSN('JL');
-        //         $resume->name          = $data['name'];
-        //         $resume->gender        = $data['gender'];
-        //         $resume->mobile        = $data['mobile'];
-        //         $resume->email         = $data['email'];
-        //         $resume->degree        = $data['degree'];
-        //         $resume->province      = $data['province'];
-        //         $resume->city          = $data['city'];
-        //         $resume->county        = $data['county'];
-        //         $resume->birthdate     = $data['birthdate'];
-        //         $resume->startworkdate = $data['startworkdate'];
-        //         $resume->industry      = $data['industry'];
-        //         $resume->position      = $data['position'];
-        //         $resume->salary        = $data['salary'];
-        //         $resume->others        = $data['others'];
-        //         $resume->creater       = Auth::id();
-        //         $resume->modifier      = Auth::id();
-        //         $resume->save();
-
-        //         // add my library
-        //         $mylibrary = new MyLibrary();
-        //         $mylibrary->uid = Auth::id();
-        //         $mylibrary->rid = $resume->id;
-        //         $mylibrary->creater = Auth::id();
-        //         $mylibrary->save();
-
-        //         // add job library
-        //         if (isset($data['jid']) && !empty($data['jid'])) {
-        //             $joblibrary          = new JobLibrary();
-        //             $joblibrary->uid     = Auth::id();
-        //             $joblibrary->rid     = $resume->id;
-        //             $joblibrary->jid     = $data['jid'];
-        //             $joblibrary->creater = Auth::id();
-        //             $joblibrary->save();
-        //             // add to station
-        //             $station             = new Station();
-        //             $station->sn         = Helper::generationSN('GZT');
-        //             $station->lid        = $joblibrary->line->id;
-        //             $station->rid        = $resume->id;
-        //             $station->status     = 1;
-        //             $station->creater    = Auth::id();
-        //             $station->modifier   = Auth::id();
-        //             $station->save();
-        //         }
-
-        //         DB::commit();
-        //         return redirect('/resume/' . $resume->id);
-        //     } catch (Exception $e) {
-        //         DB::rollBack();
-        //         return redirect()->back()->with('error', '创建失败！（网络原因）');
-        //     }
-        // }
-
-        // $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-
-        // return view('resume.add', [
-        //     'title'       => $title,
-        //     'assignlines' => $assignlines,
-        //     'jid'         => isset($request->input()['jid']) ? $request->input()['jid'] : 0,
-        // ]);
         return view('Lieplus::resume.create');
     }
 
     public function detail(Request $request, $id)
     {
-        $title = '简历详情';
-        $resume = CiciResume::findOrFail($id);
-
-        $region = Region::getInstance();
-        // dd($region->getNameByAdcode('110000'));
+        $resume = Resume::findOrFail($id);
 
         // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         // $feedbacks = array();
@@ -146,11 +74,7 @@ class ResumeController extends Controller
         //         'ctime'   => $keys[1]);
         // }
 
-        return view('Lieplus::resume.detail', [
-            'title'     => $title,
-            'resume'    => $resume,
-            //'feedbacks' => $feedbacks,
-        ]);
+        return view('Lieplus::resume.detail', compact('resume'));
     }
 
     // public function edit(Request $request)
@@ -310,4 +234,9 @@ class ResumeController extends Controller
     //     }
     //     return view('resume.modaljob', compact('lines', 'resume'));
     // }
+
+    private function getModel(&$model, $filter = [])
+    {
+        $model->latest();
+    }
 }
