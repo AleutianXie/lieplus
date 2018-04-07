@@ -1,6 +1,6 @@
 @extends('Lieplus::layouts.cici')
 
-@section('title'){{ $title }}@endsection
+@section('title'){{-- {{ $title }} --}}@endsection
 
 @section('stylesheet')
 @endsection

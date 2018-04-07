@@ -12,7 +12,7 @@
         "barryvdh/laravel-debugbar": "^3.0",
         "barryvdh/laravel-ide-helper": "^2.4",
         "caouecs/Laravel-lang": "~3.0",
-        "davejamesmiller/laravel-breadcrumbs": "^3.0",
+        "davejamesmiller/laravel-breadcrumbs": "^5.0",
         "laravel/framework": "^5.6.3",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.6.0",

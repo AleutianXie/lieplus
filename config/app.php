@@ -186,7 +186,6 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         TomLingham\Searchy\SearchyServiceProvider::class,
-        DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Stevenyangecho\UEditor\UEditorServiceProvider::class,
@@ -239,7 +238,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\ServiceProvider::class,
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
-        'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'UEditor'=>Stevenyangecho\UEditor\UEditorServiceProvider::class,
 
