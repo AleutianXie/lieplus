@@ -237,6 +237,9 @@ class ResumeController extends Controller
 
     private function getModel(&$model, $filter = [])
     {
+        if (!empty($filter['mobile'])) {
+            $model->where('mobile', 'like', '%'.$filter['mobile'].'%');
+        }
         $model->latest();
     }
 }
