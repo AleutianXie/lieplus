@@ -1,10 +1,6 @@
 @extends('Lieplus::layouts.cici')
 
-@section('page-header')
-<i class="ace-icon fa fa-plus"></i>
-{{-- {{ $title }} --}}
-新建
-@endsection
+@section('title', '新建简历')
 
 @section('content')
 {{-- 创建简历表单--开始 --}}
@@ -201,10 +197,6 @@
 </form>
 </div>
 {{-- 创建简历表单--结束 --}}
-@endsection
-
-@section('breadcrumbs')
-{!! Breadcrumbs::render('resume.add') !!}
 @endsection
 
 @section('scripts')

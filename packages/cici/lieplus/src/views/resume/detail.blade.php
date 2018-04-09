@@ -225,9 +225,5 @@
 </div>
 @endsection
 
-@section('breadcrumbs')
-{!! Breadcrumbs::render('resume.detail', $resume->id) !!}
-@endsection
-
 @section('scripts')
 @endsection

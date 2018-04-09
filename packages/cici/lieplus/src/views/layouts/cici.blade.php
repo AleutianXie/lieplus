@@ -28,10 +28,8 @@
         <div class="main-content">
             @if (Auth::check())
             <div class="breadcrumbs">
-            <!-- breadcrumbs goes here -->
-            @section('breadcrumbs')
-            {!! Breadcrumbs::render('home') !!}
-            @show
+                <!-- breadcrumbs goes here -->
+                {!! Breadcrumbs::render() !!}
             </div>
             @endif
 

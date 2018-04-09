@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Customer;
-use App\Department;
-use App\Helper;
-use App\Job;
-use App\Project;
-use App\Region;
+use Cici\Lieplus\Models\Project;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,14 +10,6 @@ use Yajra\DataTables\DataTables;
 
 class ProjectController extends Controller
 {
-    //
-    public function __construct()
-    {
-        //$this->middleware('auth:api', ['except' => 'login']);
-        //$this->middleware('auth');
-        Region::Address();
-    }
-
     public function index(Request $request)
     {
         if ($request->isMethod('POST')) {
