@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Cici\Lieplus\Models\Customer;
+use Cici\Lieplus\Models\Department;
+use Cici\Lieplus\Models\Job;
 use Cici\Lieplus\Models\Project;
 use DB;
 use Illuminate\Http\Request;
@@ -118,6 +121,90 @@ class ProjectController extends Controller
 
         $title = '项目启动书';
         return view('bd.project', compact('title'));
+    }
+
+    public function create(Request $request)
+    {
+        try {
+            $data = $request->input();
+            DB::beginTransaction();
+            // add customer
+            $customer_attributes = array_filter($data, function ($key) {
+                return in_array($key, [
+                    'name',
+                    'province',
+                    'city',
+                    'county',
+                    'welfare',
+                    'work_time',
+                    'founder',
+                    'financing',
+                    'industry',
+                    'ranking',
+                    'property',
+                    'size',
+                    'introduce',
+                    'level',
+                    'type',
+                    'status'
+                ]);
+            }, ARRAY_FILTER_USE_KEY);
+            $customer_attributes['created_by'] = $request->user();
+            $customer_attributes['updated_by'] = $request->user();
+            $customer = Customer::create($customer_attributes);
+
+            // add departments
+            $departments      = explode(",", $data['department']);
+            $department_id    = '';
+
+            foreach ($departments as $department_name) {
+                $customer_id = $customer->id;
+                $name = trim($department_name);
+                $created_by = $request->user();
+                $updated_by = $request->user();
+
+                $department = Department::create(compact('customer_id', 'name', 'created_by', 'updated_by'));
+
+                if (trim($data['job_department']) == $department_name) {
+                    $department_id = $department->id;
+                }
+            }
+
+            // add job
+            $job_attributes = array_filter($data, function ($key) {
+                return in_array($key, [
+                    'department_id',
+                    'name',
+                    'requirement',
+                    'work_years',
+                    'gender',
+                    'majors',
+                    'degree',
+                    'unified',
+                    'salary',
+                    'property',
+                    'closed',
+                    'created_by',
+                    'updated_by',
+                ]);
+            }, ARRAY_FILTER_USE_KEY);
+            $job_attributes['created_by'] = $request->user();
+            $job_attributes['updated_by'] = $request->user();
+            $job = Job::create($customer_attributes);
+
+            // add project
+            $job_id          = $job->id;
+            $status          = 0;
+            $created_by      = $request->user();
+            $updated_by      = $request->user();
+            Project::create(compact('job_id', 'status', 'created_by', 'updated_by'));
+            DB::commit();
+
+            return json_encode(['code' => 0, 'msg' => '创建成功！', 'pid' => $project->id]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return json_encode(['code' => 1, 'msg' => '创建失败！']);
+        }
     }
 
     public function edit(Request $request)

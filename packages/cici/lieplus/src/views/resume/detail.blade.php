@@ -1,6 +1,6 @@
 @extends('Lieplus::layouts.cici')
 
-@section('title'){{-- {{ $title }} --}}@endsection
+@section('title', '简历详情')
 
 @section('stylesheet')
 @endsection
