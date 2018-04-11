@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\AssignCustomer;
-use App\Customer;
-use App\Department;
-use App\Helper;
-use App\Job;
-use App\Region;
+use Cici\Lieplus\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -17,15 +12,6 @@ use Yajra\DataTables\DataTables;
 
 class JobController extends Controller
 {
-    private static $prefixTitle = '职位';
-
-    public function __construct()
-    {
-        //$this->middleware('auth');
-        Region::Address();
-        Department::get();
-    }
-
     /**
      * Show the customer home page.
      *
@@ -56,67 +42,90 @@ class JobController extends Controller
 
     public function add(Request $request)
     {
-        $title = '新建职位';
-
         if ($request->isMethod('POST'))
         {
             $data = $request->input();
-            $uid = Auth::id();
-            $this->validate($request,
-                [
-                    'cid'         => Auth::user()->hasRole('admin|manager') ? 'required' : [
-                        'required',
-                        Rule::exists('assigncustomers')->where(function ($query) use ($uid)
-                        {
-                            $query->where('uid', $uid);
-                        }),
-                    ],
-                    'name'        => [
-                        'required',
-                        Rule::unique('jobs')->where(function ($query) use ($data)
-                        {
-                            $query->where('did', $data['did']);
-                        }),
-                    ],
-                    'requirement' => 'required',
-                    'salary'      => 'required',
-                ],
-                [
-                    'cid.required'         => '请选择:attribute.',
-                    'cid.exists'           => '你无权给未分配:attribute 增加职位',
-                    'name.required'        => '请输入:attribute.',
-                    'name.unique'          => ':attribute 已经存在.',
-                    'requirement.required' => '请输入:attribute.',
-                    'salary.required'      => '请输入:attribute.',
-                ],
-                [
-                    'cid'         => '客户',
-                    'name'        => '职位名称',
-                    'requirement' => '任职要求',
-                    'salary'      => '薪酬结构',
+            // $uid = Auth::id();
+            // $this->validate($request,
+            //     [
+            //         'cid'         => Auth::user()->hasRole('admin|manager') ? 'required' : [
+            //             'required',
+            //             Rule::exists('assigncustomers')->where(function ($query) use ($uid)
+            //             {
+            //                 $query->where('uid', $uid);
+            //             }),
+            //         ],
+            //         'name'        => [
+            //             'required',
+            //             Rule::unique('jobs')->where(function ($query) use ($data)
+            //             {
+            //                 $query->where('did', $data['did']);
+            //             }),
+            //         ],
+            //         'requirement' => 'required',
+            //         'salary'      => 'required',
+            //     ],
+            //     [
+            //         'cid.required'         => '请选择:attribute.',
+            //         'cid.exists'           => '你无权给未分配:attribute 增加职位',
+            //         'name.required'        => '请输入:attribute.',
+            //         'name.unique'          => ':attribute 已经存在.',
+            //         'requirement.required' => '请输入:attribute.',
+            //         'salary.required'      => '请输入:attribute.',
+            //     ],
+            //     [
+            //         'cid'         => '客户',
+            //         'name'        => '职位名称',
+            //         'requirement' => '任职要求',
+            //         'salary'      => '薪酬结构',
+            //     ]);
+
+            //         $department_id   = $attributes['department_id'];
+        
+
+            // add job
+            $job_attributes = array_filter($data, function ($key) {
+                return in_array($key, [
+                    'department_id',
+                    'name',
+                    'requirement',
+                    'work_years',
+                    'gender',
+                    'majors',
+                    'degree',
+                    'unified',
+                    'salary',
+                    'property',
+                    'closed',
+                    'created_by',
+                    'updated_by',
                 ]);
-            $job = new Job();
-            $job->sn = Helper::generationSN('ZW');
-            $job->cid = $data['cid'];
-            $job->did = $data['did'];
-            $job->name = $data['name'];
-            $job->requirement = $data['requirement'];
-            $job->workyears = $data['workyears'];
-            $job->gender = $data['gender'];
-            $job->majors = $data['majors'];
-            $job->degree = $data['degree'];
-            $job->unified = isset($data['unified']) ? $data['unified'] : 0;
-            $job->salary = $data['salary'];
-            $job->creater = Auth::id();
-            $job->modifier = Auth::id();
-            if ($job->save())
-            {
-                return redirect()->back()->with('success', '创建成功！');
-            }
-            else
-            {
-                return redirect()->back()->with('error', '创建失败！');
-            }
+            }, ARRAY_FILTER_USE_KEY);
+            $job_attributes['created_by'] = $request->user();
+            $job_attributes['updated_by'] = $request->user();
+            Job::create($customer_attributes);
+            // $job = new Job();
+            // $job->sn = Helper::generationSN('ZW');
+            // $job->cid = $data['cid'];
+            // $job->did = $data['did'];
+            // $job->name = $data['name'];
+            // $job->requirement = $data['requirement'];
+            // $job->workyears = $data['workyears'];
+            // $job->gender = $data['gender'];
+            // $job->majors = $data['majors'];
+            // $job->degree = $data['degree'];
+            // $job->unified = isset($data['unified']) ? $data['unified'] : 0;
+            // $job->salary = $data['salary'];
+            // $job->creater = Auth::id();
+            // $job->modifier = Auth::id();
+            // if ($job->save())
+            // {
+            //     return redirect()->back()->with('success', '创建成功！');
+            // }
+            // else
+            // {
+            //     return redirect()->back()->with('error', '创建失败！');
+            // }
         }
 
         $assignedCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
@@ -132,12 +141,12 @@ class JobController extends Controller
         return view('job.add', compact('title', 'assignedCustomers'));
     }
 
+
     public function detail(Request $request, $id)
     {
-        $title = '职位信息';
         $job = Job::findOrFail($id);
 
-        return view('job.detail', compact('title', 'job'));
+        return view('Lieplus::job.detail', compact('job'));
     }
 
     public function search(Request $request, $type)
