@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper;
 use App\Station;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StationController extends Controller
 {
-    //
-    public function __construct()
-    {
-        //$this->middleware('auth');
-    }
 
     public function next(Request $request, $lid, $rid)
     {

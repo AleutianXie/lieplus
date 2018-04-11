@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/resume';
 
     /**
      * Create a new controller instance.
@@ -41,9 +41,6 @@ class LoginController extends Controller
 
     protected function redirectTo()
     {
-        //die("OK");
-        //dd($Request);
-        //return '/resume/1';
-        return '/resume/1';
+        return '/resume';
     }
 }

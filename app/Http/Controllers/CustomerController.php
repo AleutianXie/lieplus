@@ -12,12 +12,6 @@ use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
 {
-    public function __construct()
-    {
-        //$this->middleware('auth');
-        Region::Address();
-    }
-
     /**
      * Show the customer home page.
      *

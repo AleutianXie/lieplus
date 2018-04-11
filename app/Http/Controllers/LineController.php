@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\AssignCustomer;
 use App\AssignLine;
 use App\Helper;
-use App\Line;
 use App\Station;
 use App\User;
+use Cici\Lieplus\Models\Line;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -15,11 +15,6 @@ use Yajra\DataTables\DataTables;
 
 class LineController extends Controller
 {
-    public function __construct()
-    {
-        //$this->middleware('auth');
-    }
-
     /**
      * Show the line home page.
      *

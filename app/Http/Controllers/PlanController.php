@@ -12,11 +12,6 @@ use Yajra\DataTables\DataTables;
 
 class PlanController extends Controller
 {
-    public function __construct()
-    {
-        //$this->middleware('auth');
-    }
-
     public function index()
     {
         $title = '今日工作台';
