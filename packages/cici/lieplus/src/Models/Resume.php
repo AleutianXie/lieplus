@@ -4,6 +4,7 @@ namespace Cici\Lieplus\Models;
 use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
 use Cici\Lieplus\Models\Region;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -76,6 +77,38 @@ class Resume extends Base
             config('permission.models.role'),
             config('permission.table_names.role_has_permissions')
         );
+    }
+
+    /**
+     * A role may be given various jobs.
+     */
+    public function jobs() : BelongsToMany
+    {
+        return $this->belongsToMany(
+            'Cici\Lieplus\Models\Job',
+            'job_has_resumes'
+        );
+    }
+
+    /**
+     * Assign the given job to the resume.
+     *
+     * @param array ...$jobs
+     *
+     * @return $this
+     */
+    public function assignJob($attributes = [], ...$jobs)
+    {
+        $jobs = collect($jobs)
+            ->flatten()
+            ->map(function ($id) {
+                return Job::findorFail($id);
+            })
+            ->all();
+
+        $this->jobs()->withTimestamps()->withPivotValue($attributes)->saveMany($jobs);
+
+        return $this;
     }
 
     public function getprovinceAttribute($value)
