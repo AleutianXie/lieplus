@@ -5,6 +5,7 @@ use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
 use Cici\Lieplus\Models\Region;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -71,12 +72,16 @@ class Resume extends Base
     /**
      * A resume can be applied to roles.
      */
-    public function feedbacks(): BelongsToMany
+    public function feedbacks(): HasMany
     {
-        return $this->belongsToMany(
-            config('permission.models.role'),
-            config('permission.table_names.role_has_permissions')
+        return $this->hasMany(
+            'Cici\Lieplus\Models\Feedback'
         );
+    }
+
+    public function postFeedback($attributes = [])
+    {
+        return $this->feedbacks()->create($attributes);
     }
 
     /**
@@ -99,16 +104,19 @@ class Resume extends Base
      */
     public function assignJob($attributes = [], ...$jobs)
     {
+        $job_ids = $this->jobs()->pluck('job_id')->toArray();
+
         $jobs = collect($jobs)
             ->flatten()
+            ->filter(function($id) use ($job_ids) {
+                return !in_array($id, $job_ids);
+            })
             ->map(function ($id) {
                 return Job::findorFail($id);
             })
             ->all();
 
-        $this->jobs()->withTimestamps()->withPivotValue($attributes)->saveMany($jobs);
-
-        return $this;
+        return $this->jobs()->withTimestamps()->withPivotValue($attributes)->saveMany($jobs);
     }
 
     public function getprovinceAttribute($value)

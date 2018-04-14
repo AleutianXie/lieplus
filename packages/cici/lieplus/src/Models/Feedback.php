@@ -11,6 +11,8 @@ use Illuminate\Support\Collection;
  */
 class Feedback extends Model
 {
+    protected $fillable = ['text', 'created_by'];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -23,16 +25,14 @@ class Feedback extends Model
      */
     public static function create(array $params = [])
     {
-        $rid     = Arr::get($params, 'rid');
-        $text    = Arr::get($params, 'text');
-        $creater = Arr::get($params, 'creater');
-        if (empty($rid) || empty($text) || empty($creater)) {
-            throw new InvalidArgumentException;
-        }
-         {
-            throw ResumeNotExists::create($rid);
-        }
+        $resume_id  = $attributes['resume_id'];
+        $text       = $attributes['text'];
+        $created_by = $attributes['created_by'];
 
-        return parent::create($params);
+        return static::query()->create(compact(
+            'resume_id',
+            'text',
+            'created_by'
+        ));
     }
 }

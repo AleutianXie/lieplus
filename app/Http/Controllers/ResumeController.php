@@ -55,6 +55,8 @@ class ResumeController extends Controller
     {
         $resume = Resume::findOrFail($id);
 
+        dd($resume->postFeedback(['created_by' => $request->user()->id, 'text' =>'test by alueutian']));
+        // dd($resume->assignJob(['created_by' => $request->user()->id, 'updated_by' => $request->user()->id], [1,2,3] ));
         // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         // $feedbacks = array();
 
