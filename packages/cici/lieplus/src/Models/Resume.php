@@ -70,7 +70,7 @@ class Resume extends Base
     }
 
     /**
-     * A resume can be applied to roles.
+     * A resume can have many feedbacks.
      */
     public function feedbacks(): HasMany
     {
@@ -79,6 +79,9 @@ class Resume extends Base
         );
     }
 
+    /**
+     * Post a feed back for resume.
+     */
     public function postFeedback($attributes = [])
     {
         return $this->feedbacks()->create($attributes);

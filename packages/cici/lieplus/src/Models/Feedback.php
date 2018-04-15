@@ -1,10 +1,8 @@
 <?php
 namespace Cici\Lieplus\Models;
 
-use Cici\Lieplus\Exceptions\ResumeNotExists;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Feedback model instance
@@ -34,5 +32,13 @@ class Feedback extends Model
             'text',
             'created_by'
         ));
+    }
+
+    /**
+     * Get the resume that owns the feedback.
+     */
+    public function resume() : BelongsTo
+    {
+        return $this->belongsTo('Cici\Liplus\Models\Resume');
     }
 }

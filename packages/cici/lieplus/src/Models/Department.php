@@ -2,6 +2,7 @@
 namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 /**
@@ -37,16 +38,13 @@ class Department extends Base
         ));
     }
 
-    /**
-     * A resume can be applied to roles.
+   /**
+     * Get the customer that owns the department.
      */
-    // public function feedbacks(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(
-    //         config('permission.models.role'),
-    //         config('permission.table_names.role_has_permissions')
-    //     );
-    // }
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo('Cici\Liplus\Models\Customer');
+    }
 
     /**
      * Get the current cached department.

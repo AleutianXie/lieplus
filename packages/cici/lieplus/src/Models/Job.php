@@ -56,15 +56,12 @@ class Job extends Base
     }
 
     /**
-     * A resume can be applied to roles.
+     * Get the department that owns the job.
      */
-    // public function feedbacks(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(
-    //         config('permission.models.role'),
-    //         config('permission.table_names.role_has_permissions')
-    //     );
-    // }
+    public function department() : BelongsTo
+    {
+        return $this->belongsTo('Cici\Liplus\Models\Department');
+    }
 
     /**
      * Get the current cached job.

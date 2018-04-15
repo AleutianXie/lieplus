@@ -2,6 +2,8 @@
 namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
+use Cici\Lieplus\Models\Department;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -65,16 +67,40 @@ class Customer extends Base
         ));
     }
 
+
     /**
-     * A resume can be applied to roles.
+     * A customer can have many departments.
      */
-    // public function feedbacks(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(
-    //         config('permission.models.role'),
-    //         config('permission.table_names.role_has_permissions')
-    //     );
-    // }
+    public function departments(): HasMany
+    {
+        return $this->hasMany(
+            'Cici\Lieplus\Models\Department'
+        );
+    }
+
+    /**
+     * Assign the given departments to the customer.
+     *
+     * @param array ...$departments
+     *
+     * @return $this
+     */
+    public function assignDepartment($attributes = [], ...$departments)
+    {
+        $department_ids = $this->departments()->pluck('id')->toArray();
+
+        $departments = collect($departments)
+            ->flatten()
+            ->filter(function($id) use ($department_ids) {
+                return !in_array($id, $department_ids);
+            })
+            ->map(function ($id) {
+                return Department::findorFail($id);
+            })
+            ->all();
+
+        return $this->departments()->withTimestamps()->withPivotValue($attributes)->saveMany($departments);
+    }
 
     /**
      * Get the current cached customer.
