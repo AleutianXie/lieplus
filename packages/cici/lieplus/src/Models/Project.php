@@ -38,15 +38,12 @@ class Project extends Base
     }
 
     /**
-     * A resume can be applied to roles.
+     * Get the job that owns the project.
      */
-    // public function feedbacks(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(
-    //         config('permission.models.role'),
-    //         config('permission.table_names.role_has_permissions')
-    //     );
-    // }
+    public function job() : hasOne
+    {
+        return $this->hasOne('Cici\Liplus\Models\Job');
+    }
 
     /**
      * Get the current cached project.

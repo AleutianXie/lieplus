@@ -82,9 +82,20 @@ class Resume extends Base
     /**
      * Post a feed back for resume.
      */
-    public function postFeedback($attributes = [])
+    public function postFeedback(array $attributes)
     {
         return $this->feedbacks()->create($attributes);
+    }
+
+    /**
+     * Post feed backs for resume.
+     */
+    public function postFeedbacks(...$feedbacks)
+    {
+        $feedbacks = collect($feedbacks)
+            ->flatten(1)
+            ->all();
+        return $this->feedbacks()->createMany($feedbacks);
     }
 
     /**

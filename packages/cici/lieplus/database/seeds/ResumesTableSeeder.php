@@ -89,7 +89,7 @@ class ResumesTableSeeder extends Seeder
             $carbon = Carbon::instance($dt);
             $carbon->addYears(20);
             $start_work_date = $faker->dateTimeBetween($carbon, '-2 years')->format('Y-m-d');
-            $resume = [
+            $attributes = [
                 'name' => $faker->unique()->name,
                 'mobile' => $faker->unique()->phoneNumber,
                 'email' => $faker->unique()->email,
@@ -108,7 +108,13 @@ class ResumesTableSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1
             ];
-            Resume::create($resume);
+            $resume = Resume::create($attributes);
+            $this->command->line('给简历生成10条反馈...'.PHP_EOL);
+            $feedbacks = [];
+            foreach ($faker->sentences(10) as $sentence) {
+                $feedbacks[] = ['text' => $sentence, 'created_by' => 1];
+            }
+            $resume->postFeedbacks($feedbacks);
             $bar->advance();
         }
         $bar->finish();
