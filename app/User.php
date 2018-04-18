@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Cici\Lieplus\Traits\ResumeTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -10,6 +11,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
+    use ResumeTrait;
 
     /**
      * The attributes that are mass assignable.
