@@ -21,10 +21,6 @@ class LieplusServiceProvider extends ServiceProvider
         // load routes
         $this->loadRoutesFrom(__DIR__. '/routes/web.php');
 
-        // $this->publishes([
-        //     __DIR__ . '/views' => resource_path('views/vendor/cici/lieplus'),
-        // ]);
-
         $this->publishes([
             __DIR__.'/config/lieplus.php' => config_path('lieplus.php'),
         ]);

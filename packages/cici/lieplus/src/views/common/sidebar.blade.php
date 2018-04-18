@@ -41,8 +41,8 @@
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-                <li @if(starts_with(Request::fullUrl(), route('resume.add'))) class="active" @endif>
-                    <a href="{{ route('resume.add') }}">
+                <li @if(starts_with(Request::fullUrl(), route('resume.create'))) class="active" @endif>
+                    <a href="{{ route('resume.create') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建
                     </a>

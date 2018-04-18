@@ -2,7 +2,8 @@
 
 use Cici\Lieplus\Models\Region;
 
-Route::middleware(['web','auth'])->group(function () {
+// regions
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/provinces', function () {
         $region = Region::getInstance();
         return $region->getProvinces();

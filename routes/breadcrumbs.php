@@ -13,10 +13,10 @@ Breadcrumbs::register('resume', function ($breadcrumbs)
 });
 
 // Home > Resume > Add
-Breadcrumbs::register('resume.add', function ($breadcrumbs)
+Breadcrumbs::register('resume.create', function ($breadcrumbs)
 {
     $breadcrumbs->parent('resume');
-    $breadcrumbs->push('新建', route('resume.add'));
+    $breadcrumbs->push('新建', route('resume.create'));
 });
 
 // Home > Resume > Detail

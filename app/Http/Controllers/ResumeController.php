@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
-class ResumeController extends Controller
+class ResumeController
 {
     /**
      * Show the resume home page.
@@ -31,7 +31,7 @@ class ResumeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function add(StoreResumePost $request)
+    public function create(StoreResumePost $request)
     {
         if ($request->isMethod('POST')) {
             try {
@@ -51,11 +51,9 @@ class ResumeController extends Controller
         return view('Lieplus::resume.create');
     }
 
-    public function detail(Request $request, $id)
+    public function detail(Request $request, $id, $tab = 'index')
     {
         $resume = Resume::findOrFail($id);
-
-        dd($resume->postFeedback(['created_by' => $request->user()->id, 'text' =>'test by alueutian']));
         // dd($resume->assignJob(['created_by' => $request->user()->id, 'updated_by' => $request->user()->id], [1,2,3] ));
         // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         // $feedbacks = array();
@@ -75,8 +73,7 @@ class ResumeController extends Controller
         //         'creater' => Auth::user($fitem->creater)->name,
         //         'ctime'   => $keys[1]);
         // }
-
-        return view('Lieplus::resume.detail', compact('resume'));
+        return view('Lieplus::resume.detail', compact('resume', 'tab'));
     }
 
     // public function edit(Request $request)

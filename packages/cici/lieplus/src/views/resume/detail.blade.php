@@ -8,28 +8,28 @@
 @section('content')
 <div class="tabbable">
     <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-        <li class="active">
-            <a data-toggle="tab" href="#resume-tab-1" aria-expanded="false">
+        <li @if ('index' == $tab) class="active" @endif>
+            <a href="{{ route('resume.detail', $resume->id) }}" aria-expanded="false">
                 <i class="blue ace-icon fa fa-file-word-o bigger-120"></i>
                 原件
             </a>
         </li>
 
-        <li class="">
-            <a data-toggle="tab" href="#resume-tab-2" aria-expanded="false">
+        <li @if ('job' == $tab) class="active" @endif>
+            <a href="{{ route('resume.detail', [$resume->id, 'job']) }}" aria-expanded="false">
                 <i class="green ace-icon fa fa-folder bigger-120"></i>
                 简历库
             </a>
         </li>
 
-        <li class="">
-            <a data-toggle="tab" href="#resume-tab-3" aria-expanded="true">
+        <li @if ('feedback' == $tab) class="active" @endif>
+            <a href="{{ route('resume.detail', [$resume->id, 'feedback']) }}" aria-expanded="true">
                 <i class="orange ace-icon fa fa-comments bigger-120"></i>
                 反馈
             </a>
         </li>
-        <li class="">
-            <a data-toggle="tab" href="#resume-tab-4" aria-expanded="true">
+        <li @if ('notice' == $tab) class="active" @endif>
+            <a href="{{ route('resume.detail',[$resume->id, 'notice']) }}" aria-expanded="true">
                 <i class="purple ace-icon fa fa-bell bigger-120"></i>
                 提醒
             </a>
@@ -38,13 +38,13 @@
 
     <div class="tab-content no-border padding-24">
         {{-- 简历原件--开始 --}}
-        <div id="resume-tab-1" class="tab-pane fade in active">
+        <div id="resume-tab-1" @if ('index' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
             <h4 class="blue pull-left">
                 <i class="ace-icon fa fa-check bigger-110"></i>
                 简历原件
             </h4>
 
-            <h6 class="pull-right">{{ Auth::user($resume->created_at)->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
+            <h6 class="pull-right">{{ Auth::user($resume->created_by)->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
 
             <div class="space-8"></div>
 
@@ -146,7 +146,7 @@
         {{-- 简历原件--结束 --}}
 
         {{-- 已加入的简历库--开始 --}}
-        <div id="resume-tab-2" class="tab-pane fade">
+        <div id="resume-tab-2" @if ('job' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
             <h4 class="blue">
                 <i class="green ace-icon fa fa-folder bigger-110"></i>
                 已加入的简历库
@@ -158,7 +158,7 @@
         {{-- 已加入的简历库--结束 --}}
 
         {{-- 所有反馈信息--开始 --}}
-        <div id="resume-tab-3" class="tab-pane fade">
+        <div id="resume-tab-3" @if ('feedback' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
             <h4 class="blue">
                 <i class="orange ace-icon fa fa-comments bigger-110"></i>
                 所有反馈信息
@@ -211,7 +211,7 @@
         {{-- 所有反馈信息--结束 --}}
 
         {{-- 提醒--开始 --}}
-        <div id="resume-tab-4" class="tab-pane fade">
+        <div id="resume-tab-4" @if ('notice' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
             <h4 class="blue">
                 <i class="purple ace-icon fa fa-bell bigger-110"></i>
                 提醒
