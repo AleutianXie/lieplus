@@ -35,13 +35,13 @@ Route::group(['prefix' => 'resume',  'middleware' => ['auth']], function () {
     Route::get('/{index?}', 'ResumeController@index')->where('index', 'index')->name('resume');
     Route::match(['get', 'post'], '/create', 'ResumeController@create')->name('resume.create');
     Route::get('/{id}/{tab?}', 'ResumeController@detail')->where('id', '[0-9]+')->where('tab', 'job|feedback|notice')->name('resume.detail');
+    Route::get('/my', 'ResumeController@my')->name('resume.my');
+    Route::get('/job/{id?}', 'ResumeController@job')->where(['id' => '[0-9]+'])->name('resume.job');
+    Route::get('/all', 'ResumeController@all')->name('resume.all');
     Route::match(['get', 'post'], '/edit', 'ResumeController@edit');
-    Route::get('/my', ['as' => 'resume.my', 'uses' => 'ResumeController@mylibrary']);
     Route::post('/my/add/{id}', 'ResumeController@addmy')->where(['id' => '[0-9]+'])->name('resume.addmy');
     Route::get('/jobmodal/{id}', 'ResumeController@jobmodal')->where('id', '[0-9]+')->name('resume.jobmodal');
     Route::post('/job/add/', 'ResumeController@addjob')->name('resume.addjob');
-    Route::get('/job', ['as' => 'resume.job', 'uses' => 'ResumeController@joblibrary']);
-    Route::get('/all', ['as' => 'resume.all', 'uses' => 'ResumeController@all']);
     Route::get('/search/{type}', 'ResumeController@search')->where(['type' => 'my|all|job'])->name('resume.search');
     Route::post('/feedback', 'FeedbackController@add');
 });
