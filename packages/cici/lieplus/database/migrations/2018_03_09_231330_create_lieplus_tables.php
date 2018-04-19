@@ -190,7 +190,6 @@ class CreateLieplusTables extends Migration
             $table->unsignedInteger('updated_by');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         // user_has_customers table
@@ -205,7 +204,6 @@ class CreateLieplusTables extends Migration
             $table->unsignedInteger('updated_by');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         // branches table
@@ -266,7 +264,6 @@ class CreateLieplusTables extends Migration
             $table->unsignedInteger('updated_by');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         // user_has_jobs table
@@ -281,7 +278,6 @@ class CreateLieplusTables extends Migration
             $table->unsignedInteger('updated_by');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         // job_has_resumes table
@@ -296,7 +292,6 @@ class CreateLieplusTables extends Migration
             $table->unsignedInteger('updated_by');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         // todo: 提醒（分成三类提醒，工作台提醒、自我提醒、面试提醒）

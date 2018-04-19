@@ -2,6 +2,7 @@
 namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
+use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Support\Collection;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Support\Collection;
  */
 class Line extends Base
 {
+    use UserTrait;
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

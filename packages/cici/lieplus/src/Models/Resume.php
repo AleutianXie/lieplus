@@ -1,9 +1,11 @@
 <?php
 namespace Cici\Lieplus\Models;
 
+use App\User;
 use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
 use Cici\Lieplus\Models\Region;
+use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -13,6 +15,10 @@ use Illuminate\Support\Collection;
  */
 class Resume extends Base
 {
+    use UserTrait;
+
+    protected $dates = ['deleted_at'];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -122,7 +128,7 @@ class Resume extends Base
 
         $jobs = collect($jobs)
             ->flatten()
-            ->filter(function($id) use ($job_ids) {
+            ->filter(function ($id) use ($job_ids) {
                 return !in_array($id, $job_ids);
             })
             ->map(function ($id) {

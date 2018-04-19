@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Expression;
 trait ResumeTrait
 {
     /**
-     * A model may have multiple roles.
+     * A model may have multiple resumes.
      */
     public function resumes()
     {
@@ -19,25 +19,30 @@ trait ResumeTrait
     }
 
     /**
-     * Assign the given role to the model.
+     * Assign the given resumes to the model.
      *
-     * @param array ...$roles
+     * @param array ...$resumes
      *
      * @return $this
      */
-    // public function assignRole(...$roles)
-    // {
-    //     $roles = collect($roles)
-    //         ->flatten()
-    //         ->map(function ($role) {
-    //             return $this->getStoredRole($role);
-    //         })
-    //         ->all();
+    public function assignResumes(...$resumes)
+    {
+        $resume_ids = $this->resumes()->pluck('resume_id')->toArray();
 
-    //     $this->roles()->saveMany($roles);
+        $resumes = collect($resumes)
+            ->flatten()
+            ->filter(function ($resume) use ($resume_ids) {
+                return !in_array($resume, $resume_ids);
+            })
+            ->map(function ($resume) {
+                return Resume::findOrFail($resume);
+            })
+            ->all();
 
-    //     return $this;
-    // }
+        $this->resumes()->saveMany($resumes);
+
+        return $this;
+    }
 
     /**
      * Revoke the given role from the model.

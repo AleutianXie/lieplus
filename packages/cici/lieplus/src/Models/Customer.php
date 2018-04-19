@@ -3,6 +3,7 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Cici\Lieplus\Models\Department;
+use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -11,6 +12,8 @@ use Illuminate\Support\Collection;
  */
 class Customer extends Base
 {
+    use UserTrait;
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -67,7 +70,6 @@ class Customer extends Base
         ));
     }
 
-
     /**
      * A customer can have many departments.
      */
@@ -91,7 +93,7 @@ class Customer extends Base
 
         $departments = collect($departments)
             ->flatten()
-            ->filter(function($id) use ($department_ids) {
+            ->filter(function ($id) use ($department_ids) {
                 return !in_array($id, $department_ids);
             })
             ->map(function ($id) {

@@ -82,6 +82,7 @@ class ResumesTableSeeder extends Seeder
             '农林牧渔'
         ];
         $this->command->line('随机生成1000份简历...'.PHP_EOL);
+        $this->command->line('给每份简历生成10条反馈...'.PHP_EOL);
         $bar = $this->command->getOutput()->createProgressBar(1000);
         for ($i = 0; $i < 1000; $i++) {
             $dt = $faker->dateTime('-30 years');
@@ -109,7 +110,7 @@ class ResumesTableSeeder extends Seeder
                 'updated_by' => 1
             ];
             $resume = Resume::create($attributes);
-            $this->command->line('给简历生成10条反馈...'.PHP_EOL);
+            $resume->assignUser(['created_by' => 1, 'updated_by' => 1], 1);
             $feedbacks = [];
             foreach ($faker->sentences(10) as $sentence) {
                 $feedbacks[] = ['text' => $sentence, 'created_by' => 1];
