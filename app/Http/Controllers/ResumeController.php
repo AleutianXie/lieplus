@@ -19,12 +19,7 @@ class ResumeController
      */
     public function index(Request $request)
     {
-        //dd($request->user()->resumes);
-        $model = Resume::query();
-        $filter = $request->input();
-        $this->getModel($model, $filter);
-        $resumes = $model->paginate()->appends($filter);
-        return view('Lieplus::resume.index', compact('resumes', 'filter'));
+        return view('Lieplus::resume.index');
     }
 
     /**
@@ -50,6 +45,30 @@ class ResumeController
             }
         }
         return view('Lieplus::resume.create');
+    }
+
+    /**
+     * Show my library
+     */
+    public function my(Request $request)
+    {
+        return view('Lieplus::resume.my');
+    }
+
+    /**
+     * Show job library
+     */
+    public function job(Request $request)
+    {
+        return view('Lieplus::resume.job');
+    }
+
+    /**
+     * Show gold link library
+     */
+    public function all(Request $request)
+    {
+        return view('Lieplus::resume.all');
     }
 
     public function detail(Request $request, $id, $tab = 'index')
@@ -82,7 +101,12 @@ class ResumeController
     public function search(Request $request)
     {
         $filter = $request->input();
-        $model = Resume::query();
+        if (!empty($filter['t']) && $filter['t'] == 'my') {
+            $model = $request->user()->resumes()->getQuery();
+        } elseif (!empty($filter['t']) && $filter['t'] == 'job') {
+        } else {
+            $model = Resume::query();
+        }
         $this->getModel($model, $filter);
         return Datatables::eloquent($model)->make(true);
     }
@@ -97,22 +121,6 @@ class ResumeController
     //     if (!$resume->save()) {
     //         return '更新失败';
     //     }
-    // }
-
-    // public function mylibrary()
-    // {
-    //     $title = '我的简历库';
-    //     if (Auth::user()->hasRole('admin')) {
-    //         $lines = Line::all();
-    //     } else {
-    //         $assignlines = AssignLine::with('line')->where(['uid' => Auth::id(), 'show' => 1])->get();
-    //         if ($assignlines) {
-    //             $lines = array_pluck($assignlines, 'line');
-    //         } else {
-    //             $lines = [];
-    //         }
-    //     }
-    //     return view('resume.my', compact('title', 'lines'));
     // }
 
     // public function joblibrary()
@@ -249,6 +257,7 @@ class ResumeController
         if (!empty($filter['mobile'])) {
             $model->where('mobile', 'like', '%'.$filter['mobile'].'%');
         }
-        $model->latest();
+        $model->select('resumes.*');
+        $model->latest('resumes.created_at');
     }
 }

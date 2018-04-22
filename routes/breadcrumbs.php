@@ -44,7 +44,7 @@ Breadcrumbs::register('resume.job', function ($breadcrumbs)
 Breadcrumbs::register('resume.all', function ($breadcrumbs)
 {
     $breadcrumbs->parent('resume');
-    $breadcrumbs->push('猎帮简历库', route('resume.all'));
+    $breadcrumbs->push('金领航简历库', route('resume.all'));
 });
 
 // Home > UserCenter

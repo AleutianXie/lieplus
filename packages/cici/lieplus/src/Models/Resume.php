@@ -157,6 +157,11 @@ class Resume extends Base
         return $region->getNameByAdcode($value);
     }
 
+    public function scopeMobile($query, $mobile)
+    {
+        return $query->where('mobile', 'like', '%'.$mobile.'%');
+    }
+
     /**
      * Get the current cached resume.
      */

@@ -1,5 +1,7 @@
 @extends('Lieplus::layouts.cici')
 
+@section('title', '金领航简历库')
+
 @section('content')
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
@@ -58,6 +60,10 @@
         {
           title: '编号',
           data: 'serial_number',
+          render: function (data, type, row)
+          {
+              return "<a href='{{ url('/resume')}}/" + row.id+ "'>" + data +"</a>";
+          }
         },
         { 
           title: '姓名',

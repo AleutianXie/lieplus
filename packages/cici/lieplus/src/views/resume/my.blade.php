@@ -1,5 +1,7 @@
 @extends('Lieplus::layouts.cici')
 
+@section('title', '我的简历库')
+
 @section('content')
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
@@ -47,7 +49,7 @@
   var table = $('table').dataTable({
       processing: true,
       serverSide: true,
-      ajax: '{{ route('resume.search') }}',
+      ajax: '{{ route('resume.search') }}?t=my',
       language: {
         url: '{{ asset('static/localisation/Chinese.json') }}'
       },
@@ -58,8 +60,12 @@
         {
           title: '编号',
           data: 'serial_number',
+          render: function (data, type, row)
+          {
+              return "<a href='{{ url('/resume')}}/" + row.id+ "'>" + data +"</a>";
+          }
         },
-        { 
+        {
           title: '姓名',
           data: 'name',
         },

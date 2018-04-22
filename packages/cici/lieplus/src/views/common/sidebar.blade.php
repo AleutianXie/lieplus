@@ -65,7 +65,7 @@
                 <li @if(starts_with(Request::fullUrl(), route('resume.all'))) class="active" @endif>
                     <a href="{{ route('resume.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        猎加简历库
+                        金领航简历库
                     </a>
                     <b class="arrow"></b>
                 </li>
