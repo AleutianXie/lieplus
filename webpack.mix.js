@@ -12,17 +12,5 @@ const { mix } = require('laravel-mix');
  */
 
 //mix.js('resources/assets/js/common.js', 'public/static/js')
-//mix.js('resources/assets/js/cici.js', 'public/static/js').sourceMaps()
-mix.webpackConfig({
-  module: {
-    rules: [
-    {
-      test: /\.(png|jpg)$/,
-      use: [
-        { loader: 'url-loader?limit=8192' },
-      ]
-    }]
-  }
-})
-  .js('resources/assets/js/cici.js', 'public/static/js')
+mix.js('resources/assets/js/cici.js', 'public/static/js').sourceMaps()
   .sass('resources/assets/sass/cici.scss', 'public/static/css');

@@ -199,7 +199,7 @@
 {{-- 创建简历表单--结束 --}}
 @endsection
 
-@section('scripts')
+@section('js')
 <script type="text/javascript">
     $('#degree').select2({
         minimumResultsForSearch: Infinity,

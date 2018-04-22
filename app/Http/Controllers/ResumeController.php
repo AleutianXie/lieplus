@@ -8,7 +8,7 @@ use Cici\Lieplus\Models\Resume;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\Datatables;
 
 class ResumeController
 {
@@ -19,6 +19,7 @@ class ResumeController
      */
     public function index(Request $request)
     {
+        //dd($request->user()->resumes);
         $model = Resume::query();
         $filter = $request->input();
         $this->getModel($model, $filter);
@@ -54,6 +55,8 @@ class ResumeController
     public function detail(Request $request, $id, $tab = 'index')
     {
         $resume = Resume::findOrFail($id);
+
+        $resume->removeUser(1);
         // dd($resume->assignJob(['created_by' => $request->user()->id, 'updated_by' => $request->user()->id], [1,2,3] ));
         // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
         // $feedbacks = array();
@@ -76,6 +79,13 @@ class ResumeController
         return view('Lieplus::resume.detail', compact('resume', 'tab'));
     }
 
+    public function search(Request $request)
+    {
+        $filter = $request->input();
+        $model = Resume::query();
+        $this->getModel($model, $filter);
+        return Datatables::eloquent($model)->make(true);
+    }
     // public function edit(Request $request)
     // {
     //     $data = $request->input();

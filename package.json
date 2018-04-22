@@ -11,25 +11,22 @@
   },
   "devDependencies": {
     "axios": "^0.16.1",
-    "bootstrap-datepicker": "^1.6.4",
+    "bootstrap-datepicker": "^1.8.0",
     "bootstrap-editable": "^1.0.1",
     "bootstrap-sass": "^3.3.7",
-    "datatables": "^1.10.13",
-    "datatables-bootstrap": "^0.0.1",
-    "datatables-buttons": "^1.0.3",
-    "datatables-select": "^1.1.0",
-    "datatables.net-plugins": "^1.10.15",
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.1.0",
-    "jquery-ui": "^1.12.1",
     "laravel-mix": "^0.11.4",
     "lodash": "^4.16.2",
     "select2": "^4.0.3",
-    "url-loader": "^1.0.1",
     "vue": "^2.3.2"
   },
   "dependencies": {
-    "datatables.net": "^1.10.15",
-    "sweetalert2": "^6.11.0"
+    "jquery": "^3.1.0",
+    "jquery-ui": "^1.12.1",
+    "datatables.net": "^1.10.16",
+    "datatables.net-dt": "^1.10.16",
+    "sweetalert2": "^6.11.0",
+    "font-awesome": "^4.7.0",
+    "datatables.net-autofill-bs": "^2.0.0",
+    "datatables.net-bs": "^1.10.16"
   }
 }

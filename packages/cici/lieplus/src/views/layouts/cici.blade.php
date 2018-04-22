@@ -10,7 +10,7 @@
     <meta name="description" content="LiePlus, Cici" />
     <title>{{ config('app.name', 'Cici') }} - @yield('title')</title>
     <link rel="stylesheet" href="{{ asset('static/css/cici.css') }}">
-    @section('stylesheet')
+    @section('css')
     @show
 </head>
 <body class="no-skin">
@@ -55,7 +55,7 @@
     </div><!-- /.main-container -->
     <!-- list of script files -->
     <script src="{{ asset('static/js/cici.js') }}"></script>
-    @section('scripts')
+    @section('js')
     @show
 </body>
 </html>

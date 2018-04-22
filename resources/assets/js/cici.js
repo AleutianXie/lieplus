@@ -12,6 +12,8 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 require('select2');
-require('bootstrap-wysiwyg');
+// require('bootstrap-wysiwyg');
+require('datatables.net');
+require('datatables.net-bs');
 require('./ace');
 require('./ace-elements');

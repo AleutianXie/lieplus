@@ -2,7 +2,7 @@
 
 @section('title', '简历详情')
 
-@section('stylesheet')
+@section('css')
 @endsection
 
 @section('content')
@@ -225,5 +225,5 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('js')
 @endsection
