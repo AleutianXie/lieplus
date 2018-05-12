@@ -52,7 +52,8 @@ class ResumeController
      */
     public function my(Request $request)
     {
-        return view('Lieplus::resume.my');
+        $filter = $request->input();
+        return view('Lieplus::resume.my', compact('filter'));
     }
 
     /**
@@ -256,6 +257,12 @@ class ResumeController
     {
         if (!empty($filter['mobile'])) {
             $model->where('mobile', 'like', '%'.$filter['mobile'].'%');
+        }
+        if (!empty($filter['name'])) {
+            $model->where('name', 'like', '%'.$filter['name'].'%');
+        }
+        if (!empty($filter['email'])) {
+            $model->where('email', 'like', '%'.$filter['email'].'%');
         }
         $model->select('resumes.*');
         $model->latest('resumes.created_at');

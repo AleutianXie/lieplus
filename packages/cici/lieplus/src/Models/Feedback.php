@@ -3,12 +3,15 @@ namespace Cici\Lieplus\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Feedback model instance
  */
 class Feedback extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['text', 'created_by'];
 
     public function __construct(array $attributes = [])

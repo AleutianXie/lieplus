@@ -6,144 +6,131 @@
 @endsection
 
 @section('content')
+<div class="row">
 <div class="tabbable">
-    <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-        <li @if ('index' == $tab) class="active" @endif>
-            <a href="{{ route('resume.detail', $resume->id) }}" aria-expanded="false">
-                <i class="blue ace-icon fa fa-file-word-o bigger-120"></i>
-                原件
-            </a>
-        </li>
+  <ul class="nav nav-tabs padding-2 tab-size-bigger" id="myTab">
+    <li @if ('index' == $tab) class="active" @endif>
+      <a href="{{ route('resume.detail', $resume->id) }}" aria-expanded="false">
+        <i class="blue ace-icon fa fa-file-word-o bigger-120"></i>
+        原件
+      </a>
+    </li>
 
-        <li @if ('job' == $tab) class="active" @endif>
-            <a href="{{ route('resume.detail', [$resume->id, 'job']) }}" aria-expanded="false">
-                <i class="green ace-icon fa fa-folder bigger-120"></i>
-                简历库
-            </a>
-        </li>
+    <li @if ('job' == $tab) class="active" @endif>
+      <a href="{{ route('resume.detail', [$resume->id, 'job']) }}" aria-expanded="false">
+        <i class="green ace-icon fa fa-folder bigger-120"></i>
+        简历库
+      </a>
+    </li>
 
-        <li @if ('feedback' == $tab) class="active" @endif>
-            <a href="{{ route('resume.detail', [$resume->id, 'feedback']) }}" aria-expanded="true">
-                <i class="orange ace-icon fa fa-comments bigger-120"></i>
-                反馈
-            </a>
-        </li>
-        <li @if ('notice' == $tab) class="active" @endif>
-            <a href="{{ route('resume.detail',[$resume->id, 'notice']) }}" aria-expanded="true">
-                <i class="purple ace-icon fa fa-bell bigger-120"></i>
-                提醒
-            </a>
-        </li>
-    </ul>
+    <li @if ('feedback' == $tab) class="active" @endif>
+      <a href="{{ route('resume.detail', [$resume->id, 'feedback']) }}" aria-expanded="true">
+        <i class="orange ace-icon fa fa-comments bigger-120"></i>
+        反馈
+      </a>
+    </li>
 
-    <div class="tab-content no-border padding-24">
-        {{-- 简历原件--开始 --}}
-        <div id="resume-tab-1" @if ('index' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
-            <h4 class="blue pull-left">
-                <i class="ace-icon fa fa-check bigger-110"></i>
-                简历原件
-            </h4>
+    <li @if ('notice' == $tab) class="active" @endif>
+      <a href="{{ route('resume.detail',[$resume->id, 'notice']) }}" aria-expanded="true">
+        <i class="purple ace-icon fa fa-bell bigger-120"></i>
+        提醒
+      </a>
+    </li>
+  </ul>
 
-            <h6 class="pull-right">{{ Auth::user($resume->created_by)->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}</time></h6>
-
-            <div class="space-8"></div>
-
-            <div class="profile-user-info profile-user-info-striped">
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 姓名 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="username" style="display: inline;">{{ $resume->name }} {{ $resume->serial_number }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 性别 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="gender" style="display: inline;">{{ config('lieplus.gender.' . $resume->gender) }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 手机 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="mobile" style="display: inline;">{{ $resume->mobile }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 邮箱 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="email" style="display: inline;">{{ $resume->email }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 学历 </div>
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="degree" style="display: inline;">{{ config('lieplus.degree.'.$resume->degree) }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 城市 </div>
-
-                    <div class="profile-info-value">
-                        <i class="fa fa-map-marker light-orange bigger-110"></i>
-                {{--         <a href="#" id="address" data-type="address" data-pk="1" data-title="Please, fill address" class="editable editable-click" data-original-title="" title=""><b>Moscow</b>, Lenina st., bld. 12</a> --}}
-                        <span class="editable editable-click editable-unsaved" id="country" style="display: inline; background-color: rgba(0, 0, 0, 0);">{{ $resume->province }}</span>
-                        <span class="editable editable-click editable-unsaved" style="display: inline; background-color: rgba(0, 0, 0, 0);" id="city">{{ $resume->city }}</span>
-                        <span class="editable editable-click editable-unsaved" style="display: inline; background-color: rgba(0, 0, 0, 0);" id="county">{{ $resume->county }}</span>
-                    </div>
-                </div>
-
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 出生日期 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="birthdate">{{ $resume->birthdate }}</span>
-                    </div>
-                </div>
-
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 开始工作日期 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="startworkdate">{{ $resume->start_work_date }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 当前状态 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="servicestatus">{{ config('lieplus.servicestatus.'.$resume->service_status.'.text') }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 当前行业 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="industry">{{ $resume->industry }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 当前职位 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="position">{{ $resume->position }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 期望薪资 </div>
-
-                    <div class="profile-info-value">
-                        <span class="editable editable-click" id="salary">{{ config('lieplus.salary.'.$resume->salary.'.text') }}</span>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <div class="profile-info-name"> 其它 </div>
-
-                    <div class="profile-info-value" style="max-width: 900px; overflow:scroll;">
-                        <span class="editable editable-click editable-unsaved" id="others" style="display: inline; background-color: rgba(0, 0, 0, 0);">{!! $resume->others !!}</span>
-               </div>
-                </div>
-            </div>
+  <div class="tab-content no-border padding-2">
+    {{-- 简历原件--开始 --}}
+    <div id="resume-tab-1" @if ('index' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
+      <div class="table-header">
+        <i class="ace-icon fa fa-check bigger-110"></i>
+        简历原件
+        <span class="pull-right">{{ Auth::user($resume->created_by)->name }} 发表于 <time datetime="{{ $resume->created_at }}">{{ $resume->created_at }}&nbsp;&nbsp;</time></span>
+      </div>
+      <div class="space-2"></div>
+      <div class="profile-user-info profile-user-info-striped">
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 姓名 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="username" style="display: inline;">{{ $resume->name }} {{ $resume->serial_number }}</span>
+          </div>
         </div>
-        {{-- 简历原件--结束 --}}
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 性别 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="gender" style="display: inline;">{{ config('lieplus.gender.' . $resume->gender) }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 手机 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="mobile" style="display: inline;">{{ $resume->mobile }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 邮箱 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="email" style="display: inline;">{{ $resume->email }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 学历 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="degree" style="display: inline;">{{ config('lieplus.degree.'.$resume->degree) }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 城市 </div>
+          <div class="profile-info-value">
+            <i class="fa fa-map-marker light-orange bigger-110"></i>
+            <span class="editable editable-click editable-unsaved" id="country" style="display: inline; background-color: rgba(0, 0, 0, 0);">{{ $resume->province }}</span>
+            <span class="editable editable-click editable-unsaved" style="display: inline; background-color: rgba(0, 0, 0, 0);" id="city">{{ $resume->city }}</span>
+            <span class="editable editable-click editable-unsaved" style="display: inline; background-color: rgba(0, 0, 0, 0);" id="county">{{ $resume->county }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 出生日期 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="birthdate">{{ $resume->birthdate }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 开始工作日期 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="startworkdate">{{ $resume->start_work_date }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 当前状态 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="servicestatus">{{ config('lieplus.servicestatus.'.$resume->service_status.'.text') }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 当前行业 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="industry">{{ $resume->industry }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 当前职位 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="position">{{ $resume->position }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-name"> 期望薪资 </div>
+          <div class="profile-info-value">
+            <span class="editable editable-click" id="salary">{{ config('lieplus.salary.'.$resume->salary.'.text') }}</span>
+          </div>
+        </div>
+        <div class="profile-info-row">
+            <div class="profile-info-name"> 其它 </div>
+            <div class="profile-info-value" style="max-width: 900px; overflow:scroll;">
+              <span class="editable editable-click editable-unsaved" id="others" style="display: inline; background-color: rgba(0, 0, 0, 0);">{!! $resume->others !!}</span></div>
+        </div>
+      </div>
+    </div>
+    {{-- 简历原件--结束 --}}
 
         {{-- 已加入的简历库--开始 --}}
         <div id="resume-tab-2" @if ('job' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
@@ -221,7 +208,8 @@
             {{-- @include('alert.list', ['alerts' => $resume->alerts ]) --}}
         </div>
         {{-- 提醒--结束 --}}
-   </div>
+    </div>
+  </div>
 </div>
 @endsection
 

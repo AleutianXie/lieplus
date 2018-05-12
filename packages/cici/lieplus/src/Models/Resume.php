@@ -8,6 +8,7 @@ use Cici\Lieplus\Models\Region;
 use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,8 +17,11 @@ use Illuminate\Support\Collection;
 class Resume extends Base
 {
     use UserTrait;
+    use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    protected $appends = ['serial_number', 'feedback'];
 
     public function __construct(array $attributes = [])
     {
@@ -139,22 +143,27 @@ class Resume extends Base
         return $this->jobs()->withTimestamps()->withPivotValue($attributes)->saveMany($jobs);
     }
 
-    public function getprovinceAttribute($value)
+    public function getProvinceAttribute($value)
     {
         $region = Region::getInstance();
         return $region->getNameByAdcode($value);
     }
 
-    public function getcityAttribute($value)
+    public function getCityAttribute($value)
     {
         $region = Region::getInstance();
         return $region->getNameByAdcode($value);
     }
 
-    public function getcountyAttribute($value)
+    public function getCountyAttribute($value)
     {
         $region = Region::getInstance();
         return $region->getNameByAdcode($value);
+    }
+
+    public function getFeedbackAttribute()
+    {
+        return $this->feedbacks()->latest()->first()->text ?? '';
     }
 
     public function scopeMobile($query, $mobile)
