@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\AssignCustomer;
-use App\Customer;
-use App\Region;
 use App\User;
+use Cici\Lieplus\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\Datatables;
 
 class CustomerController extends Controller
 {
@@ -19,16 +17,14 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $title = '我的客户';
         $users = User::role('customer')->get();
-        return view('customer.index', compact('title', 'users'));
+        return view('Lieplus::customer.index', compact('users'));
     }
 
     public function all()
     {
-        $title = '猎加客户';
         $users = User::role('customer')->get();
-        return view('customer.all', compact('title', 'users'));
+        return view('Lieplus::customer.all', compact('users'));
     }
 
     public function add(Request $request)
@@ -109,28 +105,40 @@ class CustomerController extends Controller
         }
     }
 
-    public function search(Request $request, $type)
+    public function search(Request $request)
     {
-        $customers = collect([]);
-        if ('my' == $type) {
-            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
-            $customers = collect(array_pluck($assignCustomers, 'customer'));
+        $filter = $request->input();
+        if (!empty($filter['t']) && $filter['t'] == 'my') {
+            $model = $request->user()->customers()->getQuery();
+        } else {
+            $model = Customer::query();
         }
-        if ('all' == $type) {
-            $customers = Customer::with('jobs')->with('project')->where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property']);
-        }
-        $cids = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get(['cid']);
-        $cids = array_pluck($cids, 'cid');
-
-        foreach ($customers as $key => $customer) {
-            $customers[$key] = $customer->with('jobs')->with('project')->with('assigned')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property', 'closed', 'created_at']);
-            $customers[$key]['jobCount'] = count($customer->jobs);
-            $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
-            $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
-            $customers[$key]['ismine'] = in_array($customer->id, $cids);
-        }
-        return Datatables::of($customers->sortByDesc('created_at'))->make();
+        $this->getModel($model, $filter);
+        return Datatables::eloquent($model)->make(true);
     }
+
+    // public function search(Request $request, $type)
+    // {
+    //     $customers = collect([]);
+    //     if ('my' == $type) {
+    //         $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+    //         $customers = collect(array_pluck($assignCustomers, 'customer'));
+    //     }
+    //     if ('all' == $type) {
+    //         $customers = Customer::with('jobs')->with('project')->where(['show' => 1])->get(['id', 'sn', 'name', 'industry', 'level', 'property']);
+    //     }
+    //     $cids = AssignCustomer::where(['uid' => Auth::id(), 'show' => 1])->get(['cid']);
+    //     $cids = array_pluck($cids, 'cid');
+
+    //     foreach ($customers as $key => $customer) {
+    //         $customers[$key] = $customer->with('jobs')->with('project')->with('assigned')->where(['id' => $customer->id])->first(['id', 'sn', 'name', 'industry', 'level', 'property', 'closed', 'created_at']);
+    //         $customers[$key]['jobCount'] = count($customer->jobs);
+    //         $customers[$key]['openCount'] = count($customer->jobs->where('closed', 0));
+    //         $customers[$key]['closedCount'] = count($customer->jobs->where('closed', 1));
+    //         $customers[$key]['ismine'] = in_array($customer->id, $cids);
+    //     }
+    //     return Datatables::of($customers->sortByDesc('created_at'))->make();
+    // }
 
     public function pause(Request $request, $id)
     {
@@ -220,5 +228,20 @@ class CustomerController extends Controller
         $users = User::role('customer')->get();
 
         return view('customer.assign', compact('cid', 'aid', 'users'));
+    }
+
+    private function getModel(&$model, $filter = [])
+    {
+        if (!empty($filter['name'])) {
+            $model->where('name', 'like', '%'.$filter['name'].'%');
+        }
+        if (!empty($filter['industry']) && intval($filter['industry']) > 0) {
+            $model->where('industry', $filter['industry']);
+        }
+        if (!empty($filter['property']) && intval($filter['property']) > 0) {
+            $model->where('property', $filter['property']);
+        }
+        $model->select('customers.*');
+        $model->latest('customers.created_at');
     }
 }

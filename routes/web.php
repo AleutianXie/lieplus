@@ -46,6 +46,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/job/add/', 'ResumeController@addjob')->name('resume.addjob');
     //Route::get('/search/{type}', 'ResumeController@search')->where(['type' => 'my|all|job'])->name('resume.search');
     Route::post('/feedback', 'FeedbackController@add');
+
+    // customer
+
+    Route::get('customer/search', 'CustomerController@search')->name('customer.search');
 });
 
 Route::group(['prefix' => 'alert',  'middleware' => ['auth']], function ()
@@ -67,7 +71,7 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth']], function ()
     Route::match(['get', 'post'], '/add', 'CustomerController@add');
     Route::post('/edit', 'CustomerController@edit');
     Route::post('/check', 'CustomerController@isExist');
-    Route::get('/search/{type}', 'CustomerController@search')->where(['type' => 'my|all'])->name('customer.search');
+
     Route::post('/pause/{jid}', 'CustomerController@pause')->where('id', '[0-9]+')->name('customer.pause');
     Route::post('/open/{jid}', 'CustomerController@open')->where('id', '[0-9]+')->name('customer.open');
     Route::post('/assign', 'CustomerController@assign')->name('customer.assign');

@@ -94,7 +94,7 @@
                 <li @if(starts_with(Request::fullUrl(), route('customer.all'))) class="active" @endif>
                     <a href="{{ route('customer.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        猎加客户
+                        金领航客户
                     </a>
                     <b class="arrow"></b>
                 </li>

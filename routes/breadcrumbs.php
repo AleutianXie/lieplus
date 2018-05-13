@@ -71,7 +71,7 @@ Breadcrumbs::register('job', function ($breadcrumbs)
 Breadcrumbs::register('job.all', function ($breadcrumbs)
 {
     $breadcrumbs->parent('job');
-    $breadcrumbs->push('猎加职位', route('job.all'));
+    $breadcrumbs->push('金领航职位', route('job.all'));
 });
 // Home > Job > index
 Breadcrumbs::register('job.index', function ($breadcrumbs)
@@ -132,7 +132,7 @@ Breadcrumbs::register('customer.index', function ($breadcrumbs)
 Breadcrumbs::register('customer.all', function ($breadcrumbs)
 {
     $breadcrumbs->parent('customer');
-    $breadcrumbs->push('猎加客户', route('customer.all'));
+    $breadcrumbs->push('金领航客户', route('customer.all'));
 });
 
 // Home > Customer > detail

@@ -5,7 +5,7 @@
 @section('content')
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
-  <div class="well well-sm">
+  <div class="well well-sm" style="margin-bottom: 10px;">
     <form action="" class="form-inline">
       <input type="text" id="name" name="name" value="{{ !empty($filter['name']) ? $filter['name'] : '' }}" placeholder="姓名" class="form-control">
       <input type="text" id="mobile" name="mobile" value="{{ !empty($filter['mobile']) ? $filter['mobile'] : '' }}" placeholder="手机号" class="form-control">
