@@ -120,6 +120,7 @@ class CustomersTableSeeder extends Seeder
             ];
 
             $customer = Customer::create($attributes);
+            $customer->assignUser(['created_by' => 1, 'updated_by' => 1], 1);
 
             $departmentNames = $faker->randomElements($departments, 10);
 

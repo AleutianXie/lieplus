@@ -7,9 +7,9 @@
 <div class="row">
   <div class="well well-sm" style="margin-bottom: 10px;">
     <form action="" class="form-inline">
-      <input type="text" id="name" name="name" value="{{ !empty($filter['name']) ? $filter['name'] : '' }}" placeholder="姓名" class="form-control">
-      <input type="text" id="mobile" name="mobile" value="{{ !empty($filter['mobile']) ? $filter['mobile'] : '' }}" placeholder="手机号" class="form-control">
-      <input type="text" id="email" name="email" placeholder="邮箱" class="form-control">
+      <input type="text" id="name" name="name" value="{{ !empty($filter['name']) ? $filter['name'] : '' }}" placeholder="公司名称" class="form-control">
+      <input type="text" id="industry" name="industry" value="{{ !empty($filter['mobile']) ? $filter['mobile'] : '' }}" placeholder="手机号" class="form-control">
+      <input type="text" id="property" name="property" placeholder="邮箱" class="form-control">
       <button type="submit" class="btn btn-white btn-info btn-bold">
         <i class="ace-icon fa fa-search nav-search-icon green"></i>搜索
       </button>
@@ -39,6 +39,26 @@
 
 @section('js')
 <script type="text/javascript">
+  var industries = [];
+  var industry_dt = [];
+  $.each({!! json_encode(config('lieplus.industry')) !!}, function(k, v) {
+    industry_dt[k] = v;
+    industries.push({id: k, text: v});
+  });
+  var properties = [];
+  var property_dt = [];
+  $.each({!! json_encode(config('lieplus.companyproperty')) !!}, function(k, v) {
+    property_dt[k] = v;
+    properties.push({id: k, text: v});
+  });
+  $('#industry').select2({
+    data: industries,
+    placeholder: '行业'
+  });
+  $('#property').select2({
+    data: properties,
+    placeholder: '公司类型'
+  });
   // datatable配置
   var table = $('table').dataTable({
     processing: true,
@@ -56,7 +76,7 @@
         data: 'serial_number',
         render: function (data, type, row)
         {
-            return "<a href='{{ url('/customer')}}/" + row.id+ "'>" + data +"</a>";
+          return "<a href='{{ url('/customer')}}/" + row.id+ "'>" + data +"</a>";
         }
       },
       {
@@ -66,6 +86,10 @@
       {
         title: '行业',
         data: 'industry',
+        render: function (data, type, row)
+        {
+          return industry_dt[data];
+        }
       },
       {
         title: '职位数',
@@ -73,7 +97,11 @@
       },
       { 
         title: '公司类型',
-        data: 'property'
+        data: 'property',
+        render: function (data, type, row)
+        {
+          return property_dt[data];
+        }
       },
       {
         title: '客户顾问',
@@ -97,7 +125,7 @@
         // },
       }
     ]
-  })
+  });
 
   $(document).on('submit', '.form-inline', function (e) {
     var target = $(e.target);
