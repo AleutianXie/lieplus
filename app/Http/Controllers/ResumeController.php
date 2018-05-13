@@ -75,27 +75,6 @@ class ResumeController
     public function detail(Request $request, $id, $tab = 'index')
     {
         $resume = Resume::findOrFail($id);
-
-        $resume->removeUser(1);
-        // dd($resume->assignJob(['created_by' => $request->user()->id, 'updated_by' => $request->user()->id], [1,2,3] ));
-        // $feedbacks_obj = $resume->getFeedbacks()->where(['rid' => $id, 'show' => 1])->orderBy('created_at', 'desc')->get(['text', 'creater', 'created_at']);
-        // $feedbacks = array();
-
-        // foreach ($feedbacks_obj as $fitem) {
-        //     $keys = explode(' ', $fitem->created_at);
-
-        //     $date = $keys[0];
-        //     if ($keys[0] == date("Y-m-d")) {
-        //         $date = '今天';
-        //     } elseif ($keys[0] == date("Y-m-d", strtotime("-1 day"))) {
-        //         $date = '昨天';
-        //     }
-
-        //     $feedbacks[$date][] = array(
-        //         'text'    => $fitem->text,
-        //         'creater' => Auth::user($fitem->creater)->name,
-        //         'ctime'   => $keys[1]);
-        // }
         return view('Lieplus::resume.detail', compact('resume', 'tab'));
     }
 

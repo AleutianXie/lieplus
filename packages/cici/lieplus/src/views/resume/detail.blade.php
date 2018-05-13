@@ -146,54 +146,61 @@
 
         {{-- 所有反馈信息--开始 --}}
         <div id="resume-tab-3" @if ('feedback' == $tab) class="tab-pane fade in active" @else class="tab-pane fade" @endif>
-            <h4 class="blue">
-                <i class="orange ace-icon fa fa-comments bigger-110"></i>
-                所有反馈信息
-            </h4>
+        <div class="table-header">
+          <i class="ace-icon fa fa-comments bigger-110"></i>
+          所有反馈信息
+        </div>
+        <div class="space-2"></div>
 
-            <div class="space-8"></div>
-
-{{--             <div class="row">
-                <div class="col-xs-12">
-                    <!-- PAGE CONTENT BEGINS -->
-                    @foreach($feedbacks as $key => $value)
-                    <div id="timeline-2" class="">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                                <div class="timeline-container timeline-style2">
-                                    <span class="timeline-label">
-                                        <b>{{ $key }}</b>
-                                    </span>
-                                    @foreach($value as $feedback)
-                                    <div class="timeline-items">
-                                        <div class="timeline-item clearfix">
-                                            <div class="timeline-info">
-                                                <span class="timeline-date">{{ $feedback['ctime'] }}</span>
-
-                                                <i class="timeline-indicator btn btn-info no-hover"></i>
-                                            </div>
-
-                                            <div class="widget-box transparent">
-                                                <div class="widget-body">
-                                                    <div class="widget-main no-padding">
-                                                        <span class="bigger-110">
-                                                            <a href="#" class="purple bolder">{{ $feedback['creater'] }}</a>
-                                                            <i class="ace-icon fa fa-comment-o grey"></i>
-                                                            {{ $feedback['text'] }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div><!-- /.timeline-items -->
-                                    @endforeach
-                                </div><!-- /.timeline-container -->
-                            </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            @foreach($resume->feedbacks->groupBy(function ($item, $key) {
+              return substr($item->created_at, 0, 10);
+            }); as $key => $group)
+            <div id="timeline-2" class="">
+              <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                  <div class="timeline-container timeline-style2">
+                    <span class="timeline-label">
+                      @if ($key == date('Y-m-d'))
+                        <b>今天</b>
+                      @endif
+                      @if ($key == date("Y-m-d", strtotime("-1 day")))
+                        <b>昨天</b>
+                      @else
+                        <b>{{ $key }}</b>
+                      @endif
+                    </span>
+                    @foreach ($group as $feedback)
+                    <div class="timeline-items">
+                      <div class="timeline-item clearfix">
+                        <div class="timeline-info">
+                          <span class="timeline-date">{{ substr($feedback->created_at, -8) }}</span>
+                          <i class="timeline-indicator btn btn-info no-hover"></i>
                         </div>
-                    </div>
+                        <div class="widget-box transparent">
+                          <div class="widget-body">
+                            <div class="widget-main no-padding">
+                              <span class="bigger-110">
+                                <a href="#" class="purple bolder">{{ Auth::User($feedback->created_by)->name }}</a>
+                                <i class="ace-icon fa fa-comment-o grey"></i>
+                                {{ $feedback->text }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- /.timeline-items -->
                     @endforeach
-                </div><!-- /.col -->
-            </div> --}}
+                  </div><!-- /.timeline-container -->
+                </div>
+              </div>
+            </div>
+            @endforeach
+          <!-- /.col -->
+          </div>
+        </div>
         </div>
         {{-- 所有反馈信息--结束 --}}
 
