@@ -2,14 +2,25 @@
 
 @section('title', '我的客户')
 
+@section('css')
+<style>
+  .select2-selection__clear {
+    cursor: pointer;
+    float: right;
+    margin-right: 40px;
+    font-weight: bold
+  }
+</style>
+@endsection
+
 @section('content')
 <!-- PAGE CONTENT BEGINS -->
 <div class="row">
   <div class="well well-sm" style="margin-bottom: 10px;">
     <form action="" class="form-inline">
       <input type="text" id="name" name="name" value="{{ !empty($filter['name']) ? $filter['name'] : '' }}" placeholder="公司名称" class="form-control">
-      <input type="text" id="industry" name="industry" value="{{ !empty($filter['mobile']) ? $filter['mobile'] : '' }}" placeholder="手机号" class="form-control">
-      <input type="text" id="property" name="property" placeholder="邮箱" class="form-control">
+      <input type="text" id="industry" name="industry" class="form-control">
+      <input type="text" id="property" name="property" class="form-control">
       <button type="submit" class="btn btn-white btn-info btn-bold">
         <i class="ace-icon fa fa-search nav-search-icon green"></i>搜索
       </button>
@@ -53,17 +64,26 @@
   });
   $('#industry').select2({
     data: industries,
-    placeholder: '行业'
+    placeholder: '行业',
+    allowClear: true
   });
+  @if (!empty($filter['industry']))
+    $('#industry').val({{ $filter['industry'] }}).trigger('change');
+  @endif
   $('#property').select2({
     data: properties,
-    placeholder: '公司类型'
+    placeholder: '公司类型',
+    allowClear: true,
+    width: 250
   });
+  @if (!empty($filter['property']))
+    $('#property').val({{ $filter['property'] }}).trigger('change');
+  @endif
   // datatable配置
   var table = $('table').dataTable({
     processing: true,
     serverSide: true,
-    ajax: '{{ route('customer.search') }}?t=my',
+    ajax: '{{ route('customer.search') }}?t=my&' + $('.form-inline').serialize(),
     language: {
       url: '{{ asset('static/localisation/Chinese.json') }}'
     },

@@ -15,16 +15,18 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::role('customer')->get();
-        return view('Lieplus::customer.index', compact('users'));
+        $users  = User::role('customer')->get();
+        $filter = $request->input();
+        return view('Lieplus::customer.index', compact('users', 'filter'));
     }
 
-    public function all()
+    public function all(Request $request)
     {
-        $users = User::role('customer')->get();
-        return view('Lieplus::customer.all', compact('users'));
+        $users  = User::role('customer')->get();
+        $filter = $request->input();
+        return view('Lieplus::customer.all', compact('users', 'filter'));
     }
 
     public function add(Request $request)
