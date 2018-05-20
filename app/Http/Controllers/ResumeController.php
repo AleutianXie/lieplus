@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreResumePost;
+use Cici\Lieplus\Models\Job;
 use Cici\Lieplus\Models\Region;
 use Cici\Lieplus\Models\Resume;
 use DB;
@@ -59,9 +60,13 @@ class ResumeController
     /**
      * Show job library
      */
-    public function job(Request $request)
+    public function job(Request $request, $id = 0)
     {
-        return view('Lieplus::resume.job');
+        if (empty($id)) {
+            return view('Lieplus::resume.job');
+        }
+
+        return view('Lieplus::resume.job_resume', compact('id'));
     }
 
     /**
@@ -84,6 +89,7 @@ class ResumeController
         if (!empty($filter['t']) && $filter['t'] == 'my') {
             $model = $request->user()->resumes()->getQuery();
         } elseif (!empty($filter['t']) && $filter['t'] == 'job') {
+            $model = Job::findOrFail($filter['id'])->resumes()->getQuery();
         } else {
             $model = Resume::query();
         }

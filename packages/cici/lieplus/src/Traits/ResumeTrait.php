@@ -14,7 +14,7 @@ trait ResumeTrait
     {
         return $this->belongsToMany(
             'Cici\Lieplus\Models\Resume',
-            'user_has_resumes'
+            snake_case(class_basename(static::class)).'_has_resumes'
         );
     }
 

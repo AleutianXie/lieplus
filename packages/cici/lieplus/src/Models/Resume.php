@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Resume model instance
@@ -177,5 +178,12 @@ class Resume extends Base
     protected static function getResumes(): Collection
     {
         return app(Resume::class)->get();
+    }
+
+    public function getIsMineAttribute()
+    {
+        $user_ids = $this->users()->pluck('user_id')->toArray();
+
+        return in_array(Auth::id(), $user_ids);
     }
 }

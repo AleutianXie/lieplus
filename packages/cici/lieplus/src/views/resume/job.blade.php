@@ -144,7 +144,7 @@
         data: 'serial_number',
         render: function (data, type, row)
         {
-          return "<a href='{{ url('/customer')}}/" + row.id+ "'>" + data +"</a>";
+          return "<a href='{{ url('/resume/job')}}/" + row.id+ "'>" + data +"</a>";
         }
       },
       {
@@ -153,7 +153,7 @@
       },
       {
         title: '客户顾问',
-        data: null,
+        data: 'department.customer.adviser',
       },
       {
         title: '职位名称',
