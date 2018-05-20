@@ -4,7 +4,9 @@ namespace Cici\Lieplus\Models;
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Cici\Lieplus\Traits\ResumeTrait;
 use Cici\Lieplus\Traits\UserTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Job model instance
@@ -13,6 +15,8 @@ class Job extends Base
 {
     use ResumeTrait;
     use UserTrait;
+
+    protected $appends = ['serial_number', 'is_mine'];
 
     public function __construct(array $attributes = [])
     {
@@ -65,7 +69,7 @@ class Job extends Base
      */
     public function department() : BelongsTo
     {
-        return $this->belongsTo('Cici\Liplus\Models\Department');
+        return $this->belongsTo('Cici\Lieplus\Models\Department');
     }
 
     /**
@@ -74,5 +78,21 @@ class Job extends Base
     protected static function getJobs(): Collection
     {
         return app(Job::class)->get();
+    }
+
+    public function getIsMineAttribute()
+    {
+        $user_ids = $this->users()->pluck('user_id')->toArray();
+
+        return in_array(Auth::id(), $user_ids);
+    }
+
+    public function getAdviserAttribute()
+    {
+        $user_ids = $this->users()->pluck('user_id')->map(function ($item) {
+            return Auth::user($item)->name;
+        });
+
+        return $user_ids->all();
     }
 }

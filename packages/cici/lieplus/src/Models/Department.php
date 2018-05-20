@@ -3,6 +3,7 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 /**
@@ -38,12 +39,20 @@ class Department extends Base
         ));
     }
 
-   /**
+    /**
      * Get the customer that owns the department.
      */
     public function customer() : BelongsTo
     {
-        return $this->belongsTo('Cici\Liplus\Models\Customer');
+        return $this->belongsTo('Cici\Lieplus\Models\Customer');
+    }
+
+    /**
+     * Get the job that belongs to the department.
+     */
+    public function job() : HasOne
+    {
+        return $this->hasOne('Cici\Liplus\Models\Job');
     }
 
     /**

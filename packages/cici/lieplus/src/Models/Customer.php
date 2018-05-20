@@ -6,6 +6,7 @@ use Cici\Lieplus\Models\Department;
 use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Customer model instance
@@ -22,6 +23,7 @@ class Customer extends Base
     }
 
     public $guarded = ['id'];
+    protected $appends = ['serial_number', 'is_mine', 'adviser'];
 
     public static function create(array $attributes)
     {
@@ -110,5 +112,21 @@ class Customer extends Base
     protected static function getCustomers(): Collection
     {
         return app(Customer::class)->get();
+    }
+
+    public function getIsMineAttribute()
+    {
+        $user_ids = $this->users()->pluck('user_id')->toArray();
+
+        return in_array(Auth::id(), $user_ids);
+    }
+
+    public function getAdviserAttribute()
+    {
+        $user_ids = $this->users()->pluck('user_id')->map(function ($item) {
+            return Auth::user($item)->name;
+        });
+
+        return implode($user_ids->all());
     }
 }

@@ -1,7 +1,6 @@
 @extends('Lieplus::layouts.cici')
 
-@section('title', '我的职位简历库')
-
+@section('title', '金领航职位')
 @section('css')
 <style>
   .select2-selection__clear {
@@ -33,7 +32,7 @@
 
 <div class="row">
   <div class="table-header">
-    职位简历库列表
+    职位列表
   </div>
 
   <!-- 客户列表--开始 -->
@@ -131,7 +130,7 @@
   var table = $('table').dataTable({
     processing: true,
     serverSide: true,
-    ajax: '{{ route('job.search') }}?t=my&' + $('.form-inline').serialize(),
+    ajax: '{{ route('job.search') }}?' + $('.form-inline').serialize(),
     language: {
       url: '{{ asset('static/localisation/Chinese.json') }}'
     },
@@ -144,7 +143,7 @@
         data: 'serial_number',
         render: function (data, type, row)
         {
-          return "<a href='{{ url('/customer')}}/" + row.id+ "'>" + data +"</a>";
+          return "<a href='{{ url('/job')}}/" + row.id+ "'>" + data +"</a>";
         }
       },
       {
@@ -153,7 +152,7 @@
       },
       {
         title: '客户顾问',
-        data: null,
+        data: 'department.customer.adviser',
       },
       {
         title: '职位名称',
@@ -217,7 +216,7 @@
 
   $(document).on('submit', '.form-inline', function (e) {
     var target = $(e.target);
-    table.api().ajax.url('{{ route('job.search') }}?t=my' + '&' + target.serialize()).load();
+    table.api().ajax.url('{{ route('job.search') }}?' + target.serialize()).load();
     e.preventDefault();
   });
 </script>

@@ -21,7 +21,7 @@ class Resume extends Base
 
     protected $dates = ['deleted_at'];
 
-    protected $appends = ['serial_number', 'feedback'];
+    protected $appends = ['serial_number', 'feedback', 'is_mine'];
 
     public function __construct(array $attributes = [])
     {

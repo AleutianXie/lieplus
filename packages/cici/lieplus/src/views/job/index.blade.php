@@ -1,6 +1,6 @@
 @extends('Lieplus::layouts.cici')
 
-@section('title', '我的职位简历库')
+@section('title', '我的职位')
 
 @section('css')
 <style>
@@ -33,7 +33,7 @@
 
 <div class="row">
   <div class="table-header">
-    职位简历库列表
+    职位列表
   </div>
 
   <!-- 客户列表--开始 -->
@@ -144,7 +144,7 @@
         data: 'serial_number',
         render: function (data, type, row)
         {
-          return "<a href='{{ url('/customer')}}/" + row.id+ "'>" + data +"</a>";
+          return "<a href='{{ url('/job')}}/" + row.id+ "'>" + data +"</a>";
         }
       },
       {
@@ -153,7 +153,7 @@
       },
       {
         title: '客户顾问',
-        data: null,
+        data: 'department.customer.adviser',
       },
       {
         title: '职位名称',

@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Traits\hasRole;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\Datatables;
 
 class JobController extends Controller
 {
@@ -17,13 +17,10 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $title = '我的职位';
-        $route_name = 'job.index';
-        $type = 'my';
-
-        return view('job.index', compact('title', 'route_name', 'type'));
+        $filter = $request->input();
+        return view('Lieplus::job.index', compact('filter'));
     }
 
     /**
@@ -31,13 +28,10 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function all()
+    public function all(Request $request)
     {
-        $title = '猎帮职位';
-        $route_name = 'job.all';
-        $type = 'all';
-
-        return view('job.index', compact('title', 'route_name', 'type'));
+        $filter = $request->input();
+        return view('Lieplus::job.all', compact('filter'));
     }
 
     public function add(Request $request)
@@ -145,31 +139,21 @@ class JobController extends Controller
     public function detail(Request $request, $id)
     {
         $job = Job::findOrFail($id);
+        dd($job, $job->is_mine, $job->department->customer->adviser);
 
         return view('Lieplus::job.detail', compact('job'));
     }
 
-    public function search(Request $request, $type)
+    public function search(Request $request)
     {
-        $jobs = new Collection([]);
-        if ('my' == $type)
-        {
-            $assignCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
-            foreach ($assignCustomers as $assignCustomer)
-            {
-                $jobs = $jobs->merge($assignCustomer->customer->jobs);
-            }
+        $filter = $request->input();
+        if (!empty($filter['t']) && $filter['t'] == 'my') {
+            $model = $request->user()->jobs()->getQuery();
+        } else {
+            $model = Job::query();
         }
-        if ('all' == $type)
-        {
-            $jobs = Job::with('customer')->with('line')->where(['show' => 1])->get(['id', 'sn', 'cid', 'name', 'workyears', 'gender', 'majors', 'degree', 'unified', 'closed', 'created_at']);
-        }
-
-        foreach ($jobs as $key => $job)
-        {
-            $jobs[$key]['isMine'] = $job->isMine;
-        }
-        return Datatables::of($jobs->sortByDesc('created_at'))->make();
+        $this->getModel($model, $filter);
+        return Datatables::eloquent($model)->make(true);
     }
 
     public function pause(Request $request, $id)
@@ -202,5 +186,45 @@ class JobController extends Controller
             return json_encode(['code' => 0, 'msg' => '操作成功！']);
         }
         return json_encode(['code' => 1, 'msg' => '操作失败！']);
+    }
+
+    private function getModel(&$model, $filter = [])
+    {
+        if (!empty($filter['customer'])) {
+            $model->whereHas('department', function ($query) use ($filter) {
+                $query->whereHas('customer', function ($query) use ($filter) {
+                    $query->where('name', 'like', '%'.$filter['customer']);
+                });
+            });
+        }
+        if (!empty($filter['name'])) {
+            $model->where('name', 'like', '%'.$filter['name'].'%');
+        }
+        if (!empty($filter['work_years'])) {
+            $model->where('work_years', $filter['work_years']);
+        }
+        if (!empty($filter['gender'])) {
+            $model->where('gender', $filter['gender']);
+        }
+        if (!empty($filter['majors'])) {
+            $model->where('majors', $filter['majors']);
+        }
+        if (!empty($filter['degree'])) {
+            $model->where('degree', $filter['degree']);
+        }
+        if (!empty($filter['unified'])) {
+            $model->where('unified', $filter['unified']);
+        }
+        $model->with([
+            'department' => function ($query) {
+                $query->with([
+                    'customer' => function ($query) {
+                        $query->select(['id', 'name']);
+                    }])
+                ->select(['id', 'customer_id']);
+            }
+        ]);
+        $model->select('jobs.*');
+        $model->latest('jobs.created_at');
     }
 }

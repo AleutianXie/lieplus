@@ -173,7 +173,7 @@
                 <li  @if(starts_with(Request::fullUrl(), route('job.all'))) class="active" @endif>
                 <a href="{{ route('job.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        猎加职位
+                        金领航职位
                     </a>
 
                     <b class="arrow"></b>

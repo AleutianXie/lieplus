@@ -3,6 +3,7 @@
 namespace App;
 
 use Cici\Lieplus\Traits\CustomerTrait;
+use Cici\Lieplus\Traits\JobTrait;
 use Cici\Lieplus\Traits\ResumeTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,6 +15,7 @@ class User extends Authenticatable
     use HasRoles;
     use ResumeTrait;
     use CustomerTrait;
+    use JobTrait;
 
     /**
      * The attributes that are mass assignable.
