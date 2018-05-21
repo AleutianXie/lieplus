@@ -16,7 +16,7 @@ class Job extends Base
     use ResumeTrait;
     use UserTrait;
 
-    protected $appends = ['serial_number', 'is_mine'];
+    protected $appends = ['serial_number', 'is_mine', 'resume_count'];
 
     public function __construct(array $attributes = [])
     {
@@ -94,5 +94,10 @@ class Job extends Base
         });
 
         return $user_ids->all();
+    }
+
+    public function getResumeCountAttribute()
+    {
+        return $this->resumes()->count();
     }
 }
