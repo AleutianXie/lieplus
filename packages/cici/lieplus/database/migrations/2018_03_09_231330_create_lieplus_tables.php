@@ -16,9 +16,9 @@ class CreateLieplusTables extends Migration
         // resumes table
         Schema::create('resumes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 30)->index();
-            $table->string('mobile', 11)->unique();
-            $table->string('email', 50)->unique();
+            $table->string('name', 100)->index();
+            $table->string('mobile', 50);
+            $table->string('email', 100);
             $table->tinyInteger('gender')->default(0);
             $table->string('birthdate', 10);
             $table->string('start_work_date', 10);
@@ -27,7 +27,7 @@ class CreateLieplusTables extends Migration
             $table->char('province', 6)->index()->nullable();
             $table->char('city', 6)->index()->nullable();
             $table->char('county', 6)->index()->nullable();
-            $table->string('position', 20);
+            $table->string('position', 100);
             $table->string('industry', 20);
             $table->tinyInteger('salary')->default(0);
             $table->string('feedback')->nullable();

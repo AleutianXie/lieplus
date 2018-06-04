@@ -20,6 +20,7 @@ class ResumeController
      */
     public function index(Request $request)
     {
+
         return view('Lieplus::resume.index');
     }
 
@@ -33,8 +34,8 @@ class ResumeController
         if ($request->isMethod('POST')) {
             try {
                 $data = $request->input();
-                $data['created_by'] = $request->user();
-                $data['updated_by'] = $request->user();
+                $data['created_by'] = $request->user()->id;
+                $data['updated_by'] = $request->user()->id;
                 DB::beginTransaction();
                 $resume = Resume::create($data);
                 // todo: add my library

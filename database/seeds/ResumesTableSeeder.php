@@ -14,9 +14,62 @@ class ResumesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+/*                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+$reader->setReadDataOnly(true);
+$reader->setLoadSheetsOnly("简历列表");
+$spreadsheet = $reader->load(storage_path('resumes/24.xls'));
+$worksheet = $spreadsheet->getActiveSheet();
+// Get the highest row and column numbers referenced in the worksheet
+$highestRow = $worksheet->getHighestRow(); // e.g. 10
+// $highestRow = 5; // e.g. 10
+$highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+$highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+
+for ($row = 1; $row <= $highestRow; ++$row) {
+    if($row == 1)
+        continue;
+    $id = trim($worksheet->getCellByColumnAndRow(1, $row)->getValue());
+    $name = trim($worksheet->getCellByColumnAndRow(2, $row)->getValue());
+    $gender = trim($worksheet->getCellByColumnAndRow(3, $row)->getValue()) == '女' ? 2 : 1;
+    $degree_text = trim($worksheet->getCellByColumnAndRow(5, $row)->getValue());
+    $degree = 2;
+    if ($degree_text == '大专') {
+        $degree = 1;
+    }
+    if ($degree_text == '硕士') {
+        $degree = 3;
+    }
+    if ($degree_text == '博士') {
+        $degree = 4;
+    }
+    $mobile = trim($worksheet->getCellByColumnAndRow(9, $row)->getValue());
+    $email = trim($worksheet->getCellByColumnAndRow(10, $row)->getValue());
+    $others = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+
+    $birthdate = '1970-01-01';
+    $start_work_date = '2000-01-01';
+
+    $service_status = 1;
+    $province = '110000';
+    $city = '110100';
+    $county = '110105';
+    $position = $name;
+    $industry = '互联网软件';
+    $salary = 1;
+    $created_by = 1;
+    $updated_by = 1;
+
+    $attributes = compact('name', 'gender', 'degree', 'mobile', 'email', 'others', 'birthdate', 'start_work_date', 'service_status', 'city', 'province', 'county', 'position', 'industry', 'salary', 'created_by', 'updated_by');
+
+    if (!empty($name)) {
+        $resume = Resume::create($attributes);
+    }
+}
+        $this->command->line(PHP_EOL.'OK!'.PHP_EOL);
+        exit;
+        */
+        // 随机生成100份简历
         $faker = Factory::create('zh_CN');
-        $resumes = [];
         $positions = [
             '人事部经理',
             '热处理工程师',
@@ -83,36 +136,18 @@ class ResumesTableSeeder extends Seeder
             '农林牧渔'
         ];
         $this->command->line('随机生成1000份简历...'.PHP_EOL);
-        $bar = $this->command->getOutput()->createProgressBar(1000);
-        for ($i = 0; $i < 1000; $i++) {
-            $dt = $faker->dateTime('-30 years');
-            $birthdate = $faker->date('Y-m-d', $dt);
-            $carbon = Carbon::instance($dt);
-            $carbon->addYears(20);
-            $start_work_date = $faker->dateTimeBetween($carbon, '-2 years')->format('Y-m-d');
-            $resume = [
-                'name' => $faker->unique()->name,
-                'mobile' => $faker->unique()->phoneNumber,
-                'email' => $faker->unique()->email,
-                'gender' => $faker->numberBetween(1, 2),
-                'birthdate' => $birthdate,
-                'start_work_date' => $start_work_date,
-                'degree' => $faker->numberBetween(1, 4),
-                'service_status' => $faker->numberBetween(1, 2),
-                'province' => '110000',
-                'city' => '110100',
-                'county' => '110105',
-                'position' => $faker->randomElements($positions, $count = 1)[0],
-                'industry' => $faker->randomElements($industries, $count = 1)[0],
-                'salary' => $faker->numberBetween(1, 5),
-                'others' => addslashes($faker->randomHtml()),
-                'created_by' => 1,
-                'updated_by' => 1
-            ];
-            Resume::create($resume);
-            $bar->advance();
+        foreach (Resume::all() as $resume) {
+            //$this->command->line('给简历生成10条反馈...'.PHP_EOL);
+            // $feedbacks = [];
+            // foreach ($faker->sentences(10) as $sentence) {
+            //     $feedbacks[] = ['text' => $sentence, 'created_by' => 1];
+            // }
+            // $resume->postFeedbacks($feedbacks);
+            $resume->assignUser(['created_by' => 1, 'updated_by' => 1], 1);
+            // $resume->removeUser(1);
+            // dd('OK');
         }
-        $bar->finish();
-        $this->command->line('完成！'.PHP_EOL);
+        
+        $this->command->line(PHP_EOL.'完成！'.PHP_EOL);
     }
 }

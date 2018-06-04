@@ -14,6 +14,47 @@ class ResumesTableSeeder extends Seeder
      */
     public function run()
     {
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+$reader->setReadDataOnly(true);
+$reader->setLoadSheetsOnly("简历列表");
+$spreadsheet = $reader->load('/home/vagrant/cici/lieplus/lieplus_01.xls');
+$worksheet = $spreadsheet->getActiveSheet();
+// Get the highest row and column numbers referenced in the worksheet
+$highestRow = $worksheet->getHighestRow(); // e.g. 10
+$highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+$highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+
+for ($row = 1; $row <= $highestRow; ++$row) {
+    if($row == 1)
+        continue;
+    $id = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+    $name = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+    $gender = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+    $degree = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+    $mobile = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+    $email = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+    $others = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+
+    $birthdate = '1970-01-01';
+    $start_work_date = '2000-01-01';
+
+    $service_status = 1;
+    $province = '110000';
+    $city = '110100';
+    $county = '110105';
+    $position = $name;
+    $industry = '互联网软件';
+    $salary = 1;
+    $created_by = 1;
+    $updated_by = 1;
+
+    $attributes = compact('name', 'gender', 'degree', 'mobile', 'email', 'others', 'birthdate', 'start_work_date', 'service_status', 'city', 'province', 'county', 'position', 'industry', 'salary', 'created_by', 'updated_by');
+
+    $resume = Resume::create($attributes);
+
+}
+        $this->command->line(PHP_EOL.'OK!'.PHP_EOL);
+
         // 随机生成100份简历
         $faker = Factory::create('zh_CN');
         $positions = [
