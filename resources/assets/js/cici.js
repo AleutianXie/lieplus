@@ -15,5 +15,6 @@ require('select2/dist/js/select2.full');
 // require('bootstrap-wysiwyg');
 require('datatables.net');
 require('datatables.net-bs');
+require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min');
 require('./ace');
 require('./ace-elements');

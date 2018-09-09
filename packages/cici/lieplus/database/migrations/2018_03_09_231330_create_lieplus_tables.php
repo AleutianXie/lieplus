@@ -149,9 +149,10 @@ class CreateLieplusTables extends Migration
         Schema::create('lines', function (Blueprint $table) {
             $table->increments('id');
             // todo: 指定流水线，专属流水线，普通流水线，
-            $table->unsignedInteger('exclusive')->nullable();
-            $table->foreign('exclusive')->references('id')->on('users');
-            $table->enum('priority', ['1' => '普通', '2' => '紧急']);
+            $table->unsignedTinyInteger('exclusive')->comment('1:普通;2:专属;3:紧急')->default(0);
+            $table->unsignedInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedTinyInteger('priority')->comment('1:普通;2:紧急')->default(0);
             $table->unsignedInteger('job_id');
             $table->foreign('job_id')->references('id')->on('jobs');
             $table->unsignedInteger('created_by');

@@ -5,6 +5,7 @@ use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Cici\Lieplus\Traits\ResumeTrait;
 use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,6 +71,14 @@ class Job extends Base
     public function department() : BelongsTo
     {
         return $this->belongsTo('Cici\Lieplus\Models\Department');
+    }
+
+    /**
+     * A job may be belongs to a line.
+     */
+    public function line() : HasOne
+    {
+        return $this->hasOne('Cici\Lieplus\Models\Line');
     }
 
     /**

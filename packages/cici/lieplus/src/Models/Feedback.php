@@ -24,7 +24,7 @@ class Feedback extends Model
     /**
      * Create feed back
      */
-    public static function create(array $params = [])
+    public static function create(array $attributes = [])
     {
         $resume_id  = $attributes['resume_id'];
         $text       = $attributes['text'];

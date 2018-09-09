@@ -1,4 +1,5 @@
 <?php
+
 namespace Cici\Lieplus\Models;
 
 use App\User;
@@ -22,7 +23,7 @@ class Resume extends Base
 
     protected $dates = ['deleted_at'];
 
-    protected $appends = ['serial_number', 'feedback', 'is_mine'];
+    protected $appends = ['serial_number', 'feedback', 'is_mine', 'line_links', 'options_link'];
 
     public function __construct(array $attributes = [])
     {
@@ -35,23 +36,23 @@ class Resume extends Base
 
     public static function create(array $attributes)
     {
-        $name            = $attributes['name'];
-        $mobile          = $attributes['mobile'];
-        $email           = $attributes['email'];
-        $gender          = $attributes['gender'];
-        $birthdate       = $attributes['birthdate'];
+        $name = $attributes['name'];
+        $mobile = $attributes['mobile'];
+        $email = $attributes['email'];
+        $gender = $attributes['gender'];
+        $birthdate = $attributes['birthdate'];
         $start_work_date = $attributes['start_work_date'];
-        $degree          = $attributes['degree'];
-        $service_status  = $attributes['service_status'];
-        $province        = $attributes['province'];
-        $city            = $attributes['city'];
-        $county          = $attributes['county'];
-        $position        = $attributes['position'];
-        $industry        = $attributes['industry'];
-        $salary          = $attributes['salary'];
-        $others          = $attributes['others'];
-        $created_by      = $attributes['created_by'];
-        $updated_by      = $attributes['updated_by'];
+        $degree = $attributes['degree'];
+        $service_status = $attributes['service_status'];
+        $province = $attributes['province'];
+        $city = $attributes['city'];
+        $county = $attributes['county'];
+        $position = $attributes['position'];
+        $industry = $attributes['industry'];
+        $salary = $attributes['salary'];
+        $others = $attributes['others'];
+        $created_by = $attributes['created_by'];
+        $updated_by = $attributes['updated_by'];
 
         if (static::getResumes()->where('mobile', $mobile)->first()) {
             throw MobileAlreadyExists::create($mobile);
@@ -112,7 +113,7 @@ class Resume extends Base
     /**
      * A role may be given various jobs.
      */
-    public function jobs() : BelongsToMany
+    public function jobs(): BelongsToMany
     {
         return $this->belongsToMany(
             'Cici\Lieplus\Models\Job',
@@ -164,12 +165,15 @@ class Resume extends Base
 
     public function getFeedbackAttribute()
     {
-        return $this->feedbacks()->latest()->first()->text ?? '';
+        if ($this->feedbacks()->latest()->first()) {
+            return $this->feedbacks()->latest()->first()->text;
+        }
+        return '';
     }
 
     public function scopeMobile($query, $mobile)
     {
-        return $query->where('mobile', 'like', '%'.$mobile.'%');
+        return $query->where('mobile', 'like', '%' . $mobile . '%');
     }
 
     /**
@@ -185,5 +189,30 @@ class Resume extends Base
         $user_ids = $this->users()->pluck('user_id')->toArray();
 
         return in_array(Auth::id(), $user_ids);
+    }
+
+    public function getLineLinksAttribute()
+    {
+        $line_names = [];
+        if ($this->jobs->isNotEmpty()) {
+            foreach ($this->jobs as $job) {
+                if (!is_null($job->line)) {
+                    $line_names[] = "<a href=\"" . route('line.detail', $job->line->id) . "\">" . $job->name . "(" . $job->line->serial_number . ")</a>";
+                }
+            }
+        }
+        return implode("<br/>", $line_names);
+    }
+
+    public function getOptionsLinkAttribute()
+    {
+        $options = '<div class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true"><i class="purple ace-icon fa fa-asterisk bigger-120"></i>操作<i class="ace-icon fa fa-caret-down"></i></a><ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right"><li><a href="' . route('resume.detail', $this->id) . '"><i class="blue ace-icon fa fa-eye bigger-120"></i>查看 </a></li>';
+        if ($this->is_mine) {
+            $options .= '<li><a href="' . route('resume.detail', [$this->id, 'notice']) . '"><i class="blue ace-icon fa fa-bell-o bigger-120"></i>提醒 </a></li>';
+        } else {
+            $options .= '<li><a href="#" id="my-' . $this->id . '" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-download bigger-120"></i>加入我的简历库 </a></li>';
+        }
+        $options .= '<li><a href="' . route('resume.jobmodal', $this->id) . '" data-toggle="modal" data-target="#modal-job" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-plus-square bigger-120"></i>加入职位流水线 </a></li></ul></div>';
+        return $options;
     }
 }
