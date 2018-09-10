@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Feedback;
-use App\Resume;
+use Cici\Lieplus\Models\Feedback;
+use Cici\Lieplus\Models\Resume;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,22 +16,17 @@ class FeedbackController extends Controller
      */
     public function add(Request $request)
     {
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $data = $request->input();
 
             $feedback = new Feedback();
-            $feedback->rid = $data['pk'];
-            //$feedback->$data['name'] = $data['value'];
+            $feedback->resume_id = $data['pk'];
             $feedback->text = $data['value'];
-            $feedback->creater = Auth::id();
-            //dd($feedback);
-            if ($feedback->save())
-            {
+            $feedback->created_by = Auth::id();
+            if ($feedback->save()) {
                 $resume = Resume::find($data['pk']);
                 $resume->feedback = $data['value'];
-                if ($resume->save())
-                {
+                if ($resume->save()) {
                     return redirect()->back();
                 }
             }

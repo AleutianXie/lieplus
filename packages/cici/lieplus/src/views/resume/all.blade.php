@@ -82,7 +82,7 @@
                     title: '反馈',
                     data: 'feedback',
                     render: function (data, type, row) {
-                        return '<a href="#" id="firstname" data-type="text" data-pk="' + row.id + '" data-placement="right" data-placeholder="新增反馈" data-title="新增反馈" data-url="/feedback">' + data + '</a>';
+                        return '<a href="#" data-type="text" data-pk="' + row.id + '" data-placement="right" data-placeholder="新增反馈" data-title="新增反馈" data-url="/feedback">' + data + '</a>';
                     }
                 },
                 {
@@ -98,6 +98,12 @@
                 // console.log(row, $('td', row).eq(7).html());
                 $('td', row).eq(5).children('a').editable({
                     emptytext: '新增反馈',
+                    params: {'_token' : '{{ csrf_token() }}'},
+                    validate: function(value) {
+                        if($.trim(value) == '') {
+                            return '反馈不能为空！';
+                        }
+                    }
                 });
                 $('td', row).eq(6).html($('td', row).eq(6).text());
                 $('td', row).eq(7).html($('td', row).eq(7).text());
