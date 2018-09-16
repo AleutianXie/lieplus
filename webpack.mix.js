@@ -11,6 +11,6 @@ const { mix } = require('laravel-mix');
  |
  */
 
-//mix.js('resources/assets/js/common.js', 'public/static/js')
-mix.js('resources/assets/js/cici.js', 'public/static/js').sourceMaps()
+mix.js('resources/assets/js/cici.js', 'public/static/js')
+// mix.js('resources/assets/js/cici.js', 'public/static/js').sourceMaps()
   .sass('resources/assets/sass/cici.scss', 'public/static/css');

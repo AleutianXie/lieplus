@@ -4,6 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
 require('./bootstrap');
 
 /**
@@ -18,3 +19,7 @@ require('datatables.net-bs');
 require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min');
 require('./ace');
 require('./ace-elements');
+
+// sweetalert2
+require('./sweetalert2');
+//import swal from "./sweetalert2";

@@ -157,7 +157,7 @@
             <!-- PAGE CONTENT BEGINS -->
             @foreach($resume->feedbacks->groupBy(function ($item, $key) {
               return substr($item->created_at, 0, 10);
-            }); as $key => $group)
+            }) as $key => $group)
             <div id="timeline-2" class="">
               <div class="row">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -165,8 +165,7 @@
                     <span class="timeline-label">
                       @if ($key == date('Y-m-d'))
                         <b>今天</b>
-                      @endif
-                      @if ($key == date("Y-m-d", strtotime("-1 day")))
+                      @elseif ($key == date("Y-m-d", strtotime("-1 day")))
                         <b>昨天</b>
                       @else
                         <b>{{ $key }}</b>
@@ -212,7 +211,7 @@
             </h4>
 
             <div class="space-8"></div>
-            {{-- @include('alert.list', ['alerts' => $resume->alerts ]) --}}
+             @include('Lieplus::alert.list', ['alerts' => $resume->alerts ])
         </div>
         {{-- 提醒--结束 --}}
     </div>

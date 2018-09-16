@@ -2,21 +2,24 @@
 @import "variables";
 
 // Bootstrap
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
 // font-awesome
-@import "node_modules/font-awesome/scss/font-awesome";
+@import "~font-awesome/scss/font-awesome";
 
 // Ace 1.4.0
 @import "../css/ace.css";
 
 // Select2
-@import "node_modules/select2/dist/css/select2";
+@import "~select2/dist/css/select2";
 
 // DataTables bootstrap 3
-@import "node_modules/datatables.net-bs/css/dataTables.bootstrap";
+@import "~datatables.net-bs/css/dataTables.bootstrap";
 
 // Bootstrap editable
-@import "node_modules/x-editable/dist/bootstrap3-editable/css/bootstrap-editable";
+@import "~x-editable/dist/bootstrap3-editable/css/bootstrap-editable";
+
+// Sweetalert2
+@import "~sweetalert2/src/sweetalert2";
 // wysiwyg
 // @import "node_modules/bootstrap-wysiwyg/css/style";

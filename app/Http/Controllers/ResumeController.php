@@ -20,8 +20,7 @@ class ResumeController
      */
     public function index(Request $request)
     {
-
-        return view('Lieplus::resume.index');
+        return view('Lieplus::resume.my');
     }
 
     /**
@@ -38,7 +37,8 @@ class ResumeController
                 $data['updated_by'] = $request->user()->id;
                 DB::beginTransaction();
                 $resume = Resume::create($data);
-                // todo: add my library
+                // add my library
+                $resume->assignUser($request->user()->id);
                 // todo: add job library
                 // todo: add to station
                 DB::commit();
