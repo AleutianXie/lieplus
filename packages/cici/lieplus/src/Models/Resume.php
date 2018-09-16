@@ -210,7 +210,7 @@ class Resume extends Base
         if ($this->is_mine) {
             $options .= '<li><a href="' . route('resume.detail', [$this->id, 'notice']) . '"><i class="blue ace-icon fa fa-bell-o bigger-120"></i>提醒 </a></li>';
         } else {
-             $options .= '<li><a href="javascrpit:void(0);" id="my-' . $this->id . '" data-rid="' . $this->id . '" class="addToMyLibrary" onclick="addToMyLibrary()"><i class="blue ace-icon fa fa-download bigger-120"></i>加入我的简历库 </a></li>';
+             $options .= '<li><a href="javascript:void(0);" id="my-' . $this->id . '" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-download bigger-120"></i>加入我的简历库 </a></li>';
         }
         $options .= '<li><a href="' . route('resume.jobmodal', $this->id) . '" data-toggle="modal" data-target="#modal-job" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-plus-square bigger-120"></i>加入职位流水线 </a></li></ul></div>';
         return $options;

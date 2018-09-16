@@ -33,12 +33,13 @@ class ResumeController
         if ($request->isMethod('POST')) {
             try {
                 $data = $request->input();
-                $data['created_by'] = $request->user()->id;
-                $data['updated_by'] = $request->user()->id;
+                $userId = $request->user()->id;;
+                $data['created_by'] = $userId;
+                $data['updated_by'] = $userId;
                 DB::beginTransaction();
                 $resume = Resume::create($data);
                 // add my library
-                $resume->assignUser($request->user()->id);
+                $resume->assignUser(['created_by' => $userId, 'updated_by' => $userId], $userId);
                 // todo: add job library
                 // todo: add to station
                 DB::commit();
@@ -169,21 +170,16 @@ class ResumeController
     //     return Datatables::of($resumes)->make();
     // }
 
-    // public function addmy(Request $request, $id)
-    // {
-    //     $mylibrary = MyLibrary::where(['rid' => $id, 'uid' => Auth::id()])->first();
-    //     if (!empty($mylibrary)) {
-    //         return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
-    //     }
-    //     $mylibrary          = new MyLibrary();
-    //     $mylibrary->rid     = $id;
-    //     $mylibrary->uid     = Auth::id();
-    //     $mylibrary->creater = Auth::id();
-    //     if ($mylibrary->save()) {
-    //         return json_encode(['code' => 0, 'msg' => '操作成功！']);
-    //     }
-    //     return json_encode(['code' => 2, 'msg' => '操作失败！']);
-    // }
+    public function addMy(Request $request, $id)
+    {
+        $resume = Resume::findOrFail($id);
+        if ($resume->is_mine) {
+            return json_encode(['code' => 1, 'msg' => '简历已经在我的简历库中！']);
+        }
+        $userId = $request->user()->id;
+        $resume->assignUser(['created_by' => $userId, 'updated_by' => $userId], $userId);
+        return json_encode(['code' => 0, 'msg' => '操作成功！']);
+    }
 
     // public function addjob(Request $request)
     // {
@@ -242,13 +238,13 @@ class ResumeController
     private function getModel(&$model, $filter = [])
     {
         if (!empty($filter['mobile'])) {
-            $model->where('mobile', 'like', '%'.$filter['mobile'].'%');
+            $model->where('mobile', 'like', '%' . $filter['mobile'] . '%');
         }
         if (!empty($filter['name'])) {
-            $model->where('name', 'like', '%'.$filter['name'].'%');
+            $model->where('name', 'like', '%' . $filter['name'] . '%');
         }
         if (!empty($filter['email'])) {
-            $model->where('email', 'like', '%'.$filter['email'].'%');
+            $model->where('email', 'like', '%' . $filter['email'] . '%');
         }
         $model->select('resumes.*');
         $model->latest('resumes.created_at');

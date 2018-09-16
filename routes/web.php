@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('resume/all', 'ResumeController@all')->name('resume.all');
     Route::get('resumes', 'ResumeController@search')->name('resume.search');
     Route::match(['get', 'post'], '/edit', 'ResumeController@edit');
-    Route::post('/my/add/{id}', 'ResumeController@addmy')->where(['id' => '[0-9]+'])->name('resume.addmy');
+    Route::post('resume/my/add/{id}', 'ResumeController@addMy')->where(['id' => '[0-9]+'])->name('resume.addmy');
     Route::get('/jobmodal/{id}', 'ResumeController@jobmodal')->where('id', '[0-9]+')->name('resume.jobmodal');
     Route::post('/job/add', 'ResumeController@addjob')->name('resume.addjob');
     //Route::get('/search/{type}', 'ResumeController@search')->where(['type' => 'my|all|job'])->name('resume.search');
