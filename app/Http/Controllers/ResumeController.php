@@ -7,7 +7,7 @@ use Cici\Lieplus\Models\Job;
 use Cici\Lieplus\Models\Resume;
 use DB;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 class ResumeController
 {
