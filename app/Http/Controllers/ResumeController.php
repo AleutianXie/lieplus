@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreResumePost;
 use Cici\Lieplus\Models\Job;
-use Cici\Lieplus\Models\Region;
 use Cici\Lieplus\Models\Resume;
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\Datatables;
 
 class ResumeController
