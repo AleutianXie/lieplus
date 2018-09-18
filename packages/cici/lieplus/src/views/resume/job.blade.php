@@ -133,7 +133,7 @@
     serverSide: true,
     ajax: '{{ route('job.search') }}?t=my&' + $('.form-inline').serialize(),
     language: {
-      url: '{{ asset('static/localisation/Chinese.json') }}'
+      url: '{{ asset('js/localisation/Chinese.json') }}'
     },
     searching: false,
     ordering: false,
