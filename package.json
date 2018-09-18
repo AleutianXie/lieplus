@@ -1,32 +1,30 @@
 {
-  "private": true,
-  "scripts": {
-    "dev": "npm run development",
-    "development": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "npm run development -- --watch",
-    "watch-poll": "npm run watch -- --watch-poll",
-    "hot": "NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "prod": "npm run production",
-    "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
-  },
-  "devDependencies": {
-    "axios": "^0.16.1",
-    "bootstrap-datepicker": "^1.8.0",
-    "bootstrap-sass": "^3.3.7",
-    "laravel-mix": "^2.1.14",
-    "lodash": "^4.17.11",
-    "select2": "^4.0.3",
-    "vue": "^2.5.17",
-    "x-editable": "^1.5.1"
-  },
-  "dependencies": {
-    "datatables.net": "^1.10.19",
-    "datatables.net-autofill-bs": "^2.0.0",
-    "datatables.net-bs": "^1.10.19",
-    "datatables.net-dt": "^1.10.19",
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.3.1",
-    "jquery-ui": "^1.12.1",
-    "sweetalert2": "^7.26.28"
-  }
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "axios": "^0.18",
+        "bootstrap-sass": "^3.3.7",
+        "cross-env": "^5.1",
+        "jquery": "^3.2",
+        "laravel-mix": "^2.0",
+        "lodash": "^4.17.5",
+        "popper.js": "^1.12",
+        "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "datatables.net": "^1.10.19",
+        "datatables.net-bs": "^1.10.19",
+        "font-awesome": "^4.7.0",
+        "select2": "^4.0.6-rc.1",
+        "sweetalert2": "^7.26.29",
+        "x-editable": "^1.5.1"
+    }
 }

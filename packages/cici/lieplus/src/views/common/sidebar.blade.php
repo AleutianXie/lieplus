@@ -32,7 +32,7 @@
             </a>
             <b class="arrow"></b>
         </li>
-        @role('admin|manager|customer|recruiter')
+        @hasanyrole('admin|manager|customer|recruiter')
         <li @if(starts_with(Request::fullUrl(), route('resume'))) class="open" @endif>
             <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
@@ -100,9 +100,9 @@
                 </li>
             </ul>
         </li>
-        @endrole
+        @endhasanyrole
 
-        @role('admin|manager|bd')
+        @hasanyrole('admin|manager|bd')
         <li @if(starts_with(Request::fullUrl(), route('project'))) class="open" @endif">
             <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list-ol"></i>
@@ -116,7 +116,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                @role('admin|bd')
+                @hasanyrole('admin|bd')
                 <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="active" @endif>
                     <a href="{{ route('project.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -125,8 +125,8 @@
 
                     <b class="arrow"></b>
                 </li>
-                @endrole
-                @role('admin|manager')
+                @endhasanyrole
+                @hasanyrole('admin|manager')
                 <li @if(starts_with(Request::fullUrl(), route('project.audit'))) class="active" @endif>
                     <a href="{{ route('project.audit') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -135,12 +135,12 @@
 
                     <b class="arrow"></b>
                 </li>
-                @endrole
+                @endhasanyrole
             </ul>
         </li>
-        @endrole
+        @endhasanyrole
 
-        @role('admin|manager|customer')
+        @hasanyrole('admin|manager|customer')
         <li @if(starts_with(Request::fullUrl(), route('job'))) class="open" @endif>
             <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-slideshare"></i>
@@ -180,8 +180,8 @@
                 </li>
             </ul>
         </li>
-        @endrole
-        @role('admin|manager|customer|recruiter')
+        @endhasanyrole
+        @hasanyrole('admin|manager|customer|recruiter')
         <li @if(starts_with(Request::fullUrl(), route('line'))) class="open" @endif>
             <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
@@ -193,7 +193,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                @role('admin|manager|recruiter')
+                @hasanyrole('admin|manager|recruiter')
                 <li @if(starts_with(Request::fullUrl(), route('line.index'))) class="active" @endif>
                     <a href="{{ route('line.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -202,8 +202,8 @@
 
                     <b class="arrow"></b>
                 </li>
-                @endrole
-                @role('admin|manager|customer')
+                @endhasanyrole
+                @hasanyrole('admin|manager|customer')
                 <li @if(starts_with(Request::fullUrl(), route('line.customer'))) class="active" @endif>
                     <a href="{{ route('line.customer') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -212,8 +212,8 @@
 
                     <b class="arrow"></b>
                 </li>
-                @endrole
-                @role('admin|manager')
+                @endhasanyrole
+                @hasanyrole('admin|manager')
                 <li @if(starts_with(Request::fullUrl(), route('line.all'))) class="active" @endif>
                     <a href="{{ route('line.all') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -222,7 +222,7 @@
 
                     <b class="arrow"></b>
                 </li>
-                @endrole
+                @endhasanyrole
             </ul>
         </li>
         <li @if(starts_with(Request::fullUrl(), route('line.plan'))) class="active" @endif>
@@ -233,7 +233,7 @@
 
             <b class="arrow"></b>
         </li>
-        @endrole
+        @endhasanyrole
     </ul><!-- /.nav-list -->
 
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

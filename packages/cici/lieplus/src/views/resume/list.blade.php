@@ -50,7 +50,7 @@
             ajax: '{{ route('resume.search') }}?t=job&id={{ $id }}',
             @endif
             language: {
-                url: '{{ asset('static/localisation/Chinese.json') }}'
+                url: '{{ asset('js/localisation/Chinese.json') }}'
             },
             searching: false,
             ordering: false,

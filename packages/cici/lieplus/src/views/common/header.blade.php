@@ -9,20 +9,20 @@
             </small>
             </a>
         </div>
-        <div class="navbar-header pull-left">
-        <!-- brand text here -->
-        </div>
-        <!-- /.navbar-header -->
-        <div class="navbar-buttons navbar-header pull-right ">
-        <ul class="nav ace-nav">
-        <!-- user buttons such as messages, notifications and user menu -->
-        </ul>
-        </div>
-        <!-- /.navbar-buttons -->
-        <nav class="navbar-menu pull-left">
-        <!-- optional menu & form inside navbar -->
-        </nav>
-        <!-- /.navbar-menu -->
+        {{--<div class="navbar-header float-left">--}}
+        {{--<!-- brand text here -->--}}
+        {{--</div>--}}
+        {{--<!-- /.navbar-header -->--}}
+        {{--<div class="navbar-buttons navbar-header float-right ">--}}
+        {{--<ul class="nav ace-nav">--}}
+        {{--<!-- user buttons such as messages, notifications and user menu -->--}}
+        {{--</ul>--}}
+        {{--</div>--}}
+        {{--<!-- /.navbar-buttons -->--}}
+        {{--<nav class="navbar-menu float-left">--}}
+        {{--<!-- optional menu & form inside navbar -->--}}
+        {{--</nav>--}}
+        {{--<!-- /.navbar-menu -->--}}
         @include('Lieplus::common.nav_right')
     </div>
     <!-- /.navbar-container -->
