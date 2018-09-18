@@ -25,7 +25,7 @@
 
 <!-- 提醒列表--开始 -->
 <div>
-    @if(count($alerts))
+    @if(!is_null($alerts) && count($alerts))
     <table id='dynamic-table' class="table table-striped table-bordered table-hover" style="width: 100%">
         <thead>
             <tr>
