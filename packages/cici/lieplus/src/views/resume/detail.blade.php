@@ -63,19 +63,19 @@
         <div class="profile-info-row">
           <div class="profile-info-name"> 手机 </div>
           <div class="profile-info-value">
-            <span class="editable editable-click" id="mobile" style="display: inline;">{{ $resume->mobile }}</span>
+            <span data-type="tel" data-pk="{{ $resume->id }}" data-title="输入手机" data-url="/resume/edit" id="mobile">{{ $resume->mobile }}</span>
           </div>
         </div>
         <div class="profile-info-row">
           <div class="profile-info-name"> 邮箱 </div>
           <div class="profile-info-value">
-            <span class="editable editable-click" id="email" style="display: inline;">{{ $resume->email }}</span>
+            <span data-type="email" data-pk="{{ $resume->id }}" data-title="输入邮箱" data-url="/resume/edit" id="email">{{ $resume->email }}</span>
           </div>
         </div>
         <div class="profile-info-row">
           <div class="profile-info-name"> 学历 </div>
           <div class="profile-info-value">
-            <span class="editable editable-click" id="degree" style="display: inline;">{{ config('lieplus.degree.'.$resume->degree) }}</span>
+            <span data-type="select2" data-pk="{{ $resume->id }}" data-title="选择学历" data-value="{{ $resume->degree }}" data-url="/resume/edit" id="degree">{{ config('lieplus.degree.'.$resume->degree) }}</span>
           </div>
         </div>
         <div class="profile-info-row">
@@ -222,10 +222,7 @@
 @section('js')
     <script type="text/javascript">
         jQuery(function($) {
-            //editables on first profile page
             $.fn.editable.defaults.mode = 'inline';
-            //editables
-            //text editable
             $('#username').editable({
                 params: {'_token' : '{{ csrf_token() }}'},
                 validate: function(value) {
@@ -248,17 +245,13 @@
             });
 
             $('#mobile').editable({
-                type: 'tel',
-                name: 'mobile',
-                url: '/resume/edit',
                 params: {'_token' : '{{ csrf_token() }}'},
-                pk: {{ $resume->id }},
                 validate: function(value) {
                     if($.trim(value) == '') {
                         return '手机号码不能为空！';
                     }
-                    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
-                    if(!myreg.test($.trim(value)))
+                    var regMobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+                    if(!regMobile.test($.trim(value)))
                     {
                         return '请输入有效的手机号码！';
                     }
@@ -266,26 +259,26 @@
             });
 
             $('#email').editable({
-                type: 'email',
-                name: 'email',
-                url: '/resume/edit',
                 params: {'_token' : '{{ csrf_token() }}'},
-                pk: {{ $resume->id }},
                 validate: function(value) {
                     if($.trim(value) == '') {
                         return '邮箱不能为空！';
                     }
+                    var regEmail = /^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/;
+                    if (!regEmail.test($.trim(value)))
+                    {
+                        return '请输入有效的邮箱地址！';
+                    }
                 }
             });
 
+            var degree = [];
+            $.each({!! json_encode(config('lieplus.degree')) !!}, function(k, v) {
+                degree.push({id: k, text: v});
+            });
             $('#degree').editable({
-                type: 'select2',
-                name : 'degree',
-                url: '/resume/edit',
                 params: {'_token' : '{{ csrf_token() }}'},
-                pk: {{ $resume->id }},
-                //onblur:'ignore',
-                source: {!! json_encode(config('lieplus.degree')) !!},
+                source: degree,
                 select2: {
                     minimumResultsForSearch: Infinity,
                     'width': 140
