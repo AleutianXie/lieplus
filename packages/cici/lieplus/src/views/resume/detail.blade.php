@@ -51,13 +51,13 @@
         <div class="profile-info-row">
           <div class="profile-info-name"> 姓名 </div>
           <div class="profile-info-value">
-            <span class="editable editable-click" id="username" style="display: inline;">{{ $resume->name }}</span>
+            <span data-type="text" data-pk="{{ $resume->id }}" data-title="输入姓名" data-url="/resume/edit" data-name="name" id="username">{{ $resume->name }}</span>
           </div>
         </div>
         <div class="profile-info-row">
           <div class="profile-info-name"> 性别 </div>
           <div class="profile-info-value">
-            <span class="editable editable-click" id="gender" style="display: inline;">{{ config('lieplus.gender.' . $resume->gender) }}</span>
+            <span data-type="select2" data-pk="{{ $resume->id }}" data-title="选择性别" data-value="{{ $resume->gender }}" data-url="/resume/edit" id="gender">{{ config('lieplus.gender.' . $resume->gender) }}</span>
           </div>
         </div>
         <div class="profile-info-row">
@@ -220,4 +220,281 @@
 @endsection
 
 @section('js')
+    <script type="text/javascript">
+        jQuery(function($) {
+            //editables on first profile page
+            $.fn.editable.defaults.mode = 'inline';
+            //editables
+            //text editable
+            $('#username').editable({
+                params: {'_token' : '{{ csrf_token() }}'},
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return '姓名不能为空！';
+                    }
+                }
+            });
+            var gender = [];
+            $.each({!! json_encode(config('lieplus.gender')) !!}, function(k, v) {
+                gender.push({id: k, text: v});
+            });
+            $('#gender').editable({
+                params: {'_token' :'{{ csrf_token() }}'},
+                source: gender,
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140,
+                }
+            });
+
+            $('#mobile').editable({
+                type: 'tel',
+                name: 'mobile',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return '手机号码不能为空！';
+                    }
+                    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+                    if(!myreg.test($.trim(value)))
+                    {
+                        return '请输入有效的手机号码！';
+                    }
+                }
+            });
+
+            $('#email').editable({
+                type: 'email',
+                name: 'email',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return '邮箱不能为空！';
+                    }
+                }
+            });
+
+            $('#degree').editable({
+                type: 'select2',
+                name : 'degree',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                //onblur:'ignore',
+                source: {!! json_encode(config('lieplus.degree')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140
+                }
+            });
+
+            //select2 editable
+            var provinces = [];
+            $.each({!! json_encode(config('lieplus.provinces')) !!}, function(k, v) {
+                provinces.push({id: k, text: v});
+            });
+
+            var cities = [];
+            $.each({!! json_encode(config('lieplus.cities')) !!}, function(key, value) {
+                cities[key] = [];
+                $.each(value, function(k, v){
+                    cities[key].push({id: k, text: v});
+                });
+            });
+
+            var counties = [];
+            $.each({!! json_encode(config('lieplus.counties')) !!}, function(key,value) {
+                counties[key] = [];
+                $.each(value, function(k, v) {
+                    counties[key].push({id: k, text: v});
+                });
+            });
+
+            var currentProvinceValue = "NL";
+            var currentCityValue = "NL";
+            $('#country').editable({
+                type: 'select2',
+                value : 'NL',
+                //onblur:'ignore',
+                source: provinces,
+                name : 'province',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                //onblur:'ignore',
+                select2: {
+                    'width': 140
+                },
+                success: function(response, newValue) {
+                    if(currentProvinceValue == newValue) return;
+                    currentProviceValue = newValue;
+
+                    var new_source = (!newValue || newValue == "") ? [] : cities[newValue];
+
+                    //so we remove it altogether and create a new element
+                    $('#county').text('Select County');
+                    var city = $('#city').get(0);
+                    $(city).clone().attr('id', 'city').text('Select City').editable({
+                        type: 'select2',
+                        value : 'NL',
+                        //onblur:'ignore',
+                        source: new_source,
+                        select2: {
+                            'width': 140
+                        },
+                        success: function(response, newValue) {
+                            if(currentCityValue == newValue) return;
+                            currentCityValue = newValue;
+
+                            var new_source = (!newValue || newValue == "") ? [] : counties[newValue];
+
+                            var county = $('#county').get(0);
+                            $(county).clone().attr('id', 'county').text('Select County').editable({
+                                type: 'select2',
+                                value : null,
+                                //onblur:'ignore',
+                                source: new_source,
+                                select2: {
+                                    'width': 140
+                                }
+                            }).insertAfter(county);//insert it after previous instance
+                            $(county).remove();//remove previous instance
+                        }
+                    }).insertAfter(city);//insert it after previous instance
+                    $(city).remove();//remove previous instance
+
+                }
+            });
+
+
+            //custom date editable
+            $('#birthdate').editable({
+                type: 'adate',
+                name: 'birthdate',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                date: {
+                    //datepicker plugin options
+                    format: 'yyyy-mm-dd',
+                    viewformat: 'yyyy-mm-dd',
+                    weekStart: 1
+
+                    //,nativeUI: true//if true and browser support input[type=date], native browser control will be used
+                    //,format: 'yyyy-mm-dd',
+                    //viewformat: 'yyyy-mm-dd'
+                }
+            })
+
+            $('#startworkdate').editable({
+                type: 'adate',
+                name: 'startworkdate',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                date: {
+                    //datepicker plugin options
+                    format: 'yyyy-mm-dd',
+                    viewformat: 'yyyy-mm-dd',
+                    weekStart: 1
+                }
+            })
+
+            $('#servicestatus').editable({
+                type: 'select2',
+                name : 'servicestatus',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                //onblur:'ignore',
+                source: {!! json_encode(config('lieplus.servicestatus')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140,
+                }
+            });
+
+            //text editable
+            $('#industry').editable({
+                type: 'text',
+                name: 'industry',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+            });
+
+            //text editable
+            $('#position').editable({
+                type: 'text',
+                name: 'position',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+            });
+
+            $('#salary').editable({
+                type: 'select2',
+                name: 'salary',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+                //onblur:'ignore',
+                source: {!! json_encode(config('lieplus.salary')) !!},
+                select2: {
+                    minimumResultsForSearch: Infinity,
+                    'width': 140
+                }
+            });
+
+            $('#others').editable({
+                mode: 'inline',
+                type: 'wysiwyg',
+                name : 'others',
+                url: '/resume/edit',
+                params: {'_token' : '{{ csrf_token() }}'},
+                pk: {{ $resume->id }},
+
+                wysiwyg : {
+                    css : {'max-width':'900px'},
+                    toolbar:
+                        [
+                            'font',
+                            null,
+                            'fontSize',
+                            null,
+                            {name:'bold', className:'btn-info'},
+                            {name:'italic', className:'btn-info'},
+                            {name:'strikethrough', className:'btn-info'},
+                            {name:'underline', className:'btn-info'},
+                            null,
+                            {name:'insertunorderedlist', className:'btn-success'},
+                            {name:'insertorderedlist', className:'btn-success'},
+                            {name:'outdent', className:'btn-purple'},
+                            {name:'indent', className:'btn-purple'},
+                            null,
+                            {name:'justifyleft', className:'btn-primary'},
+                            {name:'justifycenter', className:'btn-primary'},
+                            {name:'justifyright', className:'btn-primary'},
+                            {name:'justifyfull', className:'btn-inverse'},
+                            null,
+                            {name:'createLink', className:'btn-pink'},
+                            {name:'unlink', className:'btn-pink'},
+                            null,
+                            {name:'insertImage', className:'btn-success'},
+                            null,
+                            'foreColor',
+                            null,
+                            {name:'undo', className:'btn-grey'},
+                            {name:'redo', className:'btn-grey'}
+                        ],
+                },
+                success: function(response, newValue) {
+                }
+            });
+        });
+    </script>
 @endsection

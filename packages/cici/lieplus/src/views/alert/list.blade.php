@@ -1,18 +1,3 @@
-<link rel="stylesheet" href="{{ asset('static/css/bootstrap-editable.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('static/css/jquery-ui.min.css') }}" />
-
-<!-- page specific plugin scripts -->
-<script src="{{ asset('static/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery.dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('static/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('static/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('static/js/dataTables.select.min.js') }}"></script>
-<script src="{{ asset('static/js/bootstrap-editable.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('static/js/jquery.ui.touch-punch.min.js') }}"></script>
 <div class="table-header">
     <div class="col-xs-10">
     提醒列表
@@ -98,34 +83,34 @@
     <div id="detail-dialog" class="row hide">
 
     </div>
-    <!-- inline scripts related to this page -->
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#dynamic-table').dataTable({
-                language: {
-                    url: '{{ asset('static/localisation/Chinese.json') }}'
-                }
-            });
-        });
+    {{--<!-- inline scripts related to this page -->--}}
+    {{--<script type="text/javascript">--}}
+        {{--$(document).ready(function(){--}}
+            {{--$('#dynamic-table').dataTable({--}}
+                {{--language: {--}}
+                    {{--url: '{{ asset('static/localisation/Chinese.json') }}'--}}
+                {{--}--}}
+            {{--});--}}
+        {{--});--}}
 
-        function edit(rid, id){
-            $("#detail-dialog").removeClass('hide').load('/alert/'+rid+'/'+id).dialog({
-                modal: true,
-                title: "编辑提醒",
-                width: '700px',
-                resizable: false,
-            });
-        }
+        {{--function edit(rid, id){--}}
+            {{--$("#detail-dialog").removeClass('hide').load('/alert/'+rid+'/'+id).dialog({--}}
+                {{--modal: true,--}}
+                {{--title: "编辑提醒",--}}
+                {{--width: '700px',--}}
+                {{--resizable: false,--}}
+            {{--});--}}
+        {{--}--}}
 
-        function add(rid){
-            $("#detail-dialog").removeClass('hide').load('/alert/add/'+rid).dialog({
-                modal: true,
-                title: "新建提醒",
-                width: '700px',
-                resizable: false
-            });
-        }
-    </script>
+        {{--function add(rid){--}}
+            {{--$("#detail-dialog").removeClass('hide').load('/alert/add/'+rid).dialog({--}}
+                {{--modal: true,--}}
+                {{--title: "新建提醒",--}}
+                {{--width: '700px',--}}
+                {{--resizable: false--}}
+            {{--});--}}
+        {{--}--}}
+    {{--</script>--}}
 </div>
 <!-- 提醒列表--结束 -->
 

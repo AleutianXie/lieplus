@@ -132,6 +132,8 @@
                         text: data['msg'],
                         type: type,
                         allowOutsideClick: false,
+                        animation: false,
+                        customClass: 'animated tada',
                     });
                     dt.api().draw(false);
                 },

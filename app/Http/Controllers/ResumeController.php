@@ -96,18 +96,19 @@ class ResumeController
         $this->getModel($model, $filter);
         return Datatables::eloquent($model)->make(true);
     }
-    // public function edit(Request $request)
-    // {
-    //     $data = $request->input();
-    //     $id = $data['pk'];
-    //     $resume = Resume::find($id);
-    //     $resume->{$data['name']} = $data['value'];
-    //     $resume->modifier = Auth::id();
 
-    //     if (!$resume->save()) {
-    //         return '更新失败';
-    //     }
-    // }
+    public function edit(Request $request)
+    {
+        $data = $request->input();
+        $id = $data['pk'];
+        $resume = Resume::find($id);
+        $resume->{$data['name']} = $data['value'];
+        $resume->updated_by = $request->user()->id;
+
+        if (!$resume->save()) {
+            return '更新失败';
+        }
+    }
 
     // public function joblibrary()
     // {
