@@ -123,8 +123,8 @@
     <div class="col-xs-6 col-sm-2">
       <div class="clearfix">
         <select name="service_status" id="service_status">
-        @foreach (config('lieplus.servicestatus') as $element)
-          <option value="{{ $element['id'] }}">{{ $element['text'] }}</option>
+        @foreach (config('lieplus.service.status') as $key => $value)
+          <option value="{{ $key }}" @if (old('service_status') && $key == old('service_status')) checked @endif>{{ $value }}</option>
         @endforeach
         </select>
       </div>
@@ -150,9 +150,9 @@
     <div class="col-xs-6 col-sm-2">
       <div class="clearfix">
         <select name="salary" id="salary" class="col-xs-12 col-sm-4">
-          @foreach (config('lieplus.salary') as $element)
-            <option value="{{ $element['id'] }}">{{ $element['text'] }}</option>
-          @endforeach
+            @foreach (config('lieplus.salary') as $key => $value)
+                <option value="{{ $key }}" @if (old('salary') == $key) checked @endif>{{ $value }}</option>
+            @endforeach
         </select>
       </div>
     </div>

@@ -97,17 +97,27 @@ class ResumeController
         return Datatables::eloquent($model)->make(true);
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $id)
     {
-        $data = $request->input();
-        $id = $data['pk'];
-        $resume = Resume::find($id);
-        $resume->{$data['name']} = $data['value'];
-        $resume->updated_by = $request->user()->id;
-
-        if (!$resume->save()) {
-            return '更新失败';
+        if ($request->isMethod('POST')) {
+            try {
+                $data = $request->input();
+                $userId = $request->user()->id;;
+                $data['created_by'] = $userId;
+                $data['updated_by'] = $userId;
+                DB::beginTransaction();
+                $resume = Resume::create($data);
+                // add my library
+                $resume->assignUser(['created_by' => $userId, 'updated_by' => $userId], $userId);
+                // todo: add job library
+                // todo: add to station
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollBack();
+            }
         }
+        $resume = Resume::findOrFail($id);
+        return view('Lieplus::resume.edit', compact('resume'));
     }
 
     // public function joblibrary()

@@ -188,7 +188,7 @@ class Resume extends Base
     {
         $user_ids = $this->users()->pluck('user_id')->toArray();
 
-        return in_array(Auth::id(), $user_ids);
+        return  Auth::user()->hasRole('admin') || in_array(Auth::id(), $user_ids);
     }
 
     public function getMobileAttribute($value)
@@ -222,6 +222,7 @@ class Resume extends Base
     {
         $options = '<div class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true"><i class="purple ace-icon fa fa-asterisk bigger-120"></i>操作<i class="ace-icon fa fa-caret-down"></i></a><ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right"><li><a href="' . route('resume.detail', $this->id) . '"><i class="blue ace-icon fa fa-eye bigger-120"></i>查看 </a></li>';
         if ($this->is_mine) {
+            $options .= '<li><a href="' . route('resume.edit', $this->id) . '"><i class="blue ace-icon fa fa-edit bigger-120"></i>编辑 </a></li>';
             $options .= '<li><a href="' . route('resume.detail', [$this->id, 'notice']) . '"><i class="blue ace-icon fa fa-bell-o bigger-120"></i>提醒 </a></li>';
         } else {
             $options .= '<li><a href="javascript:void(0);" id="my-' . $this->id . '" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-download bigger-120"></i>加入我的简历库 </a></li>';

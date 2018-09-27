@@ -26,6 +26,13 @@ Breadcrumbs::register('resume.detail', function ($breadcrumbs, $id)
     $breadcrumbs->push('详情', route('resume.detail', $id));
 });
 
+// Home > Resume > Edit
+Breadcrumbs::register('resume.edit', function ($breadcrumbs, $id)
+{
+    $breadcrumbs->parent('resume');
+    $breadcrumbs->push('编辑', route('resume.edit', $id));
+});
+
 // Home > Resume > My
 Breadcrumbs::register('resume.my', function ($breadcrumbs)
 {

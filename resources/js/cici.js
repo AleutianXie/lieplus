@@ -6,7 +6,6 @@
 
 
 require('./bootstrap');
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -16,10 +15,10 @@ require('select2/dist/js/select2.full');
 // require('bootstrap-wysiwyg');
 require('datatables.net');
 require('datatables.net-bs');
-require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min');
 require('./ace');
 require('./ace-elements');
+require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable');
 
 // sweetalert2
 require('./sweetalert2');
-//import swal from "./sweetalert2";
+
