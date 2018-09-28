@@ -26,10 +26,10 @@ class LieplusServiceProvider extends ServiceProvider
         ]);
 
         $this->publishes([
-            __DIR__.'/../database/data/' => database_path('data/vendor/cici/lieplus'),
+            __DIR__ . '/../database/data/' => database_path('data/vendor/cici/lieplus'),
         ]);
         $this->publishes([
-            __DIR__.'/../database/seeds/' => database_path('seeds'),
+            __DIR__ . '/../database/seeds/' => database_path('seeds'),
         ]);
     }
 

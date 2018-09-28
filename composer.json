@@ -26,7 +26,8 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories"
+            "database/factories",
+            "packages/cici/lieplus/database/seeds"
         ],
         "psr-4": {
             "App\\": "app/",
