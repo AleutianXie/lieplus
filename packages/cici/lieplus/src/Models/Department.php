@@ -1,10 +1,12 @@
 <?php
+
 namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Department model instance
@@ -22,10 +24,10 @@ class Department extends Base
 
     public static function create(array $attributes)
     {
-        $customer_id     = $attributes['customer_id'];
-        $name            = $attributes['name'];
-        $created_by      = $attributes['created_by'];
-        $updated_by      = $attributes['updated_by'];
+        $customer_id = $attributes['customer_id'];
+        $name = $attributes['name'];
+        $created_by = Auth::id();
+        $updated_by = Auth::id();
 
         if (static::getDepartments()->where('customer_id', $customer_id)->where('name', $name)->first()) {
             throw NameAlreadyExists::create($name);
@@ -42,7 +44,7 @@ class Department extends Base
     /**
      * Get the customer that owns the department.
      */
-    public function customer() : BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo('Cici\Lieplus\Models\Customer');
     }
@@ -50,7 +52,7 @@ class Department extends Base
     /**
      * Get the job that belongs to the department.
      */
-    public function job() : HasOne
+    public function job(): HasOne
     {
         return $this->hasOne('Cici\Liplus\Models\Job');
     }

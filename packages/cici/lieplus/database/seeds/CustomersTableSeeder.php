@@ -1,10 +1,12 @@
 <?php
 
+use App\User;
 use Cici\Lieplus\Models\Customer;
 use Cici\Lieplus\Models\Department;
 use Cici\Lieplus\Models\Job;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 
 class CustomersTableSeeder extends Seeder
 {
@@ -15,6 +17,9 @@ class CustomersTableSeeder extends Seeder
      */
     public function run()
     {
+        $user = User::role('admin')->first();
+        Auth::login($user);
+
         // 随机生成100个客户，每个客户10个部门，每个部门10个职位
         $faker = Factory::create('zh_CN');
 
@@ -92,9 +97,9 @@ class CustomersTableSeeder extends Seeder
             '软件运营'
         ];
 
-        $this->command->line('随机生成100个客户.');
-        $this->command->line('给每个客户生成10个部门.');
-        $this->command->line('给每个部门生成10个职位...'.PHP_EOL);
+        $this->command->info('随机生成100个客户.');
+        $this->command->info('给每个客户生成10个部门.');
+        $this->command->info('给每个部门生成10个职位...');
 
         $bar = $this->command->getOutput()->createProgressBar(100);
         for ($i = 0; $i < 100; $i++) {
@@ -114,22 +119,18 @@ class CustomersTableSeeder extends Seeder
                 'introduce' => addslashes($faker->randomHtml()),
                 'level' => $faker->numberBetween(1, 3),
                 'type' => $faker->numberBetween(1, 3),
-                'status' => $faker->numberBetween(1, 2),
-                'created_by' => 1,
-                'updated_by' => 1
+                'status' => $faker->numberBetween(1, 2)
             ];
 
             $customer = Customer::create($attributes);
-            $customer->assignUser(['created_by' => 1, 'updated_by' => 1], 1);
+            $customer->assignUser(['created_by' => Auth::id(), 'updated_by' => Auth::id()], Auth::id());
 
             $departmentNames = $faker->randomElements($departments, 10);
 
             foreach ($departmentNames as $departmentName) {
                 $attributes = [
                     'customer_id' => $customer->id,
-                    'name' => $departmentName,
-                    'created_by' => 1,
-                    'updated_by' => 1
+                    'name' => $departmentName
                 ];
                 $department = Department::create($attributes);
 
@@ -147,8 +148,6 @@ class CustomersTableSeeder extends Seeder
                         'salary' => addslashes($faker->randomHtml()),
                         'property' => $faker->numberBetween(1, 3),
                         'closed' => $faker->numberBetween(0, 1),
-                        'created_by' => 1,
-                        'updated_by' => 1
                     ];
                     Job::create($attributes);
                 }
@@ -157,6 +156,15 @@ class CustomersTableSeeder extends Seeder
             $bar->advance();
         }
         $bar->finish();
-        $this->command->line(PHP_EOL.'完成！'.PHP_EOL);
+        $this->command->comment(PHP_EOL . '生成完成！');
+
+        $this->command->info('随机分配100个职位...');
+        $job_ids = Department::select(['id'])->pluck('id')->toArray();
+        $job_ids = $faker->randomElements($job_ids, 100);
+        foreach ($job_ids as $job_id) {
+            $job = Job::findOrFail($job_id);
+            $job->assignUser(['created_by' => Auth::id(), 'updated_by' => Auth::id()], Auth::id());
+        }
+        $this->command->comment('分配完成！');
     }
 }

@@ -51,8 +51,8 @@ class Resume extends Base
         $industry = $attributes['industry'];
         $salary = $attributes['salary'];
         $others = $attributes['others'];
-        $created_by = $attributes['created_by'];
-        $updated_by = $attributes['updated_by'];
+        $created_by = Auth::id();
+        $updated_by = Auth::id();
 
         if (static::getResumes()->where('mobile', $mobile)->first()) {
             throw MobileAlreadyExists::create($mobile);

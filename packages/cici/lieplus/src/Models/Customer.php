@@ -1,4 +1,5 @@
 <?php
+
 namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\NameAlreadyExists;
@@ -27,24 +28,24 @@ class Customer extends Base
 
     public static function create(array $attributes)
     {
-        $name            = $attributes['name'];
-        $province        = $attributes['province'];
-        $city            = $attributes['city'];
-        $county          = $attributes['county'];
-        $welfare         = $attributes['welfare'];
-        $work_time       = $attributes['work_time'];
-        $founder         = empty($attributes['founder']) ? '' : $attributes['founder'];
-        $financing       = $attributes['financing'];
-        $industry        = $attributes['industry'];
-        $ranking         = $attributes['ranking'];
-        $property        = $attributes['property'];
-        $size            = $attributes['size'];
-        $introduce       = $attributes['introduce'];
-        $level           = $attributes['level'];
-        $type            = $attributes['type'];
-        $status          = $attributes['status'];
-        $created_by      = $attributes['created_by'];
-        $updated_by      = $attributes['updated_by'];
+        $name = $attributes['name'];
+        $province = $attributes['province'];
+        $city = $attributes['city'];
+        $county = $attributes['county'];
+        $welfare = $attributes['welfare'];
+        $work_time = $attributes['work_time'];
+        $founder = empty($attributes['founder']) ? '' : $attributes['founder'];
+        $financing = $attributes['financing'];
+        $industry = $attributes['industry'];
+        $ranking = $attributes['ranking'];
+        $property = $attributes['property'];
+        $size = $attributes['size'];
+        $introduce = $attributes['introduce'];
+        $level = $attributes['level'];
+        $type = $attributes['type'];
+        $status = $attributes['status'];
+        $created_by = Auth::id();
+        $updated_by = Auth::id();
 
         if (static::getCustomers()->where('name', $name)->first()) {
             throw NameAlreadyExists::create($name);

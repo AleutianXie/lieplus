@@ -41,8 +41,8 @@ class Job extends Base
         $salary          = $attributes['salary'];
         $property        = $attributes['property'];
         $closed          = $attributes['closed'];
-        $created_by      = $attributes['created_by'];
-        $updated_by      = $attributes['updated_by'];
+        $created_by      = Auth::id();
+        $updated_by      = Auth::id();
 
         if (static::getJobs()->where('department_id', $department_id)->where('name', $name)->first()) {
             throw NameAlreadyExists::create($name);

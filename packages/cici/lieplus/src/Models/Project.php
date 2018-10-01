@@ -3,6 +3,7 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\ProjectAlreadyExists;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Project model instance
@@ -22,8 +23,8 @@ class Project extends Base
     {
         $job_id          = $attributes['job_id'];
         $status          = $attributes['status'];
-        $created_by      = $attributes['created_by'];
-        $updated_by      = $attributes['updated_by'];
+        $created_by      = Auth::id();
+        $updated_by      = Auth::id();
 
         if (static::getProjects()->where('job_id', $job_id)->first()) {
             throw ProjectAlreadyExists::create($job_id);
