@@ -21,4 +21,5 @@ require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable');
 
 // sweetalert2
 require('./sweetalert2');
+// require('./tinymce');
 

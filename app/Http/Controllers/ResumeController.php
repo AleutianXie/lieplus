@@ -102,16 +102,11 @@ class ResumeController
         if ($request->isMethod('POST')) {
             try {
                 $data = $request->input();
-                $userId = $request->user()->id;;
-                $data['created_by'] = $userId;
-                $data['updated_by'] = $userId;
+                $resume = Resume::findOrFail($id);
                 DB::beginTransaction();
-                $resume = Resume::create($data);
-                // add my library
-                $resume->assignUser(['created_by' => $userId, 'updated_by' => $userId], $userId);
-                // todo: add job library
-                // todo: add to station
+                $resume->update($data);
                 DB::commit();
+                return redirect()->route('resume.detail', [$id, 'tab']);
             } catch (Exception $e) {
                 DB::rollBack();
             }
