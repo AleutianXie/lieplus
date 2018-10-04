@@ -23,7 +23,7 @@
                 @endrole
 
                 <li>
-                    <a href="{{ url('/user/'.Auth::id().'#baseinfo') }}">
+                    <a href="{{ route('user.detail', Auth::id()) }}">
                         <i class="ace-icon fa fa-user"></i>
                         用户中心
                     </a>

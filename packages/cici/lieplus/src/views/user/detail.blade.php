@@ -629,7 +629,6 @@
             //onblur:'ignore',
             source: genders,
             select2: {
-                'value': `{{ $user->profile->gender }}`,
                 'width': 140,
             }
         });
