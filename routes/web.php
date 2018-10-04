@@ -139,8 +139,8 @@ Route::group(['prefix' => 'plan', 'middleware' => ['auth']], function ()
 });
 
 // for user profile
-Route::match(['get', 'post'], '/user/{id}', ['as' => 'user.profile', 'uses' => 'UserController@detail'])->where('id', '[0-9]+');
-Route::post('/user/edit', ['as' => 'user.edit', 'uses' => 'UserController@edit'])->where('id', '[0-9]+');
+Route::match(['get', 'post'], '/user/{id}/{tab?}', 'UserController@detail')->where('id', '[0-9]+')->where('tab', 'index|setting|password')->name('user.detail');
+Route::post('/user/edit', 'UserController@edit')->where('id', '[0-9]+')->name('user.edit');
 Route::post('/user/department/add', 'UserDepartmentController@add');
 //Route::post('/role/add', 'RoleController@add');
 Route::post('/user/department/edit', 'UserDepartmentController@edit');

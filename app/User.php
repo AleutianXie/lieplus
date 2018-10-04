@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Cici\Lieplus\Models\Profile;
 use Cici\Lieplus\Traits\CustomerTrait;
 use Cici\Lieplus\Traits\JobTrait;
 use Cici\Lieplus\Traits\ResumeTrait;
@@ -37,7 +38,7 @@ class User extends Authenticatable
 
     public function profile()
     {
-        return $this->hasOne('App\Profile', 'uid', 'id');
+        return $this->hasOne(Profile::class);
     }
 
     /*    public function role()

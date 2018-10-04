@@ -227,22 +227,3 @@
         </div>
     </div>
 @endsection
-
-@section('js')
-    <script type="application/javascript">
-        //defined a array (the server side returned data format was same like that)
-        //Array[{Object},{...}]
-        var data = [
-            {id:1 ,name:'Chicago Bulls',desc:'芝加哥公牛'},
-            {id:2 ,name:'Cleveland Cavaliers',desc:'克里夫兰骑士'},
-            {id:3 ,name:'Detroit Pistons',desc:'底特律活塞'},
-            {id:4 ,name:'Indiana Pacers',desc:'印第安纳步行者'}
-        ];
-        //init SelectPage
-        $('#selectpage').selectPage({
-            showField : 'desc',
-            keyField : 'id',
-            data : data
-        });
-    </script>
-@stop

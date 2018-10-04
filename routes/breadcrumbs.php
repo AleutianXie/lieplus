@@ -55,10 +55,10 @@ Breadcrumbs::register('resume.all', function ($breadcrumbs)
 });
 
 // Home > UserCenter
-Breadcrumbs::register('user.profile', function ($breadcrumbs, $id)
+Breadcrumbs::register('user.detail', function ($breadcrumbs, $id)
 {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push('用户中心', route('user.profile', $id));
+    $breadcrumbs->push('用户中心', route('user.detail', $id));
 });
 
 // Home
