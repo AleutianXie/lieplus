@@ -2,4 +2,4 @@
 
 @section('title', '金领航简历库')
 
-@include('Lieplus::resume.list')
+@include('Lieplus::resume.list', ['lines' => $lines])

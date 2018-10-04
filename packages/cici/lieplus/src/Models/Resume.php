@@ -2,10 +2,8 @@
 
 namespace Cici\Lieplus\Models;
 
-use App\User;
 use Cici\Lieplus\Exceptions\EmailAlreadyExists;
 use Cici\Lieplus\Exceptions\MobileAlreadyExists;
-use Cici\Lieplus\Models\Region;
 use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -148,19 +146,19 @@ class Resume extends Base
     public function getProvinceAttribute($value)
     {
         $region = Region::getInstance();
-        return $region->getNameByAdcode($value);
+        return $region->getByAdcode($value);
     }
 
     public function getCityAttribute($value)
     {
         $region = Region::getInstance();
-        return $region->getNameByAdcode($value);
+        return $region->getByAdcode($value);
     }
 
     public function getCountyAttribute($value)
     {
         $region = Region::getInstance();
-        return $region->getNameByAdcode($value);
+        return $region->getByAdcode($value);
     }
 
     public function getFeedbackAttribute()
@@ -227,7 +225,7 @@ class Resume extends Base
         } else {
             $options .= '<li><a href="javascript:void(0);" id="my-' . $this->id . '" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-download bigger-120"></i>加入我的简历库 </a></li>';
         }
-        $options .= '<li><a href="' . route('resume.jobmodal', $this->id) . '" data-toggle="modal" data-target="#modal-job" data-rid="' . $this->id . '"><i class="blue ace-icon fa fa-plus-square bigger-120"></i>加入职位流水线 </a></li></ul></div>';
+        $options .= '<li><a href="javascript:void(0);" id="job-library-' .$this->id . '" data-rid="' . $this->id . '" data-name="' . $this->name . '" data-sn="' . $this->serial_number . '"><i class="blue ace-icon fa fa-plus-square bigger-120"></i>加入职位流水线 </a></li></ul></div>';
         return $options;
     }
 

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreResumePost;
 use Cici\Lieplus\Models\Job;
+use Cici\Lieplus\Models\Region;
 use Cici\Lieplus\Models\Resume;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Yajra\DataTables\Facades\DataTables;
 
 class ResumeController
@@ -53,8 +55,8 @@ class ResumeController
      */
     public function my(Request $request)
     {
-        $filter = $request->input();
-        return view('Lieplus::resume.my', compact('filter'));
+        $lines = $this->getLineList($request);
+        return view('Lieplus::resume.my', compact('lines'));
     }
 
     /**
@@ -66,7 +68,8 @@ class ResumeController
             return view('Lieplus::resume.job');
         }
 
-        return view('Lieplus::resume.job_resume', compact('id'));
+        $lines = $this->getLineList($request);
+        return view('Lieplus::resume.job_resume', compact('id', 'lines'));
     }
 
     /**
@@ -74,7 +77,8 @@ class ResumeController
      */
     public function all(Request $request)
     {
-        return view('Lieplus::resume.all');
+        $lines = $this->getLineList($request);
+        return view('Lieplus::resume.all', compact('lines'));
     }
 
     public function detail(Request $request, $id, $tab = 'index')
@@ -106,73 +110,26 @@ class ResumeController
                 DB::beginTransaction();
                 $resume->update($data);
                 DB::commit();
-                return redirect()->route('resume.detail', [$id, 'tab']);
+                return redirect()->route('resume.detail', $id);
             } catch (Exception $e) {
                 DB::rollBack();
             }
         }
         $resume = Resume::findOrFail($id);
-        return view('Lieplus::resume.edit', compact('resume'));
+        $region = Region::getInstance();
+        $provinces = $region->getProvinces();
+        $cities = $region->getCities($resume->province->adcode);
+        $counties = $region->getCounties($resume->city->adcode);
+        return view('Lieplus::resume.edit', compact('resume', 'provinces', 'cities', 'counties'));
     }
 
-    // public function joblibrary()
-    // {
-    //     $title = '我的职位简历库';
-    //     if (Auth::user()->hasRole('admin')) {
-    //         $lines = Line::all();
-    //     } else {
-    //         $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-    //         if ($assignlines) {
-    //             $lines = array_pluck($assignlines, 'line');
-    //         } else {
-    //             $lines = [];
-    //         }
-    //     }
-    //     return view('resume.job', compact('title', 'lines'));
-    // }
-
-    // public function all()
-    // {
-    //     $title = '猎加简历';
-    //     if (Auth::user()->hasRole('admin')) {
-    //         $lines = Line::all();
-    //     } else {
-    //         $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-    //         if ($assignlines) {
-    //             $lines = array_pluck($assignlines, 'line');
-    //         } else {
-    //             $lines = [];
-    //         }
-    //     }
-    //     return view('resume.all', compact('title', 'lines'));
-    // }
-
-    // public function search(Request $request, $type)
-    // {
-    //     $resumes = [];
-    //     if ('my' == $type) {
-    //         $resumes = array_pluck(MyLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(), 'resume');
-    //     }
-    //     if ('job' == $type) {
-    //         $resumes = array_pluck(JobLibrary::with('resume')->where(['uid' => Auth::id(), 'show' => 1])->latest()->orderByDesc('id')->get(), 'resume');
-    //     }
-    //     if ('all' == $type) {
-    //         $resumes = Resume::where(['show' => 1])->latest()->orderByDesc('id')->get(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at']);
-    //     }
-    //     foreach ($resumes as $key => $resume) {
-    //         $lsx = [];
-    //         $joblibraries = $resume->with('joblibraries')->where(['id' => $resume->id])->first(['id', 'sn', 'name', 'mobile', 'email', 'feedback', 'created_at'])->joblibraries;
-    //         foreach ($joblibraries as $joblibrary) {
-    //             if (isset($joblibrary->line->sn) && isset($joblibrary->line->job->name)) {
-    //                 $lsx[] = $joblibrary->line->sn . '(' . $joblibrary->line->job->name . ')';
-    //             }
-    //         }
-    //         $resumes[$key]           = $resume;
-    //         $resumes[$key]['lsx']    = $lsx;
-    //         $resumes[$key]['isMine'] = $resume->isMine;
-    //     }
-    //     return Datatables::of($resumes)->make();
-    // }
+    public function lines(Request $request)
+    {
+        $filter = $request->input();
+        $model = $request->user()->resumes()->getQuery();
+        $lines = $model->paginate(30)->appends($filter);
+        dd($lines);
+    }
 
     public function addMy(Request $request, $id)
     {
@@ -185,59 +142,43 @@ class ResumeController
         return json_encode(['code' => 0, 'msg' => '操作成功！']);
     }
 
-    // public function addjob(Request $request)
-    // {
-    //     $this->validate($request, [
-    //         'rid' => 'required',
-    //         'jid' => 'required',
-    //     ], [
-    //         'jid.required' => '请选择:attribute.',
-    //     ], [
-    //         'rid' => '简历',
-    //         'jid' => '职位流水线',
-    //     ]);
-    //     $data       = $request->input();
-    //     $rid        = $data['rid'];
-    //     $jid        = $data['jid'];
-    //     $joblibrary = JobLibrary::where(compact('rid', 'jid'))->first();
-    //     if (!empty($joblibrary)) {
-    //         return json_encode(['code' => 1, 'msg' => '简历已经在该职位流水线中！']);
-    //     }
-    //     $joblibrary          = new JobLibrary();
-    //     $joblibrary->rid     = $rid;
-    //     $joblibrary->jid     = $jid;
-    //     $joblibrary->uid     = Auth::id();
-    //     $joblibrary->creater = Auth::id();
-    //     if ($joblibrary->save()) {
-    //         return json_encode(['code' => 0, 'msg' => '操作成功！']);
-    //     }
-    //     return json_encode(['code' => 2, 'msg' => '操作失败！']);
-    // }
+    public function addJob(Request $request)
+    {
+//         dd($request->input());
+//         $this->validate($request, [
+//             'rid' => 'required',
+//             'jid' => 'required',
+//         ], [
+//             'jid.required' => '请选择:attribute.',
+//         ], [
+//             'rid' => '简历',
+//             'jid' => '职位流水线',
+//         ]);
+//         $data       = $request->input();
+//         $rid        = $data['rid'];
+//         $jid        = $data['jid'];
+//         $joblibrary = JobLibrary::where(compact('rid', 'jid'))->first();
+//         if (!empty($joblibrary)) {
+//             return json_encode(['code' => 1, 'msg' => '简历已经在该职位流水线中！']);
+//         }
+//         $joblibrary          = new JobLibrary();
+//         $joblibrary->rid     = $rid;
+//         $joblibrary->jid     = $jid;
+//         $joblibrary->uid     = Auth::id();
+//         $joblibrary->creater = Auth::id();
+//         if ($joblibrary->save()) {
+//             return json_encode(['code' => 0, 'msg' => '操作成功！']);
+//         }
+        return json_encode(['code' => 2, 'msg' => '操作失败！']);
+    }
 
-    // public function jobmodal(Request $request, $id)
-    // {
-    //     if ($request->isMethod('GET')) {
-    //         $resume = Resume::findOrFail($id);
-    //         $jids   = array_pluck($resume->joblibraries, 'jid');
-    //         //dd($jids);
-    //         $lines  = [];
-    //         if (Auth::user()->hasRole('admin')) {
-    //             $lines = Line::all();
-    //         } else {
-    //             $assignlines = AssignLine::where(['uid' => Auth::id(), 'show' => 1])->get();
-    //             if ($assignlines) {
-    //                 $lines = array_pluck($assignlines, 'line');
-    //             }
-    //         }
-    //         foreach ($lines as $line) {
-    //             $line->isAssigned = 0;
-    //             if (in_array($line->job->id, $jids)) {
-    //                 $line->isAssigned = 1;
-    //             }
-    //         }
-    //     }
-    //     return view('resume.modaljob', compact('lines', 'resume'));
-    // }
+    private function getLineList(Request $request)
+    {
+        $model = $request->user()->resumes()->getQuery();
+        $total = $model->count();
+        $lines = $model->limit(30)->get();
+        return new LengthAwarePaginator($lines, $total, 30, 1);
+    }
 
     private function getModel(&$model, $filter = [])
     {

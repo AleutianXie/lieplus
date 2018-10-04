@@ -7,6 +7,8 @@
 
 @section('content')
     <div class="row">
+        <input type="text" id="selectpage" >
+
         <div class="tabbable">
             <ul class="nav nav-tabs padding-2 tab-size-bigger" id="myTab">
                 <li @if ('index' == $tab) class="active" @endif>
@@ -84,9 +86,9 @@
                             <div class="profile-info-name"> 城市</div>
                             <div class="profile-info-value">
                                 <i class="fa fa-map-marker light-orange bigger-110"></i>
-                                <span>{{ $resume->province }}</span>
-                                <span>{{ $resume->city }}</span>
-                                <span>{{ $resume->county }}</span>
+                                <span>{{ $resume->province->name }}</span>
+                                <span>{{ $resume->city->name }}</span>
+                                <span>{{ $resume->county->name }}</span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -225,3 +227,22 @@
         </div>
     </div>
 @endsection
+
+@section('js')
+    <script type="application/javascript">
+        //defined a array (the server side returned data format was same like that)
+        //Array[{Object},{...}]
+        var data = [
+            {id:1 ,name:'Chicago Bulls',desc:'芝加哥公牛'},
+            {id:2 ,name:'Cleveland Cavaliers',desc:'克里夫兰骑士'},
+            {id:3 ,name:'Detroit Pistons',desc:'底特律活塞'},
+            {id:4 ,name:'Indiana Pacers',desc:'印第安纳步行者'}
+        ];
+        //init SelectPage
+        $('#selectpage').selectPage({
+            showField : 'desc',
+            keyField : 'id',
+            data : data
+        });
+    </script>
+@stop

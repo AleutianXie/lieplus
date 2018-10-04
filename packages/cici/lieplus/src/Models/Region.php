@@ -46,8 +46,8 @@ class Region extends Base
         return static::where('level', 3)->where('adcode', 'like', substr($city, 0, 4).'%')->orderBy('adcode')->pluck('name', 'adcode')->toArray();
     }
 
-    public function getNameByAdcode($adcode)
+    public function getByAdcode($adcode)
     {
-        return static::where('adcode', $adcode)->first()->name;
+        return static::where('adcode', $adcode)->first();
     }
 }

@@ -79,14 +79,23 @@
 
                 <label class="control-label col-xs-6 col-sm-3 no-padding-right" for="state">城市:</label>
                 <div class="col-xs-6 col-sm-6">
-                    <select id="province" name="province" required data-value="{{ $resume->province }}">
+                    <select id="province" name="province" required">
                         <option></option>
+                    @foreach ($provinces as $key => $province)
+                        <option value="{{ $key }}" @if($key == $resume->province->adcode) selected @endif>{{ $province }}</option>
+                    @endforeach
                     </select>
                     <select id="city" name="city" required data-value="{{ $resume->city }}">
                         <option></option>
+                        @foreach ($cities as $key => $city)
+                            <option value="{{ $key }}" @if($key == $resume->city->adcode) selected @endif>{{ $city }}</option>
+                        @endforeach
                     </select>
                     <select id="county" name="county" required data-value="{{ $resume->county }}">
                         <option></option>
+                        @foreach ($counties as $key => $county)
+                            <option value="{{ $key }}" @if($key == $resume->county->adcode) selected @endif>{{ $county }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -183,8 +192,8 @@
 
             <div class="form-group text-center">
                 <button class="btn btn-primary" type="submit">
-                    <i class="ace-icon fa fa-plus bigger-125"></i>
-                    新建
+                    <i class="ace-icon fa fa-edit bigger-125"></i>
+                    修改
                 </button>
                 <button class="btn" type="reset">
                     <i class="ace-icon fa fa-undo bigger-125"></i>
@@ -238,7 +247,7 @@
                 },
                 cache: true
             },
-        }).val('{{ $resume->province }}').trigger("change");
+        });
 
         $('#city').select2({
             placeholder: '请选择市',

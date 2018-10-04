@@ -140,31 +140,64 @@
             });
         });
 
-        addToLine = async function () {
-            const {value: country} = await swal({
+        addToLine = async function (id, serialNumber, name) {
+            let html = '编号：<b>' + serialNumber + '</b>, 姓名：<b>' + name + '</b>';
+            html += '<div class="line_list"><div class="table-header text-left"> 流水线列表</div>';
+            @foreach($lines as $line)
+                html += '<div class="col-md-6 text-left"><input type="checkbox" id="line-id-{{ $line->id }}" name="line-id[]" value="{{ $line->id }}"><label for="&nbsp;{{ $line->name }}&nbsp;">&nbsp;{{ $line->name }}({{ $line->serial_number }})&nbsp;</label></div>';
+            @endforeach
+
+            html += `{{ $lines->links('Lieplus::pagination.ajax') }}</div>`;
+            const {value: result} = await swal({
                 title: '加入职位流水线',
-                input: 'select',
-                inputOptions: {
-                    'SRB': 'Serbia',
-                    'UKR': 'Ukraine',
-                    'HRV': 'Croatia'
-                },
-                inputPlaceholder: 'Select country',
+                width: '96rem',
+                html: html,
                 showCancelButton: true,
-                inputValidator: (value) => {
-                    return new Promise((resolve) => {
-                        if (value === 'UKR') {
-                            resolve()
-                        } else {
-                            resolve('You need to select Ukraine :)')
-                        }
-                    })
+                animation: false,
+                customClass: 'animated swing',
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                    //将"key1=value1&key2=valu2" 形式封装整FromData形式
+                    let line_ids = [];
+                    let formData = new FormData();
+                    formData.append("_token","{{ csrf_token() }}");
+                    $('input[type=checkbox][name^=line-id]:checked').each(function (i) {
+                        line_ids.push($(this).val());
+                        formData.append("line_id[]", $(this).val());
+                    });
+
+                    var opts = {
+                        method:"POST",
+                        body:formData,
+                    };
+                    return fetch(`{{ route('resume.addjob') }}`, opts)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
                 }
             })
 
-            if (country) {
-                swal('You selected: ' + country)
+            if (result) {
+                let type = result['code'] == 0 ? 'success' : 'error';
+                swal({
+                    title: '加入职位流水线',
+                    text: result['msg'],
+                    type: type,
+                    allowOutsideClick: false,
+                });
             }
         }
+
+        $('table.table tbody').on('click', 'a[id^=job-library-]', function () {
+            var rid = $(this)[0].id.substring(12);
+            var name = $(this)[0].dataset.name;
+            var serial_number = $(this)[0].dataset.sn;
+            addToLine(rid, serial_number, name);
+        });
     </script>
 @endsection

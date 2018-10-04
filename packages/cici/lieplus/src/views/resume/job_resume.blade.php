@@ -13,4 +13,4 @@
     </style>
 @endsection
 
-@include('Lieplus::resume.list', ['t' => 'job', 'id' => $id ])
+@include('Lieplus::resume.list', ['t' => 'job', 'id' => $id, 'lines' => $lines ])
