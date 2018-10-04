@@ -20,7 +20,8 @@ class ResumeController
      */
     public function index(Request $request)
     {
-        return view('Lieplus::resume.my');
+        $lines = $this->getLineList($request);
+        return view('Lieplus::resume.my', compact('lines'));
     }
 
     /**
