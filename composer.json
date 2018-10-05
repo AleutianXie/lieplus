@@ -12,7 +12,6 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.7",
         "spatie/laravel-permission": "^2.19",
-        "stevenyangecho/laravel-u-editor": "^1.4",
         "yajra/laravel-datatables-oracle": "^8.8"
     },
     "require-dev": {
