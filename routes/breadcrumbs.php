@@ -62,10 +62,10 @@ Breadcrumbs::register('user.detail', function ($breadcrumbs, $id)
 });
 
 // Home
-Breadcrumbs::register('admin', function ($breadcrumbs)
+Breadcrumbs::register('user.index', function ($breadcrumbs)
 {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push('用户列表', route('admin'));
+    $breadcrumbs->push('用户列表', route('user.index'));
 });
 
 // Home > Job

@@ -31,7 +31,7 @@
 
                 @role('admin')
                 <li>
-                    <a href="{{ url('/admin') }}">
+                    <a href="{{ route('user.index') }}">
                         <i class="ace-icon fa fa-user"></i>
                         用户管理
                     </a>

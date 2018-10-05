@@ -7,21 +7,21 @@
     <div class="tabbable">
         <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
             <li @if('index' == $tab)class="active"@endif>
-                <a data-toggle="tab" href="#baseinfo" aria-expanded="false">
+                <a href="{{ route('user.detail', $user->id) }}" aria-expanded="false">
                     <i class="blue ace-icon fa fa-user bigger-120"></i>
                     基础信息
                 </a>
             </li>
 
             <li @if('password' == $tab)class="active"@endif>
-                <a data-toggle="tab" href="#password" aria-expanded="false">
+                <a href="{{ route('user.detail', [$user->id, 'password']) }}" aria-expanded="false">
                     <i class="green ace-icon fa fa-key bigger-120"></i>
                     密码
                 </a>
             </li>
             @role('admin')
             <li @if('setting' == $tab)class="active"@endif>
-                <a data-toggle="tab" href="#settings" aria-expanded="false">
+                <a href="{{ route('user.detail', [$user->id, 'setting']) }}" aria-expanded="false">
                     <i class="purple ace-icon fa fa-cog bigger-120"></i>
                     设置
                 </a>
@@ -239,7 +239,7 @@
                                         </tbody>
                                     </table>
                                     @role('admin')
-                                    <a href="#" class="btn btn-link" onclick="assign({{ $user->id }});">
+                                    <a href="javascript:void(0);" id="addRole" data-uid="{{ $user->id }}" data-name="{{ $user->name }}" class="btn btn-link">
                                         <i class="ace-icon fa fa-plus-circle bigger-120 green"></i>&nbsp;
                                         分配
                                     </a>
@@ -692,6 +692,75 @@
         $('#role').select2({
             minimumResultsForSearch: -1,
             width: 140
+        });
+
+        addRole = async function (id, name) {
+            let html = 'ID：<b>' + id + '</b>, 姓名：<b>' + name + '</b>';
+
+            const {value: result} = await swal({
+                title: '增加角色',
+                showCancelButton: true,
+                animation: false,
+                customClass: 'animated pulse',
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                html: html,
+                input: 'select',
+                inputOptions: {
+                    @foreach($roles as $role)
+                    @if(!$user->hasRole($role->name))
+                    '{{ $role->name }}':'{{ __("lieplus.roles.".$role->name) }}',
+                    @endif
+                    @endforeach
+                },
+                inputPlaceholder: '请选择角色',
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value === '') {
+                            resolve('请选择角色');
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
+            });
+
+            if (result) {
+                //let type = result['code'] == 0 ? 'success' : 'error';
+                //将"key1=value1&key2=valu2" 形式封装整FromData形式
+                let line_ids = [];
+                let formData = new FormData();
+                formData.append("_token","{{ csrf_token() }}");
+                formData.append("user_id","{{ $user->id }}");
+                formData.append("role", result);
+
+                var opts = {
+                    method:"POST",
+                    body:formData,
+                };
+                return fetch(`{{ route('user.addrole') }}`, opts)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    }).then((data) => {
+                        let type = data.code == 0 ? 'success' : 'error';
+                        swal({
+                            title: '增加角色',
+                            text: data.msg,
+                            type: type,
+                            allowOutsideClick: false,
+                        });
+                        location.reload();
+                    });
+            }
+        }
+
+        $('#addRole').on('click', function () {
+            let id = $(this)[0].dataset.uid;
+            let name = $(this)[0].dataset.name;
+            addRole(id, name);
         });
     </script>
 

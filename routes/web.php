@@ -138,18 +138,16 @@ Route::group(['prefix' => 'plan', 'middleware' => ['auth']], function ()
     Route::get('/stations/{status}', 'PlanController@getStations')->where(['status', '[1-8]?'])->name('line.plan.search');
 });
 
-// for user profile
-Route::match(['get', 'post'], '/user/{id}/{tab?}', 'UserController@detail')->where('id', '[0-9]+')->where('tab', 'index|setting|password')->name('user.detail');
-Route::post('/user/edit', 'UserController@edit')->where('id', '[0-9]+')->name('user.edit');
-Route::post('/user/department/add', 'UserDepartmentController@add');
-//Route::post('/role/add', 'RoleController@add');
-Route::post('/user/department/edit', 'UserDepartmentController@edit');
-//Route::post('/role/edit', 'RoleController@edit');
-
-// admin
-Route::group(['prefix' => 'admin'], function ()
+// user
+Route::group(['prefix' => 'user', 'middleware' => ['auth']], function ()
 {
-    Route::match(['get', 'post'], '/', ['as' => 'admin', 'uses' => 'UserController@index']);
-    Route::match(['get', 'post'], '/index', ['as' => 'admin.index', 'uses' => 'UserController@index']);
-    Route::match(['get', 'post'], '/addrole', 'UserController@addrole');
+    Route::match(['get', 'post'], '/{index?}', 'UserController@index')->where('index', 'index')->name('user.index');
+    // for user profile
+    Route::match(['get', 'post'], '/{id}/{tab?}', 'UserController@detail')->where('id', '[0-9]+')->where('tab', 'index|setting|password')->name('user.detail');
+    Route::post('/edit', 'UserController@edit')->where('id', '[0-9]+')->name('user.edit');
+    Route::post('/user/department/add', 'UserDepartmentController@add');
+//Route::post('/role/add', 'RoleController@add');
+    Route::post('/user/department/edit', 'UserDepartmentController@edit');
+//Route::post('/role/edit', 'RoleController@edit');
+    Route::match(['get', 'post'], '/addrole', 'UserController@addRole')->name('user.addrole');
 });
