@@ -184,8 +184,6 @@
             <div class="form-group">
                 <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="others"><b>其它:</b></label>
                 <div class="col-xs-12 col-sm-10">
-                    @include('UEditor::head')
-                    {{--<div name="others" id="others" style="min-height: 600px;"></div>--}}
                     <textarea name="others" id="others" style="min-height: 600px;">{!! old('others') ?? $resume->others !!}</textarea>
                 </div>
             </div>
@@ -305,27 +303,5 @@
             minimumResultsForSearch: Infinity,
             width: 140
         });
-    </script>
-
-    <!-- 实例化编辑器 -->
-    <script type="text/javascript">
-        {{--var ue = UE.getEditor('others');--}}
-        {{--ue.ready(function () {--}}
-            {{--ue.execCommand('serverparam', '_token', '{{ csrf_token() }}');--}}
-        {{--});--}}
-        {{--ue.on('ready', function() {--}}
-            {{--ue.setContent('{!! old('others') ?? $resume->others !!}');--}}
-        {{--});--}}
-        {{--ue.on("focus", function (type, event) {--}}
-            {{--$(ue.container.parentElement.nextElementSibling).children('strong').text('');--}}
-            {{--$(ue.container.parentElement.parentElement).removeClass('has-error');--}}
-            {{--return;--}}
-        {{--});--}}
-
-        {{--UE.getEditor('others').ready(function() {--}}
-            {{--//this是当前创建的编辑器实例--}}
-            {{--this.execCommand('inserthtml','{!! $resume->others !!}内容');--}}
-        {{--})--}}
-
     </script>
 @endsection

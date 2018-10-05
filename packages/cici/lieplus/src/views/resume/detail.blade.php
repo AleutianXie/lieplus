@@ -2,13 +2,8 @@
 
 @section('title', '简历详情')
 
-@section('css')
-@endsection
-
 @section('content')
     <div class="row">
-        <input type="text" id="selectpage" >
-
         <div class="tabbable">
             <ul class="nav nav-tabs padding-2 tab-size-bigger" id="myTab">
                 <li @if ('index' == $tab) class="active" @endif>

@@ -177,10 +177,7 @@
   <div class="form-group">
       <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="others"><b>其它:</b></label>
       <div class="col-xs-12 col-sm-10">
-          @include('UEditor::head')
-          <div name="others" id="others" style="min-height: 600px;">
-          </div>
-          {{-- <div class="wysiwyg-editor" style="min-height: 400px;" name="others-editor" id="others-editor"> </div> --}}
+      <textarea name="others" id="others" style="min-height: 600px;">{!! old('others') !!}</textarea>
       </div>
   </div>
 
@@ -199,6 +196,17 @@
 </div>
 {{-- 创建简历表单--结束 --}}
 @endsection
+
+@section('css')
+    <script src='/tinymce/tinymce.min.js'></script>
+    <script>
+        tinymce.init({
+            selector: '#others',
+            plugins: ['paste', 'link'],
+            language_url: '/tinymce/langs/zh_CN.js'
+        });
+    </script>
+@stop
 
 @section('js')
 <script type="text/javascript">
@@ -294,10 +302,5 @@
         allowClear: true,
         width: 300
     });
-</script>
-
-<!-- 实例化编辑器 -->
-<script type="text/javascript">
-    var ue = UE.getEditor('others');
 </script>
 @endsection

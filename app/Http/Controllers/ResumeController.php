@@ -35,8 +35,6 @@ class ResumeController
             try {
                 $data = $request->input();
                 $userId = $request->user()->id;;
-                $data['created_by'] = $userId;
-                $data['updated_by'] = $userId;
                 DB::beginTransaction();
                 $resume = Resume::create($data);
                 // add my library
@@ -44,6 +42,7 @@ class ResumeController
                 // todo: add job library
                 // todo: add to station
                 DB::commit();
+                return redirect()->route('resume.detail', $resume->id);
             } catch (Exception $e) {
                 DB::rollBack();
             }
