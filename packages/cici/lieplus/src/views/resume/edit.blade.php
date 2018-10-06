@@ -3,7 +3,8 @@
 @section('title', '编辑简历')
 
 @section('content')
-    {{-- 创建简历表单--开始 --}}
+    @if (Auth::user()->hasRole('admin') || $resume->created_by == Auth::id())
+    {{-- 编辑简历表单--开始 --}}
     <div class="container-fluid">
         <form class="form-horizontal" id="validation-form" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
@@ -202,9 +203,13 @@
         </form>
     </div>
     {{-- 创建简历表单--结束 --}}
+    @else
+        Access Deny!
+    @endif
 @endsection
 
 @section('css')
+    @if (Auth::user()->hasRole('admin') || $resume->created_by == Auth::id())
     <script src='/tinymce/tinymce.min.js'></script>
     <script>
         tinymce.init({
@@ -213,9 +218,11 @@
             language_url: '/tinymce/langs/zh_CN.js'
         });
     </script>
+    @endif
 @stop
 
 @section('js')
+    @if (Auth::user()->hasRole('admin') || $resume->created_by == Auth::id())
     <script type="text/javascript">
         $('#degree').select2({
             minimumResultsForSearch: Infinity,
@@ -304,4 +311,5 @@
             width: 140
         });
     </script>
+    @endif
 @endsection
