@@ -1,7 +1,7 @@
 <?php
 namespace Cici\Lieplus\Models;
 
-
+use App\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Profile extends Base
@@ -22,5 +22,15 @@ class Profile extends Base
         parent::__construct($attributes);
 
         $this->setTable('profiles');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function branch()
+    {
+        return $this->hasOne(Branch::class, 'id', 'branch_id');
     }
 }

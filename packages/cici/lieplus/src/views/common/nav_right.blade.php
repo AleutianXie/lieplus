@@ -15,7 +15,7 @@
             <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                 @role('admin')
                 <li>
-                    <a href="{{ url('/user/'.Auth::id().'#settings') }}">
+                    <a href="{{ route('user.detail', [Auth::id(), 'setting']) }}">
                         <i class="ace-icon fa fa-cog"></i>
                         设置
                     </a>

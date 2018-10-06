@@ -145,7 +145,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth']], function ()
     // for user profile
     Route::match(['get', 'post'], '/{id}/{tab?}', 'UserController@detail')->where('id', '[0-9]+')->where('tab', 'index|setting|password')->name('user.detail');
     Route::post('/edit', 'UserController@edit')->where('id', '[0-9]+')->name('user.edit');
-    Route::post('/user/department/add', 'UserDepartmentController@add');
+    Route::post('/branch/add', 'UserController@addBranch')->name('user.addbranch');
 //Route::post('/role/add', 'RoleController@add');
     Route::post('/user/department/edit', 'UserDepartmentController@edit');
 //Route::post('/role/edit', 'RoleController@edit');

@@ -210,6 +210,7 @@ class CreateLieplusTables extends Migration
         // branches table
         Schema::create('branches', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('number', 11)->nullable();
             $table->string('name', 60);
             $table->binary('description')->nullable();
             $table->unsignedInteger('created_by');

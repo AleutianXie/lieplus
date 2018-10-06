@@ -13,14 +13,10 @@ class UserController extends Controller
     //
     public function detail(Request $request, $id, $tab = 'index')
     {
-        $departments = Branch::all();
+        $branches = Branch::all();
         $roles = Role::all();
         $user = User::findOrFail($id);
-        $departmentList = [];
-        foreach ($departments as $department) {
-            $departmentList[] = ['id' => $department->id, 'text' => $department->name];
-        }
-        return view('Lieplus::user.detail', compact('tab', 'departments', 'roles', 'user', 'departmentList'));
+        return view('Lieplus::user.detail', compact('tab', 'branches', 'roles', 'user'));
     }
 
     public function index(Request $request)
@@ -43,13 +39,15 @@ class UserController extends Controller
             if ($data['name'] == 'name' || $data['name'] == 'email') {
                 $user->update([$data['name'] => $data['value']]);
             } else {
-                $profile = $user->profile();
-                $values = [$data['name'] => $data['value']];
-                $attributes = ['updated_by' => $request->user()->id];
-                if (empty($profile)) {
+                $attributes = [$data['name'] => $data['value']];
+                $attributes['updated_by'] = $request->user()->id;
+                if (empty($user->profile)) {
                     $attributes['created_by'] = $request->user()->id;
+                    $user->profile()->create($attributes);
+                } else {
+                    $user->profile()->update($attributes);
                 }
-                $user->profile()->updateOrCreate($attributes, $values);
+                return redirect()->back()->with('success', '编辑成功！');
             }
         }
     }
@@ -61,6 +59,18 @@ class UserController extends Controller
             $user = User::find($data['user_id']);
             $user->assignRole($data['role']);
             return json_encode(['code' => 0, 'msg' => '分配成功！']);
+        }
+    }
+
+    public function addBranch(StoreUserPost $request)
+    {
+        if ($request->isMethod('POST'))
+        {
+            $data = $request->input();
+            $data['created_by'] = $request->user()->id;
+            $data['updated_by'] = $request->user()->id;
+            Branch::create($data);
+            return redirect()->back()->with('success', '新建成功！');
         }
     }
 

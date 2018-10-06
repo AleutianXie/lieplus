@@ -22,4 +22,6 @@ require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable');
 // sweetalert2
 require('./sweetalert2');
 // require('./tinymce');
-
+require('jquery-ui');
+require('jquery-ui/ui/widgets/accordion');
+require('jquery-ui/ui/widgets/sortable');

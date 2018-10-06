@@ -101,7 +101,7 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> 当前状态</div>
                             <div class="profile-info-value">
-                                <span>{{ config('lieplus.servicestatus.'.$resume->service_status.'.text') }}</span>
+                                <span>{{ config('lieplus.service.status.'.$resume->service_status) }}</span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -119,7 +119,7 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> 期望薪资</div>
                             <div class="profile-info-value">
-                                <span>{{ config('lieplus.salary.'.$resume->salary.'.text') }}</span>
+                                <span>{{ config('lieplus.salary.'.$resume->salary) }}</span>
                             </div>
                         </div>
                         <div class="profile-info-row">

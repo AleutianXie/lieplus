@@ -215,9 +215,9 @@
                                     <div class="profile-info-name"> 部门</div>
 
                                     <div class="profile-info-value">
-                                <span class="editable editable-click" id="did">
-                                    @isset ($user->profile->did)
-                                        {{ $user->profile->department->name }}
+                                <span class="editable editable-click" id="branch_id">
+                                    @isset ($user->profile->branch_id)
+                                        {{ $user->profile->branch->name }}
                                     @endisset
                                     </span>
                                     </div>
@@ -273,6 +273,8 @@
                         </div>
                     </div>
                 </div>
+            @else
+                Access Deny!
             @endif
             {{-- 基础信息--结束 --}}
 
@@ -285,7 +287,7 @@
 
                 <div class="space-8"></div>
 
-                <div id="edit-password" class="tab-pane active">
+                <div id="edit-password" @if('password' == $tab)class="tab-pane fade in active" @else class="tab-pane fade"@endif>
                     <div class="space-10"></div>
 
                     <div class="form-group">
@@ -310,7 +312,7 @@
             {{-- 密码--结束 --}}
             {{-- 设置--开始 --}}
             @role('admin')
-            <div id="settings" class="tab-pane fade">
+            <div id="settings" @if('setting' == $tab)class="tab-pane fade in active" @else class="tab-pane fade"@endif>
                 <div class="row">
                     <h4 class="purple">
                         <i class="green ace-icon fa fa-key bigger-110"></i>
@@ -319,7 +321,7 @@
                 </div>
                 <div id="accordion" class="accordion-style2 col-xs-12 col-sm-6">
                     <div class="group">
-                        <h3 class="accordion-header">部门</h3>
+                        <h3 class="accordion-header">&nbsp;&nbsp;部门</h3>
                         <div>
                             <table class="table table-striped table-bordered table-hover">
                                 <thead class="thin-border-bottom">
@@ -336,20 +338,20 @@
                                 </thead>
 
                                 <tbody>
-                                @foreach ($departments as $department)
+                                @foreach ($branches as $branch)
                                     <tr>
-                                        <td>{{ $department->number }}</td>
-                                        <td>{{ $department->name }}</td>
+                                        <td>{{ $branch->number }}</td>
+                                        <td>{{ $branch->name }}</td>
                                         <td>
                                             <span
-                                                class="label label-info arrowed-in arrowed-in-right">{{ $department->description }}</span>
+                                                class="label label-info arrowed-in arrowed-in-right">{{ $branch->description }}</span>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                             <form class="form-horizontal" id="userdepartment-form" name="userdepartment-form"
-                                  action="{{ url('/user/department/add') }}" method="POST">
+                                  action="{{ route('user.addbranch') }}" method="POST">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                                 <div class="form-group">
                                     <label class="control-label col-xs-6 col-sm-2 no-padding-right"
@@ -367,14 +369,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-xs-6 col-sm-2 no-padding-right"
-                                           for="dname">部门名称:</label>
+                                           for="name">部门名称:</label>
 
                                     <div class="col-xs-12 col-sm-10">
                                         <div class="clearfix">
-                                            <input type="text" id="dname" name="dname" value="{{ old('dname') }}"
+                                            <input type="text" id="name" name="name" value="{{ old('name') }}"
                                                    class="col-xs-12 col-sm-5" required>
                                             <div class="red">
-                                                {{ $errors->first('dname') }}
+                                                {{ $errors->first('name') }}
                                             </div>
                                         </div>
                                     </div>
@@ -407,7 +409,7 @@
                     </div>
 
                     <div class="group">
-                        <h3 class="accordion-header">角色</h3>
+                        <h3 class="accordion-header">&nbsp;&nbsp;角色</h3>
                         <div>
                             <table class="table table-striped table-bordered table-hover">
                                 <thead class="thin-border-bottom">
@@ -431,36 +433,11 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{--                     <form class="form-horizontal" id="role-form" name="role-form" action="{{ url('/role/add') }}" method="POST">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-                                                    <div class="form-group">
-                                                        <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="rname">角色名称:</label>
-
-                                                        <div class="col-xs-6 col-sm-10">
-                                                            <div class="clearfix">
-                                                                <input type="text" id="rname" name="rname" value="{{ old('rname') }}" class="col-xs-12 col-sm-5" required>
-                                                                <div class="red">
-                                                                    {{ $errors->first('rname') }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group center">
-                                                        <button class="btn btn-primary" type="submit">
-                                                            <i class="ace-icon fa fa-plus"></i>
-                                                            新建
-                                                        </button>
-                                                        <button class="btn" type="reset">
-                                                            <i class="ace-icon fa fa-undo"></i>
-                                                            重置
-                                                        </button>
-                                                    </div>
-                                                </form> --}}
                         </div>
                     </div>
 
                     <div class="group">
-                        <h3 class="accordion-header">权限</h3>
+                        <h3 class="accordion-header">&nbsp;&nbsp;权限</h3>
                         <div class="widget-body">
                             <div class="widget-main padding-8">
                                 <ul id="tree1"></ul>
@@ -563,16 +540,13 @@
             {{-- 设置--结束 --}}
         </div>
     </div>
-
 @endsection
-
 
 @section('js')
     <script type="text/javascript">
         //editables on first profile page
         $.fn.editable.defaults.mode = 'inline';
         //editables
-        //text editable
         $('#name').editable({
             @if (!Auth::user()->hasRole('admin') && Auth::id() != $user->id)
             disabled: true,
@@ -580,7 +554,7 @@
             type: 'text',
             url: '/user/edit',
             params: {'_token': '{{ csrf_token() }}'},
-            pk: {{ $user->id }},
+            pk: `{{ $user->id }}`,
             error: function (response) {
                 return response.responseJSON.errors.name[0];
             }
@@ -629,31 +603,31 @@
             //onblur:'ignore',
             source: genders,
             select2: {
-                'width': 140,
+                placeholder: '请选择性别',
+                minimumResultsForSearch: Infinity,
+                width: 140,
             }
         });
         $('#mobile').editable({
-            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
-                @else
+            @if (!Auth::user()->hasRole('admin') && Auth::id() != $user->id)
             disabled: true,
             @endif
             type: 'text',
             url: '/user/edit',
             params: {'_token': '{{ csrf_token() }}'},
-            pk: {{ $user->id }},
+            pk: `{{ $user->id }}`,
             error: function (response) {
                 return response.responseJSON.errors.mobile[0];
             }
         });
         $('#birthdate').editable({
-            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
-                @else
+            @if (!Auth::user()->hasRole('admin') && Auth::id() != $user->id)
             disabled: true,
             @endif
             type: 'text',
             url: '/user/edit',
             params: {'_token': '{{ csrf_token() }}'},
-            pk: {{ $user->id }},
+            pk: `{{ $user->id }}`,
             error: function (response) {
                 return response.responseJSON.errors.birthdate[0];
             }
@@ -661,17 +635,23 @@
 
         // var provinces = [{"id":1, "text":"name"},{"id":2, "text": "name2"}];
 
-        $('#did').editable({
-            @if (Auth::user()->hasRole('admin') || Auth::id() == $user->id)
-                @else
+        let branches = [];
+        @foreach($branches as $branch)
+        {
+            branches.push({'id': `{{ $branch->id }}`, 'text': `{{ $branch->name }}`});
+        }
+        @endforeach
+        $('#branch_id').editable({
+            @if (!Auth::user()->hasRole('admin') && Auth::id() != $user->id)
             disabled: true,
             @endif
             type: 'select2',
             url: '/user/edit',
             params: {'_token': '{{ csrf_token() }}'},
-            pk: {{ $user->id }},
-            source: {!! json_encode($departmentList) !!},
+            pk: `{{ $user->id }}`,
+            source: branches,
             select2: {
+                placeholder: '请选择部门',
                 minimumResultsForSearch: Infinity,
                 'width': 180,
             },
@@ -679,15 +659,6 @@
                 return response.responseJSON.errors.pid[0];
             }
         });
-
-        function assign(id) {
-            $("#role-dialog").removeClass('hide').dialog({
-                modal: true,
-                title: "分配角色",
-                width: '25%',
-                resizable: false
-            });
-        }
 
         $('#role').select2({
             minimumResultsForSearch: -1,

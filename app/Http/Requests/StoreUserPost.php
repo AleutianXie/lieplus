@@ -24,12 +24,10 @@ class StoreUserPost extends FormRequest
      */
     public function rules()
     {
-        if ($this->isMethod('GET'))
-        {
+        if ($this->isMethod('GET')) {
             return [];
         }
-        if (Route::currentRouteName() == 'user.edit')
-        {
+        if (Route::currentRouteName() == 'user.edit') {
             return [
                 'name' => 'sometimes|required|unique:users',
                 'email' => 'sometimes|required|email|unique:users',
@@ -41,11 +39,17 @@ class StoreUserPost extends FormRequest
                 'role_id' => 'sometimes|required|integer',
             ];
         }
+        if (Route::currentRouteName() == 'user.addbranch') {
+            return [
+                'number' => ['required', 'unique:branches,number', 'regex:/^(B|b)(U|u)[0-9]{3}$/'],
+                'name' => ['required', 'unique:branches,name'],
+            ];
+        }
     }
 
     public function attributes()
     {
-        return [
+         $attributes = [
             'name' => __('auth.name'),
             'email' => __('auth.email'),
             'number' => __('lieplus.number'),
@@ -54,6 +58,14 @@ class StoreUserPost extends FormRequest
             'branch_id' => __('lieplus.branch'),
             'role_id' => __('lieplus.role'),
         ];
+
+        if (Route::currentRouteName() == 'user.addbranch')
+        {
+            $attributes['name'] = '部门名称';
+            $attributes['number'] = '部门编码';
+        }
+
+        return $attributes;
     }
 
     /**

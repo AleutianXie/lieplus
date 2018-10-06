@@ -15,7 +15,7 @@ class Branch extends Base
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'created_by', 'updated_by'
+        'number', 'name', 'description', 'created_by', 'updated_by'
     ];
 
     /**
@@ -28,6 +28,4 @@ class Branch extends Base
 
         $this->setTable('branches');
     }
-
-
 }
