@@ -42,7 +42,7 @@
                     <div class="table-header">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         简历原件
-                        <span class="pull-right">{{ Auth::user($resume->created_by)->name }} 发表于 <time
+                        <span class="pull-right">{{ Auth::getProvider()->retrieveById($resume->created_by)->name }} 发表于 <time
                                 datetime="{{ $resume->created_at }}">{{ $resume->created_at }}&nbsp;&nbsp;</time></span>
                     </div>
                     <div class="space-2"></div>
@@ -185,7 +185,7 @@
                                                                 <div class="widget-body">
                                                                     <div class="widget-main no-padding">
                               <span class="bigger-110">
-                                <a href="#" class="purple bolder">{{ Auth::User($feedback->created_by)->name }}</a>
+                                <a href="#" class="purple bolder">{{ Auth::getProvider()->retrieveById($feedback->created_by)->name }}</a>
                                 <i class="ace-icon fa fa-comment-o grey"></i>
                                   {{ $feedback->text }}
                               </span>
