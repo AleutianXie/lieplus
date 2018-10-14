@@ -122,17 +122,17 @@ class JobController extends Controller
             // }
         }
 
-        $assignedCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
-        $assignedCustomers = array_pluck($assignedCustomers, 'customer');
-        $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
+//        $assignedCustomers = AssignCustomer::with('customer')->where(['uid' => Auth::id(), 'show' => 1])->get(['uid', 'cid']);
+//        $assignedCustomers = array_pluck($assignedCustomers, 'customer');
+//        $assignedCustomers = array_pluck($assignedCustomers, 'name', 'id');
 
         $data = $request->input();
         if (isset($data['cid']))
         {
             $cid = $data['cid'];
-            return view('job.add', compact('title', 'assignedCustomers', 'cid'));
+            return view('Lieplus::job.add', compact('title', 'assignedCustomers', 'cid'));
         }
-        return view('job.add', compact('title', 'assignedCustomers'));
+        return view('Lieplus::job.add', compact('title', 'assignedCustomers'));
     }
 
 
