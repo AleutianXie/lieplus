@@ -130,9 +130,9 @@ class JobController extends Controller
         if (isset($data['cid']))
         {
             $cid = $data['cid'];
-            return view('Lieplus::job.add', compact('title', 'assignedCustomers', 'cid'));
+            return view('Lieplus::job.add', compact( 'cid'));
         }
-        return view('Lieplus::job.add', compact('title', 'assignedCustomers'));
+        return view('Lieplus::job.add');
     }
 
 
