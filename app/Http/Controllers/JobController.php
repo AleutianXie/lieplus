@@ -34,7 +34,7 @@ class JobController extends Controller
         return view('Lieplus::job.all', compact('filter'));
     }
 
-    public function add(Request $request)
+    public function create(Request $request)
     {
         if ($request->isMethod('POST'))
         {
@@ -132,7 +132,7 @@ class JobController extends Controller
             $cid = $data['cid'];
             return view('Lieplus::job.add', compact( 'cid'));
         }
-        return view('Lieplus::job.add');
+        return view('Lieplus::job.create');
     }
 
 

@@ -94,10 +94,10 @@ Breadcrumbs::register('job.detail', function ($breadcrumbs, $id)
 });
 
 // Home > Job > add
-Breadcrumbs::register('job.add', function ($breadcrumbs)
+Breadcrumbs::register('job.create', function ($breadcrumbs)
 {
     $breadcrumbs->parent('job');
-    $breadcrumbs->push('新建职位', route('job.add'));
+    $breadcrumbs->push('新建职位', route('job.create'));
 });
 
 // Home > Job

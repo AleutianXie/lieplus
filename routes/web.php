@@ -90,7 +90,7 @@ Route::group(['prefix' => 'job', 'middleware' => ['auth']], function ()
     Route::get('/all', 'JobController@all')->name('job.all');
     Route::match(['get', 'post'], '/{id}', 'JobController@detail')->where('id', '[0-9]+')->name('job.detail');
     Route::match(['get', 'post'], '/audit/{id}', 'JobController@audit')->where('id', '[0-9]+');
-    Route::match(['get', 'post'], '/add', 'JobController@add')->name('job.add');
+    Route::match(['get', 'post'], '/create', 'JobController@create')->name('job.create');
 
     Route::post('/edit', 'JobController@edit');
     Route::post('/pause/{jid}', 'JobController@pause')->where('id', '[0-9]+')->name('job.pause');

@@ -154,8 +154,8 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li  @if(starts_with(Request::fullUrl(), route('job.add'))) class="active" @endif>
-                    <a href="{{ route('job.add') }}">
+                <li  @if(starts_with(Request::fullUrl(), route('job.create'))) class="active" @endif>
+                    <a href="{{ route('job.create') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建
                     </a>
