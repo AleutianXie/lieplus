@@ -206,7 +206,7 @@
 
         $(document).on('submit', '.form-inline', function (e) {
             var target = $(e.target);
-            table.api().ajax.url('{{ route('job.search') }}?t=my' + '&' + target.serialize()).load();
+            dt.api().ajax.url('{{ route('job.search') }}?t=my' + '&' + target.serialize()).load();
             e.preventDefault();
         });
     </script>
