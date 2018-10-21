@@ -45,9 +45,15 @@
         });
         var properties = [];
         var property_dt = [];
-        $.each({!! json_encode(config('lieplus.companyproperty')) !!}, function(k, v) {
+        $.each({!! json_encode(config('lieplus.company.property')) !!}, function(k, v) {
             property_dt[k] = v;
             properties.push({id: k, text: v});
+        });
+        var levels = [];
+        var level_dt = [];
+        $.each({!! json_encode(config('lieplus.company.level')) !!}, function(k, v) {
+            level_dt[k] = v;
+            levels.push({id: k, text: v});
         });
         $('#industry').select2({
             data: industries,
@@ -115,11 +121,14 @@
                     }
                 },
                 {
-                    title: '客户顾问',
-                    data: null,
+                    title: '等级',
+                    data: 'level',
+                    render: function (data, type, row) {
+                        return level_dt[data];
+                    }
                 },
                 {
-                    title: '等级',
+                    title: '客户顾问',
                     data: null,
                 },
                 {
