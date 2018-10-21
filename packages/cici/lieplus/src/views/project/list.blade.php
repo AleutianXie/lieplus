@@ -20,7 +20,7 @@
 
         <!-- 项目启动书列表--开始 -->
         <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover"></table>
+            <table class="table table-striped table-bordered table-hover" style="width:100%"></table>
         </div>
         <!-- 项目启动书列表--结束 -->
         <!-- PAGE CONTENT ENDS -->
@@ -102,13 +102,13 @@
             ],
             createdRow: function (row, data, index) {
                 if (data.status == 0) {
-                    $('td', row).eq(5).addClass("alert alert-info");
+                    $('td', row).eq(5).addClass("info");
                 }
                 if (data.status == 1) {
-                    $('td', row).eq(5).addClass("alert alert-success");
+                    $('td', row).eq(5).addClass("success");
                 }
                 if (data.status == 2) {
-                    $('td', row).eq(5).addClass("alert alert-danger");
+                    $('td', row).eq(5).addClass("danger");
                 }
             }
         })

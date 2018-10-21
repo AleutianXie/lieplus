@@ -20,7 +20,7 @@
 
         <!-- 客户列表--开始 -->
         <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover"></table>
+            <table class="table table-striped table-bordered table-hover" style="width:100%"></table>
         </div>
         <!-- 客户列表--结束 -->
         <!-- PAGE CONTENT ENDS -->

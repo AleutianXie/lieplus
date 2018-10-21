@@ -23,7 +23,7 @@
 
         <!-- 客户列表--开始 -->
         <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover"></table>
+            <table class="table table-striped table-bordered table-hover" style="width:100%"></table>
         </div>
         <!-- 客户列表--结束 -->
         <!-- PAGE CONTENT ENDS -->
@@ -214,10 +214,10 @@
             ],
             createdRow: function (row, data, index) {
                 if (data.closed == 0) {
-                    $('td', row).eq(9).addClass("alert alert-success");
+                    $('td', row).eq(9).addClass("success");
                 }
                 if (data.closed == 1) {
-                    $('td', row).eq(9).addClass("alert alert-danger");
+                    $('td', row).eq(9).addClass("danger");
                 }
             }
         });
