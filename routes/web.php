@@ -113,14 +113,13 @@ Route::group(['prefix' => 'line', 'middleware' => ['auth']], function ()
     Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-8]?'])->name('line.detail.stations');
 });
 
-Route::group(['prefix' => 'project', 'middleware' => ['auth']], function ()
+Route::group(['middleware' => ['auth']], function ()
 {
-    Route::match(['get', 'post'], '/', 'ProjectController@index')->name('project');
-    Route::match(['get', 'post'], '/index', 'ProjectController@index')->name('project.index');
+    Route::match(['get', 'post'], 'project/{index?}', 'ProjectController@index')->where('index', 'index')->name('project.index');
     Route::match(['get', 'post'], '/audit', 'ProjectController@audit')->name('project.audit');
     Route::post('/edit', 'ProjectController@edit');
-    Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
-    Route::get('/search/{type}', 'ProjectController@search')->where(['type' => 'all'])->name('project.search');
+    Route::match(['get', 'post'], 'project/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
+    Route::get('projects', 'ProjectController@search')->name('project.search');
 });
 
 Route::group(['prefix' => 'station', 'middleware' => ['auth']], function ()

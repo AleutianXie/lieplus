@@ -103,7 +103,7 @@
         @endhasanyrole
 
         @hasanyrole('admin|manager|bd')
-        <li @if(starts_with(Request::fullUrl(), route('project'))) class="open" @endif">
+        <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="open" @endif">
             <a href="javascript:void(0)" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list-ol"></i>
                 <span class="menu-text">
@@ -116,21 +116,21 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                @hasanyrole('admin|bd')
-                <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="active" @endif>
-                    <a href="{{ route('project.index') }}">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        项目启动书
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-                @endhasanyrole
                 @hasanyrole('admin|manager')
                 <li @if(starts_with(Request::fullUrl(), route('project.audit'))) class="active" @endif>
                     <a href="{{ route('project.audit') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         项目审批
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                @endhasanyrole
+                @hasanyrole('admin|bd')
+                <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="active" @endif>
+                    <a href="{{ route('project.index') }}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        启动书
                     </a>
 
                     <b class="arrow"></b>

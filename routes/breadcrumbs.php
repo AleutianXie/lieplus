@@ -100,25 +100,25 @@ Breadcrumbs::register('job.create', function ($breadcrumbs)
     $breadcrumbs->push('新建职位', route('job.create'));
 });
 
-// Home > Job
-Breadcrumbs::register('project', function ($breadcrumbs)
+// Home > Project
+Breadcrumbs::register('project.index', function ($breadcrumbs)
 {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push('项目启动书', route('project'));
+    $breadcrumbs->push('启动书', route('project.index'));
 });
 
 // Home > Job > detail
 Breadcrumbs::register('project.detail', function ($breadcrumbs, $id)
 {
     $breadcrumbs->parent('project');
-    $breadcrumbs->push('项目启动书详细', route('project.detail', $id));
+    $breadcrumbs->push('启动书详细', route('project.detail', $id));
 });
 
 // Home > Job > audit
-Breadcrumbs::register('project.audit', function ($breadcrumbs)
+Breadcrumbs::register('project.create', function ($breadcrumbs)
 {
     $breadcrumbs->parent('project');
-    $breadcrumbs->push('项目审批', route('project.audit'));
+    $breadcrumbs->push('创建', route('project.create'));
 });
 
 // Home > Customer
