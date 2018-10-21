@@ -78,9 +78,15 @@ class Customer extends Base
      */
     public function departments(): HasMany
     {
-        return $this->hasMany(
-            'Cici\Lieplus\Models\Department'
-        );
+        return $this->hasMany('Cici\Lieplus\Models\Department');
+    }
+
+    /**
+     * A customer can have one project.
+     */
+    public function project(): HasOne
+    {
+        return $this->hasOne('Cici\Lieplus\Models\Project');
     }
 
     /**

@@ -22,7 +22,9 @@
         </div>
 
         <!-- 客户列表--开始 -->
-        <table class="table table-striped table-bordered table-hover"></table>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover"></table>
+        </div>
         <!-- 客户列表--结束 -->
         <!-- PAGE CONTENT ENDS -->
     </div>
@@ -181,11 +183,19 @@
                     }
                 },
                 {
-                    title: '是否统招',
+                    title: '统招?',
                     data: 'unified',
                     render: function (data, type, row)
                     {
                         return data == 1 ? '是' : '否';
+                    }
+                },
+                {
+                    title: '状态',
+                    data: 'closed',
+                    render: function (data, type, row)
+                    {
+                        return data == 1 ? '暂停' : '开放';
                     }
                 },
                 {
@@ -201,7 +211,15 @@
                     //   // var button = `<button data-id="${row.id}"class="btn-danger btn btn-sm btn-refund">退款</button>`
                     // },
                 }
-            ]
+            ],
+            createdRow: function (row, data, index) {
+                if (data.closed == 0) {
+                    $('td', row).eq(9).addClass("alert alert-success");
+                }
+                if (data.closed == 1) {
+                    $('td', row).eq(9).addClass("alert alert-danger");
+                }
+            }
         });
 
         $(document).on('submit', '.form-inline', function (e) {

@@ -19,7 +19,9 @@
         </div>
 
         <!-- 客户列表--开始 -->
-        <table class="table table-striped table-bordered table-hover"></table>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover"></table>
+        </div>
         <!-- 客户列表--结束 -->
         <!-- PAGE CONTENT ENDS -->
     </div>

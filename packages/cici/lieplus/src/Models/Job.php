@@ -81,6 +81,15 @@ class Job extends Base
         return $this->hasOne('Cici\Lieplus\Models\Line');
     }
 
+    public function scopeProjectStatus($query, $status)
+    {
+        return $query->whereHas('department', function ($query) use ($status) {
+            return $query->whereHas('customer', function ($query) use ($status) {
+                return $query->where('status', $status);
+            });
+        });
+    }
+
     /**
      * Get the current cached job.
      */

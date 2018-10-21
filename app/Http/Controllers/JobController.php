@@ -224,6 +224,10 @@ class JobController extends Controller
                 ->select(['id', 'customer_id']);
             }
         ]);
+        /**
+         * 项目状态为审核通过的
+         */
+        $model->ProjectStatus(1);
         $model->select('jobs.*');
         $model->latest('jobs.created_at');
     }
