@@ -31,6 +31,7 @@ class Project extends Base
 
     public static function create(array $attributes)
     {
+        $customer_id = $attributes['customer_id'];
         $job_id = $attributes['job_id'];
         $status = $attributes['status'];
         $created_by = Auth::id();
@@ -41,6 +42,7 @@ class Project extends Base
         }
 
         return static::query()->create(compact(
+            'customer_id',
             'job_id',
             'status',
             'created_by',
@@ -54,6 +56,14 @@ class Project extends Base
     public function job(): BelongsTo
     {
         return $this->belongsTo('Cici\Lieplus\Models\Job');
+    }
+
+    /**
+     * Get the customer that owns the project.
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo('Cici\Lieplus\Models\Customer');
     }
 
     /**
@@ -71,27 +81,23 @@ class Project extends Base
 
     public function getCompanyNameAttribute()
     {
-        return $this->job->department->customer->name;
+        return $this->customer->name;
     }
 
     public function getCompanyLevelAttribute()
     {
-        return $this->job->department->customer->level;
+        return $this->customer->level;
     }
 
     public function getCompanyTypeAttribute()
     {
-        return $this->job->department->customer->type;
+        return $this->customer->type;
     }
 
     public function scopeCompanyName($query, $name)
     {
-        return $query->whereHas('job', function ($query) use ($name) {
-            return $query->whereHas('department', function ($query) use ($name) {
-                return $query->whereHas('customer', function ($query) use ($name) {
-                    return $query->where('name', 'like', '%' . $name . '%');
-                });
-            });
+        return $query->whereHas('customer', function ($query) use ($name) {
+            return $query->where('name', 'like', '%' . $name . '%');
         });
     }
 
