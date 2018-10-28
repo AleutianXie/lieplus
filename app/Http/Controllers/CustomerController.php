@@ -6,7 +6,7 @@ use App\User;
 use Cici\Lieplus\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
 {
