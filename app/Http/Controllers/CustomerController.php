@@ -119,6 +119,7 @@ class CustomerController extends Controller
         return Datatables::eloquent($model)->make(true);
     }
 
+
     // public function search(Request $request, $type)
     // {
     //     $customers = collect([]);
@@ -243,6 +244,10 @@ class CustomerController extends Controller
         if (!empty($filter['property']) && intval($filter['property']) > 0) {
             $model->where('property', $filter['property']);
         }
+        /**
+         * 项目状态为审核通过的
+         */
+        $model->ProjectStatus(1);
         $model->select('customers.*');
         $model->latest('customers.created_at');
     }

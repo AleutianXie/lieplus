@@ -132,6 +132,14 @@
                     data: null,
                 },
                 {
+                    title: '状态',
+                    data: 'closed',
+                    render: function (data, type, row)
+                    {
+                        return data == 1 ? '暂停' : '开放';
+                    }
+                },
+                {
                     title: '操作',
                     data: null
                     // render : function (data, type, row) {
@@ -144,7 +152,15 @@
                     //   // var button = `<button data-id="${row.id}"class="btn-danger btn btn-sm btn-refund">退款</button>`
                     // },
                 }
-            ]
+            ],
+            createdRow: function (row, data, index) {
+                if (data.status == 1) {
+                    $('td', row).eq(7).addClass("success");
+                }
+                if (data.status == 2) {
+                    $('td', row).eq(7).addClass("danger");
+                }
+            }
         });
 
         $(document).on('submit', '.form-inline', function (e) {

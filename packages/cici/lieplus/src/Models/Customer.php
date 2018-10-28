@@ -6,6 +6,7 @@ use Cici\Lieplus\Exceptions\NameAlreadyExists;
 use Cici\Lieplus\Models\Department;
 use Cici\Lieplus\Traits\UserTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,6 +88,13 @@ class Customer extends Base
     public function project(): HasOne
     {
         return $this->hasOne('Cici\Lieplus\Models\Project');
+    }
+
+    public function scopeProjectStatus($query, $status)
+    {
+        return $query->whereHas('project', function ($query) use ($status) {
+            return $query->where('status', $status);
+        });
     }
 
     /**

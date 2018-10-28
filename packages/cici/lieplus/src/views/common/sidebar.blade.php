@@ -120,7 +120,7 @@
                 <li @if(starts_with(Request::fullUrl(), route('project.audit'))) class="active" @endif>
                     <a href="{{ route('project.audit') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        项目审批
+                        创建启动书
                     </a>
 
                     <b class="arrow"></b>
@@ -130,7 +130,7 @@
                 <li @if(starts_with(Request::fullUrl(), route('project.index'))) class="active" @endif>
                     <a href="{{ route('project.index') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        启动书
+                        启动书列表
                     </a>
 
                     <b class="arrow"></b>
