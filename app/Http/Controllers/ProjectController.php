@@ -24,10 +24,8 @@ class ProjectController extends Controller
 
     public function detail(Request $request, $id)
     {
-        $title = '项目启动书详情';
         $project = Project::findOrFail($id);
-
-        return view('bd.detail', compact('title', 'project'));
+        return view('Lieplus::project.detail', compact('project'));
     }
 
     public function index_bak(Request $request)

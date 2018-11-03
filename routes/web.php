@@ -113,13 +113,16 @@ Route::group(['prefix' => 'line', 'middleware' => ['auth']], function ()
     Route::get('/stations/{lid}/{status}', 'LineController@getStations')->where(['lid' => '[0-9]+', 'status' => '[0-8]?'])->name('line.detail.stations');
 });
 
-Route::group(['middleware' => ['auth']], function ()
+Route::group(['prefix' => 'project', 'middleware' => ['auth']], function ()
 {
-    Route::match(['get', 'post'], 'project/{index?}', 'ProjectController@index')->where('index', 'index')->name('project.index');
-    Route::match(['get', 'post'], '/audit', 'ProjectController@audit')->name('project.audit');
-    Route::post('/edit', 'ProjectController@edit');
-    Route::match(['get', 'post'], 'project/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
-    Route::get('projects', 'ProjectController@search')->name('project.search');
+    Route::match(['get', 'post'], '/{index?}', 'ProjectController@index')->where('index', 'index')->name('project.index');
+    Route::match(['get', 'post'], '/create', 'ProjectController@create')->name('project.create');
+    Route::match(['get', 'post'], '/{id}/audit', 'ProjectController@audit')->where('id', '[0-9]+')->name('project.audit');
+    Route::match(['GET', 'POST'], '/{id}/edit', 'ProjectController@edit')->where('id', '[0-9]+')->name('project.edit');;
+    Route::match(['get', 'post'], '/{id}', 'ProjectController@detail')->where('id', '[0-9]+')->name('project.detail');
+    Route::post('/{id}/reject', 'ProjectController@reject')->where('id', '[0-9]+')->name('project.reject');
+    Route::post('/{id}/accept', 'ProjectController@accept')->where('id', '[0-9]+')->name('project.accept');
+    Route::get('/search', 'ProjectController@search')->name('project.search');
 });
 
 Route::group(['prefix' => 'station', 'middleware' => ['auth']], function ()

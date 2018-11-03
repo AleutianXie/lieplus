@@ -110,7 +110,7 @@ Breadcrumbs::register('project.index', function ($breadcrumbs)
 // Home > Job > detail
 Breadcrumbs::register('project.detail', function ($breadcrumbs, $id)
 {
-    $breadcrumbs->parent('project');
+    $breadcrumbs->parent('project.index');
     $breadcrumbs->push('启动书详细', route('project.detail', $id));
 });
 

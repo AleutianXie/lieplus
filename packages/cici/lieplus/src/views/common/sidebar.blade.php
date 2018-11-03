@@ -117,8 +117,8 @@
 
             <ul class="submenu">
                 @hasanyrole('admin|manager')
-                <li @if(starts_with(Request::fullUrl(), route('project.audit'))) class="active" @endif>
-                    <a href="{{ route('project.audit') }}">
+                <li @if(starts_with(Request::fullUrl(), route('project.create'))) class="active" @endif>
+                    <a href="{{ route('project.create') }}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         创建启动书
                     </a>

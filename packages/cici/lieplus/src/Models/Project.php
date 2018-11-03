@@ -4,7 +4,6 @@ namespace Cici\Lieplus\Models;
 
 use Cici\Lieplus\Exceptions\ProjectAlreadyExists;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -110,16 +109,20 @@ class Project extends Base
 
     public function getOptionsLinkAttribute()
     {
-        $options = '<div class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true"><i class="purple ace-icon fa fa-asterisk bigger-120"></i>操作<i class="ace-icon fa fa-caret-down"></i></a><ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right"><li><a href="' . route('customer.detail', $this->id) . '"><i class="blue ace-icon fa fa-eye bigger-120"></i>查看 </a></li>';
+        $options = '<div class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true"><i class="purple ace-icon fa fa-asterisk bigger-120"></i>操作<i class="ace-icon fa fa-caret-down"></i></a><ul class="dropdown-menu dropdown-lighter dropdown-125 pull-right"><li><a href="' . route('project.detail', $this->id) . '"><i class="blue ace-icon fa fa-eye bigger-120"></i> 查看 </a></li>';
         if (Auth::user()->hasRole('admin') || Auth::id() == $this->created_by) {
-            $options .= '<li><a href="' . route('customer.edit', $this->id) . '"><i class="blue ace-icon fa fa-edit bigger-120"></i>编辑 </a></li>';
+            $options .= '<li><a href="' . route('project.edit', $this->id) . '"><i class="blue ace-icon fa fa-edit bigger-120"></i> 编辑 </a></li>';
+            if ($this->status == 0) {
+                $options .= '<li><a href="' . route('project.audit', $this->id) . '"><i class="blue ace-icon fa fa-spinner bigger-120"></i> 审核 </a></li>';
+            }
+            if ($this->status == 1) {
+                $options .= '<li><a href="' . route('project.audit', $this->id) . '"><i class="red ace-icon fa fa-remove bigger-120"></i> 拒绝 </a></li>';
+            }
+            if ($this->status == 2) {
+                $options .= '<li><a href="' . route('project.audit', $this->id) . '"><i class="green ace-icon fa fa-check bigger-120"></i> 通过 </a></li>';
+            }
         }
 
-        if ($this->is_mine) {
-
-            $options .= '<li><a href="' . route('resume.detail', [$this->id, 'notice']) . '"><i class="blue ace-icon fa fa-hand-scissors-o bigger-120"></i>更换客户顾问 </a></li>';
-        }
-        $options .= '<li><a href="javascript:void(0);" id="job-library-' . $this->id . '" data-rid="' . $this->id . '" data-name="' . $this->name . '" data-sn="' . $this->serial_number . '"><i class="blue ace-icon fa fa-plus-square bigger-120"></i>加入职位流水线 </a></li></ul></div>';
         return $options;
     }
 }
