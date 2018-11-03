@@ -98,6 +98,10 @@
                     render: function (data, type, row) {
                         return statusis[data];
                     }
+                },
+                {
+                    title: '操作',
+                    data: 'options_link'
                 }
             ],
             createdRow: function (row, data, index) {
@@ -110,6 +114,8 @@
                 if (data.status == 2) {
                     $('td', row).eq(5).addClass("danger");
                 }
+
+                $('td', row).eq(6).html($('td', row).eq(6).text());
             }
         })
 

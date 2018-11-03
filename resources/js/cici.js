@@ -17,6 +17,7 @@ require('datatables.net');
 require('datatables.net-bs');
 require('./ace');
 require('./ace-elements');
+require('./ace-extra');
 require('x-editable/dist/bootstrap3-editable/js/bootstrap-editable');
 
 // sweetalert2

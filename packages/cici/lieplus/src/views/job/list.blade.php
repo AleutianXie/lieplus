@@ -200,16 +200,7 @@
                 },
                 {
                     title: '操作',
-                    data: null
-                    // render : function (data, type, row) {
-                    //   // // 根据状态判断是否显示退款按钮
-                    //   // var orderS = row.order_state
-                    //   // var refundS = row.refund_state
-                    //   // var royaltyT = row.royalty_extend != null ? row.royalty_extend.royalty_type : ''
-                    //   // var royaltyS = row.royalty_state
-                    //   // var payMode = row.pay_mode
-                    //   // var button = `<button data-id="${row.id}"class="btn-danger btn btn-sm btn-refund">退款</button>`
-                    // },
+                    data: 'options_link'
                 }
             ],
             createdRow: function (row, data, index) {
@@ -219,6 +210,8 @@
                 if (data.closed == 1) {
                     $('td', row).eq(9).addClass("danger");
                 }
+
+                $('td', row).eq(10).html($('td', row).eq(10).text());
             }
         });
 

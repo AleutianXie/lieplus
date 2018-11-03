@@ -73,7 +73,7 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth']], function ()
     Route::match(['get', 'post'], '/{id}', 'CustomerController@detail')->where('id', '[0-9]+')->name('customer.detail');
     Route::match(['get', 'post'], '/audit/{id}', 'CustomerController@audit')->where('id', '[0-9]+');
     Route::match(['get', 'post'], '/add', 'CustomerController@add');
-    Route::post('/edit', 'CustomerController@edit');
+    Route::post('/edit', 'CustomerController@edit')->name('customer.edit');
     Route::post('/check', 'CustomerController@isExist');
 
     Route::post('/pause/{jid}', 'CustomerController@pause')->where('id', '[0-9]+')->name('customer.pause');
