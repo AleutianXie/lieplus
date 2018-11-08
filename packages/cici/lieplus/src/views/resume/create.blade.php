@@ -10,15 +10,15 @@
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="name">姓名:</label>
 
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <input type="text" name="name" id="name" value="{{ old('name') }}" required />
+        <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" required />
       </div>
     </div>
 
-    <label class="control-label col-xs-6 col-sm-3 no-padding-right">性别:</label>
+    <label class="control-label col-xs-6 col-sm-2 no-padding-right">性别:</label>
 
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       @foreach (config('lieplus.gender') as $key => $value)
         <label class="control-label line-height-1 blue">
           <input name="gender" type="radio" class="ace" value="{{ $key }}" @if ($key == old('gender')) checked @endif required />
@@ -34,27 +34,27 @@
 
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="phone">手机:</label>
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-phone"></i>
         </span>
 
-        <input type="tel" id="mobile" name="mobile" value="{{ old('mobile') }}" required pattern="1(3|4|5|7|8)[0-9]{9}"/>
+        <input type="tel" class="form-control" id="mobile" name="mobile" value="{{ old('mobile') }}" required pattern="1(3|4|5|7|8)[0-9]{9}"/>
       </div>
       <span class="red">
         {{ $errors->first('mobile') }}
       </span>
     </div>
 
-    <label class="control-label col-xs-6 col-sm-3 no-padding-right" for="email">邮箱:</label>
-    <div class="col-xs-6 col-sm-2">
+    <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="email">邮箱:</label>
+    <div class="col-xs-6 col-sm-4">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-envelope"></i>
         </span>
 
-        <input type="email" name="email" id="email" value="{{ old('email') }}" required />
+        <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}" required />
       </div>
       <span class="red">
         {{ $errors->first('email') }}
@@ -64,9 +64,9 @@
 
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="degree">学历:</label>
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <select name="degree" id="degree">
+        <select class="form-control" name="degree" id="degree">
         @foreach (config('lieplus.degree') as $key => $value)
         <option value="{{ $key }}"  @if ($key == old('degree')) selected @endif>{{ $value }}</option>
         @endforeach
@@ -74,29 +74,35 @@
       </div>
     </div>
 
-    <label class="control-label col-xs-6 col-sm-3 no-padding-right" for="state">城市:</label>
-    <div class="col-xs-6 col-sm-6">
+    <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="state">城市:</label>
+    <div class="col-xs-6 col-sm-4">
+        <div class="col-sm-4">
       <select id="province" name="province" required>
         <option></option>
       </select>
+        </div>
+        <div class="col-sm-4">
       <select id="city" name="city" required>
         <option></option>
       </select>
+        </div>
+        <div class="col-sm-4">
       <select id="county" name="county" required>
         <option></option>
       </select>
+        </div>
     </div>
   </div>
 
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="birthdate">生日:</label>
-    <div class="col-xs-6 col-sm-3">
+    <div class="col-xs-6 col-sm-4">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-calendar"></i>
         </span>
 
-        <input type="date" name="birthdate" id="birthdate" value="{{ old('birthdate') }}" required max="{{ date('Y-m-d', time()) }}"/>
+        <input type="date" class="form-control" name="birthdate" id="birthdate" value="{{ old('birthdate') }}" required max="{{ date('Y-m-d', time()) }}"/>
         <span class="red">
             {{ $errors->first('birthdate') }}
         </span>
@@ -104,13 +110,13 @@
     </div>
 
     <label class="control-label col-xs-12 col-sm-2 no-padding-right" for="start_work_date">开始工作:</label>
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="input-group">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-calendar"></i>
         </span>
 
-        <input type="date" name="start_work_date" id="start_work_date" value="{{ old('start_work_date') }}" max="{{ date('Y-m-d', time()) }}" min="{{ date('Y-m-d', strtotime('-20 years')) }}" required />
+        <input type="date" class="form-control" name="start_work_date" id="start_work_date" value="{{ old('start_work_date') }}" max="{{ date('Y-m-d', time()) }}" min="{{ date('Y-m-d', strtotime('-20 years')) }}" required />
         <span class="red">
           {{ $errors->first('start_work_date') }}
         </span>
@@ -120,9 +126,9 @@
 
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="service_status">当前状态:</label>
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <select name="service_status" id="service_status">
+        <select class="form-control" name="service_status" id="service_status">
         @foreach (config('lieplus.service.status') as $key => $value)
           <option value="{{ $key }}" @if (old('service_status') && $key == old('service_status')) checked @endif>{{ $value }}</option>
         @endforeach
@@ -130,26 +136,26 @@
       </div>
     </div>
 
-    <label class="control-label col-xs-6 col-sm-3 no-padding-right" for="industry">当前行业:</label>
-    <div class="col-xs-6 col-sm-2">
+    <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="industry">当前行业:</label>
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <input type="text" name="industry" id="industry" value="{{ old('industry') }}" />
+        <input type="text" class="form-control" name="industry" id="industry" value="{{ old('industry') }}" />
       </div>
     </div>
   </div>
 
   <div class="form-group">
     <label class="control-label col-xs-6 col-sm-1 no-padding-right" for="position">当前职位:</label>
-    <div class="col-xs-6 col-sm-2">
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <input type="text" name="position" id="position" value="{{ old('position') }}" />
+        <input type="text" class="form-control" name="position" id="position" value="{{ old('position') }}" />
       </div>
     </div>
 
-    <label class="control-label col-xs-6 col-sm-3 no-padding-right" for="salary">期望薪资:</label>
-    <div class="col-xs-6 col-sm-2">
+    <label class="control-label col-xs-6 col-sm-2 no-padding-right" for="salary">期望薪资:</label>
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <select name="salary" id="salary" class="col-xs-12 col-sm-4">
+        <select class="form-control" name="salary" id="salary" class="col-xs-12 col-sm-4">
             @foreach (config('lieplus.salary') as $key => $value)
                 <option value="{{ $key }}" @if (old('salary') == $key) checked @endif>{{ $value }}</option>
             @endforeach
@@ -160,9 +166,9 @@
 
   <div class="form-group">
     <label class="control-label col-xs-12 col-sm-1 no-padding-right" for="jid">职位简历库:</label>
-    <div class="col-xs-6 col-sm-6">
+    <div class="col-xs-6 col-sm-4">
       <div class="clearfix">
-        <select name="jid" id="jid">
+        <select class="form-control" name="jid" id="jid">
           <option></option>
 {{--           @foreach ($assignlines as $assign)
             <option value="{{ $assign->line->job->id }}" @if($assign->line->job->id == $jid) selected="selected" @endif>{{ $assign->line->job->sn }}({{ $assign->line->job->name }})</option>
@@ -212,7 +218,7 @@
 <script type="text/javascript">
     $('#degree').select2({
         minimumResultsForSearch: Infinity,
-        width: 140
+        width: 'resolve'
     });
 
     // $('#birthdate').datepicker({
@@ -225,7 +231,7 @@
 
     $('#province').select2({
       placeholder: '请选择省',
-      width: 140,
+      width: '100%',
       ajax: {
         url: "{{ url('/provinces') }}",
         dataType: 'json',
@@ -242,7 +248,7 @@
 
     $('#city').select2({
         placeholder: '请选择市',
-        width: 140,
+        width: '100%',
         ajax: {
           url: function () {
             return '/province/' + $('#province').val() + '/cities';
@@ -261,7 +267,7 @@
 
     $('#county').select2({
         placeholder: '请选择县',
-        width: 140,
+        width: '100%',
         ajax: {
           url: function () {
             return '/city/' + $('#city').val() + '/counties';
@@ -289,18 +295,18 @@
 
     $('#service_status').select2({
         minimumResultsForSearch: Infinity,
-        width: 140
+        width: 'resolve'
     });
 
     $('#salary').select2({
         minimumResultsForSearch: Infinity,
-        width: 140
+        width: 'resolve'
     });
 
     $('#jid').select2({
         placeholder: "请选择职位简历库",
         allowClear: true,
-        width: 300
+        width: 'resolve'
     });
 </script>
 @endsection
