@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "animate.css": "^3.7.0",
+        "bootstrap-popover-x": "^1.4.7",
         "datatables.net": "^1.10.19",
         "datatables.net-bs": "^1.10.19",
         "datatables.net-plugins": "^1.10.18",

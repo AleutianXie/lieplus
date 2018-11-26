@@ -236,6 +236,11 @@ class ProjectController extends Controller
     }
 
 
+    public function reject(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+
+    }
 
     public function search(Request $request)
     {

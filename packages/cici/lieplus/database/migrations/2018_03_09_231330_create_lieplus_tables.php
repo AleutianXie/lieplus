@@ -15,43 +15,44 @@ class CreateLieplusTables extends Migration
     {
         // resumes table
         Schema::create('resumes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100)->index();
-            $table->string('mobile', 50);
-            $table->string('email', 100);
-            $table->tinyInteger('gender')->default(0);
-            $table->string('birthdate', 10);
-            $table->string('start_work_date', 10);
-            $table->tinyInteger('degree')->default(1);
-            $table->tinyInteger('service_status')->default(0);
-            $table->char('province', 6)->index()->nullable();
-            $table->char('city', 6)->index()->nullable();
-            $table->char('county', 6)->index()->nullable();
-            $table->string('position', 100);
-            $table->string('industry', 20);
-            $table->tinyInteger('salary')->default(0);
-            $table->string('feedback')->nullable();
-            $table->unsignedInteger('created_by');
+            $table->increments('id')->comment('简历id');
+            $table->string('name', 254)->index()->comment('姓名');
+            $table->string('mobile', 254)->comment('手机');
+            $table->string('email', 254)->comment('邮件');
+            $table->tinyInteger('gender')->default(0)->comment('性别, 默认: 0; 1: 男; 2: 女');
+            $table->string('birthdate', 16)->comment('出生日期');
+            $table->string('start_work_date', 16)->comment('开始工作日期');
+            $table->tinyInteger('degree')->default(0)->comment('学历，默认: 0; 1: 大专; 2: 本科; 3: 研究生; 4: 博士');
+            $table->tinyInteger('service_status')->default(0)->comment('在职状态, 默认: 0; 1: 在职; 2: 离职');
+            $table->char('province', 6)->index()->nullable()->comment('省份编码');
+            $table->char('city', 6)->index()->nullable()->comment('市编码');
+            $table->char('county', 6)->index()->nullable()->comment('区县编码');
+            $table->string('position', 64)->comment('当前职位');
+            $table->string('company', 64)->comment('当前公司');
+            $table->tinyInteger('salary')->default(0)->comment('期望薪资, 默认: 0; 1: 面议; 2: 10000以下; 3: 10000 ~ 20000; 4: 20000 ~ 30000; 5: 30000以上');
+            $table->unsignedInteger('created_by')->comment('创建人id');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedInteger('updated_by');
+            $table->unsignedInteger('updated_by')->comment('最后修改人id');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
         // once the table is created use a raw query to ALTER it and add the MEDIUMBLOB
-        DB::statement("ALTER TABLE resumes ADD others LONGBLOB after salary");
+        DB::statement("ALTER TABLE resumes ADD others LONGBLOB COMMENT '其它' after salary");
+        DB::statement("ALTER TABLE resumes comment '简历表'");
 
         // feedbacks table
         Schema::create('feedbacks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('resume_id');
+            $table->increments('id')->comment('反馈id');
+            $table->unsignedInteger('resume_id')->comment('简历i在');
             $table->foreign('resume_id')->references('id')->on('resumes');
-            $table->string('text');
-            $table->unsignedInteger('created_by');
+            $table->string('text')->comment('反馈内容');
+            $table->unsignedInteger('created_by')->comment('创建人id');
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
+        DB::statement("ALTER TABLE feedbacks comment '反馈表'");
 
         // customers table
         Schema::create('customers', function (Blueprint $table) {
@@ -82,15 +83,16 @@ class CreateLieplusTables extends Migration
 
         // regions table
         Schema::create('regions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->char('citycode', 6)->index();
-            $table->char('adcode', 6)->index();
-            $table->string('name', 60);
-            $table->string('center', 30);
-            $table->unsignedInteger('level')->default(0);
+            $table->increments('id')->comment('地区id');
+            $table->char('citycode', 6)->index()->comment('区号');
+            $table->char('adcode', 6)->index()->comment('地区识别码');
+            $table->string('name', 64)->comment('地区名称');
+            $table->string('center', 32)->comment('中心经纬度');
+            $table->unsignedTinyInteger('level')->default(0)->comment('行政级别: 默认: 0; 1: 省/直辖市; 2: 市; 3: 区/县');
             $table->timestamps();
             $table->softDeletes();
         });
+        DB::statement("ALTER TABLE regions comment '地区表'");
 
         // departments table
         Schema::create('departments', function (Blueprint $table) {

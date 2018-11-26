@@ -53,12 +53,12 @@ class Resume extends Base
         $created_by = Auth::id();
         $updated_by = Auth::id();
 
-        if (static::getResumes()->where('mobile', $mobile)->first()) {
-            throw MobileAlreadyExists::create($mobile);
-        }
-        if (static::getResumes()->where('email', $email)->first()) {
-            throw EmailAlreadyExists::create($email);
-        }
+        // if (static::getResumes()->where('mobile', $mobile)->first()) {
+        //     throw MobileAlreadyExists::create($mobile);
+        // }
+        // if (static::getResumes()->where('email', $email)->first()) {
+        //     throw EmailAlreadyExists::create($email);
+        // }
         return static::query()->create(compact(
             'name',
             'mobile',
